@@ -4,4 +4,4 @@
 
 - [Node Controller Test](https://midasit-dev.github.io/plugintest/node-controller)
 - [Element Information Test](https://midasit-dev.github.io/plugintest/element-information)
-- [Girder Wizard Lining Extractor](https://midasit-dev.github.io/plugintest/girder-wizard-lining-extractor)
+- [Girder Wizard Lining Extractor Test](https://midasit-dev.github.io/plugintest/girder-wizard-lining-extractor)
