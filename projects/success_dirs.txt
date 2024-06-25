@@ -1,4 +1,3 @@
- 
 align-local-axis-for-element 
 analysis-progress-notify 
 artifical-earthquake 
@@ -21,7 +20,7 @@ lcom-generator
 link-projection 
 local-axis 
 lumped-hinge-checker 
-mirror_tapered_section 
+mirror-tapered-section 
 node-controller 
 nonlinear-spring 
 pile-spring 
@@ -29,3 +28,7 @@ rebar-spacing-converter
 resposne-spectrum-generator 
 seismic-hazard-map 
 series-load 
+temperature-gradient-stress-calculator 
+tendon-profile-converter 
+texdas 
+tunnel-lining 

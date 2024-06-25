@@ -5,7 +5,7 @@ REM UTF-8로 설정
 chcp 65001 > nul
 
 REM 임시 파일 초기화 (UTF-8 인코딩으로 생성)
-@REM echo. > success_dirs.txt
+echo. > success_dirs.txt
 
 REM 실행할 디렉토리명을 설정
 REM example) "run_dirs=dir1 dir2 dir3"
@@ -16,7 +16,7 @@ for %%d in (%run_dirs%) do (
 		call :process_directory "%%d"
 )
 
-echo All builds and copies completed successfully.
+echo All builds and copies completed successfully
 
 REM Python 스크립트를 호출하여 README.md 업데이트
 call python update_readme.py

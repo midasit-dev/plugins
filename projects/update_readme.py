@@ -28,7 +28,8 @@ for line in readme_contents:
         for dir_name in success_dirs:
             if dir_name == ' ': continue # 공백이 있으면 continue
             page_name = dir_name.replace(' ', '').title()
-            new_line = f"- [{page_name}](https://midasit-dev.github.io/plugins/{page_name})\n"
+            page_name_lower = page_name.lower()
+            new_line = f"- [{page_name}](https://midasit-dev.github.io/plugins/{page_name_lower})\n"
             new_lines.append(new_line)
 
 # README.md 파일에 새로운 내용 쓰기
