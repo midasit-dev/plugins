@@ -8,5 +8,5 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
 
 ## Test Static Pages (Updated at 2024.06.25 19:26:16)
-- [🔒 Easy Capture Generator Test (Updated at 24.06.25)](https://midasit-dev.github.io/plugins/easy-capture-generator)
+- [🔒 Easy-Capture-Generator Test](https://midasit-dev.github.io/plugins/easy-capture-generator)
   
