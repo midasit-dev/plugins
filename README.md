@@ -2,7 +2,10 @@
 Currently,  
 it includes plugins related to Civil NX. In the future, we plan to include plugins for various other product lines as well.
 
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/midasit-dev/plugins)
 [![pages-build-deployment](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment)
+[![GitHub stars](https://img.shields.io/github/stars/midasit-dev/plugins?style=social)](https://github.com/midasit-dev/plugins/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/midasit-dev/plugins?style=social)](https://github.com/midasit-dev/plugins/network/members)
 
 ## Related Repository
 - [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
