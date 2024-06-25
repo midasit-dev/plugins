@@ -8,6 +8,9 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ## Related Repository
 - [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
 
+## Releated Sheet
+- [🔒 List of Plugins 2024](https://midasinfra-my.sharepoint.com/:x:/g/personal/kh1012_midasit_com/Ed9FhcqA7AFBnLYfn7LX1k0B_Gm43YXmQEQZrP5nsEvIZA?e=PbccWH)
+
 ## Test Static Pages (Updated at 2024.06.25 22:31:19)
 - [Align-Local-Axis-For-Element](https://midasit-dev.github.io/plugins/align-local-axis-for-element)
 - [Analysis-Progress-Notify](https://midasit-dev.github.io/plugins/analysis-progress-notify)
