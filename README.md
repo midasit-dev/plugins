@@ -5,7 +5,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 [![pages-build-deployment](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment)
 
 ## Related Repository
-- [MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
+- [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
 
 ## Test Static Pages
 - [Node Controller Test](https://midasit-dev.github.io/plugins/node-controller)
