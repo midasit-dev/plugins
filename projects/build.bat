@@ -44,24 +44,24 @@ exit /b
 :process_directory
 if exist "%~1\package.json" (
     echo Building %~1...
-    @REM cd "%~1"
-    @REM call npm install
-    @REM if !errorlevel! neq 0 (
-    @REM     echo npm install failed in %~1
-    @REM     exit /b 1
-    @REM )
-    @REM call npm run build
-    @REM if !errorlevel! neq 0 (
-    @REM     echo npm run build failed in %~1
-    @REM     exit /b 1
-    @REM )
-    @REM echo Copying build to ..\..\docs\%~1...
-    @REM xcopy build\* "..\..\docs\%~1\" /s /e /y
-    @REM if !errorlevel! neq 0 (
-    @REM     echo Copy failed in %~1
-    @REM     exit /b 1
-    @REM )
-    @REM cd ..
+    cd "%~1"
+    call npm install
+    if !errorlevel! neq 0 (
+        echo npm install failed in %~1
+        exit /b 1
+    )
+    call npm run build
+    if !errorlevel! neq 0 (
+        echo npm run build failed in %~1
+        exit /b 1
+    )
+    echo Copying build to ..\..\docs\%~1...
+    xcopy build\* "..\..\docs\%~1\" /s /e /y
+    if !errorlevel! neq 0 (
+        echo Copy failed in %~1
+        exit /b 1
+    )
+    cd ..
     REM 성공한 디렉토리를 UTF-8 인코딩으로 success_dirs.txt에 추가
     echo %~1 >> success_dirs.txt
 )
