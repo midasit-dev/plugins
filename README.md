@@ -62,7 +62,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     🌕 | 19 | seismic hazard map                 | group5 (Lenny)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/seismic-hazard-map/public/readme.md) | [⚠️ Link](https://midasit-dev.github.io/plugins/seismic-hazard-map) |
 |     🌕 | 20 | cae importer                       | group6 (Andy)      | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/cae-importer/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/cae-importer) |
 |     🌕 | 21 | auto saver                         | group6 (Ringo)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/auto-saver/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/auto-saver) |
-|     🌓 | 22 | align local axis for element       | Lawrence           | tgc       | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/align-local-axis-for-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/align-local-axis-for-element) |
+|     🌕 | 22 | align local axis for element       | Lawrence           | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/align-local-axis-for-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/align-local-axis-for-element) |
 |     🌓 | 23 | divide frame element               | Sadim              | tgc       | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
 
 ### Links Generated (Updated at 2024.06.26 14:59:56)
