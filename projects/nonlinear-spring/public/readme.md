@@ -1,6 +1,2 @@
-# Plug-in Item Title
-- Plug-in Item Description
-<br />
-## Details
-### version 1.0.0
-- This Plug-in Detail contents...
+# 말뚝 p-y curve 자동 생성
+지층의 정보 및 지질주상도를 입력받아, 이를 바탕으로 해당 절점의 p-y curve를 자동으로 생성하는 기능입니다.

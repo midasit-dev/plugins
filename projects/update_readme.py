@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 
 # 현재 경로에서 success_dirs.txt 파일 읽기
@@ -16,17 +15,17 @@ readme_path = '../README.md'
 with open(readme_path, 'r', encoding='utf-8') as f:
     readme_contents = f.readlines()
 
-# '## Test Static Pages' 섹션을 찾아서 제목 업데이트 및 항목 추가
+# '### Links Generated' 섹션을 찾아서 제목 업데이트 및 항목 추가
 new_lines = []
 for line in readme_contents:
-    if line.strip().startswith('## Test Static Pages'):
-        new_lines.append(f'## Test Static Pages (Updated at {current_date})\n')
+    if line.strip().startswith('### Links Generated'):
+        new_lines.append(f'### Links Generated (Updated at {current_date})\n')
     else:
         new_lines.append(line)
 
-    if line.strip() == '## Test Static Pages' or line.strip().startswith('## Test Static Pages (Updated at'):
+    if line.strip() == '### Links Generated' or line.strip().startswith('### Links Generated (Updated at'):
         for dir_name in success_dirs:
-            if dir_name == ' ': continue # 공백이 있으면 continue
+            if dir_name == ' ' or dir_name == '': continue # 공백이 있으면 continue
             page_name = dir_name.replace(' ', '').title()
             page_name_lower = page_name.lower()
             new_line = f"- [{page_name}](https://midasit-dev.github.io/plugins/{page_name_lower})\n"

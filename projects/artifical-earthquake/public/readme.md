@@ -11,3 +11,5 @@
 - Set the **seismic data** (Risk Category & Soil Class).
 - By clicking **Calc.** button, you can get result graph and data.
 - By clicking **Update** button, you can import result data into program.
+
+[사용법 영상 다운로드](https://api.media.atlassian.com/file/b022890b-ad9e-4c8e-ba35-c763009e71e3/artifact/video_1280.mp4/binary?client=01baa4cf-df4f-479a-a1c0-ee6fac240204&collection=contentId-3351216336&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwMWJhYTRjZi1kZjRmLTQ3OWEtYTFjMC1lZTZmYWMyNDAyMDQiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0zMzUxMjE2MzM2IjpbInJlYWQiXX0sImV4cCI6MTcxOTMxMTE2OSwibmJmIjoxNzE5MzA4Mjg5fQ.G1XFz_JYK2WomszjmFavyb39DLhFKnWsjLlG5tFhJcs)

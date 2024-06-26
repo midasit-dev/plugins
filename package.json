@@ -1,0 +1,31 @@
+{
+  "name": "plugin-repository-of-midasit-products",
+  "version": "1.0.0",
+  "description": "Currently,  \r it includes plugins related to Civil NX. In the future, we plan to include plugins for various other product lines as well.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+		"build": "cd projects && build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/midasit-dev/plugins.git"
+  },
+  "keywords": [
+    "midasit",
+    "civilnx",
+    "civil",
+    "gen",
+    "gennx",
+    "api",
+    "plugin"
+  ],
+  "author": "midasit-dev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/midasit-dev/plugins/issues"
+  },
+  "homepage": "https://github.com/midasit-dev/plugins#readme"
+}
