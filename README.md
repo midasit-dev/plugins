@@ -34,7 +34,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ### Plugins For Under Development
 - ❌: Before proceeding
 - ⏳: In progress
-- 🌕: Completed
+- ✅: Completed
 - ⛔: Not found
 - 🚧: Just need to modify to data
 - ⚠️: There is an error
@@ -49,7 +49,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ⏳ | 6  | rigid link generator               | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rigid-link-generator/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rigid-link-generator) |
 |     ⏳ | 7  | mirror tapered section             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/mirror-tapered-section/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/mirror-tapered-section) |
 |     ⏳ | 8  | pile spring						             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
-|     ⏸️ | 9  | elastic link generator             | Simon              | chapter   | [⛔ Readme](https://github.com/midasit-dev/plugins/blob/main/projects/elastic-link-generator/public/readme.md) | [⛔ Link](https://midasit-dev.github.io/plugins/elastic-link-generator) |
+|     ❌ | 9  | elastic link generator             | Simon              | chapter   | [⛔ Readme](https://github.com/midasit-dev/plugins/blob/main/projects/elastic-link-generator/public/readme.md) | [⛔ Link](https://midasit-dev.github.io/plugins/elastic-link-generator) |
 |     ⏳ | 10 | baseplate                          | Simon & Lenny      | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
 |     ✅ | 11 | node controller                    | Walter             | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/node-controller/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/node-controller) |
 |     ⏳ | 12 | spacegass importer                 | Walter & James     | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/spacegass-importer/public/readme.md) | [🚧 Link](https://midasit-dev.github.io/plugins/spacegass-importer) |
