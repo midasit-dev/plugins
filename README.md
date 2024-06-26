@@ -16,7 +16,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ### Documentation
 - [🌐 MIDAS Plug-in Documentation](https://midas-support.atlassian.net/wiki/spaces/MAW/pages/215711752/MIDAS+Plug-in+over+the+MIDAS+API)
 
-### Plugins (12)
+### Plugins Testing (12)
 - [🌐 Alignment-Generator](https://midasit-dev.github.io/plugins/alignment-generator)
 - [🌐 Concrete-Material-Set-EN1992-1-1](https://midasit-dev.github.io/plugins/concrete-material-set-en1992-1-1)
 - [🌐 Convert-Load-Combinations-Into-Sds-Format](https://midasit-dev.github.io/plugins/convert-load-combinations-into-sds-format)
