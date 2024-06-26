@@ -33,7 +33,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ## Unofficial
 ### Plugins For Under Development
 - ❌: Before proceeding
-- 🌓: In progress
+- ⏳: In progress
 - 🌕: Completed
 - ⛔: Not found
 - 🚧: Just need to modify to data
@@ -41,18 +41,18 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 
 | status | no | title                              | writer             | made in   | description                                                                                          | testing                                                         |
 |--------|----|------------------------------------|--------------------|-----------|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
-|     🌓 | 1  | 🔒 easy capture generator          | Cale & Sidd        | chapter   | [🚧 Readme](https://github.com/MIDASIT-Co-Ltd/plugins/blob/main/projects/easy-capture-generator-moaui/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/easy-capture-generator) |
+|     ⏳ | 1  | 🔒 easy capture generator          | Cale & Sidd        | chapter   | [🚧 Readme](https://github.com/MIDASIT-Co-Ltd/plugins/blob/main/projects/easy-capture-generator-moaui/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/easy-capture-generator) |
 |     🌕 | 2  | rebar spacing converter            | Lenny              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rebar-spacing-converter/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rebar-spacing-converter) |
 |     🌕 | 3  | load effect for lc                 | Lenny              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/load-effect-for-lc/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/load-effect-for-lc) |
 |     🌕 | 4  | element information                | Lenny & Walter     | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/element-information/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/element-information) |
-|     🌓 | 5  | artificial eq correlation          | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/artificial-eq-correlation/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/artificial-eq-correlation) |
-|     🌓 | 6  | rigid link generator               | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rigid-link-generator/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rigid-link-generator) |
-|     🌓 | 7  | mirror tapered section             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/mirror-tapered-section/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/mirror-tapered-section) |
-|     🌓 | 8  | pile spring						             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
+|     ⏳ | 5  | artificial eq correlation          | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/artificial-eq-correlation/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/artificial-eq-correlation) |
+|     ⏳ | 6  | rigid link generator               | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rigid-link-generator/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rigid-link-generator) |
+|     ⏳ | 7  | mirror tapered section             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/mirror-tapered-section/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/mirror-tapered-section) |
+|     ⏳ | 8  | pile spring						             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
 |     ⏸️ | 9  | elastic link generator             | Simon              | chapter   | [⛔ Readme](https://github.com/midasit-dev/plugins/blob/main/projects/elastic-link-generator/public/readme.md) | [⛔ Link](https://midasit-dev.github.io/plugins/elastic-link-generator) |
-|     🌓 | 10 | baseplate                          | Simon & Lenny      | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
+|     ⏳ | 10 | baseplate                          | Simon & Lenny      | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
 |     🌕 | 11 | node controller                    | Walter             | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/node-controller/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/node-controller) |
-|     🌓 | 12 | spacegass importer                 | Walter & James     | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/spacegass-importer/public/readme.md) | [🚧 Link](https://midasit-dev.github.io/plugins/spacegass-importer) |
+|     ⏳ | 12 | spacegass importer                 | Walter & James     | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/spacegass-importer/public/readme.md) | [🚧 Link](https://midasit-dev.github.io/plugins/spacegass-importer) |
 |     🌕 | 13 | analysis progress notify           | group1 (Brown)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/analysis-progress-notify/public/readme.md) | [⚠️ Link](https://midasit-dev.github.io/plugins/analysis-progress-notify) |
 |     🌕 | 14 | nonlinear spring             			 | group2 (Simon)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/nonlinear-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/nonlinear-spring) |
 |     🌕 | 15 | tunnel lining 										 | group2 (Simon) 		 | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/tunnel-lining/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/tunnel-lining) |
@@ -63,7 +63,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     🌕 | 20 | cae importer                       | group6 (Andy)      | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/cae-importer/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/cae-importer) |
 |     🌕 | 21 | auto saver                         | group6 (Ringo)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/auto-saver/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/auto-saver) |
 |     🌕 | 22 | align local axis for element       | Lawrence           | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/align-local-axis-for-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/align-local-axis-for-element) |
-|     🌓 | 23 | divide frame element               | Sadim              | tgc       | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
+|     ⏳ | 23 | divide frame element               | Sadim              | tgc       | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
 
 ### Links Generated (Updated at 2024.06.26 14:59:56)
 - [Spacegass-Importer](https://midasit-dev.github.io/plugins/spacegass-importer)
