@@ -1,62 +1,34 @@
 import {GuideBox, 
-    Panel,
-    Check,
     TemplatesDualComponentsTypographyTextFieldSpaceBetween,
-    TemplatesDualComponentsTypographyDropListSpaceBetween,
-    Typography,
 } from '@midasit-dev/moaui';
 import TypoGraphyDropList from '../NewComponents/TrypoGraphyDropList';
 import {useRecoilState, useRecoilValue, useResetRecoilState} from 'recoil';
-import { FoundationWidth, SideLength,
-    PileName, PileType, PileLength, ConstructionMethod, HeadCondition, BottomCondition, Steel_Dia_Title, Steel_Cor_Title, Steel_Title, ConcreteModulus_Title,
-    CompositeTypeCheck, CompPileType, CompStartLength,
-    Concrete_Diameter,Concrete_Thickness, Concrete_Modulus, Steel_Diameter, Steel_Thickness, Steel_Modulus, Steel_Cor_Thickness,
-    CompConcrete_Diameter, CompConcrete_Thickness, CompConcrete_Modulus, CompSteel_Diameter, CompSteel_Thickness, CompSteel_Modulus, CompSteel_Cor_Thickness,
-    ReinforcedMethod, ReinforcedStartLength, ReinforcedEndLength, OuterThickness, OuterModulus, InnerThickness, InnerModulus, InnerInputState,
-    Major_Start_Point, Minor_Start_Point, Major_Space, Major_Degree, Minor_Degree,
-    PileTableData, PileDataSelector, SelectedRow, TopLevel, PileLocationData, PileDegreeData, 
+import {
+    PileName, PileType, PileLength, ConstructionMethod, HeadCondition, BottomCondition, Steel_Dia_Title, Steel_Cor_Title, Steel_Title, Concrete_Title, ConcreteModulus_Title,
+    Concrete_Diameter,Concrete_Thickness, Concrete_Modulus, Steel_Diameter, Steel_Thickness, Steel_Modulus, Steel_Cor_Thickness, Langauge
 } from '../variables';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 function PileInitialSettings(){
-    
-    const ListPileType = [
-        ['현장타설말뚝', '현장타설말뚝'],
-        ['PHC말뚝', 'PHC말뚝'],
-        ['SC말뚝', 'SC말뚝'],
-        ['강관말뚝', '강관말뚝'],
-        ['소일시멘트말뚝', '소일시멘트말뚝']
-    ]
+    const { t:translate, i18n: internationalization} = useTranslation();
 
-    const ListConstructionMethod = [
-        ['타격말뚝(타격 공법)', '타격말뚝(타격 공법)'],
-        ['타격말뚝(바이브러 해머공법)', '타격말뚝(바이브러 해머공법)'],
-        ['현장타설말뚝', '현장타설말뚝'],
-        ['중굴착 말뚝', '중굴착 말뚝'],
-        ['preboring 말뚝', 'preboring 말뚝'],
-        ['강관 소일시멘트 말뚝', '강관 소일시멘트 말뚝'],
-        ['회전말뚝', '회전말뚝']
-    ]
+    const language = useRecoilValue(Langauge)
+    const [ListPileType, setListPileType] = useState<any>([])
+    const [ListConstructionMethod, setListConstructionMethod ]= useState<any>([])
+    const [ListHeadCondition, setListHeadCondition] = useState<any>([])
+    const [ListBottomCondition, setListBottomCondition] = useState<any>([])
 
-    const ListHeadCondition = [
-        ['강결', '강결'],
-        ['힌지', '힌지']
-    ]
-
-    const ListBottomCondition = [
-        ['자유', '자유'],
-        ['힌지', '힌지'],
-        ['고정', '고정']
-    ]
-    
     const [pileName, setpileName] = useRecoilState(PileName);
     const [pileLengh, setpileLength] = useRecoilState(PileLength);
-    const [steelDiaNames, setsteelDiaNames] = useRecoilState(Steel_Dia_Title);
+    const [steelDiaTitle, setSteelDiaTitle] = useRecoilState(Steel_Dia_Title);
     const [pileType, setpileType] = useRecoilState(PileType);
     const [constructionMethod, setconstructionMethod] = useRecoilState(ConstructionMethod);
     const [headCondition, setheadCondition] = useRecoilState(HeadCondition);
     const [bottomCondition, setbottomCondition] = useRecoilState(BottomCondition);
     const [steelCorTitle, setSteelCorTitle] = useRecoilState(Steel_Cor_Title);
     const [steelTitle, setSteelTitle] = useRecoilState(Steel_Title);
+    const [concreteTitle, setConcreteTitle] = useRecoilState(Concrete_Title);
     const [concreteModulusTitle, setConcreteModulusTitle] = useRecoilState(ConcreteModulus_Title);
     
 
@@ -82,37 +54,7 @@ function PileInitialSettings(){
     
     const handlepileTypeChange = (e:any) => {
         setpileType(e.target.value);
-        
-        if (e.target.value === '현장타설말뚝' || e.target.value === 'PHC말뚝'){
-            setsteelDiaNames('단면적 (cm²)')
-        }
-        else{
-            setsteelDiaNames('직경 (mm)')
-        }
-
-        if (e.target.value === 'PHC말뚝'){
-            setSteelCorTitle('배치반경 (mm)')
-        }
-        else{
-            setSteelCorTitle('부식대 (mm)')
-        }
-
-        if (e.target.value === '현장타설말뚝'){
-            setSteelTitle('철근')
-        }
-        else if (e.target.value === 'PHC말뚝'){
-            setSteelTitle('PC 강재')
-        }
-        else {
-            setSteelTitle('강관')
-        }
-
-        if (e.target.value === '소일시멘트말뚝'){
-            setConcreteModulusTitle('변형계수 (N/mm²)')
-        }
-        else{
-            setConcreteModulusTitle('탄성계수 (N/mm²)')
-        }
+        titleChange(e.target.value)
 
         ResetConcreteDiameter()
         ResetConcreteThickness()
@@ -124,24 +66,109 @@ function PileInitialSettings(){
 
     }
 
+    const titleChange = (e:any) =>{
+        // 철근 타이틀 : 현장타설말뚝, PHC 말뚝일 경우에는 단면적, 그 외에는 직경
+        if (e === '현장타설말뚝' || e=== 'PHC말뚝'){
+            setSteelDiaTitle(translate('Basic_Steel_Diamter_Case1'))
+        }
+        else{
+            setSteelDiaTitle(translate('Basic_Steel_Diamter_Case2'))
+        }
+        
+        
+        if (e=== 'PHC말뚝'){
+            setSteelCorTitle(translate('Basic_Steel_Cor_Case1'))
+        }
+        else{
+            setSteelCorTitle(translate('Basic_Steel_Cor_Case2'))
+        }
+        // Concrete Title 변경
+        // 강관 말뚝, 소일시멘트 말뚝일 경우 소일시멘트, 그 외 콘크리트
+        if (e === '강관말뚝' || e === '소일시멘트말뚝'){
+            setConcreteTitle(translate('Basic_Concrete_Title_Case2'))
+        }
+        else{
+            setConcreteTitle(translate('Basic_Cocncrete_Title_Case1'))
+        }
+        // Steel Title 변경
+        // 현장타설 말뚝일 경우 철근, PHC 말뚝일경우 PC 강재, 그 외 강관
+        if (e === '현장타설말뚝'){
+            setSteelTitle(translate('Basic_Steel_Title_Case1'))
+        }
+        else if (e === 'PHC말뚝'){
+            setSteelTitle(translate('Basic_Steel_Title_Case3'))
+        }
+        else {
+            setSteelTitle(translate('Basic_Steel_Title_Case2'))
+        }
+
+        // 말뚝 타입이 소일시멘트 말뚝의 경우 콘크리트 탄성계수를 변형계수로 출력
+        if (e === '소일시멘트말뚝'){
+            setConcreteModulusTitle(translate('Basic_Concrete_Modulus_Case2'))
+        }
+        else{
+            setConcreteModulusTitle(translate('Basic_Concrete_Modulus_Case1'))
+        }
+    }
+
+    useEffect(() => {
+        titleChange(pileType)
+        setListPileType(
+            [
+                [translate('Cast_In_Situ'), '현장타설말뚝'],
+                [translate('PHC_Pile'), 'PHC말뚝'],
+                [translate('SC_Pile'), 'SC말뚝'],
+                [translate('Steel_Pile'), '강관말뚝'],
+                [translate('Soil_Cement_Pile'), '소일시멘트말뚝']
+            ]
+            )
+    
+            setListHeadCondition(
+                [
+                    [translate('Head_Condition_Fixed'), '강결'],
+                    [translate('Head_Condition_Hinge'), '힌지']
+                ]
+            )
+
+            setListConstructionMethod(
+                [
+                    [translate('CM_DropHammer'), '타격말뚝(타격 공법)'],
+                    [translate('CM_VibroHammer'), '타격말뚝(바이브러 해머공법)'],
+                    [translate('CM_InSitu'), '현장타설말뚝'],
+                    [translate('CM_Boring'), '중굴착 말뚝'],
+                    [translate('CM_Preboring'), 'preboring 말뚝'],
+                    [translate('CM_SoilCement'), '강관 소일시멘트 말뚝'],
+                    [translate('CM_Rotate'), '회전말뚝']
+                ]
+            )
+
+            setListBottomCondition(
+                [
+                    [translate('Bottom_Condition_Free'), '자유'],
+                    [translate('Bottom_Condition_Hinge'), '힌지'],
+                    [translate('Bottom_Condition_Fixed'), '고정']
+                ]
+            )
+    },)
+
         return(
             <GuideBox>
                 <TemplatesDualComponentsTypographyTextFieldSpaceBetween
-                    title = "말뚝 명칭"
+                    title = {translate('Pile_Name')}
                     width = {300}
                     textFieldWidth = {180}
-                    placeholder = 'Pile Name'
+                    placeholder = ''
                     value = {pileName}
                     onChange = {(e:any) => {setpileName(e.target.value);}}/>
                 <TemplatesDualComponentsTypographyTextFieldSpaceBetween
-                title = "말뚝 길이 (m)"
+                title = {translate('Pile_Length')}
                 width = {300}
                 textFieldWidth = {180}
-                placeholder = 'Pile Length' 
+                placeholder = ''
                 value = {pileLengh}
                 onChange = {handlePileLengthChange}/>
                 <TypoGraphyDropList
-                    title = "말뚝 종류"
+                    title = {translate('Pile_Type')}
                     width = {300}
                     dropListWidth = {180}
                     items = {ListPileType}
@@ -149,7 +176,7 @@ function PileInitialSettings(){
                     onChange = {handlepileTypeChange}/>       
                 <TypoGraphyDropList
                     padding = {1}
-                    title = "시공 방법"
+                    title = {translate('Construction_Method')}
                     width = {300}
                     dropListWidth = {180}
                     items = {ListConstructionMethod}
@@ -157,7 +184,7 @@ function PileInitialSettings(){
                     onChange = {(e:any) => {setconstructionMethod(e.target.value);}}/>
                 <TypoGraphyDropList
                     padding = {1}
-                    title = "말뚝머리 접합조건"
+                    title = {translate('Head_Condition')}
                     width = {300}
                     dropListWidth = {180}
                     items = {ListHeadCondition}
@@ -165,7 +192,7 @@ function PileInitialSettings(){
                     onChange = {(e:any) => {setheadCondition(e.target.value);}}/>
                 <TypoGraphyDropList
                     padding = {1}
-                    title = "말뚝 선단조건"
+                    title = {translate('Bottom_Condition')}
                     width = {300}
                     dropListWidth = {180}
                     items = {ListBottomCondition}

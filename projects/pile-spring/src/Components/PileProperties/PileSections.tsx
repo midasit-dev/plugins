@@ -1,25 +1,26 @@
-import React, { useContext } from 'react';
 import { useState } from 'react';
 import {GuideBox, 
     TabGroup,
     Tab,
-    Check,
-    Typography,
 } from '@midasit-dev/moaui';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import { CompositeTypeCheck } from '../variables';
 import BasicSection from './BasicSection';
-import Composite from './Composite';
+import Composite from './CompositeSection';
 import Reinforced from './Reinforced';
+import { useTranslation } from 'react-i18next';
 
+// Pile Section 입력 창
 function PileSections(){
 
+    const { t:translate, i18n: internationalization} = useTranslation();
     const [tabName,setTabName] = useState("Basic")
 
-    const handelChange = (event:React.SyntheticEvent, newvalue: string)=>{
+    const handelChange = (event:any, newvalue: string)=>{
         setTabName(newvalue)
     }
-
+    
+    // 하부말뚝 설정 check 변수
     const compositePileTypeCheck = useRecoilValue(CompositeTypeCheck);
     
     return(
@@ -36,9 +37,9 @@ function PileSections(){
                         fontSize: 'small'
                     }}
                 >
-                    <Tab value="Basic" label='기본 말뚝 단면' fontSize={'small'}/>
-                    <Tab value="Double" label='하부 말뚝 단면' disabled={!compositePileTypeCheck} />
-                    <Tab value="Composite" label='보강단면'/>
+                    <Tab value="Basic" label={translate('Basic_Section_Title')} fontSize={'small'}/>
+                    <Tab value="Double" label={translate('Composite_Section_Title')} disabled={!compositePileTypeCheck} />
+                    <Tab value="Composite" label={translate('Reinforced_Section_Title')}/>
                     
                 </TabGroup>
                 {tabName === "Basic" && <BasicSection/>}

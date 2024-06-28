@@ -1,16 +1,13 @@
-import React from 'react';
-import { useState } from 'react';
 import {GuideBox, 
     Typography,
     Panel,
     Check,
-    Button,
     TemplatesDualComponentsTypographyTextFieldSpaceBetween,
     TemplatesDualComponentsTypographyDropListSpaceBetween,
 } from '@midasit-dev/moaui';
 
 function SoilOptions(){
-
+    
     return(
         <GuideBox>
             <GuideBox row verCenter>

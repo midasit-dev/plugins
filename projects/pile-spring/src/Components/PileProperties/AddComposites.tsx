@@ -1,42 +1,27 @@
-import React from 'react';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import {useRecoilState, useRecoilValue, useResetRecoilState} from 'recoil';
 import {GuideBox, 
     Typography,
-    Panel,
-    TemplatesDualComponentsTypographyTextFieldSpaceBetween,
-    TemplatesDualComponentsTypographyDropListSpaceBetween,
-    Check,
-    TextFieldV2,
+
 } from '@midasit-dev/moaui';
 import TypoGraphyDropList from '../NewComponents/TrypoGraphyDropList';
 import TypoGraphyTextField from '../NewComponents/TypoGraphyTextField';
-import { FoundationWidth, SideLength,
-    PileName, PileType, PileLength, ConstructionMethod, HeadCondition, BottomCondition, Steel_Dia_Title, Steel_Cor_Title, Steel_Title, ConcreteModulus_Title,
+import {
     CompositeTypeCheck, CompPileType, CompStartLength,
-    Concrete_Diameter,Concrete_Thickness, Concrete_Modulus, Steel_Diameter, Steel_Thickness, Steel_Modulus, Steel_Cor_Thickness,
     CompConcrete_Diameter, CompConcrete_Thickness, CompConcrete_Modulus, CompSteel_Diameter, CompSteel_Thickness, CompSteel_Modulus, CompSteel_Cor_Thickness,
-    ReinforcedMethod, ReinforcedStartLength, ReinforcedEndLength, OuterThickness, OuterModulus, InnerThickness, InnerModulus, InnerInputState,
-    Major_Start_Point, Minor_Start_Point, Major_Space, Major_Degree, Minor_Degree,
-    PileTableData, PileDataSelector, SelectedRow, TopLevel, PileLocationData, PileDegreeData, 
-    CompSteel_Dia_Title, CompSteel_Cor_Title, CompSteel_Title, CompConcreteModulus_Title,
+    CompSteel_Dia_Title, CompSteel_Cor_Title, CompSteel_Title, CompConcrete_Title, CompConcreteModulus_Title,
 } from '../variables';
-import PileInitialSettings from './PileInitialSettings';
-import PileSections from './PileSections';
-
+import { useTranslation } from 'react-i18next';
 
 function AddComposites(){
-    const CompListPileType = [
-        ['현장타설말뚝', '현장타설말뚝'],
-        ['PHC말뚝', 'PHC말뚝'],
-        ['SC말뚝', 'SC말뚝'],
-        ['강관말뚝', '강관말뚝'],
-        ['소일시멘트말뚝', '소일시멘트말뚝']
-    ]
-
-    // 복합말뚝설정 변수
-    const compositePileTypeCheck = useRecoilValue(CompositeTypeCheck);
+    // 언어팩 적용 함수
+    const { t:translate, i18n: internationalization} = useTranslation();
+    const [CompListPileType, setCompListPileType] = useState<any>([])
     
+
+    // 하부말뚝설정 변수
+    const compositePileTypeCheck = useRecoilValue(CompositeTypeCheck);
     
     const [compPileType, setCompPileType] = useRecoilState(CompPileType)
 
@@ -44,6 +29,7 @@ function AddComposites(){
     const [compSteelCorThickness, setCompSteelCorThickness] = useRecoilState(CompSteel_Cor_Thickness)
     const [compSteelCorTitle, setCompSteelCorTitle] = useRecoilState(CompSteel_Cor_Title)
     const [compSteelTitle, setCompSteelTitle] = useRecoilState(CompSteel_Title)
+    const [compConcreteTitle, setCompConcreteTitle] = useRecoilState(CompConcrete_Title)
     const [compConcreteModulusTitle, setCompConcreteModulusTitle] = useRecoilState(CompConcreteModulus_Title)
 
     const [compStartLength, setCompStartLength] = useRecoilState(CompStartLength)
@@ -59,36 +45,7 @@ function AddComposites(){
     // 말뚝 종류에 따른 Title 수정
     const handleCompPileTypeChange = (e:any) => {
         setCompPileType(e.target.value);
-        if (e.target.value === '현장타설말뚝' || e.target.value === 'PHC말뚝'){
-            setCompSteelDiaTitle('단면적 (cm²)')
-        }
-        else{
-            setCompSteelDiaTitle('직경 (mm)')
-        }
-
-        if (e.target.value === 'PHC말뚝'){
-            setCompSteelCorTitle('배치반경 (mm)')
-        }
-        else{
-            setCompSteelCorTitle('부식대 (mm)')
-        }
-
-        if (e.target.value === '현장타설말뚝'){
-            setCompSteelTitle('철근')
-        }
-        else if (e.target.value === 'PHC말뚝'){
-            setCompSteelTitle('PC 강재')
-        }
-        else {
-            setCompSteelTitle('강관')
-        }
-
-        if (e.target.value === '소일시멘트말뚝'){
-            setCompConcreteModulusTitle('변형계수 (N/mm²)')
-        }
-        else{
-            setCompConcreteModulusTitle('탄성계수 (N/mm²)')
-        }
+        titleChange(e.target.value);
         
         ResetCompConcreteDiameter()
         ResetCompConcreteThickness()
@@ -98,6 +55,63 @@ function AddComposites(){
         ResetCompSteelModulus()
         ResetCompSteelCorThickness()
     }
+    
+    const titleChange = (e:any) => {
+        // 철근 타이틀 : 현장타설말뚝, PHC 말뚝일 경우에는 단면적, 그 외에는 직경
+        if (e === '현장타설말뚝' || e=== 'PHC말뚝'){
+            setCompSteelDiaTitle(translate('Composite_Steel_Diamter_Case1'))
+        }
+        else{
+            setCompSteelDiaTitle(translate('Composite_Steel_Diamter_Case2'))
+        }
+        
+        
+        if (e=== 'PHC말뚝'){
+            setCompSteelCorTitle(translate('Composite_Steel_Cor_Case1'))
+        }
+        else{
+            setCompSteelCorTitle(translate('Composite_Steel_Cor_Case2'))
+        }
+        // Concrete Title 변경
+        // 강관 말뚝, 소일시멘트 말뚝일 경우 소일시멘트, 그 외 콘크리트
+        if (e === '강관말뚝' || e === '소일시멘트말뚝'){
+            setCompConcreteTitle(translate('Composite_Concrete_Title_Case2'))
+        }
+        else{
+            setCompConcreteTitle(translate('Composite_Concrete_Title_Case1'))
+        }
+        // Steel Title 변경
+        // 현장타설 말뚝일 경우 철근, PHC 말뚝일경우 PC 강재, 그 외 강관
+        if (e === '현장타설말뚝'){
+            setCompSteelTitle(translate('Composite_Steel_Title_Case1'))
+        }
+        else if (e === 'PHC말뚝'){
+            setCompSteelTitle(translate('Composite_Steel_Title_Case3'))
+        }
+        else {
+            setCompSteelTitle(translate('Composite_Steel_Title_Case2'))
+        }
+        // 말뚝 타입이 소일시멘트 말뚝의 경우 콘크리트 탄성계수를 변형계수로 출력
+        if (e === '소일시멘트말뚝'){
+            setCompConcreteModulusTitle(translate('Composite_Concrete_Modulus_Case2'))
+        }
+        else{
+            setCompConcreteModulusTitle(translate('Composite_Concrete_Modulus_Case1'))
+        }
+    }
+
+    useEffect(() => {
+        titleChange(compPileType)
+        setCompListPileType(
+            [
+                [translate('Cast_In_Situ'), '현장타설말뚝'],
+                [translate('PHC_Pile'), 'PHC말뚝'],
+                [translate('SC_Pile'), 'SC말뚝'],
+                [translate('Steel_Pile'), '강관말뚝'],
+                [translate('Soil_Cement_Pile'), '소일시멘트말뚝']
+            ]
+        )
+    },)
 
     const handleCompStartLengthChange = (e:any) => {
         const inputValue = e.target.value;
@@ -113,7 +127,7 @@ function AddComposites(){
     return(
         <GuideBox>
             <TypoGraphyDropList 
-                title = "말뚝 종류"
+                title = {translate('Comp_Pile_Type')}
                 width = {300}
                 dropListWidth = {180}
                 items = {CompListPileType}
@@ -122,8 +136,8 @@ function AddComposites(){
                 onChange = {handleCompPileTypeChange}
             />
             <TypoGraphyTextField 
-                title = '말뚝 위치(m)'
-                placeholder = '말뚝머리 상대거리'
+                title = {translate('Comp_Pile_Length')}
+                placeholder = ''
                 disabled = {!compositePileTypeCheck}
                 value = {compStartLength.toString()}
                 onChange = {handleCompStartLengthChange}
@@ -131,7 +145,7 @@ function AddComposites(){
                 textFieldWidth = {180}
             />
             <GuideBox width={300} horRight>
-                <Typography> *말뚝머리부터 상대거리 </Typography>
+                <Typography> {translate('Comp_Guide_Words')} </Typography>
             </GuideBox>
         </GuideBox>
 

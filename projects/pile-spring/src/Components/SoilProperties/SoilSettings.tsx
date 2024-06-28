@@ -1,25 +1,17 @@
-import React from 'react';
-
 import {GuideBox, 
     Typography,
     Panel,
     Check,
-    Button,
-    TemplatesDualComponentsTypographyTextFieldSpaceBetween,
-    TemplatesDualComponentsTypographyDropListSpaceBetween,
+
 } from '@midasit-dev/moaui';
 import TypoGraphyTextField from '../NewComponents/TypoGraphyTextField'
-import PileInitialSettings from '../PileProperties/PileInitialSettings';
-import PileSections from '../PileProperties/PileSections';
-import AddComposites from '../PileProperties/AddComposites';
-import PileChart from '../Chart/PileChart';
-import PileLocation from '../PileProperties/PileLocation';
-import PileTable from '../PileProperties/PileTable';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {CalVsiState, SoilData, LiquefactionState, SlopeEffectState, GroupEffectState, GroupEffectValue} from '../variables';
-import { FoundationWidth, SideLength, CompositeTypeCheck, PileTableData, PileDataSelector, SelectedRow} from '../variables';
+import { useTranslation } from 'react-i18next';
 
 function SoilSettings(){
+
+    const { t:translate, i18n: internationalization} = useTranslation();
 
     const [calVsiState, setCalVsiState] = useRecoilState(CalVsiState)
     const [liqufactionState, setLiqufactionState] = useRecoilState(LiquefactionState)
@@ -98,22 +90,22 @@ function SoilSettings(){
         <GuideBox>
             <GuideBox row verCenter>
                 <Check onChange={handleVsiState} checked = {calVsiState}/>
-                <Typography>Vsi의 자동 계산(도시V)</Typography>
+                <Typography>{translate('Vsi_AutoCal')}</Typography>
             </GuideBox>
-            <Typography variant='h1' padding={1}>수평지반 반력계수 kH의 저감</Typography>
+            <Typography variant='h1' padding={1}>{translate('Reduce_KH')}</Typography>
             <GuideBox>
                 <Panel width={400}>
                     <GuideBox row verCenter>
                         <Check onChange = {handleLiqufactionState} checked = {liqufactionState}/>
-                        <Typography>액상화 층에 대한 저감(DE)</Typography>
+                        <Typography>{translate('Liquifaction_Title')}</Typography>
                     </GuideBox>
                     <GuideBox row verCenter>
                         <Check onChange={handleSlopeEffectState} checked = {slopeEffectState}/>
-                        <Typography>사면효과에 의한 저감</Typography >
+                        <Typography>{translate('SlopeEffect_Title')}</Typography >
                     </GuideBox>
                     <GuideBox row verCenter>
                         <Check onChange={handleGroupEffectState} checked = {groupEffectState}/>
-                        <Typography>군말뚝 효과에 의한 저감</Typography>
+                        <Typography>{translate('GroupEffect_Title')}</Typography>
                         <GuideBox marginLeft={1}>
                             <TypoGraphyTextField 
                                 title='μ' 

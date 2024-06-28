@@ -1,18 +1,29 @@
 import React, { useState } from "react";
 import { GuideBox, Button } from "@midasit-dev/moaui";
-import { ReportJsonResult } from "../variables";
+import { Langauge } from "../variables";
 import { report } from "process";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
-async function ExcelReport(reportJsonResult:any){
+async function ExcelReport(reportJsonResult:any, language:string, projectName:string){
   
 
-  const BaseSheetFilePath = "BaseSheet.xlsx"
+  let BaseSheetFilePath = ""
+  if (language === "kr"){
+    BaseSheetFilePath = "BaseSheet.xlsx"
+  }
+  else if (language === "jp"){
+    BaseSheetFilePath = "BaseSheet_jp.xlsx"
+  }
   await fetch(BaseSheetFilePath)
   .then(response => response.blob())
   .then(async blob => {
     const formData = new FormData();
-    formData.append("file", blob, "BaseSheet.xlsx");
+    if (language === "kr"){
+      formData.append("file", blob, "BaseSheet.xlsx");
+    }
+    else if (language === "jp"){
+      formData.append("file", blob, "BaseSheet_jp.xlsx");
+    }
     formData.append("parameter", JSON.stringify(reportJsonResult));
     await fetch('https://moa.rpm.kr-dv-midasit.com/backend/function-executor/plugin-execute', {
       method: 'POST',
@@ -23,7 +34,7 @@ async function ExcelReport(reportJsonResult:any){
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url; 
-      a.download = 'pilespring.xlsx'; // 다운로드할 파일이름 지정
+      a.download = projectName; // 다운로드할 파일이름 지정
       document.body.appendChild(a); // 이건 UI에 보이지 않게 하기 위함
       a.click(); // 클릭 이벤트 발생
       window.URL.revokeObjectURL(url); // 사용이 끝난 URL 해제

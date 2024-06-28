@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
-import { useState, useCallback} from 'react';
 import {GuideBox, 
-Typography,
-IconButton, Icon, Button, DataGrid
+IconButton, Icon, DataGrid
 } from '@midasit-dev/moaui';
 import {} from '@mui/material';
 
-import {useRecoilState, useRecoilValue,RecoilState} from 'recoil';
-import {SoilData, CalVsiState, SoilDataSelector, LiquefactionState, SlopeEffectState, GroundLevel} from '../variables';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import {SoilData, CalVsiState, LiquefactionState, SlopeEffectState, GroundLevel} from '../variables';
+import { useTranslation } from 'react-i18next';
 
 function SoilTable(){
+
+    const { t:translate, i18n: internationalization} = useTranslation();
 
     //Table 배열 형식
     interface Row {
@@ -19,8 +20,8 @@ function SoilTable(){
         LayerDepth : number;
         Depth : number;
         AvgNValue : number;
-        c : number;
-        pi : number;
+        // c : number;
+        // pi : number;
         gamma : number;
         aE0 : number;
         aE0_Seis : number;
@@ -43,24 +44,24 @@ function SoilTable(){
     
     const groundLevel = useRecoilValue(GroundLevel)
     const columns: any = [
-        {field : 'LayerNo', headerName : '층 No', width : 50, editable : true, sortable : false},
-        {field : 'LayerType',  headerName : '층 종류',width : 100, editable : true, sortable : false, 
-        type : 'singleSelect', valueOptions : [{value : '점성토', label : "점성토"}, {value : "사질토", label : "사질토"},{value : "사력토", label : "사력토"}]
+        {field : 'LayerNo', headerName : translate('Soil_Table_No'), width : 50, editable : true, sortable : false},
+        {field : 'LayerType',  headerName : translate('Soil_Table_Type') ,width : 100, editable : true, sortable : false, 
+        type : 'singleSelect', valueOptions : [{value : '점성토', label : translate('SoilType_Clay')}, {value : "사질토", label : translate('SoilType_Sand')},{value : "사력토", label : translate('SoilType_Sandstone')}]
         },
-        {field : 'LayerDepth', headerName : '층 상면 표고(m)', width : 100, editable : false, sortable : false},
-        {field : 'Depth', headerName : '층 두께(m)', width : 80, editable : true, sortable : false},
-        {field : 'AvgNValue', headerName : '평균 N값', width : 80, editable : true, sortable : false},
-        {field : 'c', 
-        width : 70, 
-        editable : true, 
-        sortable : false,
-        renderHeader: (params: any) => (
-            <div style={{lineHeight:'1', textAlign: 'center'}}>
-                c<br/>(kN/m²)
-            </div>
-        )
-        },
-        {field : 'pi',  headerName : '\u03C6(°)',width : 50, editable : true, sortable : false},
+        {field : 'LayerDepth', headerName : translate('Soil_Table_Level'), width : 100, editable : false, sortable : false,  valueFormatter: (params: any) => params.value.toFixed(3)},
+        {field : 'Depth', headerName : translate('Soil_Table_Depth'), width : 80, editable : true, sortable : false},
+        {field : 'AvgNValue', headerName : translate('Soil_Table_AvgN'), width : 80, editable : true, sortable : false},
+        // {field : 'c', 
+        // width : 70, 
+        // editable : true, 
+        // sortable : false,
+        // renderHeader: (params: any) => (
+        //     <div style={{lineHeight:'1', textAlign: 'center'}}>
+        //         c<br/>(kN/m²)
+        //     </div>
+        // )
+        // },
+        // {field : 'pi',  headerName : '\u03C6(°)',width : 50, editable : true, sortable : false},
         {field : 'gamma',  
         headerName : '\u03B3\u209C(kN/m³)',
         width : 70, 
@@ -73,24 +74,22 @@ function SoilTable(){
         )
         },
         {field : 'aE0',  
-        headerName : '\u03B1E\u2080(kN/m²)(상시)',
         width : 80, 
         editable : true, 
         sortable : false,
         renderHeader: (params: any) => (
             <div style={{lineHeight:'1', textAlign: 'center'}}>
-                αE₀(상시)<br/>(kN/m²)
+                {translate('Soil_Table_AE0_Normal')}<br/>(kN/m²)
             </div>
         )
         },
         {field : 'aE0_Seis',  
-        headerName : '\u03B1E\u2080(kN/m²) (지진시)',
         width : 80, 
         editable : true, 
         sortable : false,
         renderHeader: (params: any) => (
             <div style={{lineHeight:'1', textAlign: 'center'}}>
-                αE₀(지진시)<br/>(kN/m²)
+                {translate('Soil_Table_AE0_Seismic')}<br/>(kN/m²)
             </div>
         )
         },
@@ -111,7 +110,8 @@ function SoilTable(){
             <div style={{lineHeight:'1', textAlign: 'center'}}>
                 Vₛᵢ<br/>(m/s)
             </div>
-        )
+        ),
+        valueFormatter: (params: any) => params.value.toFixed(3)
         },
         
         {field : 'ED',
@@ -122,7 +122,8 @@ function SoilTable(){
             <div style={{lineHeight:'1', textAlign: 'center'}}>
                 E<span style={{verticalAlign: "sub", fontSize: "smaller"}}>D</span><br/>(kN/m²)
             </div>
-        )
+        ),
+        valueFormatter: (params: any) => params.value.toFixed(3)
         },
         {field : 'DE',  
         headerName : 'D\u2091',
@@ -140,12 +141,12 @@ function SoilTable(){
         sortable : false,
         renderHeader: (params: any) => (
             <div style={{lineHeight:'1', textAlign: 'center'}}>
-                전면길이<br/>(m)
+                {translate('Soil_Table_Length')}<br/>(m)
             </div>
         )
         }
     ]
-
+    
     // DataGrid에 행 추가
     const handleAddClick = () => {
         const newRowIndex = soilData.length + 1;
@@ -167,8 +168,8 @@ function SoilTable(){
             LayerDepth : newLayerDepth,
             Depth : 10,
             AvgNValue : 10,
-            c : 0,
-            pi : 0,
+            // c : 0,
+            // pi : 0,
             gamma : gamma,
             aE0 : 14000,
             aE0_Seis : 28000,
@@ -213,20 +214,21 @@ function SoilTable(){
         newRow.ED = Number((2*(1+Number(newRow.vd))*Gd))
 
         let updatedRow:any = []
-        let TopLevel = groundLevel || 0
+        let TopLevel = groundLevel
+        // TopLevel 에 따른 Table 전체 Level 정리
         setSoilData((prev) => {
             const newRows = prev.map((row) => {
             if (row.id === newRow.id) {
-                updatedRow = { ...newRow, LayerDepth : Number(Number(TopLevel)) }; // newRow를 복사하여 새로운 객체 생성
+                updatedRow = { ...newRow, LayerDepth : Number(Number(TopLevel)) }; 
                 TopLevel = TopLevel - newRow.Depth;
                 return updatedRow;
             } else {
-                const newRow = { ...row, LayerDepth: Number(Number(TopLevel)) }; // 기존 행을 복사하고, LayerDepth 업데이트
+                const newRow = { ...row, LayerDepth: Number(Number(TopLevel)) };
                 TopLevel = TopLevel - row.Depth;
                 return newRow;
             }
             });
-
+            
             return newRows;
         });
 
@@ -236,7 +238,6 @@ function SoilTable(){
     // LayerDepth 값 자동 계산
     useEffect(() => {
         let TopLevel = groundLevel
-        console.log(TopLevel)
         let newData = []
         for (let i = 0; i < soilData.length; i++) {
             let updatedItem = { ...soilData[i] };
@@ -259,7 +260,7 @@ function SoilTable(){
                     <Icon iconName = "Remove" />
                 </IconButton>
             </GuideBox>
-            <div style={{ height: 290, width: '100%'}}>
+            <div style={{ height: 410, width: 800}}>
                 <DataGrid
                     columnHeaderHeight={60}
                     rowHeight={80}  

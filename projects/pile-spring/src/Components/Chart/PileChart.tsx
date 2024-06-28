@@ -1,26 +1,19 @@
-import {GuideBox, ChartLine, Typography} from '@midasit-dev/moaui';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import {GuideBox, Typography} from '@midasit-dev/moaui';
+import { useRecoilValue} from 'recoil';
 import {  FoundationWidth, SideLength
 } from '../variables';
-import { useEffect, useState } from 'react';
-import {Line} from '@nivo/line'
-import {} from '../../utils_pyscript';
-import {ChartDrawing, ChartDrawingData, Concrete_Diameter, Major_Ref_Value, Minor_Ref_Value, Major_Start_Point, Minor_Start_Point, Major_Space} from '../variables';
+import { useState } from 'react';
 import {Icon, Panel, TabGroup, Tab} from '@midasit-dev/moaui';
 import PlanView from './PlanViewCanvas';
 import FrontView from './FrontViewCanvas';
 import SideView from './SideViewCanvas';
+import { useTranslation } from 'react-i18next';
+
 function PileChart(props: any){
+    const { t:translate, i18n: internationalization} = useTranslation();
     const {closeHandler, ...otherProps } = props;
     const Width = useRecoilValue(FoundationWidth);
     const Length = useRecoilValue(SideLength);
-
-    const boxsize = Math.max(Number(Length*1.2), Number(Width*1.2))
-    
-    const xMinScale = boxsize/2 - Number(Length)/2
-    const xMaxScale = boxsize-xMinScale
-    const yMinScale = boxsize/2 - Number(Width)/2
-    const yMaxScale = boxsize-yMinScale
 
     const [tabName,setTabName] = useState("PlanView")
 
@@ -32,7 +25,7 @@ function PileChart(props: any){
         <GuideBox show marginLeft={1} height={415} width ={370}>
             <Panel width={370} height={415}>
                 <GuideBox row width ={350} horSpaceBetween>
-                    <Typography variant='h1'>말뚝 배치도</Typography>
+                    <Typography variant='h1'>{translate('Pile_View_Title')}</Typography>
                     <Icon iconName='Close' toButton onClick={closeHandler}/>
                 </GuideBox>
                 <TabGroup
@@ -46,9 +39,9 @@ function PileChart(props: any){
                         fontSize: 'small'
                     }}
                 >
-                    <Tab value = "PlanView" label = "평면도"/>
-                    <Tab value = "FrontView" label = "정면도"/>
-                    <Tab value = "SideView" label = "측면도"/>
+                    <Tab value = "PlanView" label = {translate('Plan_View')}/>
+                    <Tab value = "FrontView" label = {translate('Front_View')}/>
+                    <Tab value = "SideView" label = {translate('Side_View')}/>
                 </TabGroup>
                 <GuideBox height={350} width={350}>
                     {tabName === "PlanView" && <PlanView />}

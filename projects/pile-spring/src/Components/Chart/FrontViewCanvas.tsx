@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef} from 'react';
 import { FoundationWidth, SideLength, PileDataSelector, PileTableData } from '../variables';
 import { useRecoilValue } from 'recoil';
 import { CalculateProperties, CalculatePileCenterCoordinates, ExtractNumbers } from '../../utils_pyscript';
+import { useTranslation } from 'react-i18next';
+
 const FronView = () => {
+  const { t:translate, i18n: internationalization} = useTranslation();
   const canvasRef = useRef(null);
 
   const canvasSize = 350;
@@ -23,7 +26,6 @@ const FronView = () => {
 
   const MaxPileLength = Math.max(InputPileLength, TableMaxPileLength)
   const YAmplifyRatio = (canvasSize*0.8)/(MaxPileLength+width*0.1)
-  console.log('YAmplifyRatio', YAmplifyRatio)
 
   const drawAxis = (axis:any) => {
     axis.clearRect(0, 0, axis.canvas.width, axis.canvas.height);
@@ -54,11 +56,11 @@ const FronView = () => {
     axis.lineTo(canvasSize*0.96 + headlen * Math.cos(-Math.PI / 3), canvasSize*0.6 - headlen * Math.sin(Math.PI / 3));
     axis.moveTo(canvasSize*0.96, canvasSize*0.6);
     axis.lineTo(canvasSize*0.96 - headlen * Math.cos(Math.PI / 3), canvasSize*0.6 - headlen * Math.sin(Math.PI / 3))
-    axis.fillText('재하방향', canvasSize*0.5, canvasSize*0.03)
+    axis.fillText(translate('Pile_X_Dir'), canvasSize*0.5, canvasSize*0.03)
     axis.save();
     axis.translate(canvasSize*0.97, canvasSize*0.5);
     axis.rotate(Math.PI / 2);
-    axis.fillText('수직방향', 0,0)
+    axis.fillText(translate('Pile_Z_Dir'), 0,0)
     axis.restore();
     axis.stroke();
     axis.closePath();
@@ -80,10 +82,6 @@ const FronView = () => {
       // 우측면
       ctx.moveTo(orginX - pilecoordinate[i][0]*YAmplifyRatio+Diameter/2, canvasSize*0.1+YEndCoordinate);
       ctx.lineTo(orginX - pilecoordinate[i][0]*YAmplifyRatio+Diameter/2+Math.tan(Math.PI/180*(InputDegrees[i]))*InputPileData['pileLength']*YAmplifyRatio, canvasSize*0.1+YEndCoordinate+InputPileData['pileLength']*YAmplifyRatio);
-      console.log(orginX)
-      console.log(pilecoordinate[i][0]*YAmplifyRatio)
-
-      console.log(Math.tan(Math.PI/180*(InputDegrees[i]))*InputPileData['pileLength']*YAmplifyRatio)
       
       // 아랫면
       ctx.moveTo(orginX - pilecoordinate[i][0]*YAmplifyRatio+Diameter/2+Math.tan(Math.PI/180*(InputDegrees[i]))*InputPileData['pileLength']*YAmplifyRatio, canvasSize*0.1+YEndCoordinate+InputPileData['pileLength']*YAmplifyRatio);
@@ -178,9 +176,7 @@ const FronView = () => {
     drawAxis(context);
     drawOutlines(context);
     drawTables(context);
-    // 원들을 그리는 함수를 호출합니다.
-    const circleCenters = [[100, 100], [150, 100]]; // 원의 중심 좌표 배열입니다.
-    const circleRadius = 30; // 원의 반지름입니다.
+
     //drawTables(context);
     drawInputs(context);
   }, [width, height, InputPileData]);

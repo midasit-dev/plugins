@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import {GuideBox, 
-    TabGroup,
-    Tab,
     Typography,
     Panel,
     TemplatesDualComponentsTypographyTextFieldSpaceBetween,
-    TemplatesDualComponentsTypographyDropListSpaceBetween,
     TextFieldV2
 } from '@midasit-dev/moaui';
 import {useRecoilState, useRecoilValue} from 'recoil';
@@ -14,10 +11,11 @@ import {
     ReinforcedMethod, ReinforcedStartLength, ReinforcedEndLength, OuterThickness, OuterModulus, InnerThickness, InnerModulus, InnerInputState
 } from '../variables';
 import TypoGraphyDropList from '../NewComponents/TrypoGraphyDropList';
-
+import { useTranslation } from 'react-i18next';
 
 function Reinforced(){
     
+    const { t:translate, i18n: internationalization} = useTranslation();
     const [reinforcedMethod, setReinforcedMethod] = useRecoilState(ReinforcedMethod);
     const [reinforcedStartLength, setReinforcedStartLength] = useRecoilState(ReinforcedStartLength);
     const [reinforcedEndLength, setReinforcedEndLength] = useRecoilState(ReinforcedEndLength);
@@ -27,10 +25,7 @@ function Reinforced(){
     const [innerMoudlus, setInnerMoudlus] = useRecoilState(InnerModulus);
     const [innerInputState, setInnerInputState] = useRecoilState(InnerInputState);
 
-    const ReinforcedList = [
-        ['피복','피복'],
-        ['피복+충진','피복+충진']
-    ]
+    const [ReinforcedList, setReinforcedList] = useState<any>([])
     
     const handleReinforcedMethodChange = (e:any) => {
         if (e.target.value === '피복'){
@@ -90,11 +85,20 @@ function Reinforced(){
         setInnerMoudlus(e.target.value);
     }
 
+    useEffect(() => {
+        setReinforcedList(
+            [
+                [translate('Reinforced_Method_Outer'),'피복'],
+                [translate('Reinforced_Method_Inner_Outer'),'피복+충진']
+            ]
+        )
+    },)
+
     return(
         <GuideBox width='100%'>
             <Panel padding={1} variant='shadow' width={445}>
                 <TypoGraphyDropList 
-                    title = "보강 방법"
+                    title = {translate('Reinforced_Method')}
                     items = {ReinforcedList}
                     value = {reinforcedMethod}
                     onChange = {handleReinforcedMethodChange}
@@ -103,58 +107,55 @@ function Reinforced(){
                 />
                 <GuideBox row verCenter>
                     <GuideBox width={120}>
-                        <Typography>보강 위치 (m)</Typography>
+                        <Typography>{translate('Reinforced_Loc')}</Typography>
                     </GuideBox>
                     <GuideBox row horRight verCenter spacing={2}>
-                        <TextFieldV2  width={70} placeholder='말뚝머리 상대거리(m)' value = {reinforcedStartLength.toString()} onChange = {handleReinforcedStartLengthChange}/>
+                        <TextFieldV2  width={70} placeholder = '' value = {reinforcedStartLength.toString()} onChange = {handleReinforcedStartLengthChange}/>
                         <Typography> ~ </Typography>
-                        <TextFieldV2  width={70} placeholder='말뚝머리 상대거리(m)' value = {reinforcedEndLength.toString()} onChange={handleReinforcedEndLengthChange}/>
+                        <TextFieldV2  width={70} placeholder = '' value = {reinforcedEndLength.toString()} onChange={handleReinforcedEndLengthChange}/>
                     </GuideBox>
                 </GuideBox>
                 <GuideBox row paddingTop={1} verCenter spacing={1}>
                     <GuideBox>
-                        <Typography variant='h1'>피복부</Typography>
+                        <Typography variant='h1'>{translate('Reinforced_Outer_Title')}</Typography>
                         
                         <TemplatesDualComponentsTypographyTextFieldSpaceBetween 
-                            title = '두께 (mm)'
+                            title = {translate('Reinforced_Thickness')}
                             width = {200}
                             textFieldWidth = {100}
-                            placeholder = '두께 (mm)'
+                            placeholder = ''
                             value = {outerThickness}
                             onChange = {handleOuterThicknessChange}
                         />
                         <TemplatesDualComponentsTypographyTextFieldSpaceBetween 
-                            title = '탄성계수 (N/mm²)'
+                            title = {translate('Reinforced_Modulus')}
                             width = {200}
                             textFieldWidth = {100}
-                            placeholder = '탄성계수 (N/mm²)'
+                            placeholder = ''
                             value = {outerMoudlus}
                             onChange = {handleOuterMoudlusChange}
                         />
-                        
                     </GuideBox>
                     <GuideBox>
-                        <Typography variant='h1'>충진부</Typography>
-                        
+                        <Typography variant='h1'>{translate('Reinforced_Inner_Title')}</Typography>
                         <TemplatesDualComponentsTypographyTextFieldSpaceBetween 
-                            title = '두께 (mm)'
+                            title = {translate('Reinforced_Thickness')}
                             width = {200}
                             textFieldWidth = {100}
-                            placeholder = '두께 (mm)'
+                            placeholder = ''
                             value = {innerThickness}
                             onChange = {handleInnerThicknessChange}
                             disabled = {!innerInputState}
                         />
                         <TemplatesDualComponentsTypographyTextFieldSpaceBetween 
-                            title = '탄성계수 (N/mm²)'
+                            title = {translate('Reinforced_Modulus')}
                             width = {200}
                             textFieldWidth = {100}
-                            placeholder = '탄성계수 (N/mm²)'
+                            placeholder = ''
                             value = {innerMoudlus}
                             onChange = {handleInnerMoudlusChange}
                             disabled = {!innerInputState}
                         />
-                        
                     </GuideBox>
                 </GuideBox>
             </Panel>

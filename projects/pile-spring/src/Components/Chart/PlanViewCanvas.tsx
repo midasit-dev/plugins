@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { FoundationWidth, SideLength, PileDataSelector, PileTableData } from '../variables';
+import  { useEffect, useRef } from 'react';
+import { FoundationWidth, SideLength, PileDataSelector, PileTableData, Force_Point_X, Force_Point_Y } from '../variables';
 import { useRecoilValue } from 'recoil';
 import { CalculateProperties, CalculatePileCenterCoordinates, ExtractNumbers } from '../../utils_pyscript';
+import { useTranslation } from 'react-i18next';
+
 const PlanView = () => {
+  const { t:translate, i18n: internationalization} = useTranslation();
   const canvasRef = useRef(null);
 
   const canvasSize = 350;
@@ -12,13 +15,14 @@ const PlanView = () => {
 
   const MaxSize = Math.max(width, height)
   const AmplifyRatio = (canvasSize*0.8)/MaxSize
-
+  const ForcePointX = useRecoilValue(Force_Point_X)
+  const ForcePointY = useRecoilValue(Force_Point_Y)
   const InputPileData = useRecoilValue(PileDataSelector)
   const pileTableData = useRecoilValue(PileTableData)
 
   const drawAxis = (axis:any) => {
     axis.clearRect(0, 0, axis.canvas.width, axis.canvas.height);
-    const headlen = 6; // 화살표 머리 부분의 길이입니다.
+    const headlen = 6; // 화살표 머리 부분의 길이
     // X축 (우에서 좌로)
     axis.beginPath();
     axis.strokeStyle = "#BFBFBF"; // 외곽선 색상 설정
@@ -43,11 +47,11 @@ const PlanView = () => {
     axis.lineTo(canvasSize*0.96 + headlen * Math.cos(-Math.PI / 3), canvasSize*0.6 - headlen * Math.sin(Math.PI / 3));
     axis.moveTo(canvasSize*0.96, canvasSize*0.6);
     axis.lineTo(canvasSize*0.96 - headlen * Math.cos(Math.PI / 3), canvasSize*0.6 - headlen * Math.sin(Math.PI / 3))
-    axis.fillText('재하방향', canvasSize*0.5, canvasSize*0.03)
+    axis.fillText(translate('Pile_X_Dir'), canvasSize*0.5, canvasSize*0.03)
     axis.save();
     axis.translate(canvasSize*0.97, canvasSize*0.5);
     axis.rotate(Math.PI / 2);
-    axis.fillText('재하직각방향', 0,0)
+    axis.fillText(translate('Pile_Y_Dir'), 0,0)
     axis.restore();
     axis.stroke();
     axis.closePath();
@@ -185,6 +189,16 @@ const PlanView = () => {
     ctx.stroke();
     ctx.closePath();
 
+    // 하중 재하 위치에 원 생성
+    ctx.beginPath();
+    ctx.arc(x + newWidth - ForcePointX * AmplifyRatio, y + ForcePointY * AmplifyRatio, 3, 0, 2 * Math.PI);
+    ctx.stroke();
+    // 원에 색깔 채우기
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    ctx.fillStyle = 'black';
+    ctx.closePath();
+
     // 치수선 글씨 스타일 설정
     ctx.font = '10px Arial';
     ctx.textAlign = 'center';
@@ -208,12 +222,9 @@ const PlanView = () => {
     drawAxis(context);
     drawOutlines(context);
     
-    // 원들을 그리는 함수를 호출합니다.
-    const circleCenters = [[100, 100], [150, 100]]; // 원의 중심 좌표 배열입니다.
-    const circleRadius = 30; // 원의 반지름입니다.
     drawTables(context);
     drawInputs(context);
-  }, [width, height, InputPileData]);
+  }, [width, height, InputPileData, ForcePointX, ForcePointY]);
 
   return (
     <div>

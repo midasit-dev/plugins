@@ -4,7 +4,7 @@ import {FoundationCoordinates, CalculatePileCoordinates, ExtractNumbers, Calcula
 
 export const ProjectName = atom({
     key: 'ProjectName',
-    default: 'Test'
+    default: 'Project'
 });
 
 /** Pile Properties variables */
@@ -20,19 +20,28 @@ export const SideLength = atom({
 
 export const TopLevel = atom({
     key: 'TopLevel',
-    default: 50
+    default: 0
 });
 
+export const Force_Point_X = atom({
+    key: 'Force_Point_X',
+    default: 0
+});
+
+export const Force_Point_Y = atom({
+    key: 'Force_Point_Y',
+    default: 0
+});
 /** Pile Initial Settings variables */
 
 export const PileName = atom({
     key: 'PileName',
-    default: 'Test1'
+    default: ''
 });
 
 export const PileLength = atom({
     key: 'PileLength',
-    default: 10
+    default: 0
 });
 
 export const PileType = atom({
@@ -61,6 +70,11 @@ export const BottomCondition = atom({
 export const ConcreteModulus_Title = atom({
     key: 'ConcreteModulus_Title',
     default: '탄성계수 (N/mm²)'
+});
+
+export const Concrete_Title = atom({
+    key: 'Concrete_Title',
+    default: '콘크리트'
 });
 
 export const Steel_Title = atom({
@@ -117,6 +131,11 @@ export const Steel_Cor_Thickness = atom({
 export const CompConcreteModulus_Title = atom<string>({
     key: 'CompConcreteModulus_Title',
     default: '탄성계수 (N/mm²)'
+});
+
+export const CompConcrete_Title = atom<any>({
+    key: 'CompConcrete_Title',
+    default: '콘크리트'
 });
 
 export const CompSteel_Title = atom<any>({
@@ -192,7 +211,7 @@ export const Minor_Start_Point = atom({
     default: 0
 });
 
-export const Major_Space = atom({
+export const Major_Space = atom<any>({
     key: 'Major_Space',
     default: ''
 });
@@ -265,99 +284,6 @@ export const CompStartLength = atom({
     default: 0
 });
 
-/** Pile Chart variables */
-export const FoundationCoordinate = selector({
-    key : 'FoundationCoordinates',
-    get : ({get}) => {
-        const width = get(FoundationWidth)
-        const sideLength = get(SideLength)
-        const Coordinates = FoundationCoordinates(width, sideLength)
-        return Coordinates
-    }
-})
-
-export const PileLocationData = atom({
-    key: 'PileLocationData',
-    default: [] as {}[]
-});
-
-export const PileDegreeData = atom({
-    key: 'PileDegreeData',
-    default: [] as {}[]
-});
-// Drawing Chart 함수
-// Nivo Chart에 그려주는 변수를 만들어주는 selector
-export const ChartDrawing = selector({
-    key: 'ChartDrawing',
-    get : ({get}) => { 
-        const pileName = get(PileName)
-        const ChartCoordinate = []
-        ChartCoordinate.push({id : 'new', data: [{x: 0, y: 0}]})
-        const foundationWidth = get(FoundationWidth)
-        const sideLength = get(SideLength)
-        // 기초 좌표
-        const Coordinates = get(FoundationCoordinate)
-
-        const majorStartPoint = get(Major_Start_Point)
-        const minorStartPoint = get(Minor_Start_Point)
-        const concreteDiameter = get(Concrete_Diameter)
-        const steelDiameter = get(Steel_Diameter)
-
-        const FootingCoord: any = []
-        for (let i = 0; i < Coordinates.length; i++){
-            FootingCoord.push({x: Number(Coordinates[i][0]), y: Number(Coordinates[i][1])})
-        }
-        ChartCoordinate.push({id : 'Footing', data: FootingCoord, color : 'black'})
-        
-        // Table에 입력된 말뚝 좌표
-        const pileTableData = get(PileTableData)
-        if (pileTableData.length === 0){
-
-        }
-        else{
-            const TablePileCoordinates = CalculatePileCoordinates(
-                JSON.stringify(get(PileTableData)), 
-                JSON.stringify(get(PileLocationData))
-            )
-            
-            for (let i=0; i<TablePileCoordinates.length; i++){
-                for (let j=0; j<TablePileCoordinates[i].length; j++){
-                    const PileLoc = []
-                    for (let k=0; k<TablePileCoordinates[i][j].length; k++){
-                        PileLoc.push({x: Number(TablePileCoordinates[i][j][k][0]), y: Number(TablePileCoordinates[i][j][k][1])})
-                    }
-                    ChartCoordinate.push({id : `${i}Type${j}pile`, data:PileLoc, color : 'black'})
-                }
-            }
-        }
-    
-
-        // 입력창에 입력된 말뚝 좌표
-        
-        const pileDataSelector = get(PileDataSelector)
-        const InputPileCenterCoordinates = CalculatePileCenterCoordinates(pileDataSelector, foundationWidth, sideLength)
-        
-        
-        const InputPileCoordinates = CalculatePileCoordinates(
-            JSON.stringify([pileDataSelector]), 
-            JSON.stringify([InputPileCenterCoordinates])
-        )
-        
-        for (let i=0; i<InputPileCoordinates.length; i++){
-            for (let j=0; j<InputPileCoordinates[i].length; j++){
-                const PileLoc = []
-                for (let k=0; k<InputPileCoordinates[i][j].length; k++){
-                    PileLoc.push({x: Number(InputPileCoordinates[i][j][k][0]), y: Number(InputPileCoordinates[i][j][k][1])})
-                }
-                ChartCoordinate.push({id : `new${[j]}`, data:PileLoc , color : 'red', lineWidth : 5})
-            }
-        }
-        
-        return ChartCoordinate
-        
-    }
-});
-
 export const ChartDrawingData = atom({
     key: 'ChartDrawingData',
     default: [] as {}[]
@@ -409,9 +335,9 @@ export const PileTableData = atom({
         minorRefValue: number, 
         majorStartPoint: number, 
         minorStartPoint: number, 
-        majorSpace: string
-        majorDegree: string,
-        minorDegree: string
+        majorSpace: any
+        majorDegree: any,
+        minorDegree: any
 
         PileNums: number
     }[]    
@@ -469,8 +395,15 @@ export const PileDataSelector = selector({
         const majorSpace = get(Major_Space);
         const majorDegree = get(Major_Degree);
         const minorDegree = get(Minor_Degree);
-
-        const PileNums = ((ExtractNumbers(majorSpace)).length+1)
+        
+        const forcePointX = get(Force_Point_X);
+        const forcePointY = get(Force_Point_Y);
+        let PileNums = 0
+        if (majorSpace == '' || majorSpace == '0')
+            PileNums = 1
+        else
+            PileNums = (ExtractNumbers(majorSpace)).length + 1
+        
         return {
             pileName,
             pileLength,
@@ -515,7 +448,10 @@ export const PileDataSelector = selector({
             majorDegree,
             minorDegree,
             
-            PileNums
+            PileNums,
+
+            forcePointX,
+            forcePointY
         }
     }
 })
@@ -528,8 +464,8 @@ interface Row {
     LayerDepth : number;
     Depth : number;
     AvgNValue : number;
-    c : number;
-    pi : number;
+    // c : number;
+    // pi : number;
     gamma : number;
     aE0 : number;
     aE0_Seis : number;
@@ -542,45 +478,22 @@ interface Row {
 
 export const SoilData = atom({
     key: 'SoilData',
-    default: [{ id: 1, LayerNo: 1, LayerType: '점성토', LayerDepth : 0, Depth : 10,
-    AvgNValue : 10, c : 0, pi : 0, gamma : 18, aE0 : 14000, aE0_Seis : 28000, vd : 0.5, 
-    Vsi : 0, ED : 0, DE : 1, Length : 1 }] as Row[]
-});
-
-export const SoilDataSelector = selector({
-    key: 'SoilDataSelector',
-    get: ({get}) => {
-        const VsiEditable = get(CalVsiState);
-        const DEEditable = get(LiquefactionState);
-        const soilData = get(SoilData);
-        const soilDataSelector = soilData.map((row) => {
-            
-            // Vsi 값 자동 계산, false일 경우 입력했던 값이 반환됨
-            if (VsiEditable == true){
-                let newVsi = 0
-                if (row.LayerType === '점성토'){
-                    newVsi = 100* Math.pow(Math.min(row.AvgNValue, 25),(1/3))
-                }
-                else if (row.LayerType === '사질토'){
-                    newVsi = 80* Math.pow(Math.min(row.AvgNValue, 50),(1/3))
-                }
-                return {...row, Vsi : Number(newVsi)}
-                
-            }
-            // DE 값 설정, false일 경우 기본값, true일 경우 입력값 반환
-            else if (DEEditable == false){
-                return {...row, DE : 1}
-            }
-            else {
-                return row
-            }
-        })
-        return soilDataSelector
-    },
-    set: ({ set }, newValue: Row[] | DefaultValue) => {
-        // Set the value of SoilData atom with the new value
-        set(SoilData, newValue);
-    }
+    default: [{ id: 1, 
+        LayerNo: 1, 
+        LayerType: '점성토', 
+        LayerDepth : 0, 
+        Depth : 10,
+        AvgNValue : 10, 
+        // c : 0, 
+        // pi : 0, 
+        gamma : 18, 
+        aE0 : 14000, 
+        aE0_Seis : 28000, 
+        vd : 0.5, 
+        Vsi : 0, 
+        ED : 0, 
+        DE : 1, 
+        Length : 1 }] as Row[]
 });
 
 /** Soil Settings option */
@@ -636,7 +549,9 @@ export const DownloadData = selector({
         const liquefactionState = get(LiquefactionState);
         const calVsiState = get(CalVsiState);
         const groupEffectState = get(GroupEffectState);
-        return {projectName, piletableData, soilData, topLevel, groundLevel, waterlevel, groupEffectValue, slopeEffectState, foundationWidth, sideLength, liquefactionState, calVsiState, groupEffectState}
+        const forcepointX = get(Force_Point_X);
+        const forcepointY = get(Force_Point_Y);
+        return {projectName, piletableData, soilData, topLevel, groundLevel, waterlevel, groupEffectValue, slopeEffectState, foundationWidth, sideLength, liquefactionState, calVsiState, groupEffectState, forcepointX, forcepointY}
     }
 })
 
@@ -658,3 +573,94 @@ export const ReportJsonResult = atom({
     key: 'ReportJsonResult',
     default: {} as any
 });
+
+
+export const Beta_Normal_Result = atom({
+    key: 'Cal_Beta_Normal',
+    default: [] as any
+});
+
+export const Beta_Seismic_Result = atom({
+    key: 'Cal_Beta_Normal',
+    default: [] as any
+});
+
+export const Beta_Period_Result = atom({
+    key: 'Cal_Beta_Normal',
+    default: [] as any
+});
+
+export const AlphaHTheta_Result = atom({
+    key: 'AlphaHTheta_Result',
+    default: [] as any
+});
+
+export const KValue_Normal_Result = atom({
+    key: 'KValue_Result_Normal',
+    default: [] as any
+});
+
+export const KValue_Seismic_Result = atom({
+    key: 'KValue_Result_Seismic',
+    default: [] as any
+});
+
+export const KValue_Seismic_liq_Result = atom({
+    key: 'KValue_Result_Seismic_liq',
+    default: [] as any
+});
+export const KValue_Period_Result = atom({
+    key: 'KValue_Result_Period',
+    default: [] as any
+});
+
+export const Langauge = atom({
+    key: 'Langauge',
+    default: 'kr'
+})
+
+export const ImportType = atom({
+    key: 'ImportType',
+    default: 'Type1'
+})
+
+export const Matrix_Normal_X_Result = atom({
+    key: 'Matrix_Normal_X_Result',
+    default: [] as any
+})
+
+export const Matrix_Normal_Z_Result = atom({
+    key: 'Matrix_Normal_Z_Result',
+    default: [] as any
+})
+
+export const Matrix_Seismic_X_Result = atom({
+    key: 'Matrix_Seismic_X_Result',
+    default: [] as any
+})
+
+export const Matrix_Seismic_Z_Result = atom({
+    key: 'Matrix_Seismic_Z_Result',
+    default: [] as any
+})
+
+export const Matrix_Seismic_Liq_X_Result = atom({
+    key: 'Matrix_Seismic_Liq_X_Result',
+    default: [] as any
+})
+
+export const Matrix_Seismic_Liq_Z_Result = atom({
+    key: 'Matrix_Seismic_Liq_Z_Result',
+    default: [] as any
+})
+
+export const Matrix_Period_X_Result = atom({
+    key: 'Matrix_Period_X_Result',
+    default: [] as any
+})
+
+export const Matrix_Period_Z_Result = atom({
+    key: 'Matrix_Period_Z_Result',
+    default: [] as any
+})
+

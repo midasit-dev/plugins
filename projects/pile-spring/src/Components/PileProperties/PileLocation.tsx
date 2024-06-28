@@ -1,23 +1,19 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import {GuideBox, 
-    TabGroup,
-    Tab,
     Typography,
-    Panel,
-    TemplatesDualComponentsTypographyTextFieldSpaceBetween,
-    TemplatesDualComponentsTypographyDropListSpaceBetween,
     TextFieldV2,
     DropList
 } from '@midasit-dev/moaui';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {Major_Ref_Value, Minor_Ref_Value, Major_Start_Point, Minor_Start_Point, Major_Space, Major_Degree, Minor_Degree} from '../variables';
-
+import { useTranslation } from 'react-i18next';
 
 function PileLocation(){
 
-    const Major_Ref_Point =new Map<string, number>([ ['우측', 1], ['좌측', 2], ]);
-    const Minor_Ref_Point =new Map<string, number>([ ['상단', 1], ['하단', 2], ]);
+    const { t:translate, i18n: internationalization} = useTranslation();
+    const [MajorRefPointList, setMajorRefPointList] = useState<any>([])
+    const [MinorRefPointList, setMinorRefPointList] = useState<any>([])
 
     const [majorRefValue, setMajorRefValue] = useRecoilState(Major_Ref_Value);
     const [minorRefValue, setMinorRefValue] = useRecoilState(Minor_Ref_Value);
@@ -85,6 +81,19 @@ function PileLocation(){
             setMinorDegree('');
         }
     }
+
+    useEffect(() => {
+        setMajorRefPointList([
+            [translate('Ref_Point_Right'), 1],
+            [translate('Ref_Point_Left'), 2],
+        ])
+
+        setMinorRefPointList([
+            [translate('Ref_Point_Top'), 1],
+            [translate('Ref_Point_Bottom'), 2],
+        ])
+
+    },) 
     return(
         <GuideBox width='100%' verCenter>
             <GuideBox  horSpaceBetween width={450}>
@@ -93,16 +102,16 @@ function PileLocation(){
                         <Typography variant='body1'></Typography>
                     </GuideBox>
                     <GuideBox width={80} horCenter>
-                        <Typography variant='body1'>참조기준</Typography>
+                        <Typography variant='body1'>{translate('Pile_Ref_Point')}</Typography>
                     </GuideBox>
                     <GuideBox width={80} horCenter>
-                        <Typography variant='body1'>위치</Typography>
+                        <Typography variant='body1'>{translate('Pile_Loc')}</Typography>
                     </GuideBox>
                     <GuideBox width={80} horCenter>
-                        <Typography variant='body1'>간격</Typography>
+                        <Typography variant='body1'>{translate('Pile_Space')}</Typography>
                     </GuideBox>
                     <GuideBox width={80} horCenter>
-                        <Typography variant='body1'>각도</Typography>
+                        <Typography variant='body1'>{translate('Pile_Angle')}</Typography>
                     </GuideBox>
                     
                 </GuideBox>
@@ -110,38 +119,38 @@ function PileLocation(){
             <GuideBox horSpaceBetween>
                 <GuideBox row spacing={1}>
                     <GuideBox height={30} width={80} horLeft verCenter>
-                        <Typography variant='body1'>재하방향</Typography>
+                        <Typography variant='body1'>{translate('Pile_X_Dir')}</Typography>
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                        <DropList itemList={Major_Ref_Point} value={majorRefValue} onChange= {(e:any) => {setMajorRefValue(e.target.value);}} width={80} />
+                        <DropList itemList={MajorRefPointList} value={majorRefValue} onChange= {(e:any) => {setMajorRefValue(e.target.value);}} width={80} />
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                        <TextFieldV2 height={30} width={80} value={majorStartPoint.toString()} onChange= {handleMajorStartPointChange} placeholder='위치' />
+                        <TextFieldV2 height={30} width={80} value={majorStartPoint.toString()} onChange= {handleMajorStartPointChange} placeholder = '' />
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                    <   TextFieldV2 height={30} width={80} value = {majorSpace.toString()} onChange = {handleMajorSpaceChange} placeholder='간격' />
+                    <   TextFieldV2 height={30} width={80} value = {majorSpace.toString()} onChange = {handleMajorSpaceChange} placeholder = '' defaultValue='0'/>
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                        <TextFieldV2 height={30} width={80} value = {majorDegree.toString()} onChange = {handleMajorDegreeChange} placeholder='각도' />
+                        <TextFieldV2 height={30} width={80} value = {majorDegree.toString()} onChange = {handleMajorDegreeChange} placeholder = '' defaultValue='0'/>
                     </GuideBox>
                 </GuideBox>
             </GuideBox>
             <GuideBox horSpaceBetween>
                 <GuideBox row spacing={1}>
                     <GuideBox height={30} width={80} horLeft verCenter>
-                        <Typography variant='body1'>재하직각방향</Typography>
+                        <Typography variant='body1'>{translate('Pile_Y_Dir')}</Typography>
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                        <DropList itemList={Minor_Ref_Point} value={minorRefValue} onChange= {(e:any) => {setMinorRefValue(e.target.value);}} width={80}/>
+                        <DropList itemList={MinorRefPointList} value={minorRefValue} onChange= {(e:any) => {setMinorRefValue(e.target.value);}} width={80}/>
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                        <TextFieldV2 height={30} width={80} value = {minorStartPoint.toString()} onChange = {handleMinorStartPointChange}placeholder='위치' />
+                        <TextFieldV2 height={30} width={80} value = {minorStartPoint.toString()} onChange = {handleMinorStartPointChange}placeholder = '' />
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                        <TextFieldV2 height={30} width={80} placeholder='간격' disabled />
+                        <TextFieldV2 height={30} width={80} placeholder = '' disabled />
                     </GuideBox>
                     <GuideBox height={30} width={80} horCenter verCenter>
-                        <TextFieldV2 height={30} width={80} value = {minorDegree.toString()} onChange = {handleMinorDegreeChange} placeholder='각도' />
+                        <TextFieldV2 height={30} width={80} value = {minorDegree.toString()} onChange = {handleMinorDegreeChange} placeholder = '' defaultValue='0'/>
                     </GuideBox>
                 </GuideBox>
             </GuideBox>

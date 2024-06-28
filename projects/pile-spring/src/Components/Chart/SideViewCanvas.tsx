@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { FoundationWidth, SideLength, PileDataSelector, PileTableData } from '../variables';
 import { useRecoilValue } from 'recoil';
 import { CalculateProperties, CalculatePileCenterCoordinates, ExtractNumbers } from '../../utils_pyscript';
+import { useTranslation } from 'react-i18next';
+
 const SideView = () => {
+  const { t:translate, i18n: internationalization} = useTranslation();
   const canvasRef = useRef(null);
 
   const canvasSize = 350;
@@ -23,7 +26,6 @@ const SideView = () => {
 
   const MaxPileLength = Math.max(InputPileLength, TableMaxPileLength)
   const YAmplifyRatio = (canvasSize*0.8)/(MaxPileLength+height*0.1)
-  console.log('YAmplifyRatio', YAmplifyRatio)
 
   const drawAxis = (axis:any) => {
     axis.clearRect(0, 0, axis.canvas.width, axis.canvas.height);
@@ -48,17 +50,17 @@ const SideView = () => {
     axis.lineTo(canvasSize*0.4 + headlen * Math.cos(-Math.PI / 6), canvasSize*0.04 + headlen * Math.sin( - Math.PI / 6));
     axis.moveTo(canvasSize*0.4, canvasSize*0.04);
     axis.lineTo(canvasSize*0.4 + headlen * Math.cos(Math.PI / 6), canvasSize*0.04 + headlen * Math.sin(Math.PI / 6))
-
+    
     // Y축 화살표
     axis.moveTo(canvasSize*0.96, canvasSize*0.6);
     axis.lineTo(canvasSize*0.96 + headlen * Math.cos(-Math.PI / 3), canvasSize*0.6 - headlen * Math.sin(Math.PI / 3));
     axis.moveTo(canvasSize*0.96, canvasSize*0.6);
     axis.lineTo(canvasSize*0.96 - headlen * Math.cos(Math.PI / 3), canvasSize*0.6 - headlen * Math.sin(Math.PI / 3))
-    axis.fillText('재하직각방향', canvasSize*0.5, canvasSize*0.03)
+    axis.fillText(translate('Pile_Y_Dir'), canvasSize*0.5, canvasSize*0.03)
     axis.save();
     axis.translate(canvasSize*0.97, canvasSize*0.5);
     axis.rotate(Math.PI / 2);
-    axis.fillText('수직방향', 0,0)
+    axis.fillText(translate('Pile_Z_Dir'), 0,0)
     axis.restore();
     axis.stroke();
     axis.closePath();
@@ -80,10 +82,7 @@ const SideView = () => {
       // 우측면
       ctx.moveTo(orginX - pilecoordinate[i][1]*YAmplifyRatio+Diameter/2, canvasSize*0.1+YEndCoordinate);
       ctx.lineTo(orginX - pilecoordinate[i][1]*YAmplifyRatio+Diameter/2+Math.tan(Math.PI/180*(InputDegrees[i]))*InputPileData['pileLength']*YAmplifyRatio, canvasSize*0.1+YEndCoordinate+InputPileData['pileLength']*YAmplifyRatio);
-      console.log(orginX)
-      console.log(pilecoordinate[i][1]*YAmplifyRatio)
 
-      console.log(Math.tan(Math.PI/180*(InputDegrees[i]))*InputPileData['pileLength']*YAmplifyRatio)
       
       // 아랫면
       ctx.moveTo(orginX - pilecoordinate[i][1]*YAmplifyRatio+Diameter/2+Math.tan(Math.PI/180*(InputDegrees[i]))*InputPileData['pileLength']*YAmplifyRatio, canvasSize*0.1+YEndCoordinate+InputPileData['pileLength']*YAmplifyRatio);

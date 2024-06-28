@@ -1,34 +1,24 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import {GuideBox, 
-    TabGroup,
-    Tab,
-    Typography,
-    Panel,
-    TemplatesDualComponentsTypographyTextFieldSpaceBetween,
-    TemplatesDualComponentsTypographyDropListSpaceBetween,
-    TextFieldV2,
-    DropList,
+
+import {
+    GuideBox, 
     DataGrid
 } from '@midasit-dev/moaui';
-import {TableCell, TableRow, Table, TableHead, TableBody } from '@mui/material';
-import {useRecoilState, useRecoilValue, useRecoilValueLoadable} from 'recoil';
-import {FoundationWidth, SideLength,
+import {useRecoilState} from 'recoil';
+import {
     PileName, PileType, PileLength, ConstructionMethod, HeadCondition, BottomCondition,
     CompositeTypeCheck, CompPileType, CompStartLength, 
     Concrete_Diameter,Concrete_Thickness, Concrete_Modulus, Steel_Diameter, Steel_Thickness, Steel_Modulus, Steel_Cor_Thickness,
     CompConcrete_Diameter, CompConcrete_Thickness, CompConcrete_Modulus, CompSteel_Diameter, CompSteel_Thickness, CompSteel_Modulus, CompSteel_Cor_Thickness,
     ReinforcedStartLength, ReinforcedEndLength, OuterThickness, OuterModulus, InnerThickness, InnerModulus, InnerInputState,
     Major_Ref_Value, Minor_Ref_Value, Major_Start_Point, Minor_Start_Point, Major_Space, Major_Degree, Minor_Degree,
-    PileTableData, PileDataSelector, SelectedRow, TopLevel, PileLocationData, PileDegreeData, ReinforcedMethod, 
-
+    PileTableData, SelectedRow, ReinforcedMethod, 
 } from '../variables';
-import { scryRenderedDOMComponentsWithClass } from 'react-dom/test-utils';
-
+import { useTranslation } from 'react-i18next';
 
 
 function PileTable(){
 
+    const { t:translate, i18n: internationalization} = useTranslation();
     const [pileName, setpileName] = useRecoilState(PileName)
     const [pileLength, setpileLength] = useRecoilState(PileLength)
     const [pileType, setpileType] = useRecoilState(PileType)
@@ -85,10 +75,10 @@ function PileTable(){
 
     const columns = [
         {field : 'Typeno', headerName : 'No', width : 50, sortable :false},
-        {field : 'pileName', headerName : '명칭', width : 200, sortable :false},
-        {field : 'pileType', headerName : '말뚝 종류', width : 200, sortable :false},
-        {field : 'constructionMethod', headerName : '시공 방법', width : 200, sortable :false},
-        {field : 'PileNums', headerName : '말뚝 개수', width : 150, sortable :false},
+        {field : 'pileName', headerName : translate('Pile_Table_Name'), width : 200, sortable :false},
+        {field : 'pileType', headerName : translate('Pile_Table_Type'), width : 200, sortable :false},
+        {field : 'constructionMethod', headerName : translate('Pile_Table_ConstructionMethod'), width : 200, sortable :false},
+        {field : 'PileNums', headerName : translate('Pile_Table_PileNum'), width : 150, sortable :false},
     ]
     
     const [pileTableData, setPileTableData] = useRecoilState(PileTableData)
@@ -152,7 +142,7 @@ function PileTable(){
     return(
         <GuideBox>
             <GuideBox>
-                <div style = {{height : 150, width : '100%'}}>
+                <div style = {{height : 150, width : 800}}>
                     <DataGrid
                         columnHeaderHeight={40}
                         rowHeight={40}

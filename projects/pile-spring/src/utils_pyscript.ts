@@ -178,7 +178,7 @@ export function FoundationCoordinates(width : number, length : number) {
 	});
 }
 
-export function ExtractNumbers(text: string) {
+export function ExtractNumbers(text: any) {
 	return checkPyScriptReady(() => {
 		let result =[]
 		const ExtractNumbers = pyscript.interpreter.globals.get('extract_numbers');
@@ -197,20 +197,20 @@ export function CalculatePileCoordinates(PileTableData : any, PileLocationData :
 }
 
 
-export function CalculateKv(PileTableData : any){
+export function CalculateKv(PileTableData : any, groundLevel:any, topLevel:any){
 	return checkPyScriptReady(() => {
 		let result =[]
 		const CalKv = pyscript.interpreter.globals.get('CalKv');
-		result = CalKv(JSON.stringify(PileTableData));
+		result = CalKv(JSON.stringify(PileTableData), groundLevel, topLevel);
 		return JSON.parse(result);
 	})
 }
 
-export function CalculateKvalue(PileTableData : any, GroundLevel: any, TopLevel : any, SoilData: any, Condition : any, SlopeEffectState: any, GroupEffectValue: any){
+export function CalculateKvalue(PileTableData : any, GroundLevel: any, TopLevel : any, SoilData: any, Condition : any, HeadCondition:any, BottomCondition:any, AlphaThetaResult: any, Beta_Noraml: any, Beta_Seismic:any, Beta_Period:any, liquefactionState:any){
 	return checkPyScriptReady(() => {
 		let result =[]
 		const CalKvalue = pyscript.interpreter.globals.get('CalKValue');
-		result = CalKvalue(JSON.stringify(PileTableData), GroundLevel, TopLevel, JSON.stringify(SoilData), Condition, SlopeEffectState, GroupEffectValue);
+		result = CalKvalue(JSON.stringify(PileTableData), GroundLevel, TopLevel, JSON.stringify(SoilData), Condition, HeadCondition, BottomCondition, AlphaThetaResult, Beta_Noraml, Beta_Seismic, Beta_Period, liquefactionState);
 		return JSON.parse(result);
 	})
 }
@@ -244,11 +244,11 @@ export function CalculateProperties(PileData : any, Position : any, ReinforcedSt
 	})
 }
 
-export function CalculateMatrix(PileTableData : any, FoundationWidth : any, SideLength : any, GroundLevel: any, TopLevel:any, SoilData:any, SlopeEffectState:any, ResultType : any, Direction : any, GroupEffectValue: any){
+export function CalculateMatrix(PileTableData : any, FoundationWidth : any, SideLength : any, SoilData:any, ResultType : any, Direction : any, KvResult:any, KValue_Normal:any, KValue_Seismic:any, KValue_Seismic_Liq:any, KValue_Period:any, Force_Point_X:any, Force_Point_Y:any, liquifactionstate:any){
 	return checkPyScriptReady(() => {
 		let result =[]
 		const CalMatrix = pyscript.interpreter.globals.get('CalMatrix');
-		result = CalMatrix(JSON.stringify(PileTableData), JSON.stringify(FoundationWidth), JSON.stringify(SideLength), GroundLevel, TopLevel, JSON.stringify(SoilData), SlopeEffectState, ResultType, Direction, GroupEffectValue);
+		result = CalMatrix(JSON.stringify(PileTableData), JSON.stringify(FoundationWidth), JSON.stringify(SideLength), JSON.stringify(SoilData), ResultType, Direction, JSON.stringify(KvResult), JSON.stringify(KValue_Normal), JSON.stringify(KValue_Seismic), JSON.stringify(KValue_Seismic_Liq), JSON.stringify(KValue_Period), Force_Point_X, Force_Point_Y, liquifactionstate);
 		return JSON.parse(result);
 	})
 }
