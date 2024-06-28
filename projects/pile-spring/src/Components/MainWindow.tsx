@@ -56,8 +56,6 @@ import InfiniLoading from "./Loading/InfinitLoading";
 import ExcelReport from "./ExcelReport/ExcelReport";
 import {CalculateBeta, CalAlphaHTheta, CalculateKvalue, CalculateKv, CalculateMatrix, py_db_get_maxid, dbCreateItem} from "../utils_pyscript"
 import { useTranslation } from 'react-i18next';
-import { ExportMatrix } from "./Springs/ImportSpring";
-import { range } from "lodash";
 import DownloadButton from "./NewComponents/DownloadButton";
 
 function MainWindow() {

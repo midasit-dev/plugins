@@ -40,7 +40,8 @@ function SoilProperties(){
                     textFieldWidth = {100}
                     value = {groundLevel}
                     onChange = {handleGroundLevelChange}
-                    placeholder = '지반면 표고'/>
+                    placeholder = ''
+                    />
                     {/* <TypoGraphyTextField
                     title = "지하 수위면 표고(m)"
                     width = {250}
