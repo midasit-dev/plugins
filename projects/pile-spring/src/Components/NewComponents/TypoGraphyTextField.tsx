@@ -13,28 +13,40 @@ const TypoGraphyTextField = ({
 	onChange = undefined,/**${props-separator}*/
 	variant = 'outlined',/**${props-separator}*/
 	show = false,/**${props-separator}*/
-	type = 'text'
+	type = 'text',
+	widthLimit = '100%'
 }: any) => {
+	const [widthLocal, setWidthLocal] = React.useState(widthLimit);
 	const [valueLocal, setValueLocal] = React.useState(defaultValue);
 	let onChangeLocal = (e: any) => {
 		setValueLocal(e.target.value);
 	}
+	const style = {
+		whiteSpace: 'nowrap',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		width: widthLocal // 필요한 너비로 설정
+		};
 
 	return (
 		<GuideBox show={show} width={width} height={height} row horSpaceBetween verCenter>
-			<Typography center verCenter height={height}>{title}</Typography>
+				<Typography center verCenter height={height}>
+					<div style={style}>
+						{title}
+					</div>
+				</Typography>
 			<GuideBox verCenter>
-				<TextField
-					width={textFieldWidth}
-					height={30}
-					placeholder={placeholder}
-					error={error}
-					disabled={disabled}
-					defaultValue={defaultValue}
-					value={value || valueLocal}
-					onChange={onChange || onChangeLocal}
-					
-				/>
+					<TextField
+						width={textFieldWidth}
+						height={30}
+						placeholder={placeholder}
+						error={error}
+						disabled={disabled}
+						defaultValue={defaultValue}
+						value={value || valueLocal}
+						onChange={onChange || onChangeLocal}
+					/>
+
 			</GuideBox>
 		</GuideBox>
 	)

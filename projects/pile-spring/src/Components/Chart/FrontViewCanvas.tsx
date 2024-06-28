@@ -183,7 +183,7 @@ const FronView = () => {
 
   return (
     <div>
-      <canvas ref={canvasRef} width={canvasSize} height={canvasSize} />
+      <canvas id="FrontView" ref={canvasRef} width={canvasSize} height={canvasSize} />
     </div>
   );
 };

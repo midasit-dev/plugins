@@ -666,6 +666,8 @@ function PileProperties(){
         }
     }
 
+    
+    
     return(
         <GuideBox width="auto" marginRight={1} marginBottom={1}>
             <GuideBox row spacing={1} verCenter>

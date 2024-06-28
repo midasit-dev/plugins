@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   GuideBox,
   Tab,
   TabGroup,
-  TemplatesFunctionalComponentsDownloadButton as DownloadButton,
   TemplatesFunctionalComponentsUploadButton as UploadButton,
+  TextField,
 } from "@midasit-dev/moaui";
 import PileProperties from "./PileProperties/PileMainWindow";
 import SoilProperties from "./SoilProperties/SoilProperties";
@@ -58,6 +58,7 @@ import {CalculateBeta, CalAlphaHTheta, CalculateKvalue, CalculateKv, CalculateMa
 import { useTranslation } from 'react-i18next';
 import { ExportMatrix } from "./Springs/ImportSpring";
 import { range } from "lodash";
+import DownloadButton from "./NewComponents/DownloadButton";
 
 function MainWindow() {
 
@@ -350,6 +351,10 @@ function MainWindow() {
     matrix = [XResult[0], ZResult[0], XResult[3], ZResult[5], XResult[5], 1000000000000, 0, XResult[1], 0, XResult[2], 0, ZResult[1], -ZResult[2], 0, 0, ZResult[4], -XResult[4], 0, 0, 0, 0]
     return matrix;
   }
+
+  React.useEffect(() => {
+    console.log('projectName', projectName)
+  }, [projectName])
 
   return (
     <GuideBox width="auto">

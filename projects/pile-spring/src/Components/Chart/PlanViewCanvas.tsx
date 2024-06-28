@@ -228,7 +228,7 @@ const PlanView = () => {
 
   return (
     <div>
-      <canvas ref={canvasRef} width={canvasSize} height={canvasSize} />
+      <canvas id="PlanView" ref={canvasRef} width={canvasSize} height={canvasSize} />
     </div>
   );
 };

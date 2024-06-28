@@ -182,7 +182,7 @@ const SideView = () => {
 
   return (
     <div>
-      <canvas ref={canvasRef} width={canvasSize} height={canvasSize} />
+      <canvas id="SideView" ref={canvasRef} width={canvasSize} height={canvasSize} />
     </div>
   );
 };
