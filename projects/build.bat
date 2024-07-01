@@ -9,7 +9,7 @@ REM 임시 파일 초기화 (UTF-8 인코딩으로 생성)
 
 REM 실행할 디렉토리명을 설정
 REM example) "run_dirs=dir1 dir2 dir3" or "run_dirs=all"
-set "run_dirs="
+set "run_dirs=spacegass-importer"
 
 REM 현재 실행 경로를 가져온다
 set "current_dir=%~dp0"
@@ -55,6 +55,11 @@ if exist "%~1\package.json" (
         echo npm run build failed in %~1
         exit /b 1
     )
+		echo Check if the directory exists ..\..\docs\%~1...
+		if exist "..\..\docs\%~1" (
+				echo Deleting ..\..\docs\%~1...
+				rmdir /s /q "..\..\docs\%~1"
+		)
     echo Copying build to ..\..\docs\%~1...
     xcopy build\* "..\..\docs\%~1\" /s /e /y
     if !errorlevel! neq 0 (
