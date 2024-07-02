@@ -7,6 +7,9 @@ const EndList = ({ onChange }) => {
   const typeValueOptions = [
     { value: "Part I", label: "Part I" },
     { value: "Part J", label: "Part J" },
+    { value : "Part 1/4", label: "Part 1/4"},
+    { value : "Part 2/4", label: "Part 2/4"},
+    { value : "Part 3/4", label: "Part 3/4"},
   ];
 
   const handleChange = (e) => {
