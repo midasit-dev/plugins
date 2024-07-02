@@ -9,17 +9,10 @@ import {ImportType,
 import Civil_Cord_System from '../../Civil_Cord_System.png'
 
 
-export function ExportMatrix(XResult:any, ZResult:any){
-    let matrix = [];
-    matrix = [XResult[0],ZResult[0],XResult[3],ZResult[5],XResult[5],1000000000000,0,XResult[1],0,XResult[2],0,ZResult[1],-ZResult[2],0,0,ZResult[4],-XResult[4],0,0,0,0]
-    return matrix;
-
-}
-
 function ImportSpring(){
 
     const [importType, setImportType] = useRecoilState(ImportType);
-
+    
     const SelectType = (e:any, state:any) => {
         setImportType(state);
     }

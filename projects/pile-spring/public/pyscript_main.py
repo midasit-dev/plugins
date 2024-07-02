@@ -232,6 +232,8 @@ def Cal_Beta(SoilData, PileTableData, Condition, SlopeEffectState, GroupEffectVa
 
 
 def CalAlphaTheta(SoilData, SlopeEffectState, PileTableData):
+  ## 사면영향을 고려하기 위한 보정 계수 산정
+  ## 사면 영향을 고려하지 않으면 모두 1로 반환
 	soilData = json.loads(SoilData)
 	pileTableData = json.loads(PileTableData)
 	Property = json.loads(Cal_Property(json.dumps(pileTableData[0]), 'top', 'unreinforced'))

@@ -330,8 +330,8 @@ function MainWindow() {
       "OPT_STIFFNESS": true,
       "OPT_MASS": false,
       "OPT_DAMPING": false
-    }
-
+  } 
+    
     const MaxID = py_db_get_maxid("GSTP")
 
     const Import_NormalMatrix = dbCreateItem("GSTP", MaxID+1, NormalInputJson)
@@ -340,7 +340,7 @@ function MainWindow() {
     const Import_PeriodMatrix = dbCreateItem("GSTP", MaxID+4, PeriodInputJson)
 
     enqueueSnackbar("Import General Spring Success", {
-      autoHideDuration: 3000,
+      autoHideDuration: 3000, 
     });
   };
 
