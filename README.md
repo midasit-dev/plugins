@@ -52,7 +52,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ❌ | 9  | elastic link generator             | Simon              | chapter   | [⛔ Readme](https://github.com/midasit-dev/plugins/blob/main/projects/elastic-link-generator/public/readme.md) | [⛔ Link](https://midasit-dev.github.io/plugins/elastic-link-generator) |
 |     ⏳ | 10 | baseplate                          | Simon & Lenny      | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
 |     ✅ | 11 | node controller                    | Walter             | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/node-controller/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/node-controller) |
-|     ⏳ | 12 | spacegass importer                 | Walter & James     | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/spacegass-importer/public/readme.md) | [🚧 Link](https://midasit-dev.github.io/plugins/spacegass-importer) |
+|     ✅ | 12 | spacegass importer                 | Walter & James     | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/spacegass-importer/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/spacegass-importer) |
 |     ✅ | 13 | analysis progress notify           | group1 (Brown)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/analysis-progress-notify/public/readme.md) | [⚠️ Link](https://midasit-dev.github.io/plugins/analysis-progress-notify) |
 |     ✅ | 14 | nonlinear spring             			 | group2 (Simon)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/nonlinear-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/nonlinear-spring) |
 |     ✅ | 15 | tunnel lining 										 | group2 (Simon) 		 | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/tunnel-lining/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/tunnel-lining) |
@@ -65,7 +65,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ✅ | 22 | align local axis for element       | Lawrence           | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/align-local-axis-for-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/align-local-axis-for-element) |
 |     ⏳ | 23 | divide frame element               | Sadim              | tgc       | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
 
-### Links Generated (Updated at 2024.06.26 14:59:56)
+### Links Generated (Updated at 2024.07.01 19:15:06)
 - [Spacegass-Importer](https://midasit-dev.github.io/plugins/spacegass-importer)
 - [Align-Local-Axis-For-Element](https://midasit-dev.github.io/plugins/align-local-axis-for-element)
 - [Analysis-Progress-Notify](https://midasit-dev.github.io/plugins/analysis-progress-notify)
