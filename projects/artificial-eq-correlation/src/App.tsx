@@ -42,6 +42,10 @@ const App = () => {
 
 	const FetchData = () => {
 		const get_THFC = dbRead('THFC')
+		if (get_THFC.hasOwnProperty('error')){
+			enqueueSnackbar('Failed to import Time History Function data.', {variant: 'error', autoHideDuration: 3000})
+			return
+		}
 		const THFC = Object.values(get_THFC).map((value:any) => {
 			return {name : value.NAME, checked : false}
 			})
