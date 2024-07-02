@@ -87,12 +87,16 @@ const App = () => {
 			newSection.SECT_NAME = newSectionName;
 			let New_Sect_J = newSection.SECT_BEFORE.SECT_I
 			let New_Sect_I = newSection.SECT_BEFORE.SECT_J
+			if ("DB_NAME" in newSection.SECT_BEFORE.SECT_I){
+				New_Sect_I["DB_NAME"] = newSection.SECT_BEFORE.SECT_I.DB_NAME
+				delete New_Sect_J["DB_NAME"]
+			}
 			newSection.SECT_BEFORE.SECT_I = New_Sect_I
 			newSection.SECT_BEFORE.SECT_J = New_Sect_J
 			NewSectionJson[ID] = newSection;
 			ID = ID + 1
-
 		})
+		console.log(NewSectionJson)
 		const Result = dbCreateTaperedSection(NewSectionJson)
 		if ("error" in Result) {
 			enqueueSnackbar(Result.error, {variant: 'error', autoHideDuration: 3000, style: {width: '220px', padding: 10, fontSize: 12}})
