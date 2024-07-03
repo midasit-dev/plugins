@@ -19,7 +19,7 @@ const CompLatLongSearch = () => {
   };
 
   async function getAddressFromLatLng() {
-    const apiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY
+    const apiKey = 'AIzaSyBUGWFaf1gzcN4i18zqGrRt1CS5nRcASbY'
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
     try {
