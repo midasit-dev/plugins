@@ -111,19 +111,27 @@ function SoilTable(){
                 Vₛᵢ<br/>(m/s)
             </div>
         ),
-        valueFormatter: (params: any) => params.value.toFixed(3)
+        // 입력값이 숫자가 아닐 경우 0 반환
+        // 
+        valueFormatter: (params: any) => {
+            if (isNaN(params.value)){
+                return 0
+            }
+            Number(params.value).toFixed(3)
+        }
         },
         
         {field : 'ED',
         width : 80, 
-        editable : true, 
+        editable : false, 
         sortable : false,
         renderHeader: (params: any) => (
             <div style={{lineHeight:'1', textAlign: 'center'}}>
                 E<span style={{verticalAlign: "sub", fontSize: "smaller"}}>D</span><br/>(kN/m²)
             </div>
         ),
-        valueFormatter: (params: any) => params.value.toFixed(3)
+        valueFormatter: (params: any) => {
+            params.value.toFixed(3)}
         },
         {field : 'DE',  
         headerName : 'D\u2091',
@@ -200,6 +208,9 @@ function SoilTable(){
                 newVsi = 80* Math.pow(Math.min(newRow.AvgNValue, 50),(1/3))
                 newRow.Vsi = Number(newVsi)
             }
+        }
+        else {
+            newRow.Vsi = Number(newRow.Vsi)
         }
         
         //ED 값 자동 계산
