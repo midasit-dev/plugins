@@ -9,7 +9,7 @@ const BeamTable = ({ beamData, onCellSelect }) => {
     () => [
       { flex: 0.75, field: "ELEMENT", headerName: "ELEM.", editable: false, sortable: false },
       { flex: 1, field: "LOAD", headerName: "L/C", editable: false, sortable: false },
-      { flex: 0.75, field: "I_J", headerName: "I/J", editable: false, sortable: false },
+      { flex: 0.75, field: "I_J", headerName: "PART", editable: false, sortable: false },
       { flex: 1, field: "FX", headerName: "FX", editable: false, sortable: false, renderCell: (params) => <MotionCell params={params} /> },
       { flex: 1, field: "FY", headerName: "FY", editable: false, sortable: false, renderCell: (params) => <MotionCell params={params} /> },
       { flex: 1, field: "FZ", headerName: "FZ", editable: false, sortable: false, renderCell: (params) => <MotionCell params={params} /> },

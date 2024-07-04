@@ -30,7 +30,7 @@ const CompAddressSearch = () => {
       const response = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json`, {
         params: {
           input: query,
-          key: 'AIzaSyBUGWFaf1gzcN4i18zqGrRt1CS5nRcASbY', // 구글 맵 API 키
+          key: process.env.REACT_APP_GOOGLE_MAP_API_KEY, // 구글 맵 API 키
         },
       });
       if (response.data.predictions.length > 0) {
@@ -54,7 +54,7 @@ const CompAddressSearch = () => {
       const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
           address,
-          key: 'AIzaSyBUGWFaf1gzcN4i18zqGrRt1CS5nRcASbY'
+          key: process.env.REACT_APP_GOOGLE_MAP_API_KEY
         },
       });
       if (response.data.status === 'OK') {
