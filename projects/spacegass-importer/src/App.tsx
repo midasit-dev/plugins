@@ -177,10 +177,7 @@ const App = () => {
 
 				return;
 			} catch (error) {
-				const elapsedTime = Date.now() - startTime.getTime();
-				const duration = moment.duration(elapsedTime);
-				const formattedDuration = moment.utc(duration.asMilliseconds()).format("s[s]");
-				enqueueSnackbar(`There is unknown server error (it took ${formattedDuration})`, { variant: "error" });
+				enqueueSnackbar(`There is unknown server error... (timeout is 60s)`, { variant: "error" });
 			} finally {
 				setSendLoading(false);
 				setDisabledImport(false);
