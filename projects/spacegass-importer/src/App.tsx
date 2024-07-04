@@ -94,6 +94,14 @@ const App = () => {
 	
 				let mct = await res.text();
 				mct = mct.replace(/\\/g, "\\\\");
+				
+				//도메인이 localhost 이거나 midasit-dev.github.io 일때만 사용
+				if (
+					window.location.hostname === "localhost" || 
+					window.location.hostname === "midasit-dev.github.io"
+				) {
+					console.log(mct);
+				}
 				mct = mct.replace(
 					";---------------------------------------------------------------------------\n;  midas Civil Text(MCT) File.\n;  Date : \n;---------------------------------------------------------------------------\n \n",
 					""
@@ -214,9 +222,10 @@ const TextEditorWithReadOnly = (props: any) => {
         }}
       >
         {content === null && (
-					<div style={{opacity: 0.5}}>
-						<GridLoader />
-					</div>
+					<m.GuideBox opacity={0.5} spacing={2}>
+						<m.Typography>Waiting ...</m.Typography>
+						<GridLoader size={10} />
+					</m.GuideBox>
 				)}
         {content !== null && (
           <Editor
