@@ -54,7 +54,7 @@ import { useSnackbar } from "notistack";
 import ExcelJsonResult from "./ExcelReport/ExcelJson";
 import InfiniLoading from "./Loading/InfinitLoading";
 import ExcelReport from "./ExcelReport/ExcelReport";
-import {CalculateBeta, CalAlphaHTheta, CalculateKvalue, CalculateKv, CalculateMatrix, py_db_get_maxid, dbCreateItem} from "../utils_pyscript"
+import {CalculateBeta, CalAlphaHTheta, CalculateKvalue, CalculateKv, CalculateMatrix, py_db_get_maxid, dbCreateItem, dbUpdateItem} from "../utils_pyscript"
 import { useTranslation } from 'react-i18next';
 import DownloadButton from "./NewComponents/DownloadButton";
 
@@ -330,10 +330,18 @@ function MainWindow() {
       "OPT_STIFFNESS": true,
       "OPT_MASS": false,
       "OPT_DAMPING": false
-  } 
+    } 
     
+    // 단위계 설정 (KN, m)
+    const UnitJson = {
+        "FORCE" : "KN",
+        "DIST" : "M",
+        "HEAT" : "KCAL",
+        "TEMPER" : "C"
+    }
+    const updateUnit = dbUpdateItem("UNIT", "1", UnitJson)
     const MaxID = py_db_get_maxid("GSTP")
-
+    
     const Import_NormalMatrix = dbCreateItem("GSTP", MaxID+1, NormalInputJson)
     const Import_SeismicMatrix = dbCreateItem("GSTP", MaxID+2, SeismicInputJson)
     const Import_SeismicLiqMatrix = dbCreateItem("GSTP", MaxID+3, SeismicLiqInputJson)
