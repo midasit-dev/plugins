@@ -66,7 +66,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ✅ | 20 | cae importer                       | group6 (Andy)      | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/cae-importer/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/cae-importer) |
 |     ✅ | 21 | auto saver                         | group6 (Ringo)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/auto-saver/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/auto-saver) |
 |     ✅ | 22 | align local axis for element       | Lawrence           | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/align-local-axis-for-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/align-local-axis-for-element) |
-|     ⏳ | 23 | divide frame element               | Sadim              | tgc       | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
+|     ✅ | 23 | divide frame element               | Sadim              | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
 
 ### Links Generated (Updated at 2024.07.01 19:15:06)
 - [Spacegass-Importer](https://midasit-dev.github.io/plugins/spacegass-importer)
