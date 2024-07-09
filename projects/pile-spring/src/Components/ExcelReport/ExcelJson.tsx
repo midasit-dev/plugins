@@ -1,7 +1,7 @@
 import {CalculateProperties} from '../../utils_pyscript'
-import { useTranslation } from 'react-i18next';
 
 function ExcelJsonResult(
+  translate:any,
   projectName:any,
   piletableData:any,
   soilData:any,
@@ -27,7 +27,6 @@ function ExcelJsonResult(
   Matrix_Period_X:any,
   Matrix_Period_Z:any,
 ){
-  //const { t:translate, i18n: internationalization} = useTranslation();
   let reportjson_items:any = {};
   const sheetName = "report";
   //프로젝트 명
@@ -41,7 +40,7 @@ function ExcelJsonResult(
     ItemArray.push({
       "__PileName" : '('+(i+1)+') '+ piletableData[i].pileName,
       "__TopLevel" : Number(topLevel),
-      "__PileType" : (piletableData[i].pileType),
+      "__PileType" : translate(piletableData[i].pileType),
       "__ConstructionMethod" : (piletableData[i].constructionMethod),
       "__HeadCondition" : (piletableData[i].headCondition),
       "__BottomCondition" : (piletableData[i].bottomCondition),

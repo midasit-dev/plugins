@@ -240,6 +240,7 @@ function MainWindow() {
     console.log(piletableData)
     // Excel 출력용 Json 데이터 생성
     const JsonResult = ExcelJsonResult(
+      translate,
       projectName,
       piletableData,
       soilData,
