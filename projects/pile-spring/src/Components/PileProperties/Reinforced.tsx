@@ -28,7 +28,7 @@ function Reinforced(){
     const [ReinforcedList, setReinforcedList] = useState<any>([])
     
     const handleReinforcedMethodChange = (e:any) => {
-        if (e.target.value === '피복'){
+        if (e.target.value === 'Reinforced_Method_Outer'){
             setInnerInputState(false);
         }
         else{
@@ -88,8 +88,8 @@ function Reinforced(){
     useEffect(() => {
         setReinforcedList(
             [
-                [translate('Reinforced_Method_Outer'),'피복'],
-                [translate('Reinforced_Method_Inner_Outer'),'피복+충진']
+                [translate('Reinforced_Method_Outer'),'Reinforced_Method_Outer'],
+                [translate('Reinforced_Method_Inner_Outer'),'Reinforced_Method_Inner_Outer']
             ]
         )
     },)

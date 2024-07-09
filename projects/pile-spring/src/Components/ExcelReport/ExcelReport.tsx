@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GuideBox, Button } from "@midasit-dev/moaui";
-import { Langauge } from "../variables";
+import { Language } from "../variables";
 import { report } from "process";
 import { useRecoilState, useRecoilValue } from "recoil";
 

@@ -84,11 +84,13 @@ function PileLocation(){
 
     useEffect(() => {
         setMajorRefPointList([
+            // 1이면 우측, 2면 좌측
             [translate('Ref_Point_Right'), 1],
             [translate('Ref_Point_Left'), 2],
         ])
 
         setMinorRefPointList([
+            // 1이면 상단, 2면 하단
             [translate('Ref_Point_Top'), 1],
             [translate('Ref_Point_Bottom'), 2],
         ])

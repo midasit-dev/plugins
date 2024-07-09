@@ -58,7 +58,7 @@ function AddComposites(){
     
     const titleChange = (e:any) => {
         // 철근 타이틀 : 현장타설말뚝, PHC 말뚝일 경우에는 단면적, 그 외에는 직경
-        if (e === '현장타설말뚝' || e=== 'PHC말뚝'){
+        if (e === 'Cast_In_Situ' || e=== 'PHC_Pile'){
             setCompSteelDiaTitle(translate('Composite_Steel_Diamter_Case1'))
         }
         else{
@@ -66,7 +66,7 @@ function AddComposites(){
         }
         
         
-        if (e=== 'PHC말뚝'){
+        if (e=== 'PHC_Pile'){
             setCompSteelCorTitle(translate('Composite_Steel_Cor_Case1'))
         }
         else{
@@ -74,7 +74,7 @@ function AddComposites(){
         }
         // Concrete Title 변경
         // 강관 말뚝, 소일시멘트 말뚝일 경우 소일시멘트, 그 외 콘크리트
-        if (e === '강관말뚝' || e === '소일시멘트말뚝'){
+        if (e === 'Steel_Pile' || e === 'Soil_Cement_Pile'){
             setCompConcreteTitle(translate('Composite_Concrete_Title_Case2'))
         }
         else{
@@ -82,17 +82,17 @@ function AddComposites(){
         }
         // Steel Title 변경
         // 현장타설 말뚝일 경우 철근, PHC 말뚝일경우 PC 강재, 그 외 강관
-        if (e === '현장타설말뚝'){
+        if (e === 'Cast_In_Situ'){
             setCompSteelTitle(translate('Composite_Steel_Title_Case1'))
         }
-        else if (e === 'PHC말뚝'){
+        else if (e === 'PHC_Pile'){
             setCompSteelTitle(translate('Composite_Steel_Title_Case3'))
         }
         else {
             setCompSteelTitle(translate('Composite_Steel_Title_Case2'))
         }
         // 말뚝 타입이 소일시멘트 말뚝의 경우 콘크리트 탄성계수를 변형계수로 출력
-        if (e === '소일시멘트말뚝'){
+        if (e === 'Soil_Cement_Pile'){
             setCompConcreteModulusTitle(translate('Composite_Concrete_Modulus_Case2'))
         }
         else{
@@ -104,11 +104,11 @@ function AddComposites(){
         titleChange(compPileType)
         setCompListPileType(
             [
-                [translate('Cast_In_Situ'), '현장타설말뚝'],
-                [translate('PHC_Pile'), 'PHC말뚝'],
-                [translate('SC_Pile'), 'SC말뚝'],
-                [translate('Steel_Pile'), '강관말뚝'],
-                [translate('Soil_Cement_Pile'), '소일시멘트말뚝']
+                [translate('Cast_In_Situ'), 'Cast_In_Situ'],
+                [translate('PHC_Pile'), 'PHC_Pile'],
+                [translate('SC_Pile'), 'SC_Pile'],
+                [translate('Steel_Pile'), 'Steel_Pile'],
+                [translate('Soil_Cement_Pile'), 'Soil_Cement_Pile']
             ]
         )
     },)

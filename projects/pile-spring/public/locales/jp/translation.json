@@ -11,11 +11,11 @@
   "Project_Name" : "プロジェクト名",
   "Pile_Info" : "杭の情報",
   "Footing_Dimension" : "基礎の諸元",
-  "Xdir_Dim" : "載荷方向の幅(m)",
-  "Ydir_Dim" : "側面の長さ(m)",
+  "Xdir_Dim" : "載荷幅(m)",
+  "Ydir_Dim" : "横長(m)",
   "Top_Level" : "底面の標高(m)",
-  "X_Force_Point" : "外力の作用点(載荷方向, m)",
-  "Y_Force_Point" : "外力の作用点(載荷直角方向, m)",
+  "X_Force_Point" : "載荷点(橋軸方向, m)",
+  "Y_Force_Point" : "載荷点(橋軸直角方向, m)",
   "Pile_Setting" : "杭の設定",
   "Initial_Setting" : "基本設定",
   "Composite_Setting" : "下部杭の設定",
@@ -72,7 +72,7 @@
   "Composite_Steel_Thickness" : "厚さ(mm)",
   "Composite_Steel_Modulus" : "弾性係数(N/mm²)",
 
-  "Pile_Ref_Point" : "参照規準",
+  "Pile_Ref_Point" : "参照基準",
   "Pile_Loc" : "位置",
   "Pile_Space" : "間隔",
   "Pile_Angle" : "角度",
@@ -214,5 +214,16 @@
   "Ref_Point_Right" : "右側",
   "Ref_Point_Left" : "左側",
   "Ref_Point_Top" : "上端",
-  "Ref_Point_Bottom" : "下端"
+  "Ref_Point_Bottom" : "下端",
+
+  "SoilData_Error" : "지반 정보를 확인해주세요.",
+
+  "Import_GeneralSpring_Title" : "汎用ばね支持の入力",
+  "PlugIn_Coord" : "[Plug In 入力座標系]",
+  "Civil_Coord_Type1" : "[Civil NX 座標系 – タイプ1]",
+  "Civil_Coord_Type2" : "[Civil NX 座標系 – タイプ2]",
+  "Select_Import_Type" : "読み込みタイプ : ",
+  "Type1" : "タイプ1",
+  "Type2" : "タイプ2"
+
 }

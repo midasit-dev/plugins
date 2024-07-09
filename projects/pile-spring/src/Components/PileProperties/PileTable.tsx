@@ -3,8 +3,9 @@ import {
     GuideBox, 
     DataGrid
 } from '@midasit-dev/moaui';
-import {useRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import {
+    Language,
     PileName, PileType, PileLength, ConstructionMethod, HeadCondition, BottomCondition,
     CompositeTypeCheck, CompPileType, CompStartLength, 
     Concrete_Diameter,Concrete_Thickness, Concrete_Modulus, Steel_Diameter, Steel_Thickness, Steel_Modulus, Steel_Cor_Thickness,
@@ -64,6 +65,7 @@ function PileTable(){
 
     const [selectedRow, setSelectedRow] = useRecoilState(SelectedRow)
 
+    const language = useRecoilValue(Language)
     interface RowType {
         Typeno: number;
         pileName : string;
@@ -83,12 +85,13 @@ function PileTable(){
     
     const [pileTableData, setPileTableData] = useRecoilState(PileTableData)
 
-    const rows:RowType[] = pileTableData.map((item: typeof pileTableData[0], index: number) => ({
+    const rows:RowType[] = pileTableData.map((item: typeof pileTableData[0], index: number) => (
+        {
         id : index,
         Typeno : index+1,
         pileName : item.pileName,
-        pileType : item.pileType,
-        constructionMethod : item.constructionMethod,
+        pileType : translate(item.pileType),
+        constructionMethod : translate(item.constructionMethod),
         PileNums : item.PileNums
     }))
 

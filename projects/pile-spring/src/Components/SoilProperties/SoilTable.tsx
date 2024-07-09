@@ -46,7 +46,7 @@ function SoilTable(){
     const columns: any = [
         {field : 'LayerNo', headerName : translate('Soil_Table_No'), width : 50, editable : true, sortable : false},
         {field : 'LayerType',  headerName : translate('Soil_Table_Type') ,width : 100, editable : true, sortable : false, 
-        type : 'singleSelect', valueOptions : [{value : '점성토', label : translate('SoilType_Clay')}, {value : "사질토", label : translate('SoilType_Sand')},{value : "사력토", label : translate('SoilType_Sandstone')}]
+        type : 'singleSelect', valueOptions : [{value : 'SoilType_Clay', label : translate('SoilType_Clay')}, {value : "SoilType_Sand", label : translate('SoilType_Sand')},{value : "SoilType_Sandstone", label : translate('SoilType_Sandstone')}]
         },
         {field : 'LayerDepth', headerName : translate('Soil_Table_Level'), width : 100, editable : false, sortable : false,  valueFormatter: (params: any) => params.value.toFixed(3)},
         {field : 'Depth', headerName : translate('Soil_Table_Depth'), width : 80, editable : true, sortable : false},
@@ -63,7 +63,6 @@ function SoilTable(){
         // },
         // {field : 'pi',  headerName : '\u03C6(°)',width : 50, editable : true, sortable : false},
         {field : 'gamma',  
-        headerName : '\u03B3\u209C(kN/m³)',
         width : 70, 
         editable : true, 
         sortable : false,
@@ -102,7 +101,6 @@ function SoilTable(){
         )
         },
         {field : 'Vsi', 
-        headerName : 'Vₛᵢ(m/s)', 
         width : 80, 
         editable : !VsiEditable, 
         sortable : false,
@@ -134,7 +132,6 @@ function SoilTable(){
             params.value.toFixed(3)}
         },
         {field : 'DE',  
-        headerName : 'D\u2091',
         width : 50, 
         editable : DEEditable, 
         sortable : false,
@@ -143,7 +140,6 @@ function SoilTable(){
         )
         },
         {field : 'Length', 
-        headerName : '전면길이(m)',
         width : 80, 
         editable : SlopeEffect, 
         sortable : false,
@@ -172,7 +168,7 @@ function SoilTable(){
         const newRow = { 
             id: newRowIndex, 
             LayerNo: newRowIndex,
-            LayerType: '점성토', 
+            LayerType: 'SoilType_Clay', 
             LayerDepth : newLayerDepth,
             Depth : 10,
             AvgNValue : 10,
@@ -200,11 +196,11 @@ function SoilTable(){
         // Vsi 값 자동 계산, false일 경우 입력했던 값이 반환됨
         if (VsiEditable == true){
             let newVsi
-            if (newRow.LayerType === '점성토'){
+            if (newRow.LayerType === 'SoilType_Clay'){
                 newVsi = 100* Math.pow(Math.min(newRow.AvgNValue, 25),(1/3))
                 newRow.Vsi = Number(newVsi)
             }
-            else if (newRow.LayerType === '사질토' || newRow.LayerType === '사력토'){
+            else if (newRow.LayerType === 'SoilType_Sand' || newRow.LayerType === 'SoilType_Sandstone'){
                 newVsi = 80* Math.pow(Math.min(newRow.AvgNValue, 50),(1/3))
                 newRow.Vsi = Number(newVsi)
             }

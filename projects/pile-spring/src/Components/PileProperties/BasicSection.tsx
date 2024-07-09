@@ -107,8 +107,8 @@ function BasicSection(){
                                 width = {200}
                                 textFieldWidth = {100}
                                 // 강관말뚝인 경우 직경 입력받지 않음
-                                disabled = {(pileType === '강관말뚝') ? true : false}
-                                filled = {(pileType === '강관말뚝') ? true : false}
+                                disabled = {(pileType === 'Steel_Pile') ? true : false}
+                                filled = {(pileType === 'Steel_Pile') ? true : false}
                                 value = {concreteDiameter}
                                 onChange = {handleChangeConcreteDiameter}
                                 placeholder = ''
@@ -120,7 +120,7 @@ function BasicSection(){
                                 textFieldWidth = {100}
                                 placeholder = ''
                                 // PHC 및 SC 말뚝인 경우만 입력받음
-                                disabled = {(pileType === '현장타설말뚝' || pileType === '강관말뚝' || pileType === '소일시멘트말뚝') ? true : false}
+                                disabled = {(pileType === 'Cast_In_Situ' || pileType === 'Steel_Pile' || pileType === 'Soil_Cement_Pile') ? true : false}
                                 value = {concreteThickness}
                                 onChange = {handleChangeConcreteThickness}
                                 type = 'number'
@@ -132,7 +132,7 @@ function BasicSection(){
                                 textFieldWidth = {100}
                                 placeholder = ''
                                 // 강관 말뚝은 입력받지 않음
-                                disabled = {(pileType === '강관말뚝') ? true : false}
+                                disabled = {(pileType === 'Steel_Pile') ? true : false}
                                 value = {concreteModulus}
                                 onChange = {handleChangeConcreteModulus}
                                 type = 'number'
@@ -150,7 +150,7 @@ function BasicSection(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = ''
-                            disabled = {(pileType === 'SC말뚝') ? true : false}
+                            disabled = {(pileType === 'SC_Pile') ? true : false}
                             value = {steelCaseDiameter}
                             onChange = {handleChangeSteelDiameter}
                             type = 'number'
@@ -160,7 +160,7 @@ function BasicSection(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = ''
-                            disabled = {(pileType === '현장타설말뚝') || (pileType ==='PHC말뚝') ? true : false}
+                            disabled = {(pileType === 'Cast_In_Situ') || (pileType ==='PHC_Pile') ? true : false}
                             value = {steelCaseThickness}
                             onChange = {handleChangeSteelThickness}
                             type = 'number'
@@ -179,7 +179,7 @@ function BasicSection(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = ''
-                            disabled = {(pileType === '현장타설말뚝') ? true : false}
+                            disabled = {(pileType === 'Cast_In_Situ') ? true : false}
                             value = {steelCorthickness}
                             onChange = {handleChangeSteelCorThickness}
                             type = 'number'

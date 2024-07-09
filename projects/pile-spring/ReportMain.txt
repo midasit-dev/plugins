@@ -83,7 +83,7 @@ function ExcelReport(
         // 개별 말뚝 제원
         for (i= 0; i< piletableData.length; i++){
             const Property = CalculateProperties(JSON.stringify(piletableData[i]))
-            if (piletableData[i].pileType === '소일시멘트말뚝'){
+            if (piletableData[i].pileType === 'Soil_Cement_Pile'){
                 let Data = [
                     [48,2,'('+(i+1)+') 말뚝 타입 '+ (i+1)],
                     [49,9,piletableData[i].pileType],
@@ -212,7 +212,7 @@ function ExcelReport(
         const CalKvResult = CalculateKv(piletableData)
         console.log(JSON.stringify(CalKvResult))
         for (i = 0; i < piletableData.length; i++) {
-            if (piletableData[i].pileType === '소일시멘트말뚝'){
+            if (piletableData[i].pileType === 'Soil_Cement_Pile'){
                 let Data = [
                     [146,3,'('+(i+1)+') 말뚝 타입 '+ (i+1) + ' : ' + piletableData[i].pileName],
                     [158,7, CalKvResult[1][i]],

@@ -29,7 +29,7 @@ function SoilSettings(){
                 let newVsi = 0
                 let newVsd = 0
                 let newED = 0
-                if (row.LayerType === '점성토') {
+                if (row.LayerType === 'SoilType_Clay') {
                     newVsi = Number((100* Math.pow(Math.min(row.AvgNValue, 25),(1/3))))
                     if (newVsi < 300){
                         newVsd = 0.8*newVsi
@@ -41,7 +41,7 @@ function SoilSettings(){
                     newED = 2*(1+Number(row.vd))*Gd
                     return { ...row, Vsi: newVsi, ED: newED }; 
                 } 
-                else if (row.LayerType === '사질토' || row.LayerType === '사력토') {
+                else if (row.LayerType === 'SoilType_Sand' || row.LayerType === 'SoilType_Sandstone') {
                     newVsi = Number((80* Math.pow(Math.min(row.AvgNValue, 50),(1/3))))
                     if (newVsi < 300){
                         newVsd = 0.8*newVsi

@@ -261,25 +261,25 @@ def CalKv(PileTableData, groundLevel, topLevel):
 	exposed_length = float(topLevel) - float(groundLevel)
 	for i in range(len(pileTableData)):
   
-		if (pileTableData[i]['constructionMethod'] == '타격말뚝(타격 공법)'):
+		if (pileTableData[i]['constructionMethod'] == 'CM_DropHammer'):
 			Alpha1[i] = 0.014
 			Alpha2[i] = 0.72
-		elif (pileTableData[i]['constructionMethod'] == '타격말뚝(바이브러 해머공법)'):
+		elif (pileTableData[i]['constructionMethod'] == 'CM_VibroHammer'):
 			Alpha1[i] = 0.017
 			Alpha2[i] = -0.014
-		elif (pileTableData[i]['constructionMethod'] == '현장타설말뚝'):
+		elif (pileTableData[i]['constructionMethod'] == 'CM_InSitu'):
 			Alpha1[i] = 0.031
 			Alpha2[i] = -0.15
-		elif (pileTableData[i]['constructionMethod'] == '중굴착 말뚝'):
+		elif (pileTableData[i]['constructionMethod'] == 'CM_Boring'):
 			Alpha1[i] = 0.01
 			Alpha2[i] = 0.36
-		elif (pileTableData[i]['constructionMethod'] == 'preboring 말뚝'):
+		elif (pileTableData[i]['constructionMethod'] == 'CM_Preboring'):
 			Alpha1[i] = 0.013
 			Alpha2[i] = 0.53
-		elif (pileTableData[i]['constructionMethod'] == '강관 소일시멘트 말뚝'):
+		elif (pileTableData[i]['constructionMethod'] == 'CM_SoilCement'):
 			Alpha1[i] = 0.040
 			Alpha2[i] = 0.15
-		elif (pileTableData[i]['constructionMethod'] == '회전말뚝'):
+		elif (pileTableData[i]['constructionMethod'] == 'CM_Rotate'):
 			Alpha1[i] = 0.013
 			Alpha2[i] = 0.54
   
@@ -310,7 +310,7 @@ def CalKv(PileTableData, groundLevel, topLevel):
 			
 			Property = json.loads(Cal_Property(json.dumps(pileTableData[i]), 'top', 'unreinforced'))
 			Kv_Pile = 0
-			if (pileTableData[i]['pileType'] == '소일시멘트말뚝'):
+			if (pileTableData[i]['pileType'] == 'Soil_Cement_Pile'):
 				Concrete_E = Property[7]
 				Concrete_A = Property[5]
 				Steel_E = Property[6]
@@ -336,9 +336,9 @@ def CalKv(PileTableData, groundLevel, topLevel):
 		else:
 			# 복합말뚝의 경우
 			# SC 말뚝 + PHC 말뚝
-			if (pileTableData[i]['pileType'] == 'SC말뚝' and pileTableData[i]['compPileType'] == 'PHC말뚝') or (pileTableData[i]['pileType'] == 'PHC말뚝' and pileTableData[i]['compPileType'] == 'SC말뚝'):
+			if (pileTableData[i]['pileType'] == 'SC_Pile' and pileTableData[i]['compPileType'] == 'PHC_Pile') or (pileTableData[i]['pileType'] == 'PHC_Pile' and pileTableData[i]['compPileType'] == 'SC_Pile'):
 				#PHC 말뚝의 제원을 사용함
-				if (pileTableData[i]['pileType'] == 'PHC말뚝'):
+				if (pileTableData[i]['pileType'] == 'PHC_Pile'):
 					position = 'top'
 				else:
 					position = 'bottom'
@@ -363,7 +363,7 @@ def CalKv(PileTableData, groundLevel, topLevel):
 				Kv_Pile = 0
 				for j in range(len(section_depths)):
 					Property = json.loads(Cal_Property(json.dumps(pileTableData[i]), section_depths[j][1], section_depths[j][2]))
-					if (pileTableData[i]['pileType'] == '소일시멘트말뚝'):
+					if (pileTableData[i]['pileType'] == 'Soil_Cement_Pile'):
 						Concrete_E = Property[7]
 						Concrete_A = Property[5]
 						Steel_E = Property[6]
@@ -441,7 +441,7 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 				# 요소 단면 특성치 계산
 				if depth <= section[0]:
 					Property = json.loads(Cal_Property(json.dumps(pileTableData[i]), section[1], section[2]))
-					if (pileTableData[i]['pileType'] == '소일시멘트말뚝'):
+					if (pileTableData[i]['pileType'] == 'Soil_Cement_Pile'):
 						Section_E = Property[6]
 						Section_I = Property[8]
 					else:
@@ -521,7 +521,7 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 		u_horizontal = np.linalg.solve(k_Reduced, F_horizontal)
 		u_moment = np.linalg.solve(k_Reduced, F_moment)
 		
-		if headCondition == '강결':
+		if headCondition == 'Head_Condition_Fixed':
 			# 말뚝머리 변위 및 회전각에 대한 연립방정식
 			Head_u = np.array([[u_horizontal[0], u_moment[0]],[u_horizontal[1], u_moment[1]]])
 		
@@ -566,10 +566,10 @@ def spring_stiffness_matrix(KH, L):
 
 
 def apply_boundary_conditions(K, boundary_condition):
-	if boundary_condition == '고정':
+	if boundary_condition == 'Bottom_Condition_Fixed':
 		# 마지막 절점의 변위를 고정 (행과 열 삭제)
 		K_reduced = K[:-2, :-2]
-	elif boundary_condition == '힌지':
+	elif boundary_condition == 'Bottom_Condition_Hinge':
 		# 마지막 절점의 변위만 고정 (행과 열 삭제)
 		K_reduced = np.delete(K, -2, axis=0)
 		K_reduced = np.delete(K_reduced, -2, axis=1)
@@ -762,7 +762,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 			concreteDiameter = float(pileData['concreteDiameter'])/1000  # mm -> m
 			concreteThickness = float(pileData['concreteThickness'])/1000  # mm -> m
 			concreteModulus = float(pileData['concreteModulus'])*1000  # N/mm^2 -> kN/m^2
-			if (pileData['pileType'] == 'PHC말뚝' or pileData['pileType'] == '현장타설말뚝'):
+			if (pileData['pileType'] == 'PHC_Pile' or pileData['pileType'] == 'Cast_In_Situ'):
 				steelDiameter = float(pileData['steelDiameter'])/10000  # cm^2 -> m^2
 			else:
 				steelDiameter = float(pileData['steelDiameter'])/1000  # mm -> m
@@ -775,7 +775,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 			concreteDiameter = float(pileData['compConcreteDiameter'])/1000  # mm -> m
 			concreteThickness = float(pileData['compConcreteThickness'])/1000  # mm -> m
 			concreteModulus = float(pileData['compConcreteModulus'])*1000  # N/mm^2 -> kN/m^2
-			if (pileData['compPileType'] == 'PHC말뚝' or pileData['compPileType'] == '현장타설말뚝'):
+			if (pileData['compPileType'] == 'PHC_Pile' or pileData['compPileType'] == 'Cast_In_Situ'):
 				steelDiameter = float(pileData['compSteelDiameter'])/10000  # cm^2 -> m^2
 			else:
 				steelDiameter = float(pileData['compSteelDiameter'])/1000  # mm -> m
@@ -794,13 +794,13 @@ def Cal_Property(PileData, Position, ReinforcedState):
 	# 미보강 단면 특성치 계산 (상부)
 		if (Position == 'top'):
 			if (ReinforcedState == 'unreinforced'):
-				if (pileData['pileType'] == '현장타설말뚝'):
+				if (pileData['pileType'] == 'Cast_In_Situ'):
 					Area = math.pi/4 * (concreteDiameter)**2
 					Modulus = concreteModulus
 					SecInertia = (math.pi * (concreteDiameter)**4)/64
 					Diameter = concreteDiameter
 
-				elif (pileData['pileType'] == 'PHC말뚝'):
+				elif (pileData['pileType'] == 'PHC_Pile'):
 					Area = (concreteDiameter-concreteThickness) * math.pi * (concreteThickness) + (steelModulus/concreteModulus-1)*steelDiameter
 					Modulus = concreteModulus
 					Ic = math.pi/64 * (math.pow(concreteDiameter, 4)-math.pow((concreteDiameter-2*concreteThickness),4))
@@ -808,7 +808,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = Ic + Is
 					Diameter = concreteDiameter
 
-				elif (pileData['pileType']=='SC말뚝'):
+				elif (pileData['pileType']=='SC_Pile'):
 					Area1 = math.pi/4 * (math.pow(concreteDiameter-2*steelCorThickness,2) - math.pow(concreteDiameter-2*concreteThickness,2))
 					Area2 = math.pi/4 * (steelModulus/concreteModulus-1)*(math.pow(concreteDiameter-2*steelCorThickness,2)-math.pow(concreteDiameter-2*steelThickness,2))
 					Area = Area1 + Area2
@@ -818,13 +818,13 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = Ic + Is
 					Diameter = concreteDiameter
 		
-				elif (pileData['pileType']=='강관말뚝'):
+				elif (pileData['pileType']=='Steel_Pile'):
 					Area = math.pi/4 * (math.pow(steelDiameter - 2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					Modulus = steelModulus
 					SecInertia = math.pi/64 * (math.pow(steelDiameter - 2*steelCorThickness,4)-math.pow(steelDiameter-2*steelThickness,4))
 					Diameter = steelDiameter
 		
-				elif (pileData['pileType']=='소일시멘트말뚝'):
+				elif (pileData['pileType']=='Soil_Cement_Pile'):
 					SteelArea = math.pi/4 * (math.pow(steelDiameter-2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					SteelModulus = steelModulus
 					SteelInertia = math.pi/64 * (math.pow(steelDiameter-2*steelCorThickness,4)-math.pow(steelDiameter-2*steelThickness,4))
@@ -835,7 +835,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 		
 			# 보강 단면 특성치 계산
 			elif (ReinforcedState == 'reinforced'):
-				if (pileData['pileType'] == '현장타설말뚝'):
+				if (pileData['pileType'] == 'Cast_In_Situ'):
 					Area1 = math.pi/4 * (concreteDiameter)**2
 					Area2 = outerModulus/concreteModulus*(concreteDiameter + outerThickness+ 2*innerThickness)*math.pi*outerThickness
 					Area3 = innerModulus/concreteModulus*(concreteDiameter + innerThickness)*math.pi*innerThickness
@@ -847,7 +847,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = concreteDiameter + 2* outerThickness + 2* innerThickness
 		
-				elif (pileData['pileType'] == 'PHC말뚝'):
+				elif (pileData['pileType'] == 'PHC_Pile'):
 					Area1 = (concreteDiameter-concreteThickness) * math.pi * (concreteThickness) + (steelModulus/concreteModulus-1)*steelDiameter
 					Area2 = outerModulus/concreteModulus*(concreteDiameter + outerThickness+ 2*innerThickness)*math.pi*outerThickness
 					Area3 = innerModulus/concreteModulus*(concreteDiameter + innerThickness)*math.pi*innerThickness
@@ -861,7 +861,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = concreteDiameter + 2* outerThickness + 2* innerThickness
 
-				elif (pileData['pileType'] == 'SC말뚝'):
+				elif (pileData['pileType'] == 'SC_Pile'):
 					Area1 = math.pi/4 * (math.pow(concreteDiameter-2*steelCorThickness,2) - math.pow(concreteDiameter-2*concreteThickness,2))
 					Area2 = math.pi/4 * (steelModulus/concreteModulus-1)*(math.pow(concreteDiameter-2*steelCorThickness,2)-math.pow(concreteDiameter-2*steelThickness,2))
 					Area3 = Area1 + Area2
@@ -877,7 +877,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = concreteDiameter + 2* outerThickness + 2* innerThickness
 
-				elif (pileData['pileType'] == '강관말뚝'):
+				elif (pileData['pileType'] == 'Steel_Pile'):
 					Area1 = math.pi/4 * (math.pow(steelDiameter - 2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					Area2 = outerModulus/steelModulus*(steelDiameter + outerThickness+2*innerThickness)*math.pi*outerThickness
 					Area3 = innerModulus/steelModulus*(steelDiameter + innerThickness)*math.pi*innerThickness
@@ -889,7 +889,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = steelDiameter + 2* outerThickness + 2* innerThickness
 
-				elif (pileData['pileType']=='소일시멘트말뚝'):
+				elif (pileData['pileType']=='Soil_Cement_Pile'):
 					SteelArea = math.pi/4 * (math.pow(steelDiameter-2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					SteelModulus = steelModulus
 					SteelInertia = math.pi/64 * (math.pow(steelDiameter-2*steelCorThickness,4)-math.pow(steelDiameter-2*steelThickness,4))
@@ -901,13 +901,13 @@ def Cal_Property(PileData, Position, ReinforcedState):
 		# 미보강 단면 특성치 계산 (하부)
 		if (Position == 'bottom'):
 			if (ReinforcedState == 'unreinforced'):
-				if (pileData['compPileType'] == '현장타설말뚝'):
+				if (pileData['compPileType'] == 'Cast_In_Situ'):
 					Area = math.pi/4 * (concreteDiameter)**2
 					Modulus = concreteModulus
 					SecInertia = (math.pi * (concreteDiameter)**4)/64
 					Diameter = concreteDiameter
 
-				elif (pileData['compPileType'] == 'PHC말뚝'):
+				elif (pileData['compPileType'] == 'PHC_Pile'):
 					Area = (concreteDiameter-concreteThickness) * math.pi * (concreteThickness) + (steelModulus/concreteModulus-1)*steelDiameter
 					Modulus = concreteModulus
 					Ic = math.pi/64 * (math.pow(concreteDiameter,4)-math.pow((concreteDiameter-2*concreteThickness),4))
@@ -915,7 +915,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = Ic + Is
 					Diameter = concreteDiameter
 
-				elif (pileData['compPileType']=='SC말뚝'):
+				elif (pileData['compPileType']=='SC_Pile'):
 					
 					Area1 = math.pi/4 * (math.pow(concreteDiameter-2*steelCorThickness,2) - math.pow(concreteDiameter-2*concreteThickness,2))
 					Area2 = math.pi/4 * (steelModulus/concreteModulus-1)*(math.pow(concreteDiameter-2*steelCorThickness,2)-math.pow(concreteDiameter-2*steelThickness,2))
@@ -926,13 +926,13 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = Ic + Is
 					Diameter = concreteDiameter
 		
-				elif (pileData['compPileType']=='강관말뚝'):
+				elif (pileData['compPileType']=='Steel_Pile'):
 					Area = math.pi/4 * (math.pow(steelDiameter - 2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					Modulus = steelModulus
 					SecInertia = math.pi/64 * (math.pow(steelDiameter - 2*steelCorThickness,4)-math.pow(steelDiameter-2*steelThickness,4))
 					Diameter = steelDiameter
 		
-				elif (pileData['compPileType']=='소일시멘트말뚝'):
+				elif (pileData['compPileType']=='Soil_Cement_Pile'):
 					SteelArea = math.pi/4 * (math.pow(steelDiameter-2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					SteelModulus = steelModulus
 					SteelInertia = math.pi/64 * (math.pow(steelDiameter-2*steelCorThickness,4)-math.pow(steelDiameter-2*steelThickness,4))
@@ -943,7 +943,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 		
 			# 보강 단면 특성치 계산
 			elif (ReinforcedState == 'reinforced'):
-				if (pileData['compPileType'] == '현장타설말뚝'):
+				if (pileData['compPileType'] == 'Cast_In_Situ'):
 					Area1 = math.pi/4 * (concreteDiameter)**2
 					Area2 = outerModulus/concreteModulus*(concreteDiameter + outerThickness+ 2*innerThickness)*math.pi*outerThickness
 					Area3 = innerModulus/concreteModulus*(concreteDiameter + innerThickness)*math.pi*innerThickness
@@ -955,7 +955,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = concreteDiameter + 2* outerThickness + 2* innerThickness
 		
-				elif (pileData['compPileType'] == 'PHC말뚝'):
+				elif (pileData['compPileType'] == 'PHC_Pile'):
 					Area1 = (concreteDiameter-concreteThickness) * math.pi * (concreteThickness) + (steelModulus/concreteModulus-1)*steelDiameter
 					Area2 = outerModulus/concreteModulus*(concreteDiameter + outerThickness+ 2*innerThickness)*math.pi*outerThickness
 					Area3 = innerModulus/concreteModulus*(concreteDiameter + innerThickness)*math.pi*innerThickness
@@ -969,7 +969,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = concreteDiameter + 2* outerThickness + 2* innerThickness
 
-				elif (pileData['compPileType'] == 'SC말뚝'):
+				elif (pileData['compPileType'] == 'SC_Pile'):
 					Area1 = math.pi/4 * (math.pow(concreteDiameter-2*steelCorThickness,2) - math.pow(concreteDiameter-2*concreteThickness,2))
 					Area2 = math.pi/4 * (steelModulus/concreteModulus-1)*(math.pow(concreteDiameter-2*steelCorThickness,2)-math.pow(concreteDiameter-2*steelThickness,2))
 					Area3 = Area1 + Area2
@@ -985,7 +985,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = concreteDiameter + 2* outerThickness + 2* innerThickness
 
-				elif (pileData['compPileType'] == '강관말뚝'):
+				elif (pileData['compPileType'] == 'Steel_Pile'):
 					Area1 = math.pi/4 * (math.pow(steelDiameter - 2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					Area2 = outerModulus/steelModulus*(steelDiameter + outerThickness+2*innerThickness)*math.pi*outerThickness
 					Area3 = innerModulus/steelModulus*(steelDiameter + innerThickness)*math.pi*innerThickness
@@ -997,7 +997,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 					SecInertia = SecInertia1 + SecInertia2 + SecInertia3
 					Diameter = steelDiameter + 2* outerThickness + 2* innerThickness
 
-				elif (pileData['compPileType']=='소일시멘트말뚝'):
+				elif (pileData['compPileType']=='Soil_Cement_Pile'):
 					SteelArea = math.pi/4 * (math.pow(steelDiameter-2*steelCorThickness,2)-math.pow(steelDiameter-2*steelThickness,2))
 					SteelModulus = steelModulus
 					SteelInertia = math.pi/64 * (math.pow(steelDiameter-2*steelCorThickness,4)-math.pow(steelDiameter-2*steelThickness,4))
@@ -1050,7 +1050,7 @@ def Cal_EI_D(PileData, Length):
 	Bottom_unreinforced_Property = json.loads(Cal_Property(json.dumps(pileData), 'bottom', 'unreinforced'))
 	Bottom_reinfored_Property = json.loads(Cal_Property(json.dumps(pileData), 'bottom', 'reinforced'))
 	
-	if(pileData['pileType'] == '소일시멘트말뚝'):
+	if(pileData['pileType'] == 'Soil_Cement_Pile'):
 		Top_unreinforced_PileEI = Top_unreinforced_Property[6]*Top_unreinforced_Property[8]
 		Top_unreinforced_PileD = Top_unreinforced_Property[3]
 		Top_reinforced_PileEI = Top_reinforced_Property[6]*Top_reinforced_Property[8]
@@ -1061,7 +1061,7 @@ def Cal_EI_D(PileData, Length):
 		Top_reinforced_PileEI = Top_reinforced_Property[1]*Top_reinforced_Property[2]
 		Top_reinforced_PileD = Top_reinforced_Property[3]
   
-	if (pileData['compPileType'] == '소일시멘트말뚝'):
+	if (pileData['compPileType'] == 'Soil_Cement_Pile'):
 		Bottom_unreinforced_PileEI = Bottom_unreinforced_Property[6]*Bottom_unreinforced_Property[8]
 		Bottom_unreinforced_PileD = Bottom_unreinforced_Property[3]
 		Bottom_reinforced_PileEI = Bottom_reinfored_Property[6]*Bottom_reinfored_Property[8]

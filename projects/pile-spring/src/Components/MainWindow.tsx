@@ -46,7 +46,7 @@ import {
   Matrix_Period_X_Result,
   Matrix_Period_Z_Result,
   ImportType,
-  Langauge
+  Language
 } from "./variables";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import ImportSpring from "./Springs/ImportSpring";
@@ -100,7 +100,7 @@ function MainWindow() {
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const { t:translate, i18n: internationalization} = useTranslation();
-  const language = useRecoilValue(Langauge);
+  const [language, setLanguage] = useRecoilState(Language);
   const handelTabChange = (event: React.SyntheticEvent, newvalue: string) => {
     setTabName(newvalue);
   };
@@ -125,6 +125,7 @@ function MainWindow() {
       calVsiState,
       forcepointX,
       forcepointY,
+      language
     } = data;
     setSetPileTableData(piletableData);
     setSetSoilData(soilData);
@@ -141,6 +142,7 @@ function MainWindow() {
     setCalVsiState(calVsiState);
     setForcePointX(forcepointX);
     setForcePointY(forcepointY);
+    setLanguage(language);
   }, []);
 
   React.useEffect(() => {
@@ -235,6 +237,7 @@ function MainWindow() {
     setMatrixPeriodXResult(Matrix_Period_X)
     setMatrixPeriodZResult(Matrix_Period_Z)
 
+    console.log(piletableData)
     // Excel 출력용 Json 데이터 생성
     const JsonResult = ExcelJsonResult(
       projectName,
@@ -245,7 +248,6 @@ function MainWindow() {
       waterlevel,
       groupEffectValue,
       Beta_Normal,
-
       Beta_Period,
       AlphaHTheta,
       KValue_Normal,
@@ -348,6 +350,7 @@ function MainWindow() {
     const Import_PeriodMatrix = dbCreateItem("GSTP", MaxID+4, PeriodInputJson)
 
     enqueueSnackbar("Import General Spring Success", {
+      variant: "success",
       autoHideDuration: 3000, 
     });
   };

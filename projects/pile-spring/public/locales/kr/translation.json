@@ -220,5 +220,13 @@
   "Ref_Point_Top" : "상단",
   "Ref_Point_Bottom" : "하단",
 
-  "SoilData_Error" : "지반 정보를 확인해주세요."
+  "SoilData_Error" : "지반 정보를 확인해주세요.",
+
+  "Import_GeneralSpring_Title" : "General Spring 입력",
+  "PlugIn_Coord" : "[Plug In 좌표계]",
+  "Civil_Coord_Type1" : "[Midas Civil 좌표계 - Type 1]",
+  "Civil_Coord_Type2" : "[Midas Civil 좌표계 - Type 2]",
+  "Select_Import_Type" : "Select Import Type : ",
+  "Type1" : "Type1",
+  "Type2" : "Type2"
 }

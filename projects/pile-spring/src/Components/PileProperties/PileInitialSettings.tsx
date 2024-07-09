@@ -5,7 +5,7 @@ import TypoGraphyDropList from '../NewComponents/TrypoGraphyDropList';
 import {useRecoilState, useRecoilValue, useResetRecoilState} from 'recoil';
 import {
     PileName, PileType, PileLength, ConstructionMethod, HeadCondition, BottomCondition, Steel_Dia_Title, Steel_Cor_Title, Steel_Title, Concrete_Title, ConcreteModulus_Title,
-    Concrete_Diameter,Concrete_Thickness, Concrete_Modulus, Steel_Diameter, Steel_Thickness, Steel_Modulus, Steel_Cor_Thickness, Langauge
+    Concrete_Diameter,Concrete_Thickness, Concrete_Modulus, Steel_Diameter, Steel_Thickness, Steel_Modulus, Steel_Cor_Thickness, Language
 } from '../variables';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 function PileInitialSettings(){
     const { t:translate, i18n: internationalization} = useTranslation();
 
-    const language = useRecoilValue(Langauge)
+    const language = useRecoilValue(Language)
     const [ListPileType, setListPileType] = useState<any>([])
     const [ListConstructionMethod, setListConstructionMethod ]= useState<any>([])
     const [ListHeadCondition, setListHeadCondition] = useState<any>([])
@@ -68,7 +68,7 @@ function PileInitialSettings(){
 
     const titleChange = (e:any) =>{
         // 철근 타이틀 : 현장타설말뚝, PHC 말뚝일 경우에는 단면적, 그 외에는 직경
-        if (e === '현장타설말뚝' || e=== 'PHC말뚝'){
+        if (e === 'Cast_In_Situ' || e=== 'PHC_Pile'){
             setSteelDiaTitle(translate('Basic_Steel_Diamter_Case1'))
         }
         else{
@@ -76,7 +76,7 @@ function PileInitialSettings(){
         }
         
         
-        if (e=== 'PHC말뚝'){
+        if (e=== 'PHC_Pile'){
             setSteelCorTitle(translate('Basic_Steel_Cor_Case1'))
         }
         else{
@@ -84,7 +84,7 @@ function PileInitialSettings(){
         }
         // Concrete Title 변경
         // 강관 말뚝, 소일시멘트 말뚝일 경우 소일시멘트, 그 외 콘크리트
-        if (e === '강관말뚝' || e === '소일시멘트말뚝'){
+        if (e === 'Steel_Pile' || e === 'Soil_Cement_Pile'){
             setConcreteTitle(translate('Basic_Concrete_Title_Case2'))
         }
         else{
@@ -92,10 +92,10 @@ function PileInitialSettings(){
         }
         // Steel Title 변경
         // 현장타설 말뚝일 경우 철근, PHC 말뚝일경우 PC 강재, 그 외 강관
-        if (e === '현장타설말뚝'){
+        if (e === 'Cast_In_Situ'){
             setSteelTitle(translate('Basic_Steel_Title_Case1'))
         }
-        else if (e === 'PHC말뚝'){
+        else if (e === 'PHC_Pile'){
             setSteelTitle(translate('Basic_Steel_Title_Case3'))
         }
         else {
@@ -103,7 +103,7 @@ function PileInitialSettings(){
         }
 
         // 말뚝 타입이 소일시멘트 말뚝의 경우 콘크리트 탄성계수를 변형계수로 출력
-        if (e === '소일시멘트말뚝'){
+        if (e === 'Soil_Cement_Pile'){
             setConcreteModulusTitle(translate('Basic_Concrete_Modulus_Case2'))
         }
         else{
@@ -115,38 +115,38 @@ function PileInitialSettings(){
         titleChange(pileType)
         setListPileType(
             [
-                [translate('Cast_In_Situ'), '현장타설말뚝'],
-                [translate('PHC_Pile'), 'PHC말뚝'],
-                [translate('SC_Pile'), 'SC말뚝'],
-                [translate('Steel_Pile'), '강관말뚝'],
-                [translate('Soil_Cement_Pile'), '소일시멘트말뚝']
+                [translate('Cast_In_Situ'), 'Cast_In_Situ'],
+                [translate('PHC_Pile'), 'PHC_Pile'],
+                [translate('SC_Pile'), 'SC_Pile'],
+                [translate('Steel_Pile'), 'Steel_Pile'],
+                [translate('Soil_Cement_Pile'), 'Soil_Cement_Pile']
             ]
             )
     
             setListHeadCondition(
                 [
-                    [translate('Head_Condition_Fixed'), '강결'],
-                    [translate('Head_Condition_Hinge'), '힌지']
+                    [translate('Head_Condition_Fixed'), 'Head_Condition_Fixed'],
+                    [translate('Head_Condition_Hinge'), 'Head_Condition_Hinge']
                 ]
             )
 
             setListConstructionMethod(
                 [
-                    [translate('CM_DropHammer'), '타격말뚝(타격 공법)'],
-                    [translate('CM_VibroHammer'), '타격말뚝(바이브러 해머공법)'],
-                    [translate('CM_InSitu'), '현장타설말뚝'],
-                    [translate('CM_Boring'), '중굴착 말뚝'],
-                    [translate('CM_Preboring'), 'preboring 말뚝'],
-                    [translate('CM_SoilCement'), '강관 소일시멘트 말뚝'],
-                    [translate('CM_Rotate'), '회전말뚝']
+                    [translate('CM_DropHammer'), 'CM_DropHammer'],
+                    [translate('CM_VibroHammer'), 'CM_VibroHammer'],
+                    [translate('CM_InSitu'), 'Cast_In_Situ'],
+                    [translate('CM_Boring'), 'CM_Boring'],
+                    [translate('CM_Preboring'), 'CM_Preboring'],
+                    [translate('CM_SoilCement'), 'CM_SoilCement'],
+                    [translate('CM_Rotate'), 'CM_Rotate']
                 ]
             )
 
             setListBottomCondition(
                 [
-                    [translate('Bottom_Condition_Free'), '자유'],
-                    [translate('Bottom_Condition_Hinge'), '힌지'],
-                    [translate('Bottom_Condition_Fixed'), '고정']
+                    [translate('Bottom_Condition_Free'), 'Bottom_Condition_Free'],
+                    [translate('Bottom_Condition_Hinge'), 'Bottom_Condition_Hinge'],
+                    [translate('Bottom_Condition_Fixed'), 'Bottom_Condition_Fixed']
                 ]
             )
     },)

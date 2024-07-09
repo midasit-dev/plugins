@@ -46,22 +46,22 @@ export const PileLength = atom({
 
 export const PileType = atom({
     key: 'varPileType',
-    default: '현장타설말뚝'
+    default: 'Cast_In_Situ'
 });
 
 export const ConstructionMethod = atom({
     key: 'ConstructionMethod',
-    default: '타격말뚝(타격 공법)'
+    default: 'CM_DropHammer'
 });
 
 export const HeadCondition = atom({
     key: 'HeadCondition',
-    default: '강결'
+    default: 'Head_Condition_Fixed'
 });
 
 export const BottomCondition = atom({
     key: 'BottomCondition',
-    default: '자유'
+    default: 'Bottom_Condition_Free'
 });
 
 
@@ -229,7 +229,7 @@ export const Minor_Degree = atom({
 /**Reinforced variables */
 export const ReinforcedMethod = atom({
     key: 'ReinforcedMethod',
-    default: '피복'
+    default: 'Reinforced_Method_Outer'
 });
 
 export const ReinforcedStartLength = atom({
@@ -276,7 +276,7 @@ export const CompositeTypeCheck = atom({
 
 export const CompPileType = atom({
     key: 'varCompPileType',
-    default: '현장타설말뚝'
+    default: 'Cast_In_Situ'
 });
 
 export const CompStartLength = atom({
@@ -480,7 +480,7 @@ export const SoilData = atom({
     key: 'SoilData',
     default: [{ id: 1, 
         LayerNo: 1, 
-        LayerType: '점성토', 
+        LayerType: 'SoilType_Clay', 
         LayerDepth : 0, 
         Depth : 10,
         AvgNValue : 10, 
@@ -551,7 +551,8 @@ export const DownloadData = selector({
         const groupEffectState = get(GroupEffectState);
         const forcepointX = get(Force_Point_X);
         const forcepointY = get(Force_Point_Y);
-        return {projectName, piletableData, soilData, topLevel, groundLevel, waterlevel, groupEffectValue, slopeEffectState, foundationWidth, sideLength, liquefactionState, calVsiState, groupEffectState, forcepointX, forcepointY}
+        const language = get(Language);
+        return {projectName, piletableData, soilData, topLevel, groundLevel, waterlevel, groupEffectValue, slopeEffectState, foundationWidth, sideLength, liquefactionState, calVsiState, groupEffectState, forcepointX, forcepointY, language}
     }
 })
 
@@ -581,12 +582,12 @@ export const Beta_Normal_Result = atom({
 });
 
 export const Beta_Seismic_Result = atom({
-    key: 'Cal_Beta_Normal',
+    key: 'Cal_Beta_Seismic',
     default: [] as any
 });
 
 export const Beta_Period_Result = atom({
-    key: 'Cal_Beta_Normal',
+    key: 'Cal_Beta_Period',
     default: [] as any
 });
 
@@ -614,8 +615,8 @@ export const KValue_Period_Result = atom({
     default: [] as any
 });
 
-export const Langauge = atom({
-    key: 'Langauge',
+export const Language = atom({
+    key: 'Language',
     default: 'kr'
 })
 

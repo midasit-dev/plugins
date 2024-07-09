@@ -25,19 +25,17 @@ import {  ProjectName, FoundationWidth, SideLength,
     CompConcrete_Diameter, CompConcrete_Thickness, CompConcrete_Modulus, CompSteel_Diameter, CompSteel_Thickness, CompSteel_Modulus, CompSteel_Cor_Thickness,
     ReinforcedMethod, ReinforcedStartLength, ReinforcedEndLength, OuterThickness, OuterModulus, InnerThickness, InnerModulus, InnerInputState,
     Major_Start_Point, Minor_Start_Point, Major_Space, Major_Degree, Minor_Degree,
-    PileTableData, PileDataSelector, SelectedRow, TopLevel, Force_Point_X, Force_Point_Y, Langauge
+    PileTableData, PileDataSelector, SelectedRow, TopLevel, Force_Point_X, Force_Point_Y, Language
 
 } from '../variables';
-import { CalculatePileCenterCoordinates, CalculatePileDegree, ExtractNumbers} from '../../utils_pyscript';
-import { TextField } from '@mui/material';
+import { ExtractNumbers} from '../../utils_pyscript';
 import { useTranslation } from 'react-i18next';
-import { use } from 'i18next';
 
 function PileProperties(){
 
     // 언어팩 변수
     const { t:translate, i18n: internationalization} = useTranslation();
-    const [language, setLanguage] = useRecoilState(Langauge)
+    const [language, setLanguage] = useRecoilState(Language)
 
     const LanguageList:any = [
         ['kr', 'kr'],
@@ -53,7 +51,6 @@ function PileProperties(){
         internationalization.changeLanguage(language);
     }
     , [language])
-
     const { enqueueSnackbar } = useSnackbar();
 
     // Recoil 변수
@@ -198,7 +195,7 @@ function PileProperties(){
             return true
         }
         // 하부 말뚝 설정
-        if (compositeTypeCheck == true){
+        if (compositeTypeCheck === true){
             if (Number(compStartLength) < 0){
                 enqueueSnackbar(translate('Error_CompStartLength'), {variant: 'error', autoHideDuration: 3000})
                 return true
@@ -210,7 +207,7 @@ function PileProperties(){
         }
 
         //기본 말뚝 단면
-        if (pileType === '현장타설말뚝'){
+        if (pileType === 'Cast_In_Situ'){
             if (Number(concreteDiameter) <= 0){
                 enqueueSnackbar(translate('Error_Concrete_Diameter'), {variant: 'error', autoHideDuration: 3000})
                 return true
@@ -229,7 +226,7 @@ function PileProperties(){
             }
         }
         
-        if (pileType === 'PHC말뚝'){
+        if (pileType === 'PHC_Pile'){
             if (Number(concreteDiameter) <= 0){
                 enqueueSnackbar(translate('Error_Concrete_Diameter'), {variant: 'error', autoHideDuration: 3000})
                 return true
@@ -256,7 +253,7 @@ function PileProperties(){
             }
         }
 
-        if (pileType === 'SC말뚝'){
+        if (pileType === 'SC_Pile'){
             if (Number(concreteDiameter) <= 0){
                 enqueueSnackbar(translate('Error_Concrete_Diameter'), {variant: 'error', autoHideDuration: 3000})
                 return true
@@ -283,7 +280,7 @@ function PileProperties(){
             }
         }
         
-        if (pileType === '강관말뚝'){
+        if (pileType === 'Steel_Pile'){
             if (Number(steelDiameter) <= 0){
                 enqueueSnackbar(translate('Error_Pipe_Diameter'), {variant: 'error', autoHideDuration: 3000})
                 return true
@@ -302,7 +299,7 @@ function PileProperties(){
             }
         }
 
-        if (pileType === '소일시멘트말뚝'){
+        if (pileType === 'Soil_Cement_Pile'){
             if (Number(concreteDiameter) <= 0){
                 enqueueSnackbar(translate('Error_SoilCement_Diameter'), {variant: 'error', autoHideDuration: 3000})
                 return true
@@ -339,8 +336,8 @@ function PileProperties(){
             return true
         }
 
-        if (compositeTypeCheck == true){
-            if (compPileType === '현장타설말뚝'){
+        if (compositeTypeCheck === true){
+            if (compPileType === 'Cast_In_Situ'){
                 if (Number(compConcreteDiameter) <= 0){
                     enqueueSnackbar(translate('Error_Comp_Concrete_Diameter'), {variant: 'error', autoHideDuration: 3000})
                     return true
@@ -359,7 +356,7 @@ function PileProperties(){
                 }
             }
 
-            if (compPileType === 'PHC말뚝'){
+            if (compPileType === 'PHC_Pile'){
                 if (Number(compConcreteDiameter) <= 0){
                     enqueueSnackbar(translate('Error_Comp_Concrete_Diameter'), {variant: 'error', autoHideDuration: 3000})
                     return true
@@ -386,7 +383,7 @@ function PileProperties(){
                 }
             }
 
-            if (compPileType === 'SC말뚝'){
+            if (compPileType === 'SC_Pile'){
                 if (Number(compConcreteDiameter) <= 0){
                     enqueueSnackbar(translate('Error_Comp_Concrete_Diameter'), {variant: 'error', autoHideDuration: 3000})
                     return true
@@ -413,7 +410,7 @@ function PileProperties(){
                 }
             }
 
-            if (compPileType === '강관말뚝'){
+            if (compPileType === 'Steel_Pile'){
                 if (Number(compSteelDiameter) <= 0){
                     enqueueSnackbar(translate('Error_Comp_Pipe_Diameter'), {variant: 'error', autoHideDuration: 3000})
                     return true
@@ -432,7 +429,7 @@ function PileProperties(){
                 }
             }
 
-            if (compPileType === '소일시멘트말뚝'){
+            if (compPileType === 'Soil_Cement_Pile'){
                 if (Number(compConcreteDiameter) <= 0){
                     enqueueSnackbar(translate('Error_Comp_SoilCement_Diameter'), {variant: 'error', autoHideDuration: 3000})
                     return true
@@ -459,7 +456,7 @@ function PileProperties(){
                 }
             }
         }
-
+        
         if (isNaN(compConcreteModulus)){
             enqueueSnackbar(translate('Error_Comp_Concrete_Modulus_isNum'), {variant: 'error', autoHideDuration: 3000})
             return true
@@ -471,7 +468,7 @@ function PileProperties(){
         }
 
         // 보강 단면
-        if (!(Number(reinforcedStartLength) == 0 && Number(reinforcedEndLength) == 0)){
+        if (!(Number(reinforcedStartLength) === 0 && Number(reinforcedEndLength) === 0)){
             if (Number(reinforcedStartLength) < 0){
                 enqueueSnackbar(translate('Error_Reinforced_StartLength'), {variant: 'error', autoHideDuration: 3000})
                 return true
@@ -530,7 +527,7 @@ function PileProperties(){
 
         // 말뚝 개수 확인
         let majorSpaceNumbers = 0
-        if (majorSpace == '' || majorSpace == '0')
+        if (majorSpace === '' || majorSpace === '0')
             majorSpaceNumbers = 1
         else
             majorSpaceNumbers = (ExtractNumbers(majorSpace)).length + 1

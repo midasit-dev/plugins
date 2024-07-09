@@ -104,7 +104,7 @@ function Composite(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = "직경 (mm)"
-                            disabled = {(compPileType === '강관말뚝') ? true : false}
+                            disabled = {(compPileType === 'Steel_Pile') ? true : false}
                             value = {compConcreteDiameter}
                             onChange = {handleChangeConcreteDiameter}
                         />
@@ -113,7 +113,7 @@ function Composite(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = "두께 (mm)"
-                            disabled = {(compPileType === '현장타설말뚝' ||compPileType === '강관말뚝' || compPileType === '소일시멘트말뚝') ? true : false}
+                            disabled = {(compPileType === 'Cast_In_Situ' ||compPileType === 'Steel_Pile' || compPileType === 'Soil_Cement_Pile') ? true : false}
                             value = {compConcreteThickness}
                             onChange = {handleChangeConcreteThickness}
                         />
@@ -122,7 +122,7 @@ function Composite(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = {compConcreteModulusTitle}
-                            disabled = {(compPileType === '강관말뚝') ? true : false}
+                            disabled = {(compPileType === 'Steel_Pile') ? true : false}
                             value = {compConcreteModulus}
                             onChange = {handleChangeConcreteModulus}
                         />
@@ -138,7 +138,7 @@ function Composite(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = {compSteelDiaTitle}
-                            disabled = {(compPileType === 'SC말뚝') ? true : false}
+                            disabled = {(compPileType === 'SC_Pile') ? true : false}
                             value = {compSteelDiameter}
                             onChange = {handleChangeSteelDiameter}
                         />
@@ -147,7 +147,7 @@ function Composite(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = "두께 (mm)"
-                            disabled = {(compPileType === '현장타설말뚝') || (compPileType ==='PHC말뚝') ? true : false}
+                            disabled = {(compPileType === 'Cast_In_Situ') || (compPileType ==='PHC_Pile') ? true : false}
                             value = {compSteelThickness}
                             onChange = {handleChangeSteelThickness}
                         />
@@ -164,7 +164,7 @@ function Composite(){
                             width = {200}
                             textFieldWidth = {100}
                             placeholder = {compSteelCorTitle}
-                            disabled = {(compPileType === '현장타설말뚝') ? true : false}
+                            disabled = {(compPileType === 'Cast_In_Situ') ? true : false}
                             value = {compSteelCorThickness}
                             onChange = {handleChangeSteelCorThickness}
                         />
