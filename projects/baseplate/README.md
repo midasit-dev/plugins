@@ -1,12 +1,12 @@
 <!-- markdownlint-disable-next-line -->
 <br />
 <p align="center">
-  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui/main/logo_circle.svg" alt="moaui logo"></a>
+  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
 </p>
 
-<h1 align="center">cra-template-moaui (for code)</h1>
+# Baseplate Design
+- 미출시
+<br />
 
-<p align="center">To upload the created code to a version control repository like GitHub and provide explanations, <br />
-you can modify this README.md file.</p>
-
-i'm danger
+## Details
+### version 1.0.0
