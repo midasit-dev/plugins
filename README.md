@@ -6,6 +6,9 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 [![pages-build-deployment](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/midasit-dev/plugins)
 
+## Moaui document
+- [moaui docs](https://dev--6556d17f924e868b000ddaf5.chromatic.com/)
+
 ## Related Repository
 - [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
 
@@ -41,7 +44,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 
 | status | no | title                              | writer             | made in   | description                                                                                          | testing                                                         |
 |--------|----|------------------------------------|--------------------|-----------|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
-|     ⏳ | 1  | 🔒 easy capture generator          | Cale & Sidd        | chapter   | [🚧 Readme](https://github.com/MIDASIT-Co-Ltd/plugins/blob/main/projects/easy-capture-generator-moaui/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/easy-capture-generator) |
+|     ✅ | 1  | 🔒 easy capture generator          | Cale & Sidd        | chapter   | [Readme](https://github.com/MIDASIT-Co-Ltd/plugins/blob/main/projects/easy-capture-generator-moaui/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/easy-capture-generator) |
 |     ✅ | 2  | rebar spacing converter            | Lenny              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rebar-spacing-converter/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rebar-spacing-converter) |
 |     ✅ | 3  | load effect for lc                 | Lenny              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/load-effect-for-lc/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/load-effect-for-lc) |
 |     ✅ | 4  | element information                | Lenny & Walter     | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/element-information/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/element-information) |
@@ -63,7 +66,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ✅ | 20 | cae importer                       | group6 (Andy)      | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/cae-importer/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/cae-importer) |
 |     ✅ | 21 | auto saver                         | group6 (Ringo)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/auto-saver/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/auto-saver) |
 |     ✅ | 22 | align local axis for element       | Lawrence           | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/align-local-axis-for-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/align-local-axis-for-element) |
-|     ⏳ | 23 | divide frame element               | Sadim              | tgc       | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
+|     ✅ | 23 | divide frame element               | Sadim              | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/divide-frame-element/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/divide-frame-element) |
 
 ### Links Generated (Updated at 2024.07.01 19:15:06)
 - [Spacegass-Importer](https://midasit-dev.github.io/plugins/spacegass-importer)

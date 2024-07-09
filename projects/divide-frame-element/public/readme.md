@@ -1,6 +1,9 @@
-# Plug-in Item Title
-- Plug-in Item Description
+# Floor Transition(층 전환)
+- 이 plugin은 서로 다른 층을 전환하는 기능을 수행합니다. 예를 들어, 20층의 건물이 있을 때, 5층의 노드-요소를 9층의 노드-요소와 맞바꿔줍니다.
 <br />
 ## Details
 ### version 1.0.0
-- This Plug-in Detail contents...
+- 가장 먼저 층 정보를 가지고 오기 위해 맨 아랫 층의 기준 Node 한개를 선택합니다. 
+- 옮기고 싶은 층을 입력합니다. 
+- 옮겨질 층이 이동할 목적 층에 대해 입력합니다. 
+- Apply 버튼을 클릭합니다.

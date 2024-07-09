@@ -82,7 +82,7 @@ React.useEffect(() => {
 		 {isInitialized && isValid && (
 			 <RecoilRoot>
 				 <SnackbarProvider 
-					 maxSnack={3} 
+					 maxSnack={10} 
 					 anchorOrigin={{
 						 vertical: 'bottom',
 						 horizontal: 'center',
@@ -92,6 +92,7 @@ React.useEffect(() => {
 							 <Icon iconName="Close" />
 						 </IconButton>
 					 )}
+					 autoHideDuration={null}
 				 >
 				 {process.env.NODE_ENV === 'development' && isDevServerListening() ?
 					<DevKit bgColorState={[bgColor, setBgColor]}>
