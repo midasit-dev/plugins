@@ -1,4 +1,5 @@
 import {CalculateProperties} from '../../utils_pyscript'
+import { Force_Point_X } from '../variables';
 
 function ExcelJsonResult(
   translate:any,
@@ -26,6 +27,11 @@ function ExcelJsonResult(
   Matrix_Seismic_Liq_Z:any,
   Matrix_Period_X:any,
   Matrix_Period_Z:any,
+  PlanViewImage:any,
+  FrontViewImage:any,
+  SideViewImage:any,
+  Force_Point_X:any,
+  Force_Point_Y:any,
 ){
   let reportjson_items:any = {};
   const sheetName = "report";
@@ -35,8 +41,10 @@ function ExcelJsonResult(
   }
   // 1.1 일반
   let ItemArray:any = [];
+  let PileTotalNums = 0
   for(let i=0; i<piletableData.length; i++){
     const TopProperty = CalculateProperties(piletableData[i], 'top', 'unreinforced')
+    PileTotalNums += Number(piletableData[i].PileNums)
     ItemArray.push({
       "__PileName" : '('+(i+1)+') '+ piletableData[i].pileName,
       "__TopLevel" : Number(topLevel),
@@ -49,9 +57,14 @@ function ExcelJsonResult(
     })
   }
   reportjson_items["_General"] = ItemArray
-
   // 1.2 말뚝배치
   reportjson_items["_PileBatch"] = {
+    "__PileNums" : PileTotalNums,
+    "__PileImage_PlanView" : PlanViewImage,
+    "__PileImage_FrontView" : FrontViewImage,
+    "__PileImage_SideView" : SideViewImage,
+    "__ForcePointX" : Number(Force_Point_X),
+    "__ForcePointY" : Number(Force_Point_Y),
   }
 
   //1.3 말뚝 제원
@@ -126,7 +139,7 @@ function ExcelJsonResult(
   for(let i=0; i<soilData.length; i++){
     let TableRowData: any = []
     TableRowData.push(soilData[i].LayerNo)
-    TableRowData.push(soilData[i].LayerType)
+    TableRowData.push(translate(soilData[i].LayerType))
     TableRowData.push(Number(Level.toFixed(3)))
     TableRowData.push(Number(soilData[i].Depth))
     TableRowData.push(Number(soilData[i].AvgNValue))
@@ -162,8 +175,6 @@ function ExcelJsonResult(
     let TableData_Normal:any = []
     for(let j = 0; j<soilData.length; j++){
       let TableRowData: any = []
-      console.log('ae0', soilData[j].aE0)
-      console.log('alphaHThetaResult', alphaHThetaResult[j])
       let KH0 =soilData[j].aE0 / 0.3*alphaHThetaResult[j]
       let KH = (KH0)*Math.pow((betaNormalResult[2][i]/0.3),(-3/4))
       let KH0_Seis = soilData[j].aE0_Seis / 0.3*alphaHThetaResult[j]

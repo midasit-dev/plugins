@@ -55,6 +55,9 @@ import ExcelJsonResult from "./ExcelReport/ExcelJson";
 import InfiniLoading from "./Loading/InfinitLoading";
 import ExcelReport from "./ExcelReport/ExcelReport";
 import {CalculateBeta, CalAlphaHTheta, CalculateKvalue, CalculateKv, CalculateMatrix, py_db_get_maxid, dbCreateItem, dbUpdateItem} from "../utils_pyscript"
+import PlanViewDrawing from "./ExcelReport/PlanViewDrawing";
+import FrontViewDrawing from "./ExcelReport/FrontViewDrawing";
+import SideViewDrawing from "./ExcelReport/SideViewDrawing";
 import { useTranslation } from 'react-i18next';
 import DownloadButton from "./NewComponents/DownloadButton";
 
@@ -95,6 +98,7 @@ function MainWindow() {
   const [matrixPeriodXResult, setMatrixPeriodXResult] = useRecoilState(Matrix_Period_X_Result);
   const [matrixPeriodZResult, setMatrixPeriodZResult] = useRecoilState(Matrix_Period_Z_Result);
   const [importType, setImportType] = useRecoilState(ImportType);
+
 
   const [tabName, setTabName] = useState("Pile");
   const [loading, setLoading] = useState(false);
@@ -237,7 +241,10 @@ function MainWindow() {
     setMatrixPeriodXResult(Matrix_Period_X)
     setMatrixPeriodZResult(Matrix_Period_Z)
 
-    console.log(piletableData)
+    // Excel 출력용 이미지 base64 데이터 생성
+    const PlanViewImage = PlanViewDrawing(translate, sideLength, foundationWidth, forcePointX, forcePointY, piletableData)
+    const FrontViewImage = FrontViewDrawing(translate, sideLength, foundationWidth, piletableData, topLevel, groundLevel)
+    const SideViewImage = SideViewDrawing(translate, sideLength, foundationWidth, piletableData, topLevel, groundLevel)
     // Excel 출력용 Json 데이터 생성
     const JsonResult = ExcelJsonResult(
       translate,
@@ -264,7 +271,12 @@ function MainWindow() {
       Matrix_Seismic_Liq_X,
       Matrix_Seismic_Liq_Z,
       Matrix_Period_X,
-      Matrix_Period_Z
+      Matrix_Period_Z,
+      PlanViewImage,
+      FrontViewImage,
+      SideViewImage,
+      forcePointX,
+      forcePointY,
     )
     setReportJsonResult(JsonResult);
 
