@@ -49,7 +49,7 @@ const CompTypographyAndDropList = (props: any) => {
                 defaultValue={value}
                 value={value}
                 onChange={(e: any) => setValue(e.target.value)}
-                listWidth={200}
+                listWidth={300}
             />
         </GuideBox>
     );

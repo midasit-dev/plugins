@@ -5,7 +5,8 @@ export default function useKakaoLoader() {
     /** 
      * @참고 https://apis.map.kakao.com/web/guide/
      */
-		appkey: process.env.REACT_APP_KAKAO_MAP_API_KEY as string,
+		appkey: process.env.REACT_APP_KAKAO_MAP_API_KEY!,
     libraries: ["clusterer", "drawing", "services"],
+		retries: 3,
   })
 }

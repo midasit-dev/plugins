@@ -82,7 +82,7 @@ export const VarLocationType = atom({
 
 export const VarMessage = atom({
 	key: 'VarMessage',
-	default: '',
+	default: {},
 });
 
 export const VarLatitude = atom({
