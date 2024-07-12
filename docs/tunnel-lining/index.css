@@ -288,6 +288,7 @@ textarea {
   text-decoration: line-through;
 }
 .py-terminal {
+	display: none;
   min-height: 10em;
   background-color: black;
   color: white;
