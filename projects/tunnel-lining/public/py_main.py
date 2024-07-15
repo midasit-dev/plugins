@@ -143,7 +143,7 @@ def py_generate_nodes(element_list, Modulus, Poisson, BoundaryCondition):
 		vector_v = np.array([Oriented_Node_json[node_key[-2]][0]-Oriented_Node_json[node_key[-1]][0], Oriented_Node_json[node_key[-2]][1]-Oriented_Node_json[node_key[-1]][1]])
 		vector_v = vector_v / np.linalg.norm(vector_v)
 		EndNode_Boundary_Point = Oriented_Node_json[node_key[-1]] - vector_v
-  
+		
 		## Node 생성
 		StartNode_Boundary_Point_Cord = {"X": StartNode_Boundary_Point[0], "Y": 0, "Z": StartNode_Boundary_Point[1]}
 		EndNode_Boundary_Point_Cord = {"X": EndNode_Boundary_Point[0], "Y": 0, "Z": EndNode_Boundary_Point[1]}
