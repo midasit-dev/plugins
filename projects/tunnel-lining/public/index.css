@@ -293,6 +293,7 @@ textarea {
   color: white;
   padding: 0.5rem;
   overflow: auto;
+	display: none;
 }
 .py-terminal-hidden {
   display: none;
