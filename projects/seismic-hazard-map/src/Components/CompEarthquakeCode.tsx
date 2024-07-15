@@ -9,6 +9,7 @@ import {
     Typography,
     Color,
     DropList,
+		Chip,
 } from "@midasit-dev/moaui"
 import CompTypographyAndDropList from "./TypographyAndDropList";
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -39,6 +40,7 @@ import { Accel_200 } from "./Accel_200";
 import { Accel_100 } from "./Accel_100";
 import { Accel_50 } from './Accel_50';
 
+import { motion } from 'framer-motion';
 
 const ComponentEarthquakeCode = () => {
     const [earthquake_code, setEarthquakeCode] = useRecoilState(VarEarthquakeCode);
@@ -111,22 +113,33 @@ const ComponentEarthquakeCode = () => {
                 if (result[0].road_address) address_name = result[0].road_address.address_name;
 
                 const interp_value = result_val["value"][0] / 100;
-                const result_text = `유효 지반가속도 : ${interp_value.toFixed(3)}  `;
+                const result_text = `유효 지반가속도: ${interp_value.toFixed(3)}  `;
 
                 setResultText(result_text);
                 setCalculated(true);
+								setMessage({
+									address_name,
+									latitude: Number(x_val).toFixed(3),
+									longitude: Number(y_val).toFixed(3),
+									msg_period,
+									interp_value: interp_value.toFixed(3),
+								})
 
-                setMessage(`
-#### ${address_name}  
+//                 setMessage(`
+// #### ${address_name}  
 
-(위도: ${Number(x_val).toFixed(3)}, 경도: ${Number(y_val).toFixed(3)})  
+// (위도: ${Number(x_val).toFixed(3)}, 경도: ${Number(y_val).toFixed(3)})  
 
-## 재현주기 ${msg_period}
+// ## 재현주기 ${msg_period}
 
-# ${interp_value.toFixed(3)}(g)
-`);
+// # ${interp_value.toFixed(3)}(g)
+// `);
             } else {
-                setMessage('No results found');
+                setMessage({
+									error: {
+										message: 'No results found',
+									}
+								});
                 setCalculated(false);
             }
         };
@@ -149,22 +162,42 @@ const ComponentEarthquakeCode = () => {
     const onClear = () => {        
         setCalculated(false);        
         setResultText('');
-        setMessage('');
+        setMessage({});
         setAddress('');
     };
 
-    const handleSearch = (e: any) => {
-        if (location_type === '1' && !address) {
-            setMessage("Please enter the location");
-            return;
-        }
+		const [loadingSearch, setLoadingSearch] = React.useState(false);
 
-        if (processing.current) return;
+		const handleSearch = () => {
+			setLoadingSearch(true);
+		};
 
-        processing.current = true;
-        calculate(null);
-        processing.current = false;
-    };
+		React.useEffect(() => {
+			if (!loadingSearch) return;
+			setTimeout(() => {
+				try {
+					if (location_type === '1' && !address) {
+						setMessage({
+							error: {
+								message: "Please enter the location",
+							}
+						})
+		
+						return;
+					}
+		
+					if (processing.current) return;
+		
+					processing.current = true;
+					calculate(null);
+					processing.current = false;
+				} catch (err) { 
+					console.error(err);
+				} finally {
+					setLoadingSearch(false);
+				}
+			}, 1000);
+		}, [loadingSearch]);
 
     //for 디바운스!
     React.useEffect(() => {
@@ -185,9 +218,9 @@ const ComponentEarthquakeCode = () => {
     };
 
     return (
-        <GuideBox width="100%" spacing={2}>
-            <GuideBox width='100%' spacing={0.5} padding={1}>
-                <CompTypographyAndDropList title="설계기준" state={earthquake_code} setState={setEarthquakeCode} blueTitle droplist={earthquake_code_list} width={200} />
+        <GuideBox width="100%" spacing={3.5} padding={1}>
+            <GuideBox width='100%' spacing={1}>
+                <CompTypographyAndDropList title="설계기준" state={earthquake_code} setState={setEarthquakeCode} blueTitle droplist={earthquake_code_list} width={300} />
                 <GuideBox width="inherit" row horSpaceBetween verCenter height={30}>
                     <Typography
                         verCenter
@@ -198,36 +231,37 @@ const ComponentEarthquakeCode = () => {
                         재현주기
                     </Typography>
                     <DropList
-                        width={200}
+                        width={300}
                         itemList={new Map<string, number>(period_list as [string, number][])}
                         defaultValue={period}
                         value={period}
                         onChange={onChangePeriod}
-                        listWidth={200}
+                        listWidth={300}
                     />
                 </GuideBox>
 
 
                 {/* <CompTypographyAndDropList title="지진/풍속/설하중" state={calc_type} setState={setCalcType} blueTitle droplist={calc_type_list} width={200} /> */}
             </GuideBox>
-            <GuideBox width="100%" row spacing={1} padding={1}>
+            <GuideBox width="100%" row spacing={1} verCenter horSpaceBetween>
+								<Chip label="Graph Type" size="small" />
                 <RadioGroup row
                     onChange={handleChange}
-                    text="Graph Type"
                     value={location_type}
                 >
                     <Radio
-                        name="By Address"
-                        value="1"
+											name="By Address"
+											value="1"
+											marginRight={3}
                     />
                     <Radio
-                        name="By Latitude/Longitude"
-                        value="2"
-                        marginLeft={10}
+											name="By Latitude/Longitude"
+											value="2"
                     />
                 </RadioGroup>
             </GuideBox>
-            <GuideBox width="100%" row horSpaceBetween>
+            <GuideBox width="100%" horSpaceBetween spacing={2}>
+							<GuideBox width="100%" row horSpaceBetween>
                 {location_type === '1' &&
                     <GuideBox width={300} row spacing={2}>
                         {/* <CompTypographyAndTextField title="Address" placeholder="Input Address" state={address} setState={setAddress} width={230} /> */}
@@ -241,26 +275,25 @@ const ComponentEarthquakeCode = () => {
                                     Address
                                 </Typography>
                                 <TextField                                    
-                                    width={230}
-                                    height={30}
-                                    placeholder="Input Address"
-                                    onChange={(e: any) => setAddress(e.target.value)}
-                                    value={address}
+																	width={230}
+																	height={30}
+																	placeholder="Input Address"
+																	onChange={(e: any) => setAddress(e.target.value)}
+																	value={address}
                                 />
                             </GuideBox>
                         </GuideBox>
                     </GuideBox>
                 }
                 {location_type === '2' &&
-                    <GuideBox width={300} row spacing={2}>
-                        <CompTypographyAndTextField title="Lat." state={latitude} setState={setLatitude} width={100} />
-                        <CompTypographyAndTextField title="Long." state={longitude} setState={setLongitude} width={100} />
-                    </GuideBox>
+									<GuideBox width={300} row spacing={2}>
+										<CompTypographyAndTextField title="Lat." state={latitude} setState={setLatitude} width={100} />
+										<CompTypographyAndTextField title="Long." state={longitude} setState={setLongitude} width={100} />
+									</GuideBox>
                 }
-                <Button onClick={handleSearch} width="20%" variant="contained" color='negative' >Search</Button>
-            </GuideBox>
-            <GuideBox width="100%">
-                <Button onClick={onClear} width="100%">Reset</Button>
+								<Button onClick={handleSearch} width="20%" variant="contained" color='negative' loading={loadingSearch}>Search</Button>
+							</GuideBox>
+							<Button onClick={onClear} width="100%">Reset</Button>
             </GuideBox>
         </GuideBox>
     )

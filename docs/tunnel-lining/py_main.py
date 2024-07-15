@@ -4,6 +4,7 @@ from py_base import set_g_values, get_g_values, requests_json, MidasAPI, Product
 from py_base_sub import HelloWorld, ApiGet
 import numpy as np
 import math
+from collections import Counter
 ### do not delete this import scripts ###
 
 
@@ -52,136 +53,62 @@ def py_generate_nodes(element_list, Modulus, Poisson, BoundaryCondition):
 	element_json = civil.db_read_item("ELEM", element_list)
 	if "error" in element_json:
 		return json.dumps(element_json)
-	element_node_json = {} ## {ElementID: [Node1, Node2]}
-	for key in element_json:
-		element = element_json[key]
-		element_node_json[key] = [element["NODE"][0], element["NODE"][1]]
-
+	## element 정보들 중 Node 정보만 추출
+	## element_node_json = {ElementID: [Node1, Node2], ElementID: [Node3, Node4], ...}
+	element_node_json = {key: [element["NODE"][0], element["NODE"][1]] for key, element in element_json.items()}
+	
 	## NODE 들만 추출하여 하나의 배열 생성
-	Node_List_Sum = []
-	for key in element_node_json:
-		Node_List_Sum.append(element_node_json[key][0])
-		Node_List_Sum.append(element_node_json[key][1])
-	## Node_List 에서 동일한 값이 2개인 경우 중복값 제거
+	Node_List_Sum = [node for nodes in element_node_json.values() for node in nodes]
 	Node_List = list(set(Node_List_Sum))
 
 	## Node_List 에서 값이 1개인 Node만 추출
-	End_Node_List = [] ## [Node1, Node2]
-	for i in Node_List:
-		if Node_List_Sum.count(i) == 1:
-			End_Node_List.append(i)
+	node_counter = Counter(Node_List_Sum)
+	End_Node_List = [node for node, count in node_counter.items() if count == 1]
 
 	## Node_List 에 있는 Node 들의 좌표 추출
 	## List를 ,로 구분하여 문자열로 변환
 	Node_Coordinate = civil.db_read_item("NODE", ",".join(map(str, Node_List)))
-	Node_Coordinate_json = {} ## {NodeID: [X, Z]}
-	for key in Node_Coordinate:
-		Node_Coordinate_json[key] = [Node_Coordinate[key]["X"], Node_Coordinate[key]["Z"]]
-	max_ID = 0
-	for key in Node_Coordinate_json:
-		if max_ID < int(key):
-			max_ID = int(key)
+	Node_Coordinate_json = {key: [coord["X"], coord["Z"]] for key, coord in Node_Coordinate.items()}
+	max_ID = max_id = max(map(int, Node_Coordinate_json.keys()))
+	
 	## End_Node_List 에 있는 Node 들 중 X좌표가 가장 작은 Node를 시작 Node로 설정
-	if(Node_Coordinate_json[str(End_Node_List[0])][0] < Node_Coordinate_json[str(End_Node_List[1])][0]):
-		start_node = End_Node_List[0]
-	else:
-		start_node = End_Node_List[1]
+	start_node = min(End_Node_List, key=lambda node: Node_Coordinate_json[str(node)][0])
 
 	## element_node_json 에서 start_node를 시작으로, 연결된 node들을 순서대로 배열로 저장
 	## element_node_json = {ElementID: [Node1, Node2], ElementID: [Node3, Node4], ...}
 	## result = [start_node, Node1, Node2, Node3, ...]
 
 	Oriented_Node_List = [start_node]
-	origin_json = element_node_json.copy()
-	while len(origin_json) > 0:
-		for key in origin_json:
-			if origin_json[key][0] == start_node:
-				Oriented_Node_List.append(origin_json[key][1])
-				start_node = origin_json[key][1]
-				del origin_json[key]
-				break
-			if origin_json[key][1] == start_node:
-				Oriented_Node_List.append(origin_json[key][0])
-				start_node = origin_json[key][0]
-				del origin_json[key]
-				break
+	remaining_elements = element_node_json.copy()
+	print('remaining_elements_before', remaining_elements)
+	while remaining_elements:
+		for key, nodes in list(remaining_elements.items()):
+			if nodes[0] == start_node:
+					next_node = nodes[1]
+			elif nodes[1] == start_node:
+					next_node = nodes[0]
+			else:
+					continue
+			Oriented_Node_List.append(next_node)
+			start_node = next_node
+			del remaining_elements[key]
+			print('remaining_elements_after', remaining_elements)
+			break
 
 	## Oriented_Node_List 순서대로 Node 좌표 저장
-	Oriented_Node_json = {}
-	for node in Oriented_Node_List:
-		Oriented_Node_json[node] = [Node_Coordinate_json[str(node)][0], Node_Coordinate_json[str(node)][1]]
+	Oriented_Node_json = {node: Node_Coordinate_json[str(node)] for node in Oriented_Node_List}
 
 	## 방향 벡터 계산
 	node_key = Oriented_Node_json.keys()
 	node_key = list(node_key)
-	new_node_cord = []
-	for i in range(len(Oriented_Node_json)):
-		if i == 0:
-			vector_u = np.array([Oriented_Node_json[node_key[i+1]][0]-Oriented_Node_json[node_key[i]][0], Oriented_Node_json[node_key[i+1]][1]-Oriented_Node_json[node_key[i]][1]])
-			vector_v = np.array([-vector_u[1], vector_u[0]])
-			vector_v = vector_v / np.linalg.norm(vector_v)
-			new_cord = Oriented_Node_json[node_key[i]] + vector_v
-			new_node_cord.append(new_cord)
-			
-		elif i == len(Oriented_Node_json)-1:
-			vector_u = np.array([Oriented_Node_json[node_key[i-1]][0]-Oriented_Node_json[node_key[i]][0], Oriented_Node_json[node_key[i-1]][1]-Oriented_Node_json[node_key[i]][1]])
-			vector_v = np.array([vector_u[1], -vector_u[0]])
-			vector_v = vector_v / np.linalg.norm(vector_v)
-			new_cord = Oriented_Node_json[node_key[i]] + vector_v
-			new_node_cord.append(new_cord)
+ 
+	## 새로운 노드 생성
+	new_node_cord = calculate_direction_vectors(Oriented_Node_json)
 
-
-		else:
-			vector_u = np.array([Oriented_Node_json[node_key[i-1]][0]-Oriented_Node_json[node_key[i]][0], Oriented_Node_json[node_key[i-1]][1]-Oriented_Node_json[node_key[i]][1]])
-			vector_u = vector_u / np.linalg.norm(vector_u)
-			vector_v = np.array([Oriented_Node_json[node_key[i+1]][0]-Oriented_Node_json[node_key[i]][0], Oriented_Node_json[node_key[i+1]][1]-Oriented_Node_json[node_key[i]][1]])
-			vector_v = vector_v / np.linalg.norm(vector_v)
-			vector_w = (vector_u + vector_v) / 2
-			vector_w = vector_w / np.linalg.norm(vector_w)
-			vector_w = -vector_w
-			new_cord = Oriented_Node_json[node_key[i]] + vector_w
-			new_node_cord.append(new_cord)
-
-	new_node_cord = list(new_node_cord)
-
-	Node_Assign_Json = {}
-	for i in range(len(new_node_cord)):
-		Node_Assign_Json[max_ID+1] = {"X": new_node_cord[i][0], "Y": 0, "Z": new_node_cord[i][1]}
-		max_ID += 1
-	assign_result = civil.db_create("NODE", Node_Assign_Json)
-
-	Bnd_Assign_Json = {}
-	for key in Node_Assign_Json:
-		Bnd_Assign_Json[key] = {"ITEMS": [{"ID" : 1, "GROUP_NAME" : "", "CONSTRAINT" : "1111110"}]}
-	bnd_result = civil.db_create("CONS", Bnd_Assign_Json)
+	assign_result, bnd_result, Node_Assign_Json = assign_new_nodes(new_node_cord, max_ID, civil)
 
 	## Compression Only Elastic Link 계산
-	## 단면 폐 면적 계산
-	Area = 0
-	points = list(Oriented_Node_json.values())
-	for i in range(len(points)):
-		x1, y1 = points[i%len(points)]
-		x2, y2 = points[(i+1)%len(points)]
-		Area += x1*y2 - x2*y1
-	Area = abs(Area) / 2
-
-
-	R_Value = math.sqrt(Area / math.pi)
-
-	## 인접 요소 길이 계산
-	Ks_Value = []
-	for i in range(len(Oriented_Node_json)):
-		if i == 0:
-			Length = math.sqrt((Oriented_Node_json[node_key[i+1]][0]-Oriented_Node_json[node_key[i]][0])**2 + (Oriented_Node_json[node_key[i+1]][1]-Oriented_Node_json[node_key[i]][1])**2)/2
-				## 단위 kN/m2
-		elif i == len(Oriented_Node_json)-1:
-			Length = math.sqrt((Oriented_Node_json[node_key[i-1]][0]-Oriented_Node_json[node_key[i]][0])**2 + (Oriented_Node_json[node_key[i-1]][1]-Oriented_Node_json[node_key[i]][1])**2)/2
-		else:
-			Length1 = math.sqrt((Oriented_Node_json[node_key[i-1]][0]-Oriented_Node_json[node_key[i]][0])**2 + (Oriented_Node_json[node_key[i-1]][1]-Oriented_Node_json[node_key[i]][1])**2)/2
-			Length2 = math.sqrt((Oriented_Node_json[node_key[i+1]][0]-Oriented_Node_json[node_key[i]][0])**2 + (Oriented_Node_json[node_key[i+1]][1]-Oriented_Node_json[node_key[i]][1])**2)/2
-			Length = (Length1 + Length2)
-		Ks = float(Modulus) / ((1+float(Poisson)) * R_Value) / Length * 1000
-		Ks_Value.append(Ks)
+	Ks_Value, R_Value = calculate_elastic_link_properties(Oriented_Node_json, Modulus, Poisson)
 
 	# Elastic Link 생성
 
@@ -287,3 +214,93 @@ def py_generate_nodes(element_list, Modulus, Poisson, BoundaryCondition):
 
 	return json.dumps("success")
 
+## 방향 벡터를 계산하고, 새로운 노드 좌표를 반환
+def calculate_direction_vectors(Oriented_Node_json):
+	node_keys = list(Oriented_Node_json.keys())
+	new_node_coords = []
+
+	for i, key in enumerate(node_keys):
+		current_coord = np.array(Oriented_Node_json[key])
+		
+		# Handle the start node
+		if i == 0:
+			next_coord = np.array(Oriented_Node_json[node_keys[i+1]])
+			vector_u = next_coord - current_coord
+			vector_v = np.array([-vector_u[1], vector_u[0]])
+		
+		# Handle the end node
+		elif i == len(node_keys) - 1:
+			prev_coord = np.array(Oriented_Node_json[node_keys[i-1]])
+			vector_u = prev_coord - current_coord
+			vector_v = np.array([vector_u[1], -vector_u[0]])
+		
+		# Handle the intermediate nodes
+		else:
+			prev_coord = np.array(Oriented_Node_json[node_keys[i-1]])
+			next_coord = np.array(Oriented_Node_json[node_keys[i+1]])
+			vector_u = prev_coord - current_coord
+			vector_v = next_coord - current_coord
+			vector_w = (vector_u / np.linalg.norm(vector_u) + vector_v / np.linalg.norm(vector_v)) / 2
+			vector_w = -vector_w / np.linalg.norm(vector_w)
+			vector_v = vector_w
+
+		vector_v = vector_v / np.linalg.norm(vector_v)
+		new_coord = current_coord + vector_v
+		new_node_coords.append(new_coord)
+	
+	return new_node_coords
+
+## Civil 에 노드 생성 및 경계조건 생성
+def assign_new_nodes(new_node_coords, max_ID, civil):
+	Node_Assign_Json = {max_ID + i + 1: {"X": coord[0], "Y": 0, "Z": coord[1]} for i, coord in enumerate(new_node_coords)}
+	assign_result = civil.db_create("NODE", Node_Assign_Json)
+
+	Bnd_Assign_Json = {key: {"ITEMS": [{"ID": 1, "GROUP_NAME": "", "CONSTRAINT": "1111110"}]} for key in Node_Assign_Json.keys()}
+	bnd_result = civil.db_create("CONS", Bnd_Assign_Json)
+
+	return assign_result, bnd_result, Node_Assign_Json
+
+def calculate_elastic_link_properties(Oriented_Node_json, Modulus, Poisson):
+	points = list(Oriented_Node_json.values())
+	Area = 0
+	for i in range(len(points)):
+		x1, y1 = points[i % len(points)]
+		x2, y2 = points[(i + 1) % len(points)]
+		Area += x1 * y2 - x2 * y1
+	Area = abs(Area) / 2
+
+	R_Value = math.sqrt(Area / math.pi)
+
+	Ks_Values = []
+	node_keys = list(Oriented_Node_json.keys())
+	for i, key in enumerate(node_keys):
+		if i == 0:
+			Length = np.linalg.norm(np.array(Oriented_Node_json[node_keys[i+1]]) - np.array(Oriented_Node_json[key])) / 2
+		elif i == len(node_keys) - 1:
+			Length = np.linalg.norm(np.array(Oriented_Node_json[node_keys[i-1]]) - np.array(Oriented_Node_json[key])) / 2
+		else:
+			Length1 = np.linalg.norm(np.array(Oriented_Node_json[node_keys[i-1]]) - np.array(Oriented_Node_json[key])) / 2
+			Length2 = np.linalg.norm(np.array(Oriented_Node_json[node_keys[i+1]]) - np.array(Oriented_Node_json[key])) / 2
+			Length = (Length1 + Length2)
+		
+		Ks = float(Modulus) / ((1 + float(Poisson)) * R_Value) / Length * 1000
+		Ks_Values.append(Ks)
+	
+	return Ks_Values, R_Value
+  
+def assign_elastic_links(Oriented_Node_json, Node_Assign_Json, Ks_Values, civil):
+	node_keys = list(Oriented_Node_json.keys())
+	new_node_keys = list(Node_Assign_Json.keys())
+	Elnk_Assign_json = {
+		i + 1: {
+			"NODE": [node_keys[i], new_node_keys[i]],
+			"LINK": "COMP",
+			"ANGLE": 0,
+			"SDR": [Ks, 0, 0, 0, 0, 0],
+			"bSHEAR": False,
+			"DR": [0.5, 0.5]
+		}
+		for i, Ks in enumerate(Ks_Values)
+	}
+
+	return civil.db_create("ELNK", Elnk_Assign_json)
