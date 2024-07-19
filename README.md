@@ -6,16 +6,13 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 [![pages-build-deployment](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/midasit-dev/plugins)
 
-## Moaui document
-- [moaui docs](https://dev--6556d17f924e868b000ddaf5.chromatic.com/)
-
 ## Related Repository
 - [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
 
-## Releated Sheet
-- [🔒 List of Plugins 2024](https://midasinfra-my.sharepoint.com/:x:/g/personal/kh1012_midasit_com/Ed9FhcqA7AFBnLYfn7LX1k0B_Gm43YXmQEQZrP5nsEvIZA?e=PbccWH)
+<br />
 
-## Official
+<p style="font-size: 36px; padding: 8px; background: #0d99ff; color: #fff;">Official</p>
+
 ### Documentation
 - [🌐 MIDAS Plug-in Documentation](https://midas-support.atlassian.net/wiki/spaces/MAW/pages/215711752/MIDAS+Plug-in+over+the+MIDAS+API)
 
@@ -33,7 +30,12 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - [🌐 Temperature-Gradient-Stress-Calculator](https://midasit-dev.github.io/plugins/temperature-gradient-stress-calculator)
 - [🌐 Tendon-Profile-Converter](https://midasit-dev.github.io/plugins/tendon-profile-converter)
 
-## Unofficial
+<br />
+
+<p style="font-size: 36px; padding: 8px; background: #0d99ff; color: #fff">Under Development</p>
+
+### Releated Sheet
+- [🔒 List of Plugins 2024](https://midasinfra-my.sharepoint.com/:x:/g/personal/kh1012_midasit_com/Ed9FhcqA7AFBnLYfn7LX1k0B_Gm43YXmQEQZrP5nsEvIZA?e=PbccWH)
 ### Plugins For Under Development
 - ❌: Before proceeding
 - ⏳: In progress
@@ -51,7 +53,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ✅ | 5  | artificial eq correlation          | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/artificial-eq-correlation/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/artificial-eq-correlation) |
 |     ✅ | 6  | rigid link generator               | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rigid-link-generator/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rigid-link-generator) |
 |     ✅ | 7  | mirror tapered section             | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/mirror-tapered-section/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/mirror-tapered-section) |
-|     ✅ | 8  | pile spring						             | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
+|     ⏳ | 8  | pile spring						             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
 |     ❌ | 9  | elastic link generator             | Simon              | chapter   | [⛔ Readme](https://github.com/midasit-dev/plugins/blob/main/projects/elastic-link-generator/public/readme.md) | [⛔ Link](https://midasit-dev.github.io/plugins/elastic-link-generator) |
 |     ⏳ | 10 | baseplate                          | Simon & Lenny      | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
 |     ✅ | 11 | node controller                    | Walter             | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/node-controller/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/node-controller) |
