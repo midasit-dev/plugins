@@ -192,11 +192,10 @@ def element_align_local_axis(ref_node: str = '0,0,0', sel_element_keys: list = [
 	
     sel_element_keys = list(map(str, sel_element_keys.split(',')))
     sel_element_data = {key: data_civil_element2[key] for key in sel_element_keys}
-
     data_civil_node=get_civil_node()
 
     result_json = dict()
-
+    return_keys = []
     for node_num in sel_element_data:
 
         points = get_element_node_coordinate(data_civil_node, sel_element_data[node_num]["NODE"]) # Element의 Node 좌표 추출
@@ -205,12 +204,13 @@ def element_align_local_axis(ref_node: str = '0,0,0', sel_element_keys: list = [
         result_center_point = calculate_center_point(result_3point[0]) # 주어진 점들의 중심점 계산
         result_vector_from_center = calculate_vector_from_center(result_center_point, ref_point) # 중심점으로부터 새로운 좌표까지의 벡터 계산
         result_selected_vector1 = choose_smaller_angle(result_normal_vector, result_vector_from_center) # 두 법선 벡터와 새로운 벡터 중 작은 각도를 가지는 벡터 선택
-
         if result_selected_vector1 == result_normal_vector[1] :
+            return_keys.append(node_num)
             sel_element_data  = reserve_local_axis(sel_element_data,node_num)
-
-    result_json["Assign"] = sel_element_data
-    put_civil_element(result_json)
+        
+    
+    put_civil_element(sel_element_data)
+    return json.dumps(return_keys)
 
 # ref_point = (0,0,0)
 
