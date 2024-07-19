@@ -1,9 +1,16 @@
-# Floor Transition(층 전환)
-- 이 plugin은 서로 다른 층을 전환하는 기능을 수행합니다. 예를 들어, 20층의 건물이 있을 때, 5층의 노드-요소를 9층의 노드-요소와 맞바꿔줍니다.
+<!-- markdownlint-disable-next-line -->
 <br />
-## Details
-### version 1.0.0
-- 가장 먼저 층 정보를 가지고 오기 위해 맨 아랫 층의 기준 Node 한개를 선택합니다. 
-- 옮기고 싶은 층을 입력합니다. 
-- 옮겨질 층이 이동할 목적 층에 대해 입력합니다. 
-- Apply 버튼을 클릭합니다.
+<p align="center">
+  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
+</p>
+
+# Floor Transition 
+- This plugin performs the function of transitioning between different floors. For example, if you have a 20-storey building, it will swap the node-element on the 5th floor with the node-element on the 9th floor
+
+## Details 
+### version 1.0.0 
+- Firstly, select one reference node on the bottom floor to get the floor information 
+- Enter the floor you want to move 
+- Enter the destination floor to which you want to move
+- Click the Apply button.
+<br />

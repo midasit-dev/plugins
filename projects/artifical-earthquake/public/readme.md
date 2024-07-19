@@ -1,3 +1,9 @@
+<!-- markdownlint-disable-next-line -->
+<br />
+<p align="center">
+  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
+</p>
+
 # Artificial Earthquake Generator
 - This plugin generates  **response spectrum ** and  **artificial earthquakes**for time history analysis according to standards and creates graphs.
 - Using the design spectrum, artificial seismic waves can be generated and converted into spectrum load graphs.
