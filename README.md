@@ -8,14 +8,10 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 [![pages-build-deployment](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/midasit-dev/plugins)
 
-## Moaui document
-- [moaui docs](https://dev--6556d17f924e868b000ddaf5.chromatic.com/)
-
 ## Related Repository
 - [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
 
-## Releated Sheet
-- [🔒 List of Plugins 2024](https://midasinfra-my.sharepoint.com/:x:/g/personal/kh1012_midasit_com/Ed9FhcqA7AFBnLYfn7LX1k0B_Gm43YXmQEQZrP5nsEvIZA?e=PbccWH)
+<br />
 
 ## Official
 ### Documentation
@@ -35,7 +31,12 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - [🌐 Temperature-Gradient-Stress-Calculator](https://midasit-dev.github.io/plugins/temperature-gradient-stress-calculator)
 - [🌐 Tendon-Profile-Converter](https://midasit-dev.github.io/plugins/tendon-profile-converter)
 
-## Unofficial
+<br />
+
+## Under Development
+### Releated Sheet
+- [🔒 List of Plugins 2024](https://midasinfra-my.sharepoint.com/:x:/g/personal/kh1012_midasit_com/Ed9FhcqA7AFBnLYfn7LX1k0B_Gm43YXmQEQZrP5nsEvIZA?e=PbccWH)
+
 ### Plugins For Under Development
 - ❌: Before proceeding
 - ⏳: In progress
