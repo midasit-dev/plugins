@@ -80,7 +80,6 @@ def py_generate_nodes(element_list, Modulus, Poisson, BoundaryCondition):
 
 	Oriented_Node_List = [start_node]
 	remaining_elements = element_node_json.copy()
-	print('remaining_elements_before', remaining_elements)
 	while remaining_elements:
 		for key, nodes in list(remaining_elements.items()):
 			if nodes[0] == start_node:
@@ -92,7 +91,6 @@ def py_generate_nodes(element_list, Modulus, Poisson, BoundaryCondition):
 			Oriented_Node_List.append(next_node)
 			start_node = next_node
 			del remaining_elements[key]
-			print('remaining_elements_after', remaining_elements)
 			break
 
 	## Oriented_Node_List 순서대로 Node 좌표 저장
@@ -143,12 +141,13 @@ def py_generate_nodes(element_list, Modulus, Poisson, BoundaryCondition):
 		vector_v = np.array([Oriented_Node_json[node_key[-2]][0]-Oriented_Node_json[node_key[-1]][0], Oriented_Node_json[node_key[-2]][1]-Oriented_Node_json[node_key[-1]][1]])
 		vector_v = vector_v / np.linalg.norm(vector_v)
 		EndNode_Boundary_Point = Oriented_Node_json[node_key[-1]] - vector_v
-  
+		
 		## Node 생성
 		StartNode_Boundary_Point_Cord = {"X": StartNode_Boundary_Point[0], "Y": 0, "Z": StartNode_Boundary_Point[1]}
 		EndNode_Boundary_Point_Cord = {"X": EndNode_Boundary_Point[0], "Y": 0, "Z": EndNode_Boundary_Point[1]}
-		StartNode_Boundary_Point_ID = max_ID + 1
-		EndNode_Boundary_Point_ID = max_ID + 2
+		print('maxID', max_ID)
+		StartNode_Boundary_Point_ID = max_ID*2 + 1
+		EndNode_Boundary_Point_ID = max_ID*2 + 2
 		Node_Assign_Json = {}
 		Node_Assign_Json[StartNode_Boundary_Point_ID] = StartNode_Boundary_Point_Cord
 		Node_Assign_Json[EndNode_Boundary_Point_ID] = EndNode_Boundary_Point_Cord
