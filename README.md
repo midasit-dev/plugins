@@ -1,4 +1,6 @@
 # Plugin Repository of Midas Products (🔓 Public Space)
+[📟 About plugin development ![SOUTH KOREA](/assets/flag-kr.svg)](/README.plugin-kr.md)
+
 Currently,  
 it includes plugins related to Civil NX. In the future, we plan to include plugins for various other product lines as well.
 
