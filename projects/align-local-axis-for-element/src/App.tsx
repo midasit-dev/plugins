@@ -190,7 +190,13 @@ const RefNode = (props: any) => {
 const doPyMain = (refNode: string = "0, 0, 0", selElems: string[]) => {
 	return checkPyScriptReady(() => {
 		const pyFunc = pyscript.interpreter.globals.get('element_align_local_axis');
-		pyFunc(refNode, selElems);
+
+		const response = JSON.parse(pyFunc(refNode, selElems));
+		// list 형식의 response 를 string 으로 변환
+		const responstStr = response.join(',\n');
+
+		enqueueSnackbar("Elements Local Axis Changed", {variant: 'success', autoHideDuration: 3000, style: { width: '400px', padding: 10, fontSize: 12}});
+		enqueueSnackbar("Changed Elements : " + responstStr, {variant: 'success', autoHideDuration: 3000, style: {whiteSpace: 'normal', width: '400px', padding: 10, fontSize: 12} });
 	});
 }
 
@@ -207,10 +213,8 @@ const ExecutionButton = (props: any) => {
 			try {
 				doPyMain(refNode, selElems);
 			} catch ( err ) {
-				console.error(err);
-				enqueueSnackbar('Execution Failed', { variant: 'error' });
+				enqueueSnackbar("Unalble to change local axis for some elemens", {variant: 'error', autoHideDuration: 3000, style: {width: '400px', padding: 10, fontSize: 12}});
 			} finally {
-				enqueueSnackbar('Execution Completed', { variant: 'success' });
 				setLoading(false);
 			}
 		}, 1000);
