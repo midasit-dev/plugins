@@ -374,9 +374,6 @@ function MainWindow() {
     return matrix;
   }
 
-  React.useEffect(() => {
-    console.log('projectName', projectName)
-  }, [projectName])
 
   return (
     <GuideBox width="auto">

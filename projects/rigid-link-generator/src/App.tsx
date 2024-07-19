@@ -111,11 +111,7 @@ const App = () => {
 	
 	const LanguageList:any = [
 		['en', 'en'],
-		['kr', 'kr'],
-		['ch', 'ch'],
-		['fr', 'fr'],
-		['jp', 'jp'],
-		['sp', 'sp'],
+		['kr', 'kr']
 	]
 	const [language, setLanguage] = React.useState('en');
 

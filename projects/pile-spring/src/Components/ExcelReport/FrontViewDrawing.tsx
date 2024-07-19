@@ -161,7 +161,6 @@ const FrontViewDrawing = (translate:any, SideLength:any, FoundationWidth:any, Pi
   drawTables(context);
 
   const dataURL = canvas.toDataURL();
-  console.log(dataURL);
   return dataURL.split(',')[1];
 };
 

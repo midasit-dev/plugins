@@ -3,8 +3,8 @@
   <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
 </p>
 
-# Align Frame Element Local Z Axis to Reference Point
-- Aligns the **local Z axis of frame element** with the **Reference Node Point**.
+# Align Plate Element Local Z Axis to Reference Point
+- Aligns the **local Z axis of plate element** with the **Reference Node Point**.
 <br />
 
 ## Details

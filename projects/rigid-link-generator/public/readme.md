@@ -1,11 +1,17 @@
-# Rigid Link 간편 생성
-- Master Node 그룹과 Slave Node 그룹을 설정하고, 최단 거리 절점끼리 Rigid Link를 생성합니다.
+<!-- markdownlint-disable-next-line -->
+<br />
+<p align="center">
+  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
+</p>
+
+# Rigid Link Generator
+- Create a Rigid Link by **grouping Master Nodes and Slave Nodes.**
+- Useful when creating Rigid Links with Unequel Distance (e.g. Rigid Link of Girder and Slab)
 <br />
 
-## Details <br />
-- Master Node를 선택합니다. Midas Civil에서 절점을 선택 한 뒤, Plug In 내의 Select Master Node 입력창을 클릭하면 절점들을 불러옵니다. <br />
-- Slave Node를 선택합니다. Midas Civil에서 절점을 선택 한 뒤, Plug In 내의 Select Slave Node 입력창을 클릭하면 절점들을 불러옵니다. <br />
-- Link Property 에서 Rigid Link 특성을 선택합니다. <br />
-- 각 Master Node 로부터, 선택된 Slave Node 들 중 최단 거리의 Node로 Rigid Link가 생성됩니다. <br />
-
-### version 1.0.0 <br />
+## Details
+### version 1.0.0
+- Select the nodes in midas Civil that correspond to the Master Node and click in the input box.
+- Similarly, select the nodes corresponding to the Slave Nodes and click in the input box.
+- Select the Rigid Link's Properties.
+- When you click the Create button, a Rigid Link is created from each Master Node to the nearest Slave Node.

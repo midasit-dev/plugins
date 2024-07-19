@@ -161,7 +161,6 @@ const SideViewDrawing = (translate:any, SideLength:any, FoundationWidth:any, Pil
   drawTables(context);
 
   const dataURL = canvas.toDataURL();
-  console.log(dataURL);
   return dataURL.split(',')[1];
 };
 
