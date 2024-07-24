@@ -115,7 +115,7 @@ const App = () => {
               const py_main = pyscript.interpreter.globals.get('py_main');
               const string_result = py_main();
               const rowsData = JSON.parse(string_result);
-              console.log(rowsData);
+              console.log("rowsData",rowsData);
               setAxialRows(rowsData["axial"]);
               setShearRows(rowsData["shear"]);
               setMomentRows(rowsData["moment"]);

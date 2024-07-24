@@ -62,6 +62,8 @@ const defaultCombValues = {
 
 
 function Main() {
+	const apiKey = process.env.REACT_APP_KAKAO_MAP_API_KEY;
+
 	const ref = React.useRef({});
 	const { enqueueSnackbar } = useSnackbar();
 	const gridRef = useGridApiRef();

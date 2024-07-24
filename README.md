@@ -1,4 +1,6 @@
 # Plugin Repository of Midas Products (🔓 Public Space)
+[📟 About plugin development ![SOUTH KOREA](/assets/flag-kr.svg)](/README.plugin-kr.md)
+
 Currently,  
 it includes plugins related to Civil NX. In the future, we plan to include plugins for various other product lines as well.
 
@@ -11,8 +13,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 
 <br />
 
-# Offcial
-
+## Official
 ### Documentation
 - [🌐 MIDAS Plug-in Documentation](https://midas-support.atlassian.net/wiki/spaces/MAW/pages/215711752/MIDAS+Plug-in+over+the+MIDAS+API)
 
@@ -32,10 +33,10 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 
 <br />
 
-# Under Development
-
+## Under Development
 ### Releated Sheet
 - [🔒 List of Plugins 2024](https://midasinfra-my.sharepoint.com/:x:/g/personal/kh1012_midasit_com/Ed9FhcqA7AFBnLYfn7LX1k0B_Gm43YXmQEQZrP5nsEvIZA?e=PbccWH)
+
 ### Plugins For Under Development
 - ❌: Before proceeding
 - ⏳: In progress
@@ -53,7 +54,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ✅ | 5  | artificial eq correlation          | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/artificial-eq-correlation/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/artificial-eq-correlation) |
 |     ✅ | 6  | rigid link generator               | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rigid-link-generator/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rigid-link-generator) |
 |     ✅ | 7  | mirror tapered section             | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/mirror-tapered-section/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/mirror-tapered-section) |
-|     ✅ | 8  | pile spring						             | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
+|     ⏳ | 8  | pile spring						             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
 |     ❌ | 9  | elastic link generator             | Simon              | chapter   | [⛔ Readme](https://github.com/midasit-dev/plugins/blob/main/projects/elastic-link-generator/public/readme.md) | [⛔ Link](https://midasit-dev.github.io/plugins/elastic-link-generator) |
 |     ⏳ | 10 | baseplate                          | Simon & Lenny      | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
 |     ✅ | 11 | node controller                    | Walter             | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/node-controller/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/node-controller) |
