@@ -48,7 +48,13 @@ v 1.0.0 : 플러그인 배포
 
 ### **말뚝 정보**
 
+<p align="center">
+<img width="600" src="./assets/pile1.png">
+<br>
+[말뚝 정보 입력 탭]
 
+</br>
+</p>
 
 말뚝 정보 탭에서는 말뚝의 제원과 관련된 입력값과 배치를 진행합니다.  
   
@@ -63,7 +69,13 @@ _시공 방법 : 타격말뚝(타격 공법), 타격 말뚝(바이브러 해머 
 
 ### 지반 정보
 
+<p align="center">
+<img width="600" src="./assets/pile2.png">
+<br>
+[지반 정보 입력 탭]
 
+</br>
+</p>
 
 지반 정보 탭에서는 지반 물성치와 관련된 정수와, 수평지반반력계수의 저감 계수 등을 선택합니다.
 
@@ -73,7 +85,13 @@ _시공 방법 : 타격말뚝(타격 공법), 타격 말뚝(바이브러 해머 
 
 ### **Import**
 
+<p align="center">
+<img width="600" src="./assets/pile3.png">
+<br>
+[Import 탭]
 
+</br>
+</p>
 
 강성 매트릭스 결과를 확인 한 뒤, midas Civil 로 6x6 general spring 을 입력합니다.
 
@@ -89,7 +107,13 @@ Type1 과 Type 는 Plug In 의 재하 좌표계와 midas Civil 좌표계를 맞�
 
 말뚝 특성치 계산 방법은 아래와 같습니다.
 
+<p align="center">
+<img width="600" src="./assets/pile4.png">
+<br>
+[말뚝 특성치 계산 방법]
 
+</br>
+</p>
 
 ### **축방향 스프링정수(Kv) 계산 방법**
 
@@ -99,19 +123,37 @@ Type1 과 Type 는 Plug In 의 재하 좌표계와 midas Civil 좌표계를 맞�
 
 혼합 말뚝의 경우 직렬 스프링 강성식으로 축방향 스프링정수를 산정합니다.
 
+<p align="center">
+<img width="600" src="./assets/pile7.png">
+<br>
+[축방향 스프링정수 계산 방법]
 
+</br>
+</p>
 
 ### **말뚝 축직각방향 스프링정수(K1 ~K4) 계산 방법**
 
 도로교 설계 기준에서의 말뚝 축직각방향 스프링 정수는 아래와 같이 계산됩니다.
 
+<p align="center">
+<img width="600" src="./assets/pile5.png">
+<br>
+[축직각방향 스프링정수 산정 방법(도로교 설계기준)]
 
+</br>
+</p>
 
 위 수식은 단일 지반(수평지반반력계수 일정) 및 말뚝의 단면 특성치(EI)가 일정한 경우의 일반식입니다.
 
 본 플러그인에서는 다층 지반과 복합 말뚝에 대해서 프레임 해석 방법으로 아래와 같이 산정합니다.
 
+<p align="center">
+<img width="600" src="./assets/pile6.png">
+<br>
+[축직각방향 스프링정수 산정 방법(프레임 해석 방법)]
 
+</br>
+</p>
 
 단일 지층 및 단일 말뚝에 대해서는 도로교설계기준 일반식과 동일한 결과를 얻을 수 있습니다.
 
@@ -120,6 +162,7 @@ Type1 과 Type 는 Plug In 의 재하 좌표계와 midas Civil 좌표계를 맞�
 
 자세한 매뉴얼은 첨부 pdf 를 참고해주시기 바랍니다.
 
+[PDF 링크] https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/pile%206x6%20spring%20matrix%20manual.pdf
 
 **Model File**
 --------------

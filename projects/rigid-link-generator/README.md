@@ -29,7 +29,29 @@ v 1.0.0 : 플러그인 배포
 
 **How to use this plugin?**
 ---------------------------
+<p align="center">
+<img width="500" src="./assets/rigid_1.png">
+<br>
+[거더 -슬래브 Rigid Link 강체 연결]
 
+</br>
+</p>
+
+<p align="center">
+<img width="500" src="./assets/rigid_2.png">
+<br>
+[Node 선택 방법]
+
+</br>
+</p>
+
+<p align="center">
+<img width="500" src="./assets/rigid_3.png">
+<br>
+[입력창]
+
+</br>
+</p>
 
 1.  **Master Node 선택**  
     Master Node 가 될 절점들을 선택합니다. midas Civil 에서 Node 를 선택 한 뒤, plug in 의 ‘Select Master Nodes’ 입력창을 클릭하면 해당 절점들이 입력됩니다. 위 예시에서는 거더를 구성하는 절점들을 선택합니다.  

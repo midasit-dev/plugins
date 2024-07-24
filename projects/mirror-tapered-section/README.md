@@ -19,7 +19,13 @@ v 1.0.0 : 플러그인 배포
 **Benefits of this plugin**
 ---------------------------
 
-![image-20240717-054215.png](attachments/3431628874/3431759948.png?width=760)
+<p align="center">
+<img width="500" src="./assets/mirror_1.png">
+<br>
+[대칭 형상 단면 구성]
+
+</br>
+</p>
 
 위와 같이 변단면을 가진 코핑부의 local axis를 일치시키기 위해, I, J 단의 section 을 바꾸어 tapered section을 생성합니다. (coping 1-1 / coping 1-2)
 
@@ -28,7 +34,13 @@ v 1.0.0 : 플러그인 배포
 **How to use this plugin?**
 ---------------------------
 
+<p align="center">
+<img width="250" src="./assets/mirror_2.png">
+<br>
+[입력창]
 
+</br>
+</p>
 1.  **Tapered Section List**  
     현재 입력된 Tapered Section 들을 가져옵니다. Referesh 버튼을 통해 업데이트 할 수 있습니다.  
     Mirror 할 단면을 선택합니다.  

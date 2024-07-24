@@ -30,7 +30,9 @@ v 1.0.0 : 플러그인 배포
 **How to use this plugin?**
 ---------------------------
 
-
+<p align="center">
+<img width="500" src="./assets/artificial_eq.png">
+</p>
 
 1.  **Time History Functions**  
     현재 입력된 Time History Function 들을 가져옵니다. Referesh 버튼을 통해 업데이트 할 수 있습니다.  
