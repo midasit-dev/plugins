@@ -1,19 +1,68 @@
-<!-- markdownlint-disable-next-line -->
-<br />
-<p align="center">
-  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
-</p>
+**Intro**
+---------
 
-# 인공지진파 상관계수 검토
-- 입력된 인공지진파(Time History Functions)에 대한 상관계수 검토를 실시합니다.
-- midas Civil 에 입력 된 Time History Functions 중 상관계수 검토를 실시할 함수들을 선택합니다.
-- 상관계수 검토의 기본 값은 0.16이며, 사용자가 변경 할 수 있습니다.
-<br />
+KDS 기준에 따라 인공합성 지진파의 상관계수를 검토 할 때 활용합니다.
 
-## Details
-### version 1.0.0
-- 플러그인 실행 시, 입력된 Time History Function 들이 불러와집니다. (Refresh 가능)
-- **Calculate** 버튼을 누르면 상관계수 검토를 실시 할 수 있습니다.
-- 입력한 상한값보다 상관계수가 작을 경우 파란색으로, 클 경우 빨간색으로 값을 확인 할 수 있습니다.
-- 결과 중 **"NG"** 는 상관계수를 검토할 수 없음을 의미합니다. 
-- 상관계수를 검토할 두 Time History Function 의 데이터 개수가 일치하는지 확인하시기 바랍니다. 
+midas Civil 에 입력 된 인공지진파(Time History Function) 간의 상관계수를 검토합니다.
+
+상관계수 상한치(기본값 0.16)를 기준으로 판별하며, 상관계수를 검토할 수 없을 경우 ‘NG’ 를 출력합니다.
+
+*   인공합성지진파 간의 상관계수를 별도 엑셀 없이 확인
+
+
+**Version**
+-----------
+
+v 1.0.0 : 플러그인 배포
+
+**Language**
+------------
+
+영어
+
+**Benefits of this plugin**
+---------------------------
+
+기존의 검토 방법은 인공합성 지진파의 시간별 가속도 데이터를 엑셀에 입력 후, 엑셀 수식으로 상관계수 검토를 실시하였습니다.
+
+본 플러그인은 입력 된 Time History Function 를 선택하여 빠르게 상관계수 검토를 실시 할 수 있으며, 결과를 테이블 형식으로 확인 가능합니다.
+
+**How to use this plugin?**
+---------------------------
+
+
+
+1.  **Time History Functions**  
+    현재 입력된 Time History Function 들을 가져옵니다. Referesh 버튼을 통해 업데이트 할 수 있습니다.  
+    상관계수를 검토할 시간이력함수들을 선택합니다.  
+    
+2.  **Correlation Coeeficient Target**  
+    상관계수의 상한치를 입력합니다. 기본값은 0.16 입니다.  
+    
+3.  **Calculate**  
+    Calculate 버튼을 클릭하면 상관계수 검토를 실시합니다.  
+    결과는 오른쪽 아래 테이블에서 확인 할 수 있으며, 결과 확인 방법은 아래와 같습니다.  
+      
+    파란색 실수 : 상관계수는 상한치보다 작습니다.  
+    빨간색 실수 : 상관계수는 상한치보다 큽니다.  
+    NG : 상관계수를 검토할 수 없습니다. Time History Function의 데이터 개수가 달라 검토 할 수 없습니다.
+    
+
+**Note**
+--------
+
+KDS 17 10 00 내진설계 일반 - ‘인공합성 지반운동 시간이력’의 ‘두 개의 시간이력운동간의 상관계수는 0.16을 초과할 수 없다’ 라는 기준에 따라 인공 지진파의 상관계수를 검토합니다.
+
+검토 식은 Correlation Coefficient Fomula 에 따라 검토하며, 테이블에서 결과를 확인 할 수 있습니다.
+
+**Model File**
+--------------
+
+
+**Conclusion**
+--------------
+
+번거로운 엑셀 작업 없이 Time History Function 에서 직접적으로 상관계수 검토를 실시 할 수 있습니다.
+
+
+
