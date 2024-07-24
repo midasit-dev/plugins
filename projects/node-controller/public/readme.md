@@ -1,12 +1,8 @@
 # Node Controller
 The purpose of this plugin is to streamline the process of modifying node coordinates without the need to navigate between Node Table or Node Detail Table when selecting nodes.
 
-### Node Table vs. Node Detail Table
-
-- **Node Table**: Highlights the selected item from the entire node list.
-- **Node Detail Table**: Displays only the selected nodes.
-
-## Features
+## Details
+### version 1.0.0
 
 1. **Node Selection and Execution**
    - Upon plugin execution with no selection, it starts by selecting nodes. If nodes are already selected, their information is immediately loaded.

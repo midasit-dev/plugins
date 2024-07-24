@@ -1,31 +1,57 @@
-<!-- markdownlint-disable-next-line -->
-<br />
-<p align="center">
-  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
-</p>
-
-This plugin allows users to check the effective ground acceleration by region based on the seismic hazard map. It can be used for a precise evaluation of earthquake risk for a specific site.
- 
-Since this plugin is created based on images provided on Korean Design Standard (KDS), the values are estimates and have been implemented using linear interpolation.
- 
-How to Use
- 
-Confirm the design standards (KDS 17 10 00:2024).
-Set the return period (supports 50, 100, 200, 500, 1000, 2400, and 4800 years).
-Confirm the input type (by Address or by Latitude/Longitude).
-Enter the target address and click the Search button.
-
 # Seismic Hazard Map
-- This plugin allows users to check the effective ground acceleration by region based on the seismic hazard map.
-- It can be used for a precise evaluation of earthquake risk for a specific site.
-- This plugin is based on images provided on **Korean Design Standard (KDS)**,so the values are **estimates**.
- 
- 
-## Details
-### version 1.0.0
-- Confirm the design standards (KDS 17 10 00:2024).
-- Set the **return period** (supports 50, 100, 200, 500, 1000, 2400, and 4800 years).
-- Confirm the input type (**by Address** or **by Latitude/Longitude**).
-- Enter the **target address** and click the **Search** button.
 
-[사용법 영상 다운로드](https://api.media.atlassian.com/file/f39407bd-4c72-4e4f-86cf-64fe3cf0d1ea/artifact/video_1280.mp4/binary?client=01baa4cf-df4f-479a-a1c0-ee6fac240204&collection=contentId-3351216336&max-age=2592000&token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwMWJhYTRjZi1kZjRmLTQ3OWEtYTFjMC1lZTZmYWMyNDAyMDQiLCJhY2Nlc3MiOnsidXJuOmZpbGVzdG9yZTpjb2xsZWN0aW9uOmNvbnRlbnRJZC0zMzUxMjE2MzM2IjpbInJlYWQiXX0sImV4cCI6MTcxOTMxMTE2OSwibmJmIjoxNzE5MzA4Mjg5fQ.G1XFz_JYK2WomszjmFavyb39DLhFKnWsjLlG5tFhJcs)
+**Intro**
+------
+The National Seismic Hazard Map Plugin utilizes the **Seismic Hazard Map** specified by the Ministry of Public Administration and Security of Korea, as per the seismic design standards KDS 17 10 00:2024, to check the earthquake risk for specific sites based on various return periods.
+
+- Validates seismic design standards KDS 17 10 00:2024.
+- Checks earthquake risks for various return periods (50, 100, 200, 500, 1000, 2400, 4800 years).
+- Queries earthquake risk via address or latitude/longitude input.
+
+**Version**
+------
+__v1.0.0__: Plugin release
+
+
+**Language**
+------
+__English__
+
+
+**Benefits of this plugin**
+------
+According to KDS 17 10 00:2024 4.2.1.1(4), the Minister of Public Administration and Security’s approved national earthquake hazard map can be used for precise assessment of seismic hazard (seismic disaster) for specific sites.
+
+The current official map showing earthquake risk is the **“National Seismic Hazard Map”** published in 2013.
+
+However, this map did not allow direct access to data values for representative areas. As a result, users must either exert effort to analyze estimated points on the image or occasionally input incorrect data, leading to erroneous seismic designs.
+
+- Provides quick and accurate earthquake risk information.
+- Allows querying of earthquake risks according to various recurrence intervals.
+- Enhances user convenience with address or latitude/longitude input.
+
+This plugin linearly interpolates data values from the official map based on an address or latitude/longitude, providing more accurate results, although the values are still estimates.
+
+**How to use this plugin?**
+------
+
+#### Design Standard Verification:
+1. Launch the plugin and review the seismic design standards KDS 17 10 00:2024.
+
+#### Return Period Setting:
+2. Set the return period.
+  - e.g., **2400** years
+
+#### Target Address Entry:
+3. Enter the **target address** and click the **Search** button.
+  - Enter the address directly (by Address) or by latitude/longitude coordinates(by Latitude/Longitude).
+
+#### Result Verification:
+4. Verify the earthquake risk results for the entered address 
+
+**Conclusion**
+------
+This guide enables you to effectively utilize the Seismic Hazard Map Plugin to check the earthquake risk for specific sites based on various return periods, enhancing both the precision and efficiency of seismic risk assessments.
+
+
+
