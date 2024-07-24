@@ -1,30 +1,20 @@
 # Element information
 
-## Items Available for Checking
+This plugin helps you easily check element information. 
+It is used when quickly checking and reviewing specific element details.
 
-| NO | Usage Command | INFORMATION ITEM |
-|----|---------------|------------------|
-| 1 | db/elem | +db/matl<br>+db/sect |
-|  | Elem ID | Node Connectivity |
-|  | Type (+ Sub Type) | Material Properties |
-|  |  | Section Properties |
-| 2 | "TABLE_TYPE": "ELEMENTWEIGHT" | |
-|  | Element Length | Area (for plate) |
-|  |  | Volume (for solid) |
-|  |  | Unit Weight |
-|  |  | Total Weight |
-| 3 | db/frls | Beam end release |
-|  |  | etc. |
+## Details
+### version 1.0.0
+#### Element Information
+  - __Elem ID__: Element ID
+  - __Node Con__: Connected node ID
+  - __Type__: Element type
+  - __Material__: Name of the material assigned to the element
+  - __Section__: Name of the section assigned to the element
+  - __L/A/V__: Length, Area (in case of Plate), Volume (in case of Solid)
+  - __Weight (U)__: Weight per unit length/area/volume (Unit Weight)
+  - __Weight (T)__: Total weight of the element
+  - __BER (Beam End Release)__: Displays release information at the I/J End.
+    * __Hyphen (-)__: If there is no Beam End Release information
+    * __F__: Fixed / __P__: Pinned
 
-Bill of Material ..(Is it pierced?)
-
-## Input UI
-
-- Element Selection: Select via API or direct input
-- Information Item Selection: Check desired items
-- Apply Button
-
-## Output UI
-
-- Information Table (Read Only)
-- Reset Button
