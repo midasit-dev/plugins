@@ -69,6 +69,7 @@ v 1.0.0 : 플러그인 배포
 **Model File**
 --------------
 
+https://github.com/midasit-dev/plugins/tree/main/projects/rigid-link-generator/model
 
 **Conclusion**
 --------------

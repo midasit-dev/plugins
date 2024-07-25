@@ -60,6 +60,7 @@ KDS 17 10 00 내진설계 일반 - ‘인공합성 지반운동 시간이력’�
 **Model File**
 --------------
 
+https://github.com/midasit-dev/plugins/tree/main/projects/artificial-eq-correlation/model
 
 **Conclusion**
 --------------

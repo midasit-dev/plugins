@@ -61,6 +61,7 @@ Section 중 Tapered 형식으로 생성된 단면에 대해서 Mirror 기능을 
 **Model File**
 --------------
 
+https://github.com/midasit-dev/plugins/tree/main/projects/mirror-tapered-section/model
 
 **Conclusion**
 --------------

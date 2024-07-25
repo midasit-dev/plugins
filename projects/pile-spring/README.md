@@ -162,7 +162,7 @@ Type1 과 Type 는 Plug In 의 재하 좌표계와 midas Civil 좌표계를 맞�
 
 자세한 매뉴얼은 첨부 pdf 를 참고해주시기 바랍니다.
 
-[PDF 링크] https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/pile%206x6%20spring%20matrix%20manual.pdf
+[PDF 링크] https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/pile%206x6%20spring%20matrix%20manual_v1.pdf
 
 **Model File**
 --------------
@@ -171,7 +171,7 @@ Type1 과 Type 는 Plug In 의 재하 좌표계와 midas Civil 좌표계를 맞�
 
 첨부의 json 파일을, 플러그인 내의 ‘업로드’ 버튼으로 불러올 수 있으며, 계산 및 Import General Spring 으로 midas Civil 에 general spring 을 생성할 수 있습니다.
 
-
+https://github.com/midasit-dev/plugins/tree/main/projects/pile-spring/model
 
 **Conclusion**
 --------------

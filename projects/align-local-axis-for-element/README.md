@@ -22,11 +22,13 @@ v 1.0.0 : 플러그인 배포
 ---------------------------
 
 원통형 구조물과 같이 구조물의 local 축을 하나의 Point로 정렬하고 싶을 경우, 해당 기능을 이용하여 정렬 할 수 있습니다.
-![]()
+
 **How to use this plugin?**
 ---------------------------
 
-
+<p align="center">
+<img width="450" src="./assets/align_1.png">
+</p>
 
 1.  **Select Elements**  
     midas Civil 에서 요소를 선택 후, plug in 을 클릭하면 해당 요소들이 입력됩니다.
@@ -49,7 +51,7 @@ Plate 요소의 local 축을 정렬하는 로직은 아래와 같습니다.
 **Model File**
 --------------
 
-[Model File Link] 
+https://github.com/midasit-dev/plugins/tree/main/projects/align-local-axis-for-element/model
 
 
 
