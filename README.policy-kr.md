@@ -13,8 +13,6 @@
 
 ### 🧪 Code Sample
 - [원본 코드](./projects/seismic-hazard-map)
-- [메뉴얼 파일](./projects/seismic-hazard-map/public/README.md)
-- [아이콘 파일](./projects/seismic-hazard-map/public/favicon.ico)
 
 ## 2. 마켓 플레이스 업로드 정책
 
