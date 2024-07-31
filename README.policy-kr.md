@@ -28,7 +28,7 @@
 
 ### 🧪 Build Sample
 - [대표 아이콘 파일](./docs/seismic-hazard-map/favicon.ico)
-- [요약 설명 파일](./docs/seismic-hazard-map/README.md)
+- [요약 설명 파일](./docs/seismic-hazard-map/readme.md)
 - [기본 웹 베이스 파일](./docs/seismic-hazard-map/)
 
 ## 3. 아이템 개발 및 업로드 과정
