@@ -21,7 +21,7 @@ const MDReport=()=> {
     `;
   return(
     <GuideBox width={600}>
-        <ReactMarkdown>
+        <ReactMarkdown className="prose">
         {exampleMarkdown}
         </ReactMarkdown>
     </GuideBox>
