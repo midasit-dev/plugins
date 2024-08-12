@@ -224,6 +224,9 @@
   "Civil_Coord_Type2" : "[Civil NX 座標系 – タイプ2]",
   "Select_Import_Type" : "読み込みタイプ : ",
   "Type1" : "タイプ1",
-  "Type2" : "タイプ2"
+  "Type2" : "タイプ2",
 
+  "PileType1" : "基本杭",
+  "PileType2" : "基本杭",
+  "PileType3" : "下部杭"
 }

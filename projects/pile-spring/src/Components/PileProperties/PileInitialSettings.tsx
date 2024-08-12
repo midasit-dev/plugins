@@ -134,7 +134,7 @@ function PileInitialSettings(){
                 [
                     [translate('CM_DropHammer'), 'CM_DropHammer'],
                     [translate('CM_VibroHammer'), 'CM_VibroHammer'],
-                    [translate('CM_InSitu'), 'Cast_In_Situ'],
+                    [translate('CM_InSitu'), 'CM_InSitu'],
                     [translate('CM_Boring'), 'CM_Boring'],
                     [translate('CM_Preboring'), 'CM_Preboring'],
                     [translate('CM_SoilCement'), 'CM_SoilCement'],

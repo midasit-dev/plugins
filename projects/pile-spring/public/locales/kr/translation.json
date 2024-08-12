@@ -228,5 +228,9 @@
   "Civil_Coord_Type2" : "[Midas Civil 좌표계 - Type 2]",
   "Select_Import_Type" : "Select Import Type : ",
   "Type1" : "Type1",
-  "Type2" : "Type2"
+  "Type2" : "Type2",
+
+  "PileType1" : "단일 말뚝",
+  "PileType2" : "상부 말뚝",
+  "PileType3" : "하부 말뚝"
 }

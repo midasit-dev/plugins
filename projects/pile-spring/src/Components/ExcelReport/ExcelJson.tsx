@@ -47,13 +47,13 @@ function ExcelJsonResult(
     PileTotalNums += Number(piletableData[i].PileNums)
     ItemArray.push({
       "__PileName" : '('+(i+1)+') '+ piletableData[i].pileName,
-      "__TopLevel" : Number(topLevel),
+      "__TopLevel" : Number(Number(topLevel).toFixed(3)),
       "__PileType" : translate(piletableData[i].pileType),
       "__ConstructionMethod" : translate(piletableData[i].constructionMethod),
       "__HeadCondition" : translate(piletableData[i].headCondition),
       "__BottomCondition" : translate(piletableData[i].bottomCondition),
-      "__PileDia" : Number(TopProperty[3]),
-      "__PileLength" : Number(piletableData[i].pileLength)
+      "__PileDia" : Number(Number(TopProperty[3]).toFixed(3)),
+      "__PileLength" : Number(Number(piletableData[i].pileLength).toFixed(2))
     })
   }
   reportjson_items["_General"] = ItemArray
@@ -74,17 +74,19 @@ function ExcelJsonResult(
   // (1) 말뚝 타입
   ItemArray = []
   for(let i =0; i<piletableData.length; i++){
-    
+    // 언어 별 말뚝 타입
+
     // [상부 말뚝 or 하부말뚝 or 단일말뚝]
+
     let pileType_Name = ''
     let pileType_Name2 = ''
     if (piletableData[i].compositeTypeCheck){
-      pileType_Name = '상부 말뚝'
-      pileType_Name2 = '하부 말뚝'
+      pileType_Name = translate("PileType2")
+      pileType_Name2 = translate("PileType3")
     }
     else{
-      pileType_Name = '단일 말뚝'
-      pileType_Name2 = '단일 말뚝'
+      pileType_Name = translate("PileType1")
+      pileType_Name2 = translate("PileType1")
     }
 
     const TopProperty = CalculateProperties(piletableData[i], 'top', 'unreinforced')
@@ -117,18 +119,18 @@ function ExcelJsonResult(
       "__PilePropertyIndex" : '('+(i+1)+') '+ piletableData[i].pileName,
       "__PileProperty_TopName" : pileType_Name,
       "__PileProperty_BotName" : pileType_Name2,
-      "__Top_Conc_E" : Number(top_conc_E),
-      "__Top_Conc_Area" : Number(top_conc_Area),
-      "__Top_Conc_I" : Number(top_conc_I),
-      "__Top_Steel_E" : Number(top_steel_E),
-      "__Top_Steel_Area" : Number(top_steel_Area),
-      "__Top_Steel_I" : Number(top_steel_I),
-      "__Bot_Conc_E" : Number(bot_conc_E),
-      "__Bot_Conc_Area" : Number(bot_conc_Area),
-      "__Bot_Conc_I" : Number(bot_conc_I),
-      "__Bot_Steel_E" : Number(bot_steel_E),
-      "__Bot_Steel_Area" : Number(bot_steel_Area),
-      "__Bot_Steel_I" : Number(bot_steel_I),
+      "__Top_Conc_E" : Number(top_conc_E.toFixed(0)),
+      "__Top_Conc_Area" : Number(top_conc_Area.toFixed(3)),
+      "__Top_Conc_I" : Number(top_conc_I.toFixed(3)),
+      "__Top_Steel_E" : Number(top_steel_E.toFixed(0)),
+      "__Top_Steel_Area" : Number(top_steel_Area.toFixed(3)),
+      "__Top_Steel_I" : Number(top_steel_I.toFixed(3)),
+      "__Bot_Conc_E" : Number(bot_conc_E.toFixed(0)),
+      "__Bot_Conc_Area" : Number(bot_conc_Area.toFixed(3)),
+      "__Bot_Conc_I" : Number(bot_conc_I.toFixed(3)),
+      "__Bot_Steel_E" : Number(bot_steel_E.toFixed(0)),
+      "__Bot_Steel_Area" : Number(bot_steel_Area.toFixed(3)),
+      "__Bot_Steel_I" : Number(bot_steel_I.toFixed(3)),
     })
   }
   reportjson_items["_PileProperty_Main"] = ItemArray
@@ -140,23 +142,23 @@ function ExcelJsonResult(
     let TableRowData: any = []
     TableRowData.push(soilData[i].LayerNo)
     TableRowData.push(translate(soilData[i].LayerType))
-    TableRowData.push(Number(Level.toFixed(3)))
-    TableRowData.push(Number(soilData[i].Depth))
-    TableRowData.push(Number(soilData[i].AvgNValue))
-    TableRowData.push(Number(soilData[i].gamma))
-    TableRowData.push(Number(soilData[i].aE0))
-    TableRowData.push(Number(soilData[i].aE0_Seis))
-    TableRowData.push(Number(soilData[i].vd))
-    TableRowData.push(Number(soilData[i].Vsi.toFixed(2)))
-    TableRowData.push(Number(soilData[i].ED.toFixed(2)))
-    TableRowData.push(Number(soilData[i].DE))
+    TableRowData.push(Number((Level.toFixed(3))))
+    TableRowData.push(Number(Number(soilData[i].Depth).toFixed(3)))
+    TableRowData.push(Number(Number(soilData[i].AvgNValue).toFixed(0)))
+    TableRowData.push(Number(Number(soilData[i].gamma).toFixed(1)))
+    TableRowData.push(Number(Number(soilData[i].aE0).toFixed(0)))
+    TableRowData.push(Number(Number(soilData[i].aE0_Seis).toFixed(0)))
+    TableRowData.push(Number(Number(soilData[i].vd).toFixed(1)))
+    TableRowData.push(Number(Number(soilData[i].Vsi).toFixed(2)))
+    TableRowData.push(Number(Number(soilData[i].ED).toFixed(0)))
+    TableRowData.push(Number(Number(soilData[i].DE).toFixed(2)))
     Level = Level-soilData[i].Depth
     TableData.push(TableRowData)
   }
 
   reportjson_items["_Soil_Condition"] = {
-    "__GroundLevel" : Number(GroundLevel),
-    "__WaterLevel" : Number(WaterLevel),
+    "__GroundLevel" : Number(Number(GroundLevel).toFixed(3)),
+    "__WaterLevel" : Number(Number(WaterLevel).toFixed(3)),
     "__SoilTableData": TableData
   }
   
@@ -181,18 +183,18 @@ function ExcelJsonResult(
       let KH_Seis = (KH0_Seis)*Math.pow((betaNormalResult[2][i]/0.3),(-3/4))
       
       TableRowData.push(soilData[j].LayerNo)
-      TableRowData.push(Number(Level).toFixed(3))
-      TableRowData.push(Number(soilData[j].Depth))
-      TableRowData.push(Number(soilData[j].DE))
-      TableRowData.push(Number(alphaHThetaResult[j].toFixed(3)))
-      TableRowData.push(Number((soilData[j].aE0*alphaHThetaResult[j]).toFixed(0)))
-      TableRowData.push(Number((soilData[j].aE0_Seis*alphaHThetaResult[j]).toFixed(0)))
-      TableRowData.push(Number(KH0.toFixed(0)))
-      TableRowData.push(Number(KH0_Seis.toFixed(0)))
-      TableRowData.push(Number(KH))
-      TableRowData.push(Number(KH_Seis.toFixed(0)))
+      TableRowData.push(Number(Number(Level).toFixed(3)))
+      TableRowData.push(Number(Number(soilData[j].Depth).toFixed(3)))
+      TableRowData.push(Number(Number(soilData[j].DE).toFixed(2)))
+      TableRowData.push(Number(Number(alphaHThetaResult[j]).toFixed(2)))
+      TableRowData.push(Number(Number((soilData[j].aE0*alphaHThetaResult[j])).toFixed(0)))
+      TableRowData.push(Number(Number((soilData[j].aE0_Seis*alphaHThetaResult[j])).toFixed(0)))
+      TableRowData.push(Number(Number(KH0).toFixed(0)))
+      TableRowData.push(Number(Number(KH0_Seis).toFixed(0)))
+      TableRowData.push(Number(Number(KH).toFixed(0)))
+      TableRowData.push(Number(Number(KH_Seis).toFixed(0)))
       if (liquefactionState){
-        TableRowData.push(Number((KH_Seis * soilData[j].DE).toFixed(0)))
+        TableRowData.push(Number(Number((KH_Seis * soilData[j].DE)).toFixed(0)))
       }
       else{
         TableRowData.push('-')
@@ -209,32 +211,34 @@ function ExcelJsonResult(
       let KH0_Period = soilData[j].ED / 0.3*alphaHThetaResult[j]
       let KH_Period =  (KH0_Period)*Math.pow((betaPeriodResult[2][i]/0.3),(-3/4))
       TableRowData.push(soilData[j].LayerNo)
-      TableRowData.push(Number(Level.toFixed(3)))
-      TableRowData.push(Number(soilData[j].Depth))
-      TableRowData.push(Number(soilData[j].DE))
-      TableRowData.push(Number(alphaHThetaResult[j].toFixed(3)))
-      TableRowData.push(Number((soilData[j].ED*alphaHThetaResult[j]).toFixed(0)))
-      TableRowData.push(Number(KH0_Period.toFixed(0)))
-      TableRowData.push(Number(KH_Period.toFixed(0)))
+      TableRowData.push(Number(Number(Level).toFixed(3)))
+      TableRowData.push(Number(Number(soilData[j].Depth).toFixed(3)))
+      TableRowData.push(Number(Number(soilData[j].DE).toFixed(2)))
+      TableRowData.push(Number(Number(alphaHThetaResult[j]).toFixed(2)))
+      TableRowData.push(Number(Number((soilData[j].ED*alphaHThetaResult[j])).toFixed(0)))
+      TableRowData.push(Number(Number(KH0_Period).toFixed(0)))
+      TableRowData.push(Number(Number(KH_Period).toFixed(0)))
       Level = Level - soilData[j].Depth
       TableData_Period.push(TableRowData)
     }
 
     ItemArray.push({
       "__Soil_R_Coef_Index" : '('+(i+1)+') '+ piletableData[i].pileName,
-      "__Normal_Beta" : Number(betaNormalResult[0][i].toFixed(6)) ,
-      "__Normal_aE0" : Number(betaNormalResult[1][i].toFixed(3)) ,
-      "__Normal_BH" : Number(betaNormalResult[2][i].toFixed(3)) ,
-      "__Normal_KH0" : Number(betaNormalResult[3][i].toFixed(3)) ,
-      "__Normal_KH" : Number(betaNormalResult[4][i].toFixed(3)) ,
-      "__Normal_mu" : GroupEffectValue,
+      "__Normal_Beta" : Number(Number(betaNormalResult[0][i].toFixed(3))) ,
+      "__Normal_Beta_inv" : Number(Number(1/(betaNormalResult[0][i])).toFixed(3)),
+      "__Normal_aE0" : Number(Number(betaNormalResult[1][i]).toFixed(0)) ,
+      "__Normal_BH" : Number(Number(betaNormalResult[2][i]).toFixed(3)) ,
+      "__Normal_KH0" : Number(Number(betaNormalResult[3][i]).toFixed(0)) ,
+      "__Normal_KH" : Number(Number(betaNormalResult[4][i]).toFixed(0)) ,
+      "__Normal_mu" : Number(GroupEffectValue.toFixed(2)),
       "__Normal_Table" : TableData_Normal,
-      "__Period_Beta" :Number(betaPeriodResult[0][i].toFixed(6)),
-      "__Period_aE0" :Number(betaPeriodResult[1][i].toFixed(3)),
-      "__Period_BH" :Number(betaPeriodResult[2][i].toFixed(3)),
-      "__Period_KH0" :Number(betaPeriodResult[3][i].toFixed(3)),
-      "__Period_KH" :Number(betaPeriodResult[4][i].toFixed(3)),
-      "__Period_mu" :GroupEffectValue,
+      "__Period_Beta" :Number(Number(betaPeriodResult[0][i]).toFixed(3)),
+      "__Period_Beta_inv" :Number(Number(1/(betaPeriodResult[0][i])).toFixed(3)),
+      "__Period_aE0" :Number(Number(betaPeriodResult[1][i]).toFixed(0)),
+      "__Period_BH" :Number(Number(betaPeriodResult[2][i]).toFixed(3)),
+      "__Period_KH0" :Number(Number(betaPeriodResult[3][i]).toFixed(0)),
+      "__Period_KH" :Number(Number(betaPeriodResult[4][i]).toFixed(0)),
+      "__Period_mu" :Number(GroupEffectValue.toFixed(2)),
       "__Period_Table" : TableData_Period,
     })
   }
@@ -247,9 +251,9 @@ function ExcelJsonResult(
   
   for (let i= 0; i<piletableData.length; i++){
     ItemArray.push({"__PileSpring_Kv_Index" : '('+(i+1)+') '+ piletableData[i].pileName,
-    "__PileSpring_Kv_Alpha1" : KvResult[1][i],
-    "__PileSpring_Kv_Alpha2" : KvResult[2][i],
-    "__PileSpring_Kv" : KvResult[0][i]
+    "__PileSpring_Kv_Alpha1" : Number(KvResult[1][i]),
+    "__PileSpring_Kv_Alpha2" : Number(KvResult[2][i]),
+    "__PileSpring_Kv" : Number(Number(KvResult[0][i]).toFixed(0))
   })
   }
   reportjson_items["_PileSpring_Kv_Main"] = ItemArray
@@ -267,45 +271,45 @@ function ExcelJsonResult(
     let PileSpring_K3_Data = []
     let PileSpring_K4_Data = []
 
-    PileSpring_K1_Data.push(kValueNormalResult[i][0])
-    PileSpring_K1_Data.push(kValueSeismicResult[i][0])
+    PileSpring_K1_Data.push(Number(kValueNormalResult[i][0].toFixed(0)))
+    PileSpring_K1_Data.push(Number(kValueSeismicResult[i][0].toFixed(0)))
     if (liquefactionState){
-      PileSpring_K1_Data.push(KValueSeismicLiqResult[i][0])
+      PileSpring_K1_Data.push(Number(KValueSeismicLiqResult[i][0].toFixed(0)))
     }
     else{
       PileSpring_K1_Data.push('-')
     }
-    PileSpring_K1_Data.push(kValuePeriodResult[i][0])
+    PileSpring_K1_Data.push(Number(kValuePeriodResult[i][0].toFixed(0)))
 
-    PileSpring_K2_Data.push(kValueNormalResult[i][1])
-    PileSpring_K2_Data.push(kValueSeismicResult[i][1])
+    PileSpring_K2_Data.push(Number(kValueNormalResult[i][1].toFixed(0)))
+    PileSpring_K2_Data.push(Number(kValueSeismicResult[i][1].toFixed(0)))
     if (liquefactionState){
-      PileSpring_K2_Data.push(KValueSeismicLiqResult[i][1])
+      PileSpring_K2_Data.push(Number(KValueSeismicLiqResult[i][1].toFixed(0)))
     }
     else{
       PileSpring_K2_Data.push('-')
     }
-    PileSpring_K2_Data.push(kValuePeriodResult[i][1])
+    PileSpring_K2_Data.push(Number(kValuePeriodResult[i][1].toFixed(0)))
 
-    PileSpring_K3_Data.push(kValueNormalResult[i][2])
-    PileSpring_K3_Data.push(kValueSeismicResult[i][2])
+    PileSpring_K3_Data.push(Number(kValueNormalResult[i][2].toFixed(0)))
+    PileSpring_K3_Data.push(Number(kValueSeismicResult[i][2].toFixed(0)))
     if (liquefactionState){
-      PileSpring_K3_Data.push(KValueSeismicLiqResult[i][2])
+      PileSpring_K3_Data.push(Number(KValueSeismicLiqResult[i][2].toFixed(0)))
     }
     else{
       PileSpring_K3_Data.push('-')
     }
-    PileSpring_K3_Data.push(kValuePeriodResult[i][2])
+    PileSpring_K3_Data.push(Number(kValuePeriodResult[i][2].toFixed(0)))
 
-    PileSpring_K4_Data.push(kValueNormalResult[i][3])
-    PileSpring_K4_Data.push(kValueSeismicResult[i][3])
+    PileSpring_K4_Data.push(Number(kValueNormalResult[i][3].toFixed(0)))
+    PileSpring_K4_Data.push(Number(kValueSeismicResult[i][3].toFixed(0)))
     if (liquefactionState){
-      PileSpring_K4_Data.push(KValueSeismicLiqResult[i][3])
+      PileSpring_K4_Data.push(Number(KValueSeismicLiqResult[i][3].toFixed(0)))
     }
     else{
       PileSpring_K4_Data.push('-')
     }
-    PileSpring_K4_Data.push(kValuePeriodResult[i][3])
+    PileSpring_K4_Data.push(Number(kValuePeriodResult[i][3].toFixed(0)))
 
     PileSpring_K_table.push(PileSpring_K1_Data, PileSpring_K2_Data, PileSpring_K3_Data, PileSpring_K4_Data)
     
@@ -320,87 +324,87 @@ function ExcelJsonResult(
   reportjson_items["_PileMatrix_Title"] = {}
   
   reportjson_items["_PileSpring_Matrix_Main"] = {
-    "__X_Normal_Axx" : Number(Matrix_Normal_X[0].toFixed(3)),
-    "__X_Normal_Axy" : Number(Matrix_Normal_X[1].toFixed(3)),
-    "__X_Normal_Axa" : Number(Matrix_Normal_X[2].toFixed(3)),
-    "__X_Normal_Ayx" : Number(Matrix_Normal_X[1].toFixed(3)),
-    "__X_Normal_Ayy" : Number(Matrix_Normal_X[3].toFixed(3)),
-    "__X_Normal_Aya" : Number(Matrix_Normal_X[4].toFixed(3)),
-    "__X_Normal_Aax" : Number(Matrix_Normal_X[2].toFixed(3)),
-    "__X_Normal_Aay" : Number(Matrix_Normal_X[4].toFixed(3)),
-    "__X_Normal_Aaa" : Number(Matrix_Normal_X[5].toFixed(3)),
+    "__X_Normal_Axx" : Number(Number(Matrix_Normal_X[0].toFixed(0))),
+    "__X_Normal_Axy" : Number(Number(Matrix_Normal_X[1].toFixed(0))),
+    "__X_Normal_Axa" : Number(Number(Matrix_Normal_X[2].toFixed(0))),
+    "__X_Normal_Ayx" : Number(Number(Matrix_Normal_X[1].toFixed(0))),
+    "__X_Normal_Ayy" : Number(Number(Matrix_Normal_X[3].toFixed(0))),
+    "__X_Normal_Aya" : Number(Number(Matrix_Normal_X[4].toFixed(0))),
+    "__X_Normal_Aax" : Number(Number(Matrix_Normal_X[2].toFixed(0))),
+    "__X_Normal_Aay" : Number(Number(Matrix_Normal_X[4].toFixed(0))),
+    "__X_Normal_Aaa" : Number(Number(Matrix_Normal_X[5].toFixed(0))),
 
-    "__X_Seis_Axx" : Number(Matrix_Seismic_X[0].toFixed(3)),
-    "__X_Seis_Axy" : Number(Matrix_Seismic_X[1].toFixed(3)),
-    "__X_Seis_Axa" : Number(Matrix_Seismic_X[2].toFixed(3)),
-    "__X_Seis_Ayx" : Number(Matrix_Seismic_X[1].toFixed(3)),
-    "__X_Seis_Ayy" : Number(Matrix_Seismic_X[3].toFixed(3)),
-    "__X_Seis_Aya" : Number(Matrix_Seismic_X[4].toFixed(3)),
-    "__X_Seis_Aax" : Number(Matrix_Seismic_X[2].toFixed(3)),
-    "__X_Seis_Aay" : Number(Matrix_Seismic_X[4].toFixed(3)),
-    "__X_Seis_Aaa" : Number(Matrix_Seismic_X[5].toFixed(3)),
+    "__X_Seis_Axx" : Number(Number(Matrix_Seismic_X[0].toFixed(0))),
+    "__X_Seis_Axy" : Number(Number(Matrix_Seismic_X[1].toFixed(0))),
+    "__X_Seis_Axa" : Number(Number(Matrix_Seismic_X[2].toFixed(0))),
+    "__X_Seis_Ayx" : Number(Number(Matrix_Seismic_X[1].toFixed(0))),
+    "__X_Seis_Ayy" : Number(Number(Matrix_Seismic_X[3].toFixed(0))),
+    "__X_Seis_Aya" : Number(Number(Matrix_Seismic_X[4].toFixed(0))),
+    "__X_Seis_Aax" : Number(Number(Matrix_Seismic_X[2].toFixed(0))),
+    "__X_Seis_Aay" : Number(Number(Matrix_Seismic_X[4].toFixed(0))),
+    "__X_Seis_Aaa" : Number(Number(Matrix_Seismic_X[5].toFixed(0))),
 
-    "__X_Period_Axx" : Number(Matrix_Period_X[0].toFixed(3)),
-    "__X_Period_Axy" : Number(Matrix_Period_X[1].toFixed(3)),
-    "__X_Period_Axa" : Number(Matrix_Period_X[2].toFixed(3)),
-    "__X_Period_Ayx" : Number(Matrix_Period_X[1].toFixed(3)),
-    "__X_Period_Ayy" : Number(Matrix_Period_X[3].toFixed(3)),
-    "__X_Period_Aya" : Number(Matrix_Period_X[4].toFixed(3)),
-    "__X_Period_Aax" : Number(Matrix_Period_X[2].toFixed(3)),
-    "__X_Period_Aay" : Number(Matrix_Period_X[4].toFixed(3)),
-    "__X_Period_Aaa" : Number(Matrix_Period_X[5].toFixed(3)),
+    "__X_Period_Axx" : Number(Number(Matrix_Period_X[0].toFixed(0))),
+    "__X_Period_Axy" : Number(Number(Matrix_Period_X[1].toFixed(0))),
+    "__X_Period_Axa" : Number(Number(Matrix_Period_X[2].toFixed(0))),
+    "__X_Period_Ayx" : Number(Number(Matrix_Period_X[1].toFixed(0))),
+    "__X_Period_Ayy" : Number(Number(Matrix_Period_X[3].toFixed(0))),
+    "__X_Period_Aya" : Number(Number(Matrix_Period_X[4].toFixed(0))),
+    "__X_Period_Aax" : Number(Number(Matrix_Period_X[2].toFixed(0))),
+    "__X_Period_Aay" : Number(Number(Matrix_Period_X[4].toFixed(0))),
+    "__X_Period_Aaa" : Number(Number(Matrix_Period_X[5].toFixed(0))),
 
-    "__Z_Normal_Axx" : Number(Matrix_Normal_Z[0].toFixed(3)),
-    "__Z_Normal_Axy" : Number(Matrix_Normal_Z[1].toFixed(3)),
-    "__Z_Normal_Axa" : Number(Matrix_Normal_Z[2].toFixed(3)),
-    "__Z_Normal_Ayx" : Number(Matrix_Normal_Z[1].toFixed(3)),
-    "__Z_Normal_Ayy" : Number(Matrix_Normal_Z[3].toFixed(3)),
-    "__Z_Normal_Aya" : Number(Matrix_Normal_Z[4].toFixed(3)),
-    "__Z_Normal_Aax" : Number(Matrix_Normal_Z[2].toFixed(3)),
-    "__Z_Normal_Aay" : Number(Matrix_Normal_Z[4].toFixed(3)),
-    "__Z_Normal_Aaa" : Number(Matrix_Normal_Z[5].toFixed(3)),
+    "__Z_Normal_Axx" : Number(Number(Matrix_Normal_Z[0].toFixed(0))),
+    "__Z_Normal_Axy" : Number(Number(Matrix_Normal_Z[1].toFixed(0))),
+    "__Z_Normal_Axa" : Number(Number(Matrix_Normal_Z[2].toFixed(0))),
+    "__Z_Normal_Ayx" : Number(Number(Matrix_Normal_Z[1].toFixed(0))),
+    "__Z_Normal_Ayy" : Number(Number(Matrix_Normal_Z[3].toFixed(0))),
+    "__Z_Normal_Aya" : Number(Number(Matrix_Normal_Z[4].toFixed(0))),
+    "__Z_Normal_Aax" : Number(Number(Matrix_Normal_Z[2].toFixed(0))),
+    "__Z_Normal_Aay" : Number(Number(Matrix_Normal_Z[4].toFixed(0))),
+    "__Z_Normal_Aaa" : Number(Number(Matrix_Normal_Z[5].toFixed(0))),
 
-    "__Z_Seis_Axx" : Number(Matrix_Seismic_Z[0].toFixed(3)),
-    "__Z_Seis_Axy" : Number(Matrix_Seismic_Z[1].toFixed(3)),
-    "__Z_Seis_Axa" : Number(Matrix_Seismic_Z[2].toFixed(3)),
-    "__Z_Seis_Ayx" : Number(Matrix_Seismic_Z[1].toFixed(3)),
-    "__Z_Seis_Ayy" : Number(Matrix_Seismic_Z[3].toFixed(3)),
-    "__Z_Seis_Aya" : Number(Matrix_Seismic_Z[4].toFixed(3)),
-    "__Z_Seis_Aax" : Number(Matrix_Seismic_Z[2].toFixed(3)),
-    "__Z_Seis_Aay" : Number(Matrix_Seismic_Z[4].toFixed(3)),
-    "__Z_Seis_Aaa" : Number(Matrix_Seismic_Z[5].toFixed(3)),
+    "__Z_Seis_Axx" : Number(Number(Matrix_Seismic_Z[0].toFixed(0))),
+    "__Z_Seis_Axy" : Number(Number(Matrix_Seismic_Z[1].toFixed(0))),
+    "__Z_Seis_Axa" : Number(Number(Matrix_Seismic_Z[2].toFixed(0))),
+    "__Z_Seis_Ayx" : Number(Number(Matrix_Seismic_Z[1].toFixed(0))),
+    "__Z_Seis_Ayy" : Number(Number(Matrix_Seismic_Z[3].toFixed(0))),
+    "__Z_Seis_Aya" : Number(Number(Matrix_Seismic_Z[4].toFixed(0))),
+    "__Z_Seis_Aax" : Number(Number(Matrix_Seismic_Z[2].toFixed(0))),
+    "__Z_Seis_Aay" : Number(Number(Matrix_Seismic_Z[4].toFixed(0))),
+    "__Z_Seis_Aaa" : Number(Number(Matrix_Seismic_Z[5].toFixed(0))),
 
-    "__Z_Period_Axx" : Number(Matrix_Period_Z[0].toFixed(3)),
-    "__Z_Period_Axy" : Number(Matrix_Period_Z[1].toFixed(3)),
-    "__Z_Period_Axa" : Number(Matrix_Period_Z[2].toFixed(3)),
-    "__Z_Period_Ayx" : Number(Matrix_Period_Z[1].toFixed(3)),
-    "__Z_Period_Ayy" : Number(Matrix_Period_Z[3].toFixed(3)),
-    "__Z_Period_Aya" : Number(Matrix_Period_Z[4].toFixed(3)),
-    "__Z_Period_Aax" : Number(Matrix_Period_Z[2].toFixed(3)),
-    "__Z_Period_Aay" : Number(Matrix_Period_Z[4].toFixed(3)),
-    "__Z_Period_Aaa" : Number(Matrix_Period_Z[5].toFixed(3)),
+    "__Z_Period_Axx" : Number(Number(Matrix_Period_Z[0].toFixed(0))),
+    "__Z_Period_Axy" : Number(Number(Matrix_Period_Z[1].toFixed(0))),
+    "__Z_Period_Axa" : Number(Number(Matrix_Period_Z[2].toFixed(0))),
+    "__Z_Period_Ayx" : Number(Number(Matrix_Period_Z[1].toFixed(0))),
+    "__Z_Period_Ayy" : Number(Number(Matrix_Period_Z[3].toFixed(0))),
+    "__Z_Period_Aya" : Number(Number(Matrix_Period_Z[4].toFixed(0))),
+    "__Z_Period_Aax" : Number(Number(Matrix_Period_Z[2].toFixed(0))),
+    "__Z_Period_Aay" : Number(Number(Matrix_Period_Z[4].toFixed(0))),
+    "__Z_Period_Aaa" : Number(Number(Matrix_Period_Z[5].toFixed(0))),
   }
   
   if (liquefactionState){
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Axx"] = Number(Matrix_Seismic_Liq_X[0].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Axy"] = Number(Matrix_Seismic_Liq_X[1].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Axa"] = Number(Matrix_Seismic_Liq_X[2].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Ayx"] = Number(Matrix_Seismic_Liq_X[1].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Ayy"] = Number(Matrix_Seismic_Liq_X[3].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aya"] = Number(Matrix_Seismic_Liq_X[4].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aax"] = Number(Matrix_Seismic_Liq_X[2].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aay"] = Number(Matrix_Seismic_Liq_X[4].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aaa"] = Number(Matrix_Seismic_Liq_X[5].toFixed(3))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Axx"] = Number(Number(Matrix_Seismic_Liq_X[0].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Axy"] = Number(Number(Matrix_Seismic_Liq_X[1].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Axa"] = Number(Number(Matrix_Seismic_Liq_X[2].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Ayx"] = Number(Number(Matrix_Seismic_Liq_X[1].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Ayy"] = Number(Number(Matrix_Seismic_Liq_X[3].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aya"] = Number(Number(Matrix_Seismic_Liq_X[4].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aax"] = Number(Number(Matrix_Seismic_Liq_X[2].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aay"] = Number(Number(Matrix_Seismic_Liq_X[4].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Aaa"] = Number(Number(Matrix_Seismic_Liq_X[5].toFixed(0)))
 
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Axx"] = Number(Matrix_Seismic_Liq_Z[0].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Axy"] = Number(Matrix_Seismic_Liq_Z[1].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Axa"] = Number(Matrix_Seismic_Liq_Z[2].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Ayx"] = Number(Matrix_Seismic_Liq_Z[1].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Ayy"] = Number(Matrix_Seismic_Liq_Z[3].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aya"] = Number(Matrix_Seismic_Liq_Z[4].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aax"] = Number(Matrix_Seismic_Liq_Z[2].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aay"] = Number(Matrix_Seismic_Liq_Z[4].toFixed(3))
-    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aaa"] = Number(Matrix_Seismic_Liq_Z[5].toFixed(3))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Axx"] = Number(Number(Matrix_Seismic_Liq_Z[0].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Axy"] = Number(Number(Matrix_Seismic_Liq_Z[1].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Axa"] = Number(Number(Matrix_Seismic_Liq_Z[2].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Ayx"] = Number(Number(Matrix_Seismic_Liq_Z[1].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Ayy"] = Number(Number(Matrix_Seismic_Liq_Z[3].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aya"] = Number(Number(Matrix_Seismic_Liq_Z[4].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aax"] = Number(Number(Matrix_Seismic_Liq_Z[2].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aay"] = Number(Number(Matrix_Seismic_Liq_Z[4].toFixed(0)))
+    reportjson_items["_PileSpring_Matrix_Main"]["__Z_Seis_Liq_Aaa"] = Number(Number(Matrix_Seismic_Liq_Z[5].toFixed(0)))
   }
   else{
     reportjson_items["_PileSpring_Matrix_Main"]["__X_Seis_Liq_Axx"] = "-"
@@ -427,7 +431,6 @@ function ExcelJsonResult(
   reportjson_items["_Rest"] = {}
 
   const reportjson = {"report": reportjson_items}
-
   return reportjson
 
 }

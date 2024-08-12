@@ -222,7 +222,8 @@ function MainWindow() {
 
     // Kv 값 계산
     const KvResult = CalculateKv(piletableData, groundLevel, topLevel)
-
+    console.log('piletableData', piletableData)
+    console.log('KvResult', KvResult)
     // Axx ~ Aaa Matrix 계산
     const Matrix_Normal_X = CalculateMatrix(piletableData, foundationWidth, sideLength, soilData, 'normal', 'X', KvResult, KValue_Normal, KValue_Seismic, KValue_Seismic_Liq, KValue_Period, forcePointX, forcePointY, 'no')
     const Matrix_Noraml_Z = CalculateMatrix(piletableData, foundationWidth, sideLength, soilData, 'normal', 'Z', KvResult, KValue_Normal, KValue_Seismic, KValue_Seismic_Liq, KValue_Period, forcePointX, forcePointY, 'no')
