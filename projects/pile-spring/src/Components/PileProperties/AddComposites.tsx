@@ -58,6 +58,7 @@ function AddComposites(){
     
     const titleChange = (e:any) => {
         // 철근 타이틀 : 현장타설말뚝, PHC 말뚝일 경우에는 단면적, 그 외에는 직경
+        // 08.
         if (e === 'Cast_In_Situ' || e=== 'PHC_Pile'){
             setCompSteelDiaTitle(translate('Composite_Steel_Diamter_Case1'))
         }

@@ -137,20 +137,20 @@ def CalPileCenterCoordinates(PileData, FoundationWidth, SideLength):
 	CenterX = []
 	try:
 		if pileData['majorRefValue'] == 1:
-			CenterX = [float(pileData['majorStartPoint'])]
+			CenterX = [float(Decimal(str(pileData['majorStartPoint'])))]
 			for i in range(len(majorSpace)):
-				CenterX.append(float(CenterX[i]+float(majorSpace[i])))
+				CenterX.append(float(Decimal(str(CenterX[i]))+Decimal(str(majorSpace[i]))))
 		elif pileData['majorRefValue'] == 2:
-			CenterX=[float(sideLength)-float(pileData['majorStartPoint'])]
+			CenterX=[float(Decimal(str(sideLength))-Decimal(str(pileData['majorStartPoint'])))]
 			for i in range(len(majorSpace)):
-				CenterX.append(float(CenterX[i]-float(majorSpace[i])))
+				CenterX.append(float(Decimal(str(CenterX[i]))-Decimal(str(majorSpace[i]))))
 		CenterCoordinates = []
 		if pileData['minorRefValue'] == 1:
 			for i in range(len(CenterX)):
 				CenterCoordinates.append([CenterX[i], float(pileData['minorStartPoint'])])
 		elif pileData['minorRefValue'] == 2:
 			for i in range(len(CenterX)):
-				CenterCoordinates.append([CenterX[i], float(foundationWidth)-float(pileData['minorStartPoint'])])
+				CenterCoordinates.append([CenterX[i], float(Decimal(str(foundationWidth))-Decimal(str(pileData['minorStartPoint'])))])
 	except:
 		ErrorReturn = [[0,0]]
 		return json.dumps(ErrorReturn)
@@ -170,7 +170,7 @@ def CalPileDegree(PileData):
 	return json.dumps(degree)
 
 # 말뚝 특성치 계산
-def Cal_Beta(SoilData, PileTableData, Condition, SlopeEffectState, GroupEffectValue):
+def Cal_Beta(SoilData, PileTableData, Condition, SlopeEffectState, GroupEffectValue, TopLevel, GroundLevel):
     
 	pileTableData = json.loads(PileTableData)
 	soilData = json.loads(SoilData)
@@ -215,7 +215,7 @@ def Cal_Beta(SoilData, PileTableData, Condition, SlopeEffectState, GroupEffectVa
 						Avg_alpha_E0[i] += float(soilData[j]['ED'])*((1/InitialBeta)-(LayerDepth-float(soilData[j]['Depth'])))*De*Alpha_HTheta
 						break
 			Avg_alpha_E0[i] = Avg_alpha_E0[i]/(1/InitialBeta)
-			Properties = json.loads(Cal_EI_D(json.dumps(pileTableData[i]), (1/InitialBeta)))
+			Properties = json.loads(Cal_EI_D(json.dumps(pileTableData[i]), (1/InitialBeta), TopLevel, GroundLevel))
 			PileEI = Properties[0]
 			PileD = Properties[1]
 			Bh[i] = math.sqrt(PileD/InitialBeta)
@@ -326,9 +326,10 @@ def CalKv(PileTableData, groundLevel, topLevel):
 			coeef_a = Alpha1[i]*(float(pileTableData[i]['pileLength'])-float(exposed_length))/float(Section_D) + Alpha2[i]
 
 			if exposed_length != 0:
+				## 08.13 Exposed 시 고려하지 않음
 				K_exposed = Section_EA / exposed_length
 				K_embedded = coeef_a * Section_EA / (float(pileTableData[i]['pileLength'])-exposed_length)
-				Kv_Pile = 1/(1/K_exposed + 1/K_embedded)
+				Kv_Pile = K_embedded
     
 			else:
 				Kv_Pile = coeef_a * Section_EA / float(pileTableData[i]['pileLength'])
@@ -347,14 +348,14 @@ def CalKv(PileTableData, groundLevel, topLevel):
 				Section_A = Property[0]
 				Section_EA = Section_E*Section_A
 				Section_D = Property[3]
-    
+
 				coeef_a = Alpha1[i]*(float(pileTableData[i]['pileLength'])-float(exposed_length))/float(Section_D) + Alpha2[i]
-    
+				
 				if exposed_length != 0:
+					## 08.13 Exposed 시 고려하지 않음
 					K_exposed = Section_EA / exposed_length
 					K_embedded = coeef_a * Section_EA / (float(pileTableData[i]['pileLength'])-exposed_length)
-					Kv_Pile = 1/(1/K_exposed + 1/K_embedded)
-	
+					Kv_Pile = K_embedded
 				else:
 					Kv_Pile = coeef_a * Section_EA / float(pileTableData[i]['pileLength'])
 
@@ -376,7 +377,8 @@ def CalKv(PileTableData, groundLevel, topLevel):
 					Section_D = Property[3]
      
 					if section_depths[j][3] == 'exposed':
-						coeef_a = 1
+						## 08.13 Exposed 시 고려하지 않음
+						coeef_a = 0
 					else:
 						coeef_a = Alpha1[i]*(float(pileTableData[i]['pileLength'])-float(exposed_length))/float(Section_D) + Alpha2[i]
 
@@ -412,16 +414,16 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 	soilDepth.insert(0, h)
 	
 	# 각 파일의 깊이 별 제원 계산하여 배열로 저장
-	elements = []
+	
 	for i in range(len(pileTableData)):
-		
+		elements = []
 		sections = section_elements(pileTableData[i])
 		section_depths = [subarray[0] for subarray in sections]
   
 		combined_depths = list(set(soilDepth + section_depths))
 		combined_depths.sort()
-		combined_depths = [float(Decimal(i)) for i in combined_depths]
-  
+		combined_depths = [float(Decimal(depths)) for depths in combined_depths]
+
 		# 각 파일의 각 깊이별 요소 제원 계산
 		for j, depth in enumerate(combined_depths):
 			Section_E = 0
@@ -473,9 +475,8 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 							elements.append({"Length": Length, "E": Section_E, "I": Section_I, "D": Section_D, "KH": KH})
 							break
 					break
-					
+
 		new_elements = []
-  
 		for element in elements:
 			L = element['Length']
 			KH = element['KH']*element['D']
@@ -483,7 +484,8 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 			if (L !=0):
 				divideNum = 5
 				for Num in range(divideNum):
-					new_elements.append({"Length": L/divideNum, "EI": EI, "KH": KH})
+					new_elements.append({"Length": float(Decimal(L)/Decimal(divideNum)), "EI": EI, "KH": KH})
+
     
 		element_stiffness_matrices = []
   
@@ -501,13 +503,12 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 
 		NodeNum = len(new_elements) + 1
 		K_global = np.zeros((NodeNum*2, NodeNum*2))
-
+		
 		for index, K_element in enumerate(element_stiffness_matrices):
 			K_global[index*2:index*2+4, index*2:index*2+4] += K_element
 
 		# 경계조건에 따른 행렬 축소
 		k_Reduced = apply_boundary_conditions(K_global, bottomCondition)
-
 		# 단위 수평력 및 단위 모멘트 하중 벡터
 		# 단위 수평력
 		F_horizontal = np.zeros(k_Reduced.shape[0])
@@ -520,11 +521,10 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 		# 변위 계산
 		u_horizontal = np.linalg.solve(k_Reduced, F_horizontal)
 		u_moment = np.linalg.solve(k_Reduced, F_moment)
-		
+  
 		if headCondition == 'Head_Condition_Fixed':
 			# 말뚝머리 변위 및 회전각에 대한 연립방정식
 			Head_u = np.array([[u_horizontal[0], u_moment[0]],[u_horizontal[1], u_moment[1]]])
-		
 			# 단위 수평력에 대한 연립방정식
 			b1 = np.array([1, 0])
 			X_Y1 = np.linalg.solve(Head_u, b1)
@@ -541,6 +541,7 @@ def CalKValue(PileTableData, GroundLevel, TopLevel, SoilData, Condition, headCon
 			Kvalue[i][1] = 0
 			Kvalue[i][2] = 0
 			Kvalue[i][3] = 0
+
 
 	return json.dumps(Kvalue)
 
@@ -671,8 +672,8 @@ def CalDistFromCentriod(PileTableData, FoundationWidth, SideLength, Force_Point_
 	for pileData in pileTableData:
 		CenterCoordinates = json.loads(CalPileCenterCoordinates(json.dumps(pileData), json.dumps(foundationWidth), json.dumps(sideLength)))
 		for i in range(len(CenterCoordinates)):
-			CenterCoordinates[i][0] = CenterCoordinates[i][0] - CentroidX
-			CenterCoordinates[i][1] = CenterCoordinates[i][1] - CentroidY
+			CenterCoordinates[i][0] = float(Decimal(str(CenterCoordinates[i][0])) - Decimal(str(CentroidX)))
+			CenterCoordinates[i][1] = float(Decimal(str(CenterCoordinates[i][1])) - Decimal(str(CentroidY)))
 		
 		DistFromCentroid.append(CenterCoordinates)
 	return json.dumps(DistFromCentroid)
@@ -763,7 +764,8 @@ def Cal_Property(PileData, Position, ReinforcedState):
 			concreteThickness = float(pileData['concreteThickness'])/1000  # mm -> m
 			concreteModulus = float(pileData['concreteModulus'])*1000  # N/mm^2 -> kN/m^2
 			if (pileData['pileType'] == 'PHC_Pile' or pileData['pileType'] == 'Cast_In_Situ'):
-				steelDiameter = float(pileData['steelDiameter'])/10000  # cm^2 -> m^2
+				## 08.09 단위계 cm^2 -> mm^2로 변경
+				steelDiameter = float(pileData['steelDiameter'])/1000000  # mm^2 -> m^2
 			else:
 				steelDiameter = float(pileData['steelDiameter'])/1000  # mm -> m
 			steelThickness = float(pileData['steelThickness'])/1000  # mm -> m
@@ -776,7 +778,8 @@ def Cal_Property(PileData, Position, ReinforcedState):
 			concreteThickness = float(pileData['compConcreteThickness'])/1000  # mm -> m
 			concreteModulus = float(pileData['compConcreteModulus'])*1000  # N/mm^2 -> kN/m^2
 			if (pileData['compPileType'] == 'PHC_Pile' or pileData['compPileType'] == 'Cast_In_Situ'):
-				steelDiameter = float(pileData['compSteelDiameter'])/10000  # cm^2 -> m^2
+				## 08.09 단위계 cm^2 -> mm^2로 변경
+				steelDiameter = float(pileData['compSteelDiameter'])/1000000  # mm^2 -> m^2
 			else:
 				steelDiameter = float(pileData['compSteelDiameter'])/1000  # mm -> m
 			steelThickness = float(pileData['compSteelThickness'])/1000  # mm -> m
@@ -1019,7 +1022,7 @@ def Cal_Property(PileData, Position, ReinforcedState):
 	result = [Area, Modulus, SecInertia, Diameter, SteelArea, CementArea, SteelModulus, CementModulus, SteelInertia, CementInertia]
 	return json.dumps(result)
 	
-def Cal_EI_D(PileData, Length):
+def Cal_EI_D(PileData, Length, TopLevel, GroundLevel):
   
   ## 특정 위치에서의 평균 EI 값과 평균 D 값 계산
 	pileData = json.loads(PileData)
@@ -1027,6 +1030,26 @@ def Cal_EI_D(PileData, Length):
 	CompStartLength = float(pileData['compStartLength'])
 	ReinforcedStartLength = float(pileData['reinforcedStartLength'])
 	ReinforcedEndLength = float(pileData['reinforcedEndLength'])
+ 
+	if (float(TopLevel) > float(GroundLevel)):
+		ExposedLength = float(TopLevel) - float(GroundLevel)
+	else:
+		ExposedLength = 0
+  
+	Modified_PileTotalLength = PileTotalLength - ExposedLength
+	Modified_CompStartLength = CompStartLength - ExposedLength
+	Modified_ReinforcedStartLength = ReinforcedStartLength - ExposedLength
+	Modified_ReinforcedEndLength = ReinforcedEndLength - ExposedLength
+	
+	if (Modified_PileTotalLength < 0):
+		Modified_PileTotalLength = 0
+	if (Modified_CompStartLength < 0):
+		Modified_CompStartLength = 0
+	if (Modified_ReinforcedStartLength < 0):
+		Modified_ReinforcedStartLength = 0
+	if (Modified_ReinforcedEndLength < 0):
+		Modified_ReinforcedEndLength = 0
+	
  	# 상부 미보강 길이, 상부 보강 길이, 상부 미보강길이, 하부 미보강 길이, 하부 보강 길이
 	
 	Top_Length = 0
@@ -1071,14 +1094,14 @@ def Cal_EI_D(PileData, Length):
 		Bottom_unreinforced_PileD = Bottom_unreinforced_Property[3]
 		Bottom_reinforced_PileEI = Bottom_reinfored_Property[1]*Bottom_reinfored_Property[2]
 		Bottom_reinforced_PileD = Bottom_reinfored_Property[3]
- 
+	
 	# 하부 말뚝이 있는 경우
 	if CompStartLength > 0:
-		Top_Length = CompStartLength
-		Bottom_Length = Length - CompStartLength
+		Top_Length = Modified_CompStartLength
+		Bottom_Length = Length - Modified_CompStartLength
 	#하부 말뚝이 없는 경우
 	else:
-		Top_Length = PileTotalLength
+		Top_Length = Modified_PileTotalLength
 		Bottom_Length = 0
 
 	# Length 내 상부 길이, 하부 길이 계산
@@ -1092,7 +1115,7 @@ def Cal_EI_D(PileData, Length):
 		Bottom_Length = 0
 	
 	# 보강이 없을 경우
-	if (ReinforcedEndLength - ReinforcedStartLength == 0):
+	if (Modified_ReinforcedEndLength - Modified_ReinforcedStartLength == 0):
 		Top_unreinforced_Length = Top_Length
 		Top_reinforced_Length = 0
 		Bottom_unreinforced_Length = Bottom_Length
@@ -1101,33 +1124,34 @@ def Cal_EI_D(PileData, Length):
 	# 보강이 있을 경우
 	else:
 		#  이음 위치가 보강 시작부보다 작을 경우
-		if (Top_Length <= ReinforcedStartLength):
+		if (Top_Length <= Modified_ReinforcedStartLength):
 			Top_unreinforced_Length = Top_Length
 			Top_reinforced_Length = 0
 			# 전체 길이가 보강 종료부보다 작을 경우
-			if (Length <= ReinforcedEndLength):
-				Bottom_reinforced_Length = min(Length, ReinforcedStartLength) - Top_Length
+			if (Length <= Modified_ReinforcedEndLength):
+				Bottom_reinforced_Length = min(Length, Modified_ReinforcedStartLength) - Top_Length
 				Bottom_unreinforced_Length = Bottom_Length - Bottom_reinforced_Length
 			# 전체 길이가 보강 종료부보다 클 경우
 			else:
-				Bottom_reinforced_Length = ReinforcedEndLength - ReinforcedStartLength
-				Bottom_unreinforced_Length = Bottom_Length - ReinforcedEndLength
+				Bottom_reinforced_Length = Modified_ReinforcedEndLength - Modified_ReinforcedStartLength
+				Bottom_unreinforced_Length = Bottom_Length - Modified_ReinforcedEndLength
     
     # 이음 위치가 보강 사이에 있을 경우
-		elif ( ReinforcedStartLength< Top_Length and Top_Length <= ReinforcedEndLength):
-			Top_reinforced_Length = Top_Length - ReinforcedStartLength
+		elif ( Modified_ReinforcedStartLength< Top_Length and Top_Length <= Modified_ReinforcedEndLength):
+			Top_reinforced_Length = Top_Length - Modified_ReinforcedStartLength
 			Top_unreinforced_Length = Top_Length - Top_reinforced_Length
-			Bottom_reinforced_Length = min(Length, ReinforcedEndLength) - Top_Length
+			Bottom_reinforced_Length = min(Length, Modified_ReinforcedEndLength) - Top_Length
 			Bottom_unreinforced_Length = Bottom_Length - Bottom_reinforced_Length
    
 		# 이음 위치가 보강 종료부보다 클 경우
 		else:
-			Top_reinforced_Length = ReinforcedEndLength - ReinforcedStartLength
+			Top_reinforced_Length = Modified_ReinforcedEndLength - Modified_ReinforcedStartLength
 			Top_unreinforced_Length = Top_Length - Top_reinforced_Length
 			Bottom_unreinforced_Length = Bottom_Length
 			Bottom_reinforced_Length = 0
 
-	
+	## 	
+ 
 	PileEI = (Top_unreinforced_PileEI*Top_unreinforced_Length + Top_reinforced_PileEI*Top_reinforced_Length + Bottom_unreinforced_PileEI*Bottom_unreinforced_Length + Bottom_reinforced_PileEI*Bottom_reinforced_Length)/Length
 	PileD = (Top_unreinforced_PileD*Top_unreinforced_Length + Top_reinforced_PileD*Top_reinforced_Length + Bottom_unreinforced_PileD*Bottom_unreinforced_Length + Bottom_reinforced_PileD*Bottom_reinforced_Length)/Length
 	result = [PileEI, PileD]

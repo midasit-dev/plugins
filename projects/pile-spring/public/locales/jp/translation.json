@@ -48,7 +48,8 @@
   "Basic_Steel_Title_Case1" : "鉄筋",
   "Basic_Steel_Title_Case2" : "鋼管",
   "Basic_Steel_Title_Case3" : "PC鋼材",
-  "Basic_Steel_Diamter_Case1" : "断面積(cm²)",
+
+  "Basic_Steel_Diamter_Case1" : "断面積(mm²)",
   "Basic_Steel_Diamter_Case2" : "直径(mm)",
   "Basic_Steel_Cor_Case1" : "配置半径(mm)",
   "Basic_Steel_Cor_Case2" : "腐食代(mm)",
@@ -65,7 +66,7 @@
   "Composite_Steel_Title_Case1" : "鉄筋",
   "Composite_Steel_Title_Case2" : "鋼管",
   "Composite_Steel_Title_Case3" : "PC鋼材",
-  "Composite_Steel_Diamter_Case1" : "断面積(cm²)",
+  "Composite_Steel_Diamter_Case1" : "断面積(mm²)",
   "Composite_Steel_Diamter_Case2" : "直径(mm)",
   "Composite_Steel_Cor_Case1" : "配置半径(mm)",
   "Composite_Steel_Cor_Case2" : "腐食代(mm)",
@@ -229,4 +230,6 @@
   "PileType1" : "基本杭",
   "PileType2" : "基本杭",
   "PileType3" : "下部杭"
+
+  
 }

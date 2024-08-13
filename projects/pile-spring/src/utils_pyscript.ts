@@ -253,11 +253,11 @@ export function CalculateMatrix(PileTableData : any, FoundationWidth : any, Side
 	})
 }
 
-export function CalculateBeta(SoilData : any, PileTableData : any, Condition : any, SlopeEffectState : any, GroupEffectValue : any){
+export function CalculateBeta(SoilData : any, PileTableData : any, Condition : any, SlopeEffectState : any, GroupEffectValue : any, TopLevel:any, GroundLevel:any){
 	return checkPyScriptReady(() => {
 		let result =[]
 		const Cal_Beta = pyscript.interpreter.globals.get('Cal_Beta');
-		result = Cal_Beta(JSON.stringify(SoilData), JSON.stringify(PileTableData), Condition, SlopeEffectState, GroupEffectValue);
+		result = Cal_Beta(JSON.stringify(SoilData), JSON.stringify(PileTableData), Condition, SlopeEffectState, GroupEffectValue, TopLevel, GroundLevel);
 		return JSON.parse(result);
 	})
 }
