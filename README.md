@@ -31,7 +31,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - [🌐 Temperature-Gradient-Stress-Calculator](https://midasit-dev.github.io/plugins/temperature-gradient-stress-calculator)
 - [🌐 Tendon-Profile-Converter](https://midasit-dev.github.io/plugins/tendon-profile-converter)
 
-### Logs of Added Plugins (updated at 2024.08.20)
+### Logs of Published Plugins in Market Place (updated at 2024.08.20)
 - Spacegass Importer - (for AUSTRAILIA)
 - 6x6 General Spring for Pile Foundation (JP) - (for JAPAN)
 - Inertial Forces Controller (fix bugs and update) - (for JAPAN)
