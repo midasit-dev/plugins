@@ -11,6 +11,9 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ## Related Repository
 - [🔒 MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
 
+## Version Control Rule
+- [Confluence Link](https://midasitdev.atlassian.net/l/cp/Tm6dAmBA)
+
 <br />
 
 ## Official
