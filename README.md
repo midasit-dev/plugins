@@ -17,7 +17,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ### Documentation
 - [🌐 MIDAS Plug-in Documentation](https://midas-support.atlassian.net/wiki/spaces/MAW/pages/215711752/MIDAS+Plug-in+over+the+MIDAS+API)
 
-### Plugins Testing (12)
+### Plugins (12)
 - [🌐 Alignment-Generator](https://midasit-dev.github.io/plugins/alignment-generator)
 - [🌐 Concrete-Material-Set-EN1992-1-1](https://midasit-dev.github.io/plugins/concrete-material-set-en1992-1-1)
 - [🌐 Convert-Load-Combinations-Into-Sds-Format](https://midasit-dev.github.io/plugins/convert-load-combinations-into-sds-format)
@@ -30,6 +30,12 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - [🌐 Series-Load](https://midasit-dev.github.io/plugins/series-load)
 - [🌐 Temperature-Gradient-Stress-Calculator](https://midasit-dev.github.io/plugins/temperature-gradient-stress-calculator)
 - [🌐 Tendon-Profile-Converter](https://midasit-dev.github.io/plugins/tendon-profile-converter)
+
+### Logs of Added Plugins (updated at 2024.08.20)
+- Spacegass Importer - (for AUSTRAILIA)
+- 6x6 General Spring for Pile Foundation (JP) - (for JAPAN)
+- Inertial Forces Controller (fix bugs and update) - (for JAPAN)
+- Load Combination Breakdown - (for INDIA)
 
 <br />
 
@@ -44,6 +50,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - ⛔: Not found
 - 🚧: Just need to modify to data
 - ⚠️: There is an error
+- 🏬: published in market place
 
 | status | no | title                              | writer             | made in   | description                                                                                          | testing                                                         |
 |--------|----|------------------------------------|--------------------|-----------|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
@@ -54,11 +61,11 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 |     ✅ | 5  | artificial eq correlation          | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/artificial-eq-correlation/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/artificial-eq-correlation) |
 |     ✅ | 6  | rigid link generator               | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/rigid-link-generator/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/rigid-link-generator) |
 |     ✅ | 7  | mirror tapered section             | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/mirror-tapered-section/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/mirror-tapered-section) |
-|     ⏳ | 8  | pile spring						             | Simon              | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
+|     🏬 | 8  | pile spring						             | Simon              | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/pile-spring) |
 |     ❌ | 9  | elastic link generator             | Simon              | chapter   | [⛔ Readme](https://github.com/midasit-dev/plugins/blob/main/projects/elastic-link-generator/public/readme.md) | [⛔ Link](https://midasit-dev.github.io/plugins/elastic-link-generator) |
-|     ⏳ | 10 | baseplate                          | Simon & Lenny      | chapter   | [🚧 Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
+|     ✅ | 10 | baseplate                          | Simon & Lenny      | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/baseplate/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/baseplate) |
 |     ✅ | 11 | node controller                    | Walter             | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/node-controller/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/node-controller) |
-|     ✅ | 12 | spacegass importer                 | Walter & James     | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/spacegass-importer/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/spacegass-importer) |
+|     🏬 | 12 | spacegass importer                 | Walter & James     | chapter   | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/spacegass-importer/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/spacegass-importer) |
 |     ✅ | 13 | analysis progress notify           | group1 (Brown)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/analysis-progress-notify/public/readme.md) | [⚠️ Link](https://midasit-dev.github.io/plugins/analysis-progress-notify) |
 |     ✅ | 14 | nonlinear spring             			 | group2 (Simon)     | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/nonlinear-spring/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/nonlinear-spring) |
 |     ✅ | 15 | tunnel lining 										 | group2 (Simon) 		 | tgc       | [Readme](https://github.com/midasit-dev/plugins/blob/main/projects/tunnel-lining/public/readme.md) | [Link](https://midasit-dev.github.io/plugins/tunnel-lining) |
