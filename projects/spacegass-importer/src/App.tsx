@@ -96,6 +96,8 @@ const App = () => {
 					new Blob([content], { type: "text/plain" }),
 					"data.txt"
 				);
+				console.log(process.env.REACT_APP_CONV_URL);
+
 				const res = await fetch(
 					process.env.REACT_APP_CONV_URL as string,
 					{
