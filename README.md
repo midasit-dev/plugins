@@ -14,7 +14,8 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ## Version Control Rule
 - [Confluence Link](https://midasitdev.atlassian.net/l/cp/Tm6dAmBA)
 
-<br />
+## PyScript Package Compatibility Testing Page
+- [README.md](https://github.com/midasit-dev/plugins/tree/main/test/pyscript-available-packages-check)
 
 ## Official
 ### Documentation
