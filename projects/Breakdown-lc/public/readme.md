@@ -1,29 +1,25 @@
-![](https://hubs.ly/Q02hxwP10)
+![](https://hubs.ly/Q02R9-MW0)
 
-# Alignment Generator
-- Generate complex alignment including arc or clothoid/cubic parabola using Alignment Creator Plug-in.
-## Details
-### version 1.0.0
-- Export as the same alignment, including nodes and elements
-- Just add **Line Type**, **Length**, and **Radius** and set the **Segment** up for length of elements
-- Alignment is able to draw in X-Y plane only
-- The start point of Alignment is the global origin(0,0,0), and its direction is along the positive x-axis
-- Total alignment length should be the same or larger than the total length of segments.
-- The valid input value of alignment is as below.
+# Breakdown Load Combination Plugin
+## Guidelines
+### 1. Post-Analysis Usage
+- Ensure the plugin is used in the ‘PostCS’ and ‘locked’ state.
+### 2. Element Limit
+- A maximum of 5 elements can be selected for simultaneous breakdown.
+### 3. Load Combination Prefix
 
-    |Line|Length|Radius Start/End|
-    |:------:|:------:|:------:|
-    |Straight|L > 0|-|
-    |Arc|L > 0|Rs ≠ 0|
-    |Clothoid|L > 0|Rs ≠ 0 and Re ≠ 0, has same sign convention|
-    |Cubic Parabola|L > 0|(Rs ≠ 0 and Re = 0) or (Rs = 0 and Re ≠ 0)|
+- **Provided Prefix**: If an LCB Prefix is provided, the plugin incorporates it into the generated load combination names.
+- **No Prefix**: If no LCB Prefix is provided, the plugin creates names based on the selected load combinations.
+- **Limitation**: The character limit for the breakdown LC is 20. Adjust the load case name or the prefix name accordingly.
+- **Example**: `(LC/Prefix)_Mx_min_(element no.)`
 
-- The valid input values of Segments are as below Segments.
-	|Segment|Valid Input|
-	|:------:|:------:|
-	|Length|Real value > 0|
-	|Nb|Integer > 0|
-	|Structure Group Name|String less 90 char.|
-	|Material ID|Integer, 1~999,999|
-	|Section ID|Integer, 1~999,999|
-	
+Where:  
+`p` (Prefix length) + `8` (fixed characters) + `q` (Load Case length) <= 20 characters
+### 4. Load Case Criteria
+- Ensure ‘Strength/Stress’, ‘Serviceability’, or ‘Active’ criteria is selected under the Active column.
+### 5. Load Case Type
+- Ensure ‘Add’ or ‘Envelope’ type is selected under the Type column.
+### 6. Limitations
+- South Africa and France moving loads are not supported.
+### 7. Load Factors
+- Ensure only positive load factors are provided for asymmetrical loads, such as moving loads and settlement loads. Negative load factors for these load cases are not permissible.
