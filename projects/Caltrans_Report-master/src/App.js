@@ -53,7 +53,7 @@ function App() {
     <div className="App">
       {/* {showDialog && <MKeyDialog />} */}
       {showDialog && <VerifyDialog />}
-      <GuideBox padding={2} center>
+      <GuideBox>
         {/* <Panel width={520} height={400} variant="shadow2"> */}
           {/* <Panel width={500} height={100} marginX={1} marginTop={2}>
             </Panel> */}

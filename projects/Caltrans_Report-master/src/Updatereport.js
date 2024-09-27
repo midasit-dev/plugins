@@ -4227,7 +4227,7 @@ for (let match of matchedParts) {
     }
   
     return (
-      <Panel width={510} height={470} marginTop={3} padding={2} variant="shadow2">
+      <Panel padding={2} variant="box">
         <Panel width={480} height={200} marginTop={0} variant="shadow2">
         <div style={{ marginTop: "8px" }}>
           <Grid container>
@@ -4475,7 +4475,6 @@ for (let match of matchedParts) {
             justifyContent: "space-between",
             margin: "0px",
             marginTop: "10px",
-            marginBottom: "30px",
           }}
         >
           {/* {Buttons.NormalButton("contained", "Import Report", () => importReport())} */}
