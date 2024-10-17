@@ -19,7 +19,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 
 ## Official
 ### Documentation
-- [🌐 MIDAS Plug-in Documentation](https://midas-support.atlassian.net/wiki/spaces/MAW/pages/215711752/MIDAS+Plug-in+over+the+MIDAS+API)
+- [🌐 MIDAS Plug-in Documentation](https://support.midasuser.com/hc/en-us/articles/35639730101529-Plug-in-Online-Manual)
 
 ### Plugins (12)
 - [🌐 Alignment-Generator](https://midasit-dev.github.io/plugins/alignment-generator)
