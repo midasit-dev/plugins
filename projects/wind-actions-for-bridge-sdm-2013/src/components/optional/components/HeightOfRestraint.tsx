@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@midasit-dev/moaui";
-import { PANEL_1_R_WIDTH } from "../../../defines/widthDefines";
+import { PANEL_2_R_WIDTH } from "../../../defines/widthDefines";
 import { useState } from "react";
 
 export default function HeightOfRestraint() {
@@ -66,7 +66,7 @@ function Options(props: OptionsProps) {
       <GuideBox width={"100%"} horSpaceBetween row verCenter>
         <Typography variant="h1">I-End</Typography>
         <TextField
-          width={PANEL_1_R_WIDTH}
+          width={PANEL_2_R_WIDTH}
           placeholder="Enter the value"
           disabled={!isCheck}
         />
@@ -75,7 +75,7 @@ function Options(props: OptionsProps) {
       <GuideBox width={"100%"} horSpaceBetween row verCenter>
         <Typography variant="h1">J-End</Typography>
         <TextField
-          width={PANEL_1_R_WIDTH}
+          width={PANEL_2_R_WIDTH}
           placeholder="Enter the value"
           disabled={!isCheck}
         />
