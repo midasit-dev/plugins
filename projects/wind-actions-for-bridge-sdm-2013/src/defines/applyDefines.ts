@@ -23,7 +23,7 @@ export type VelocityPressureCaseProcedureSimplified = {
 };
 
 export type VelocityPressureCaseProcedureFull = {
-  value: null;
+  velocity: 1 | 2; // 1: Peak Velocity 2: Mean Velocity
 };
 
 export type VelocityPressureCaseType = {
@@ -127,9 +127,14 @@ export const tempProcedureValueDefault: VelocityPressureCaseType = {
   value: 3.865,
   procedureIndex: 1,
   procedureValue: {
+    //simplified
     category: 1,
     location: 1,
     period: 120,
+    degree: 1,
+
+    //full
+    velocity: 1,
   },
 };
 

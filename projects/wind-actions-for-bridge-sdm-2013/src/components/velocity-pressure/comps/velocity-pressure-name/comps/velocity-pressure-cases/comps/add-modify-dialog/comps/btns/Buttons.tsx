@@ -29,6 +29,8 @@ export default function Btns() {
           }
 
           if (tempFlag === "modify") {
+            console.log(tempValue);
+
             setCases((prev: any) => {
               if (!selCase) return prev;
               const temp = [...prev];

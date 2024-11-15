@@ -9,6 +9,7 @@ import type { VelocityPressureCaseType } from "../defines/applyDefines";
 
 type TypeRoot = VelocityPressureCaseType;
 export type TypeSimplified = VelocityPressureCaseProcedureSimplified;
+export type TypeFull = VelocityPressureCaseProcedureFull;
 
 export default function useTemporaryValue() {
   const [tempValue, setTempValue] = useRecoilState(TempProcedureValueSelector);
@@ -44,7 +45,18 @@ export default function useTemporaryValue() {
           } as TypeRoot;
         }
 
-        // full일 경우
+        const full = data.procedureValue as TypeFull;
+        if (payload.procedureIndex === 2 && full !== undefined) {
+          return {
+            ...payload,
+
+            procedureValue: {
+              ...prev?.procedureValue,
+
+              ...(full.velocity ? { velocity: full.velocity } : {}),
+            } as TypeFull,
+          } as TypeRoot;
+        }
 
         return payload as TypeRoot;
       });
@@ -60,10 +72,16 @@ export default function useTemporaryValue() {
     []
   );
 
+  const asFull = useCallback((data: TypeRoot | null): TypeFull | null => {
+    if (!data) return null;
+    return data.procedureValue as TypeFull;
+  }, []);
+
   return {
     tempValue,
     setTempValueCallback: setTempValueCallback,
 
     asSimplified,
+    asFull,
   };
 }

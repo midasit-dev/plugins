@@ -10,9 +10,9 @@ import {
 import { PANEL_3_R_WIDTH } from "../../../../../../../../../../defines/widthDefines";
 import type { SelectChangeEvent } from "@mui/material";
 import { memo } from "react";
-import CategoryOption1 from "./components/CategoryOption1";
-import CategoryOption2 from "./components/CategoryOption2";
-import CategoryOption3 from "./components/CategoryOption3";
+import CategoryOption1 from "./comps/CategoryOption1";
+import CategoryOption2 from "./comps/CategoryOption2";
+import CategoryOption3 from "./comps/CategoryOption3";
 import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
 
 const CategoryOptions = memo(
@@ -78,7 +78,7 @@ export default function Simplified() {
         </GuideBox>
       </GuideBox>
 
-      <GuideBox width="100%" center spacing={1} row>
+      <GuideBox width="100%" center spacing={1}>
         <div className="flex items-center">
           <Typography>Peak Velocity Pressure (qp)</Typography>
           <IconButton transparent>

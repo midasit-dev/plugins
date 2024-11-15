@@ -6,7 +6,7 @@ import {
   IconButton,
   Typography,
 } from "@midasit-dev/moaui";
-import VelocityPressureCases from "./components/velocity-pressure-cases";
+import VelocityPressureCases from "./comps/velocity-pressure-cases/VelocityPressureCases";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isBlurSelector } from "../../../../defines/blurDefines";
 import { isOpenVelocityPressureCasesSelector } from "../../../../defines/openDefines";
