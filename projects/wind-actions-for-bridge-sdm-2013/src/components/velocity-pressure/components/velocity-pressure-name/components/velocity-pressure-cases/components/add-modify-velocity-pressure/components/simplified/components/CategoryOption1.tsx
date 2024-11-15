@@ -6,14 +6,12 @@ import {
   Typography,
 } from "@midasit-dev/moaui";
 import { PANEL_3_R_WIDTH } from "../../../../../../../../../../../defines/widthDefines";
-import { useRecoilState } from "recoil";
-import {
-  TempProcedureValueSelector,
-  type VelocityPressureCaseProcedureSimplified,
-} from "../../../../../../../../../../../defines/applyDefines";
+import useTemporaryValue, {
+  type TypeSimplified,
+} from "../../../../../../../../../../../hooks/useTemporaryValue";
 
 export default function CategoryOption1() {
-  const [tempValue, setTempValue] = useRecoilState(TempProcedureValueSelector);
+  const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
 
   return (
     <>
@@ -21,25 +19,13 @@ export default function CategoryOption1() {
         <Typography>Location</Typography>
         <RadioGroup
           onChange={(e: React.ChangeEvent, value: string) => {
-            setTempValue((prev: any) => {
-              return {
-                ...prev,
-                procedure: {
-                  ...prev.procedure,
-                  value: {
-                    ...prev.procedure.value,
-                    location: value,
-                  },
-                },
-              };
+            setTempValueCallback({
+              procedureValue: {
+                location: Number(value) as 1 | 2,
+              } as TypeSimplified,
             });
           }}
-          value={
-            (
-              tempValue?.procedure
-                ?.value as VelocityPressureCaseProcedureSimplified
-            ).location ?? 1
-          }
+          value={asSimplified(tempValue)?.location ?? 1}
         >
           <Radio name="Waglan Island" value={1} />
           <Radio name="Hong Kong Observation" value={2} />
@@ -58,7 +44,15 @@ export default function CategoryOption1() {
             step: 1,
             onlyInteger: true,
           }}
+          value={asSimplified(tempValue)?.period?.toString() ?? "120"}
           defaultValue="120"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setTempValueCallback({
+              procedureValue: {
+                period: Number(e.target.value),
+              } as TypeSimplified,
+            });
+          }}
         />
       </GuideBox>
     </>

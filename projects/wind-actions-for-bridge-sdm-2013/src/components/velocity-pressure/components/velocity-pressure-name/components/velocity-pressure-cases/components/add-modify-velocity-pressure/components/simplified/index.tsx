@@ -9,15 +9,11 @@ import {
 } from "@midasit-dev/moaui";
 import { PANEL_3_R_WIDTH } from "../../../../../../../../../../defines/widthDefines";
 import type { SelectChangeEvent } from "@mui/material";
-import { memo, useEffect, useState } from "react";
+import { memo } from "react";
 import CategoryOption1 from "./components/CategoryOption1";
 import CategoryOption2 from "./components/CategoryOption2";
 import CategoryOption3 from "./components/CategoryOption3";
-import { useRecoilState } from "recoil";
-import {
-  TempProcedureValueSelector,
-  type VelocityPressureCaseProcedureSimplified,
-} from "../../../../../../../../../../defines/applyDefines";
+import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
 
 const CategoryOptions = memo(
   ({ category }: { category: number | undefined }) => (
@@ -30,16 +26,7 @@ const CategoryOptions = memo(
 );
 
 export default function Simplified() {
-  const [tempValue, setTempValue] = useRecoilState(TempProcedureValueSelector);
-  const [tempProcedure, setTempProcedure] =
-    useState<VelocityPressureCaseProcedureSimplified>();
-
-  //형변환 너무 많으니까.. State로 관리
-  useEffect(() => {
-    setTempProcedure(
-      tempValue?.procedure?.value as VelocityPressureCaseProcedureSimplified
-    );
-  }, [tempValue]);
+  const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
 
   return (
     <GuideBox width="100%" spacing={2}>
@@ -69,20 +56,11 @@ export default function Simplified() {
               ]}
               onChange={(e: SelectChangeEvent) => {
                 const selIndex = Number(e.target.value);
-                setTempValue((prev: any) => {
-                  return {
-                    ...prev,
-                    procedure: {
-                      ...prev.procedure,
-                      value: {
-                        ...prev.procedure.value,
-                        category: selIndex,
-                      },
-                    },
-                  };
+                setTempValueCallback({
+                  procedureValue: { category: selIndex as 1 | 2 | 3 },
                 });
               }}
-              value={tempProcedure?.category ?? 1}
+              value={asSimplified(tempValue)?.category}
               defaultValue={1}
               placeholder="Select ..."
             />
@@ -90,7 +68,7 @@ export default function Simplified() {
         </div>
 
         <GuideBox width={"100%"} spacing={1}>
-          <CategoryOptions category={tempProcedure?.category} />
+          <CategoryOptions category={asSimplified(tempValue)?.category} />
         </GuideBox>
 
         <GuideBox width={"100%"} center>
@@ -122,11 +100,8 @@ export default function Simplified() {
             placeholder="Value ..."
             defaultValue="3.865"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setTempValue((prev: any) => {
-                return {
-                  ...prev,
-                  value: Number.parseFloat(e.target.value),
-                };
+              setTempValueCallback({
+                value: Number.parseFloat(e.target.value),
               });
             }}
           />

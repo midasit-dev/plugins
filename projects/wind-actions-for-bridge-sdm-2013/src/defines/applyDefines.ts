@@ -16,7 +16,7 @@ export const selLoadCaseNameSelector = selector<[string, number]>({
 });
 
 export type VelocityPressureCaseProcedureSimplified = {
-  category: 1 | 2 | 3;
+  category: 1 | 2 | 3; // Table 3.6, Table 3.7, Table 3.8
   location?: 1 | 2;
   period?: number;
   degree?: 1 | 2 | 3 | 4;
@@ -29,12 +29,10 @@ export type VelocityPressureCaseProcedureFull = {
 export type VelocityPressureCaseType = {
   name: string;
   value: number;
-  procedure: {
-    name: "simplified" | "full";
-    value:
-      | VelocityPressureCaseProcedureSimplified
-      | VelocityPressureCaseProcedureFull;
-  };
+  procedureIndex: 1 | 2; // 1: simplified, 2: full
+  procedureValue:
+    | VelocityPressureCaseProcedureSimplified
+    | VelocityPressureCaseProcedureFull;
 };
 
 // 생성된 케이스들
@@ -44,20 +42,30 @@ export const velocityPressureCases = atom<VelocityPressureCaseType[] | null>({
     {
       name: "name1",
       value: 1.0,
-      procedure: {
-        name: "simplified",
-        value: { category: 1, location: 1, period: 120 },
+      procedureIndex: 1,
+      procedureValue: {
+        category: 1,
+        location: 1,
+        period: 120,
       },
     },
     {
       name: "name2",
       value: 2.7,
-      procedure: { name: "simplified", value: { category: 2, location: 1 } },
+      procedureIndex: 1,
+      procedureValue: {
+        category: 2,
+        location: 1,
+      },
     },
     {
       name: "name3",
       value: 3.2,
-      procedure: { name: "simplified", value: { category: 3, degree: 1 } },
+      procedureIndex: 1,
+      procedureValue: {
+        category: 3,
+        degree: 1,
+      },
     },
   ],
 });
@@ -76,7 +84,7 @@ export const velocityPressureCasesSelector = selector<
 
 type VelocityPressureCaseRemoveProcedure = Omit<
   VelocityPressureCaseType,
-  "procedure"
+  "procedureIndex" | "procedureValue"
 >;
 type VelocityPressureCaseLight = {
   index: number;
@@ -117,9 +125,11 @@ export const selVelocityPressureCaseSelector =
 export const tempProcedureValueDefault: VelocityPressureCaseType = {
   name: "new name",
   value: 3.865,
-  procedure: {
-    name: "simplified",
-    value: { category: 1, location: 1, period: 120 },
+  procedureIndex: 1,
+  procedureValue: {
+    category: 1,
+    location: 1,
+    period: 120,
   },
 };
 

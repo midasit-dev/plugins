@@ -4,15 +4,15 @@ import { isOpenAddModVelocityPressureSelector } from "../../../../../../../../..
 import {
   selVelocityPressureCaseLightSelector,
   TempProcedureFlagSelector,
-  TempProcedureValueSelector,
   velocityPressureCasesSelector,
 } from "../../../../../../../../../../defines/applyDefines";
+import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
 
 export default function Btns() {
   const [, setIsOpen] = useRecoilState(isOpenAddModVelocityPressureSelector);
 
   const [tempFlag, setTempFlag] = useRecoilState(TempProcedureFlagSelector);
-  const [tempValue, setTempValue] = useRecoilState(TempProcedureValueSelector);
+  const { tempValue } = useTemporaryValue();
   const selCase = useRecoilValue(selVelocityPressureCaseLightSelector);
   const [, setCases] = useRecoilState(velocityPressureCasesSelector);
 

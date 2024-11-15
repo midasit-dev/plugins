@@ -1,13 +1,13 @@
-import { GuideBox, Typography } from "@midasit-dev/moaui";
+import { Typography } from "@midasit-dev/moaui";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   selVelocityPressureCaseLightSelector,
   TempProcedureFlagSelector,
-  TempProcedureValueSelector,
   velocityPressureCasesSelector,
   selVelocityPressureCaseSelector,
 } from "../../../../../../../../defines/applyDefines";
 import { isOpenAddModVelocityPressureSelector } from "../../../../../../../../defines/openDefines";
+import useTemporaryValue from "../../../../../../../../hooks/useTemporaryValue";
 
 export default function List() {
   const [sel, setSel] = useRecoilState(selVelocityPressureCaseLightSelector);
@@ -16,7 +16,7 @@ export default function List() {
   const setFlag = useSetRecoilState(TempProcedureFlagSelector);
   const [, setIsOpen] = useRecoilState(isOpenAddModVelocityPressureSelector);
   const selCase = useRecoilValue(selVelocityPressureCaseSelector);
-  const [, setTempValue] = useRecoilState(TempProcedureValueSelector);
+  const { setTempValueCallback } = useTemporaryValue();
 
   return (
     <div className="w-full bg-white p-4 border border-[#e3e3e3] rounded-md h-[300px] overflow-y-auto">
@@ -59,7 +59,8 @@ export default function List() {
               console.error("selCase is null ...");
               return;
             }
-            setTempValue(selCase);
+
+            setTempValueCallback({ ...selCase });
           }}
         >
           <li className="grid grid-cols-2 justify-items-center">

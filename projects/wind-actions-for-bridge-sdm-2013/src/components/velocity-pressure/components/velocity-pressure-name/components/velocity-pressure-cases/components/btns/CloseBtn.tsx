@@ -7,7 +7,7 @@ export default function CloseBtn() {
   const [isOpen, setIsOpen] = useRecoilState(
     isOpenVelocityPressureCasesSelector
   );
-  const [isBlur, setIsBlur] = useRecoilState(isBlurSelector);
+  const [, setIsBlur] = useRecoilState(isBlurSelector);
 
   return (
     <Button

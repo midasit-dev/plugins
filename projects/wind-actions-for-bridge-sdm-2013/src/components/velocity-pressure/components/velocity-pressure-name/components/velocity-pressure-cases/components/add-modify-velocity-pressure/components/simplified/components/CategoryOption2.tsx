@@ -1,21 +1,10 @@
 import { GuideBox, Radio, RadioGroup, Typography } from "@midasit-dev/moaui";
-import { useRecoilState } from "recoil";
-import {
-  TempProcedureValueSelector,
-  type VelocityPressureCaseProcedureSimplified,
-} from "../../../../../../../../../../../defines/applyDefines";
-import { useEffect, useState } from "react";
+import useTemporaryValue, {
+  type TypeSimplified,
+} from "../../../../../../../../../../../hooks/useTemporaryValue";
 
 export default function CategoryOption2() {
-  const [tempValue, setTempValue] = useRecoilState(TempProcedureValueSelector);
-  const [tempProcedure, setTempProcedure] =
-    useState<VelocityPressureCaseProcedureSimplified>();
-
-  useEffect(() => {
-    setTempProcedure(
-      tempValue?.procedure?.value as VelocityPressureCaseProcedureSimplified
-    );
-  }, [tempValue]);
+  const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
 
   return (
     <>
@@ -23,20 +12,13 @@ export default function CategoryOption2() {
         <Typography>Location</Typography>
         <RadioGroup
           onChange={(e: React.ChangeEvent, value: string) => {
-            setTempValue((prev: any) => {
-              return {
-                ...prev,
-                procedure: {
-                  ...prev.procedure,
-                  value: {
-                    ...prev.procedure.value,
-                    location: value,
-                  },
-                },
-              };
+            setTempValueCallback({
+              procedureValue: {
+                location: Number(value) as 1 | 2,
+              } as TypeSimplified,
             });
           }}
-          value={tempProcedure?.location ?? 1}
+          value={asSimplified(tempValue)?.location ?? 1}
           defaultValue={1}
         >
           <Radio name="Sheltered Location" value={1} />

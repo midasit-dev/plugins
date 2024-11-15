@@ -4,14 +4,14 @@ import { isOpenAddModVelocityPressureSelector } from "../../../../../../../../de
 import {
   selVelocityPressureCaseSelector,
   TempProcedureFlagSelector,
-  TempProcedureValueSelector,
 } from "../../../../../../../../defines/applyDefines";
+import useTemporaryValue from "../../../../../../../../hooks/useTemporaryValue";
 
 export default function ModBtn() {
   const setFlag = useSetRecoilState(TempProcedureFlagSelector);
   const [, setIsOpen] = useRecoilState(isOpenAddModVelocityPressureSelector);
   const selCase = useRecoilValue(selVelocityPressureCaseSelector);
-  const [, setTempValue] = useRecoilState(TempProcedureValueSelector);
+  const { setTempValueCallback } = useTemporaryValue();
 
   return (
     <Button
@@ -23,7 +23,8 @@ export default function ModBtn() {
           console.error("selCase is null ...");
           return;
         }
-        setTempValue(selCase);
+
+        setTempValueCallback({ ...selCase });
       }}
       width={"80px"}
       disabled={!selCase}
