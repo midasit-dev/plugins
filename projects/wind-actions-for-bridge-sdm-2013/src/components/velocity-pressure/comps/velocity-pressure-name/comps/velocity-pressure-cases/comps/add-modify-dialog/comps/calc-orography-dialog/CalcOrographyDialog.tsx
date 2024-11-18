@@ -9,10 +9,11 @@ import Refz from "./comps/Refz";
 import LoadedLength from "./comps/LoadedLength";
 import Result from "./comps/Result";
 import Btns from "./comps/Buttons";
+import X from "./comps/X";
 
 export default function CalcOrographyDialog() {
   return (
-    <div className="absolute -top-2 left-4 w-auto shadow-lg rounded-md bg-[#f4f5f6] border border-gray-300 z-30">
+    <div className="absolute -top-6 left-4 w-auto shadow-lg rounded-md bg-[#f4f5f6] border border-gray-300 z-30">
       <GuideBox width={VELOCITY_PRESSURE_CASES_WIDTH} padding={2} spacing={2}>
         <Typography variant="h1" width={"100%"} center>
           Calculate Orography Effect Factor Co(z)
@@ -35,13 +36,16 @@ export default function CalcOrographyDialog() {
           <H />
           <Lu />
           <Ld />
+          <X />
 
           <div className="w-full h-1 border-t border-gray-300" />
 
           <Refz />
           <LoadedLength />
 
-          <Button width="100%">Calculate</Button>
+          <Button width="100%" color="negative">
+            Calculate
+          </Button>
         </GuideBox>
 
         <GuideBox

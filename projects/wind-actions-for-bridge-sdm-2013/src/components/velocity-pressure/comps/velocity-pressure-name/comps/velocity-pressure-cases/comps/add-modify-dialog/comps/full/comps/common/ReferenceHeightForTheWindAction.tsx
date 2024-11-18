@@ -3,8 +3,13 @@ import {
   VELOCITY_PRESSURE_FULL_PANEL_4_R_WIDTH,
   VELOCITY_PRESSURE_FULL_PANEL_5_R_WIDTH,
 } from "../../../../../../../../../../../../defines/widthDefines";
+import useTemporaryValue, {
+  type TypeFull,
+} from "../../../../../../../../../../../../hooks/useTemporaryValue";
 
 export default function ReferenceHeightForTheWindAction() {
+  const { tempValue, setTempValueCallback, asFull } = useTemporaryValue();
+
   return (
     <GuideBox width="100%" horSpaceBetween row verCenter>
       <Typography center>Reference height for the wind action(z)</Typography>
@@ -24,10 +29,14 @@ export default function ReferenceHeightForTheWindAction() {
               min: "greater",
             },
           }}
-          value={"50"}
+          value={asFull(tempValue)?.refZ?.toString() ?? "50"}
           defaultValue="50"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            console.log(e.target.value);
+            setTempValueCallback({
+              procedureValue: {
+                refZ: Number(e.target.value),
+              } as TypeFull,
+            });
           }}
         />
         <Typography>m</Typography>

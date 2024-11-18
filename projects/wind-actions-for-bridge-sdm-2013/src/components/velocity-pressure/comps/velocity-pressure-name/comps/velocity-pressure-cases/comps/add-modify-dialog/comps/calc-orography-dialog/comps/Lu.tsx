@@ -11,13 +11,10 @@ export default function Ld() {
           type="number"
           placeholder="Enter value"
           width={CALC_OROGRAPHY_DIALOG_R_WIDTH_M}
-          defaultValue="0.1"
+          defaultValue="0.0"
           numberOptions={{
             min: 0.0,
             step: 0.1,
-            condition: {
-              min: "greater",
-            },
           }}
         />
         <Typography>m</Typography>

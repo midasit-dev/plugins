@@ -1,9 +1,19 @@
-import { GuideBox, TextFieldV2, Typography } from "@midasit-dev/moaui";
+import { TextFieldV2, Typography } from "@midasit-dev/moaui";
 import { CALC_OROGRAPHY_DIALOG_R_WIDTH_M } from "../../../../../../../../../../../defines/widthDefines";
 
-export default function Lu() {
+interface LuProps {
+  disabled?: boolean;
+}
+
+export default function Lu({ disabled = true }: LuProps) {
   return (
-    <GuideBox width="100%" horSpaceBetween verCenter row>
+    <div
+      className="w-full flex items-center justify-between"
+      style={{
+        pointerEvents: disabled ? "none" : "auto",
+        opacity: disabled ? 0.5 : 1,
+      }}
+    >
       <Typography>Length of Upwind Slope, Lu</Typography>
 
       <div className="flex w-auto justify-between items-center gap-2">
@@ -11,17 +21,14 @@ export default function Lu() {
           type="number"
           placeholder="Enter value"
           width={CALC_OROGRAPHY_DIALOG_R_WIDTH_M}
-          defaultValue="0.1"
+          defaultValue="0.0"
           numberOptions={{
             min: 0.0,
             step: 0.1,
-            condition: {
-              min: "greater",
-            },
           }}
         />
         <Typography>m</Typography>
       </div>
-    </GuideBox>
+    </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   velocityPressureCasesSelector,
 } from "../../../../../../../../../../defines/applyDefines";
 import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
+import { useEffect } from "react";
 
 export default function Btns() {
   const [, setIsOpen] = useRecoilState(isOpenAddModVelocityPressureSelector);
@@ -15,6 +16,10 @@ export default function Btns() {
   const { tempValue } = useTemporaryValue();
   const selCase = useRecoilValue(selVelocityPressureCaseLightSelector);
   const [, setCases] = useRecoilState(velocityPressureCasesSelector);
+
+  useEffect(() => {
+    console.log("tempValue", tempValue);
+  }, [tempValue]);
 
   return (
     <GuideBox width={"100%"} row horRight verCenter spacing={1} paddingTop={1}>
@@ -29,8 +34,6 @@ export default function Btns() {
           }
 
           if (tempFlag === "modify") {
-            console.log(tempValue);
-
             setCases((prev: any) => {
               if (!selCase) return prev;
               const temp = [...prev];

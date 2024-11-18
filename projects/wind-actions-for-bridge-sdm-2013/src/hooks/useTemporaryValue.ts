@@ -54,6 +54,25 @@ export default function useTemporaryValue() {
               ...prev?.procedureValue,
 
               ...(full.velocity ? { velocity: full.velocity } : {}),
+              ...(full.refZ ? { refZ: full.refZ } : {}),
+              ...(full.horLoadLength
+                ? { horLoadLength: full.horLoadLength }
+                : {}),
+              ...(full.degree ? { degree: full.degree } : {}),
+              coz: {
+                ...(prev?.procedureValue as TypeFull).coz,
+
+                ...(full.coz?.value ? { value: full.coz.value } : {}),
+                ...(full.coz?.location ? { location: full.coz.location } : {}),
+                ...(full.coz?.h ? { h: full.coz.h } : {}),
+                ...(full.coz?.ld ? { ld: full.coz.ld } : {}),
+                ...(full.coz?.lu ? { lu: full.coz.lu } : {}),
+                ...(full.coz?.refZ ? { refZ: full.coz.refZ } : {}),
+                ...(full.coz?.loadLength
+                  ? { loadLength: full.coz.loadLength }
+                  : {}),
+              },
+              ...(full.kpc ? { kpc: full.kpc } : {}),
             } as TypeFull,
           } as TypeRoot;
         }

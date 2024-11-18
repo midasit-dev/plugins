@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { isOpenAddModVelocityPressureSelector } from "../../../../../../../../defines/openDefines";
 import {
   TempProcedureFlagSelector,
-  tempProcedureValueDefault,
+  tempProcedureValueDefalutForAdd,
   velocityPressureCasesSelector,
 } from "../../../../../../../../defines/applyDefines";
 import useTemporaryValue from "../../../../../../../../hooks/useTemporaryValue";
@@ -22,7 +22,7 @@ export default function AddBtn() {
         setIsOpen(true);
 
         setTempValueCallback({
-          ...tempProcedureValueDefault,
+          ...tempProcedureValueDefalutForAdd,
           name: `new name - ${(cases?.length ?? 1) + 1}`,
         });
       }}

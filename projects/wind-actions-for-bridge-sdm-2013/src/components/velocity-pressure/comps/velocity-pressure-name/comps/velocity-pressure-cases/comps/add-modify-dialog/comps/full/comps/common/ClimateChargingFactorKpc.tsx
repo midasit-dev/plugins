@@ -9,8 +9,13 @@ import {
   VELOCITY_PRESSURE_FULL_PANEL_4_R_WIDTH,
   VELOCITY_PRESSURE_FULL_PANEL_5_R_WIDTH,
 } from "../../../../../../../../../../../../defines/widthDefines";
+import useTemporaryValue, {
+  type TypeFull,
+} from "../../../../../../../../../../../../hooks/useTemporaryValue";
 
 export default function ClimateChargingFactorKpc() {
+  const { tempValue, setTempValueCallback, asFull } = useTemporaryValue();
+
   return (
     <GuideBox width="100%" horSpaceBetween row verCenter>
       <div className="flex gap-0 items-center">
@@ -28,16 +33,20 @@ export default function ClimateChargingFactorKpc() {
           placeholder="Enter the period ..."
           type="number"
           numberOptions={{
-            min: 0,
+            min: 0.0,
             step: 0.01,
             condition: {
               min: "greater",
             },
           }}
-          value={"1.22"}
+          value={String(asFull(tempValue)?.kpc) ?? "1.22"}
           defaultValue="1.22"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            console.log(e.target.value);
+            setTempValueCallback({
+              procedureValue: {
+                kpc: Number(e.target.value),
+              } as TypeFull,
+            });
           }}
         />
       </div>

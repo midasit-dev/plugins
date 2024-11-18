@@ -12,9 +12,13 @@ import {
 import CalcOrographyDialog from "../../../calc-orography-dialog/CalcOrographyDialog";
 import { useRecoilState } from "recoil";
 import { isOpenCalcOrographyDialogSelector } from "../../../../../../../../../../../../defines/openDefines";
+import useTemporaryValue, {
+  type TypeFull,
+} from "../../../../../../../../../../../../hooks/useTemporaryValue";
 
 export default function OrgraphyEffectFactorCoz() {
   const [isOpen, setIsOpen] = useRecoilState(isOpenCalcOrographyDialogSelector);
+  const { tempValue, setTempValueCallback, asFull } = useTemporaryValue();
 
   return (
     <GuideBox width={"100%"} horSpaceBetween row verCenter>
@@ -40,10 +44,14 @@ export default function OrgraphyEffectFactorCoz() {
               min: "greater",
             },
           }}
-          value={"1.0"}
+          value={asFull(tempValue)?.coz?.value?.toString() ?? "1.0"}
           defaultValue="1.0"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            console.log(e.target.value);
+            setTempValueCallback({
+              procedureValue: {
+                coz: { value: Number(e.target.value) },
+              } as TypeFull,
+            });
           }}
         />
         <IconButton onClick={() => setIsOpen(true)}>

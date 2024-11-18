@@ -9,6 +9,9 @@ import {
   VELOCITY_PRESSURE_FULL_PANEL_4_R_WIDTH,
   VELOCITY_PRESSURE_FULL_PANEL_5_R_WIDTH,
 } from "../../../../../../../../../../../../defines/widthDefines";
+import useTemporaryValue, {
+  type TypeFull,
+} from "../../../../../../../../../../../../hooks/useTemporaryValue";
 
 interface HorizontalWindLoadLengthProps {
   disabled?: boolean;
@@ -16,6 +19,8 @@ interface HorizontalWindLoadLengthProps {
 export default function HorizontalWindLoadLength({
   disabled = false,
 }: HorizontalWindLoadLengthProps) {
+  const { tempValue, setTempValueCallback, asFull } = useTemporaryValue();
+
   return (
     <div
       className="w-full flex justify-between items-center"
@@ -45,10 +50,14 @@ export default function HorizontalWindLoadLength({
               min: "greater",
             },
           }}
-          value={"600"}
+          value={asFull(tempValue)?.horLoadLength?.toString() ?? "600"}
           defaultValue="600"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            console.log(e.target.value);
+            setTempValueCallback({
+              procedureValue: {
+                horLoadLength: Number(e.target.value),
+              } as TypeFull,
+            });
           }}
         />
         <Typography>m</Typography>

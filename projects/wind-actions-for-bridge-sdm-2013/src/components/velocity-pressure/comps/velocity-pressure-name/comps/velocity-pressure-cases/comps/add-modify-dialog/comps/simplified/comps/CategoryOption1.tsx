@@ -9,6 +9,7 @@ import { PANEL_3_R_WIDTH } from "../../../../../../../../../../../defines/widthD
 import useTemporaryValue, {
   type TypeSimplified,
 } from "../../../../../../../../../../../hooks/useTemporaryValue";
+import { SimplifiedLocationEnum } from "../../../../../../../../../../../defines/applyDefines";
 
 export default function CategoryOption1() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
@@ -21,14 +22,24 @@ export default function CategoryOption1() {
           onChange={(e: React.ChangeEvent, value: string) => {
             setTempValueCallback({
               procedureValue: {
-                location: Number(value) as 1 | 2,
+                location: value as SimplifiedLocationEnum,
               } as TypeSimplified,
             });
           }}
-          value={asSimplified(tempValue)?.location ?? 1}
+          value={
+            asSimplified(tempValue)?.location ??
+            SimplifiedLocationEnum.WAGLAN_ISLAND
+          }
+          defaultValue={SimplifiedLocationEnum.WAGLAN_ISLAND}
         >
-          <Radio name="Waglan Island" value={1} />
-          <Radio name="Hong Kong Observation" value={2} />
+          <Radio
+            name={SimplifiedLocationEnum.WAGLAN_ISLAND}
+            value={SimplifiedLocationEnum.WAGLAN_ISLAND}
+          />
+          <Radio
+            name={SimplifiedLocationEnum.HONG_KONG_OBSERVATION}
+            value={SimplifiedLocationEnum.HONG_KONG_OBSERVATION}
+          />
         </RadioGroup>
       </GuideBox>
 

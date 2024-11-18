@@ -2,9 +2,26 @@ import { GuideBox, Radio, RadioGroup, Typography } from "@midasit-dev/moaui";
 import useTemporaryValue, {
   type TypeSimplified,
 } from "../../../../../../../../../../../hooks/useTemporaryValue";
+import { SimplifiedLocationEnum } from "../../../../../../../../../../../defines/applyDefines";
+import { useEffect } from "react";
 
 export default function CategoryOption2() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
+
+  useEffect(() => {
+    if (
+      ![
+        SimplifiedLocationEnum.SHELTERED_LOCATION,
+        SimplifiedLocationEnum.EXPOSED_LOCATION,
+      ].includes(asSimplified(tempValue)?.location as SimplifiedLocationEnum)
+    ) {
+      setTempValueCallback({
+        procedureValue: {
+          location: SimplifiedLocationEnum.SHELTERED_LOCATION,
+        } as TypeSimplified,
+      });
+    }
+  }, [asSimplified, setTempValueCallback, tempValue]);
 
   return (
     <>
@@ -12,17 +29,27 @@ export default function CategoryOption2() {
         <Typography>Location</Typography>
         <RadioGroup
           onChange={(e: React.ChangeEvent, value: string) => {
+            console.log(value);
             setTempValueCallback({
               procedureValue: {
-                location: Number(value) as 1 | 2,
+                location: value as TypeSimplified["location"],
               } as TypeSimplified,
             });
           }}
-          value={asSimplified(tempValue)?.location ?? 1}
-          defaultValue={1}
+          value={
+            (asSimplified(tempValue)?.location as SimplifiedLocationEnum) ??
+            SimplifiedLocationEnum.SHELTERED_LOCATION
+          }
+          defaultValue={SimplifiedLocationEnum.SHELTERED_LOCATION}
         >
-          <Radio name="Sheltered Location" value={1} />
-          <Radio name="Exposed Location" value={2} />
+          <Radio
+            name={SimplifiedLocationEnum.SHELTERED_LOCATION}
+            value={SimplifiedLocationEnum.SHELTERED_LOCATION}
+          />
+          <Radio
+            name={SimplifiedLocationEnum.EXPOSED_LOCATION}
+            value={SimplifiedLocationEnum.EXPOSED_LOCATION}
+          />
         </RadioGroup>
       </GuideBox>
     </>

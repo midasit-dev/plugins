@@ -15,15 +15,57 @@ export const selLoadCaseNameSelector = selector<[string, number]>({
   },
 });
 
+export enum SimplifiedCategoryEnum {
+  TABLE_3_6 = "Table 3.6",
+  TABLE_3_7 = "Table 3.7",
+  TABLE_3_8 = "Table 3.8",
+}
+
+export enum SimplifiedLocationEnum {
+  WAGLAN_ISLAND = "Waglan Island",
+  HONG_KONG_OBSERVATION = "Hong Kong Observation",
+  SHELTERED_LOCATION = "Sheltered Location",
+  EXPOSED_LOCATION = "Exposed Location",
+}
+
 export type VelocityPressureCaseProcedureSimplified = {
-  category: 1 | 2 | 3; // Table 3.6, Table 3.7, Table 3.8
-  location?: 1 | 2;
+  category: SimplifiedCategoryEnum;
+  location?: SimplifiedLocationEnum;
   period?: number;
-  degree?: 1 | 2 | 3 | 4;
+  degree?: "1" | "2" | "3" | "4";
 };
 
+export enum FullVelocityEnum {
+  PEAK_VELOCITY = "Peak Velocity",
+  MEAN_VELOCITY = "Mean Velocity",
+}
+
+export enum FullOrographyTypeEnum {
+  CLIFFS_AND_ESCARPMENTS = "Cliffs and Escarpments",
+  HILLS_AND_RIDGES = "Hills and Ridges",
+}
+
+export enum FullLocationEnum {
+  UPWIND = "Upwind",
+  DOWNWIND = "Downwind",
+}
+
 export type VelocityPressureCaseProcedureFull = {
-  velocity: 1 | 2; // 1: Peak Velocity 2: Mean Velocity
+  velocity: FullVelocityEnum;
+  refZ?: number;
+  horLoadLength?: number;
+  degree?: "1" | "2" | "3" | "4";
+  coz?: {
+    value?: number;
+    orographyType: FullOrographyTypeEnum;
+    location?: FullLocationEnum;
+    h?: number;
+    ld?: number;
+    lu?: number;
+    refZ?: number;
+    loadLength?: number;
+  };
+  kpc?: number;
 };
 
 export type VelocityPressureCaseType = {
@@ -44,8 +86,8 @@ export const velocityPressureCases = atom<VelocityPressureCaseType[] | null>({
       value: 1.0,
       procedureIndex: 1,
       procedureValue: {
-        category: 1,
-        location: 1,
+        category: SimplifiedCategoryEnum.TABLE_3_6,
+        location: SimplifiedLocationEnum.WAGLAN_ISLAND,
         period: 120,
       },
     },
@@ -54,8 +96,8 @@ export const velocityPressureCases = atom<VelocityPressureCaseType[] | null>({
       value: 2.7,
       procedureIndex: 1,
       procedureValue: {
-        category: 2,
-        location: 1,
+        category: SimplifiedCategoryEnum.TABLE_3_7,
+        location: SimplifiedLocationEnum.SHELTERED_LOCATION,
       },
     },
     {
@@ -63,8 +105,8 @@ export const velocityPressureCases = atom<VelocityPressureCaseType[] | null>({
       value: 3.2,
       procedureIndex: 1,
       procedureValue: {
-        category: 3,
-        degree: 1,
+        category: SimplifiedCategoryEnum.TABLE_3_8,
+        degree: "1",
       },
     },
   ],
@@ -122,26 +164,104 @@ export const selVelocityPressureCaseSelector =
   });
 
 // 기본 값
-export const tempProcedureValueDefault: VelocityPressureCaseType = {
+export const tempProcedureValueDefalutForAdd: VelocityPressureCaseType = {
   name: "new name",
   value: 3.865,
   procedureIndex: 1,
   procedureValue: {
-    //simplified
-    category: 1,
-    location: 1,
+    category: SimplifiedCategoryEnum.TABLE_3_6,
+    location: SimplifiedLocationEnum.WAGLAN_ISLAND,
     period: 120,
-    degree: 1,
+  },
+};
 
-    //full
-    velocity: 1,
+// 기본 값 (Procedure별)
+export const tempProcedureValueDefaultSimplified1: Omit<
+  VelocityPressureCaseType,
+  "name" | "value"
+> = {
+  procedureIndex: 1,
+  procedureValue: {
+    category: SimplifiedCategoryEnum.TABLE_3_6,
+    location: SimplifiedLocationEnum.WAGLAN_ISLAND,
+    period: 120,
+  },
+};
+
+export const tempProcedureValueDefaultSimplified2: Omit<
+  VelocityPressureCaseType,
+  "name" | "value"
+> = {
+  procedureIndex: 1,
+  procedureValue: {
+    category: SimplifiedCategoryEnum.TABLE_3_7,
+    location: SimplifiedLocationEnum.SHELTERED_LOCATION,
+  },
+};
+
+export const tempProcedureValueDefaultSimplified3: Omit<
+  VelocityPressureCaseType,
+  "name" | "value"
+> = {
+  procedureIndex: 1,
+  procedureValue: {
+    category: SimplifiedCategoryEnum.TABLE_3_8,
+    degree: "1",
+  },
+};
+
+export const tempProcedureValueDefaultFull1: Omit<
+  VelocityPressureCaseType,
+  "name" | "value"
+> = {
+  procedureIndex: 2,
+  procedureValue: {
+    velocity: FullVelocityEnum.PEAK_VELOCITY,
+    refZ: 50,
+    horLoadLength: 600,
+    degree: "1",
+    coz: {
+      value: 0.5,
+      orographyType: FullOrographyTypeEnum.CLIFFS_AND_ESCARPMENTS,
+      location: FullLocationEnum.UPWIND,
+      h: 10,
+      ld: 10,
+      lu: 10,
+      refZ: 10,
+      loadLength: 10,
+    },
+    kpc: 10,
+  },
+};
+
+export const tempProcedureValueDefaultFull2: Omit<
+  VelocityPressureCaseType,
+  "name" | "value"
+> = {
+  procedureIndex: 2,
+  procedureValue: {
+    velocity: FullVelocityEnum.MEAN_VELOCITY,
+    refZ: 50,
+    horLoadLength: 600,
+    degree: "1",
+    coz: {
+      value: 0.5,
+      orographyType: FullOrographyTypeEnum.CLIFFS_AND_ESCARPMENTS,
+      location: FullLocationEnum.UPWIND,
+      h: 10,
+      ld: 10,
+      lu: 10,
+      refZ: 10,
+      loadLength: 10,
+    },
+    kpc: 10,
   },
 };
 
 // 임시 공간
 export const TempProcedureValueState = atom<VelocityPressureCaseType | null>({
   key: "TempProcedureValueState",
-  default: tempProcedureValueDefault,
+  default: tempProcedureValueDefalutForAdd,
 });
 
 export const TempProcedureValueSelector =

@@ -13,17 +13,26 @@ import { memo } from "react";
 import CategoryOption1 from "./comps/CategoryOption1";
 import CategoryOption2 from "./comps/CategoryOption2";
 import CategoryOption3 from "./comps/CategoryOption3";
-import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
+import useTemporaryValue, {
+  type TypeSimplified,
+} from "../../../../../../../../../../hooks/useTemporaryValue";
+import { SimplifiedCategoryEnum } from "../../../../../../../../../../defines/applyDefines";
 
 const CategoryOptions = memo(
-  ({ category }: { category: number | undefined }) => (
+  ({ category }: { category: TypeSimplified["category"] | undefined }) => (
     <GuideBox width={"100%"} spacing={1}>
-      {category === 1 && <CategoryOption1 />}
-      {category === 2 && <CategoryOption2 />}
-      {category === 3 && <CategoryOption3 />}
+      {category === SimplifiedCategoryEnum.TABLE_3_6 && <CategoryOption1 />}
+      {category === SimplifiedCategoryEnum.TABLE_3_7 && <CategoryOption2 />}
+      {category === SimplifiedCategoryEnum.TABLE_3_8 && <CategoryOption3 />}
     </GuideBox>
   )
 );
+
+const items: [string, string][] = [
+  [SimplifiedCategoryEnum.TABLE_3_6, SimplifiedCategoryEnum.TABLE_3_6],
+  [SimplifiedCategoryEnum.TABLE_3_7, SimplifiedCategoryEnum.TABLE_3_7],
+  [SimplifiedCategoryEnum.TABLE_3_8, SimplifiedCategoryEnum.TABLE_3_8],
+];
 
 export default function Simplified() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
@@ -49,19 +58,16 @@ export default function Simplified() {
             <Typography>Category by</Typography>
             <DropList
               width={PANEL_3_R_WIDTH}
-              itemList={[
-                ["Table 3.6", 1],
-                ["Table 3.7", 2],
-                ["Table 3.8", 3],
-              ]}
+              itemList={items}
               onChange={(e: SelectChangeEvent) => {
-                const selIndex = Number(e.target.value);
                 setTempValueCallback({
-                  procedureValue: { category: selIndex as 1 | 2 | 3 },
+                  procedureValue: {
+                    category: e.target.value as TypeSimplified["category"],
+                  },
                 });
               }}
               value={asSimplified(tempValue)?.category}
-              defaultValue={1}
+              defaultValue={SimplifiedCategoryEnum.TABLE_3_6}
               placeholder="Select ..."
             />
           </GuideBox>

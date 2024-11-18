@@ -26,21 +26,21 @@ export default function CategoryOption3() {
         <DropList
           width={PANEL_3_R_WIDTH}
           itemList={[
-            ["1", 1],
-            ["2", 2],
-            ["3", 3],
-            ["4", 4],
+            ["1", "1"],
+            ["2", "2"],
+            ["3", "3"],
+            ["4", "4"],
           ]}
           onChange={(e: SelectChangeEvent) => {
             const selIndex = Number(e.target.value);
             setTempValueCallback({
               procedureValue: {
-                degree: selIndex as 1 | 2 | 3 | 4,
+                degree: selIndex.toString() as TypeSimplified["degree"],
               } as TypeSimplified,
             });
           }}
-          value={asSimplified(tempValue)?.degree ?? 1}
-          defaultValue={1}
+          value={asSimplified(tempValue)?.degree ?? "1"}
+          defaultValue={"1"}
           placeholder="Select ..."
         />
       </GuideBox>
