@@ -29,3 +29,18 @@ export const isOpenAddModVelocityPressureSelector = selector<boolean>({
     set(isOpenAddModVelocityPressureState, newValue);
   },
 });
+
+export const isOpenCalcOrographyDialogState = atom<boolean>({
+  key: "isOpenCalcOrographyDialogState",
+  default: false,
+});
+
+export const isOpenCalcOrographyDialogSelector = selector<boolean>({
+  key: "isOpenCalcOrographyDialogSelector",
+  get: ({ get }) => {
+    return get(isOpenCalcOrographyDialogState);
+  },
+  set: ({ set }, newValue) => {
+    set(isOpenCalcOrographyDialogState, newValue);
+  },
+});

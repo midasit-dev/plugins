@@ -9,8 +9,13 @@ import {
   VELOCITY_PRESSURE_FULL_PANEL_4_R_WIDTH,
   VELOCITY_PRESSURE_FULL_PANEL_5_R_WIDTH,
 } from "../../../../../../../../../../../../defines/widthDefines";
+import CalcOrographyDialog from "../../../calc-orography-dialog/CalcOrographyDialog";
+import { useRecoilState } from "recoil";
+import { isOpenCalcOrographyDialogSelector } from "../../../../../../../../../../../../defines/openDefines";
 
 export default function OrgraphyEffectFactorCoz() {
+  const [isOpen, setIsOpen] = useRecoilState(isOpenCalcOrographyDialogSelector);
+
   return (
     <GuideBox width={"100%"} horSpaceBetween row verCenter>
       <div className="flex gap-0 items-center">
@@ -41,9 +46,11 @@ export default function OrgraphyEffectFactorCoz() {
             console.log(e.target.value);
           }}
         />
-        <IconButton>
+        <IconButton onClick={() => setIsOpen(true)}>
           <Icon iconName="MoreHoriz" />
         </IconButton>
+
+        {isOpen && <CalcOrographyDialog />}
       </div>
     </GuideBox>
   );
