@@ -10,9 +10,25 @@ import useTemporaryValue, {
   type TypeSimplified,
 } from "../../../../../../../../../../../hooks/useTemporaryValue";
 import { SimplifiedLocationEnum } from "../../../../../../../../../../../defines/applyDefines";
+import { useEffect } from "react";
 
 export default function CategoryOption1() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
+
+  useEffect(() => {
+    if (
+      ![
+        SimplifiedLocationEnum.WAGLAN_ISLAND,
+        SimplifiedLocationEnum.HONG_KONG_OBSERVATION,
+      ].includes(asSimplified(tempValue)?.location as SimplifiedLocationEnum)
+    ) {
+      setTempValueCallback({
+        procedureSimplified: {
+          location: SimplifiedLocationEnum.WAGLAN_ISLAND,
+        } as TypeSimplified,
+      });
+    }
+  }, [asSimplified, setTempValueCallback, tempValue]);
 
   return (
     <>
@@ -21,7 +37,7 @@ export default function CategoryOption1() {
         <RadioGroup
           onChange={(e: React.ChangeEvent, value: string) => {
             setTempValueCallback({
-              procedureValue: {
+              procedureSimplified: {
                 location: value as SimplifiedLocationEnum,
               } as TypeSimplified,
             });
@@ -59,7 +75,7 @@ export default function CategoryOption1() {
           defaultValue="120"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCallback({
-              procedureValue: {
+              procedureSimplified: {
                 period: Number(e.target.value),
               } as TypeSimplified,
             });

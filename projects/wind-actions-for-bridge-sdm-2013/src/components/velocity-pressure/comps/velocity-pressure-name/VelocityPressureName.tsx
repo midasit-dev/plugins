@@ -10,8 +10,11 @@ import VelocityPressureCases from "./comps/velocity-pressure-cases/VelocityPress
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isBlurSelector } from "../../../../defines/blurDefines";
 import { isOpenVelocityPressureCasesSelector } from "../../../../defines/openDefines";
-import { velocityPressureCasesSelector } from "../../../../defines/applyDefines";
-import { useState } from "react";
+import {
+  velocityPressureCasesSelector,
+  mainSelVelocityPressureSelector,
+} from "../../../../defines/applyDefines";
+import { useEffect } from "react";
 
 export default function VelocityPressureName() {
   const [isOpen, setIsOpen] = useRecoilState(
@@ -20,8 +23,18 @@ export default function VelocityPressureName() {
   const [, setIsBlur] = useRecoilState(isBlurSelector);
   const cases = useRecoilValue(velocityPressureCasesSelector);
 
-  //TODO 이거슨 applyDefines로 옮기자!
-  const [selPressure, setSelPressure] = useState<number>(1);
+  const [selItem, setSelItem] = useRecoilState(mainSelVelocityPressureSelector);
+
+  // selItem이 null인 경우, selItem을 cases의 첫번째 요소로 설정
+  useEffect(() => {
+    if (
+      (!selItem || !cases?.some((item) => item.name === selItem)) &&
+      cases &&
+      cases.length > 0
+    ) {
+      setSelItem(cases[0].name);
+    }
+  }, [cases, selItem, setSelItem]);
 
   return (
     <GuideBox width={"100%"} horSpaceBetween row verCenter>
@@ -30,15 +43,14 @@ export default function VelocityPressureName() {
       <div className="flex gap-4 items-center">
         <DropList
           width={161}
-          itemList={
-            cases?.map((item, index) => [item.name, index + 1]) ?? [["", 1]]
-          }
+          itemList={cases?.map((item, index) => [item.name, item.name]) ?? []}
           onChange={(e: SelectChangeEvent) => {
-            const selIndex = Number(e.target.value);
-            setSelPressure(selIndex);
+            setSelItem(e.target.value);
           }}
-          value={selPressure}
+          value={selItem}
+          defaultValue={selItem}
           placeholder="Select ..."
+          disabled={!cases || cases?.length === 0}
         />
 
         <div className="relative">

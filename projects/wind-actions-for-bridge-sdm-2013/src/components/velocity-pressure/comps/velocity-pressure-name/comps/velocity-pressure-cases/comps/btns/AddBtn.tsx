@@ -23,7 +23,7 @@ export default function AddBtn() {
 
         setTempValueCallback({
           ...tempProcedureValueDefalutForAdd,
-          name: `new name - ${(cases?.length ?? 1) + 1}`,
+          name: `new name - ${(cases?.length ?? 0) + 1}`,
         });
       }}
       width={"80px"}

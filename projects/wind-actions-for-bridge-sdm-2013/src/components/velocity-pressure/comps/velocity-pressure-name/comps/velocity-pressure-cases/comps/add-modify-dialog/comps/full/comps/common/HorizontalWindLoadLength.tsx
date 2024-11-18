@@ -54,7 +54,7 @@ export default function HorizontalWindLoadLength({
           defaultValue="600"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCallback({
-              procedureValue: {
+              procedureFull: {
                 horLoadLength: Number(e.target.value),
               } as TypeFull,
             });

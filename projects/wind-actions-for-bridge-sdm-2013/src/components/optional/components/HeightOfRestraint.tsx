@@ -3,38 +3,32 @@ import {
   GuideBox,
   Icon,
   IconButton,
-  TextField,
+  TextFieldV2,
   Typography,
 } from "@midasit-dev/moaui";
 import { PANEL_2_R_WIDTH } from "../../../defines/widthDefines";
-import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { mainHeightOfRestraintSelector } from "../../../defines/applyDefines";
 
 export default function HeightOfRestraint() {
-  const [isCheck, setIsCheck] = useState(false);
-
   return (
     <GuideBox width={"100%"} spacing={2}>
-      <Title isCheck={isCheck} setIsCheck={setIsCheck} />
-      <Options isCheck={isCheck} />
+      <Title />
+      <Options />
     </GuideBox>
   );
 }
 
-interface TitleProps {
-  isCheck: boolean;
-  setIsCheck: (value: boolean) => void;
-}
-
-function Title(props: TitleProps) {
-  const { isCheck, setIsCheck } = props;
+function Title() {
+  const [value, setValue] = useRecoilState(mainHeightOfRestraintSelector);
 
   return (
     <GuideBox width="100%" row>
       <Check
         name="Height of restraint (parapet of barrier)"
-        checked={isCheck}
+        checked={value?.isCheck ?? false}
         onChange={(e: React.SyntheticEvent, checked: boolean) =>
-          setIsCheck(checked)
+          setValue((prev) => ({ ...prev, isCheck: checked }))
         }
       />
       <IconButton transparent>
@@ -44,12 +38,8 @@ function Title(props: TitleProps) {
   );
 }
 
-interface OptionsProps {
-  isCheck: boolean;
-}
-
-function Options(props: OptionsProps) {
-  const { isCheck } = props;
+function Options() {
+  const [value, setValue] = useRecoilState(mainHeightOfRestraintSelector);
 
   return (
     <GuideBox
@@ -59,25 +49,39 @@ function Options(props: OptionsProps) {
       spacing={2}
       fill="#f4f5f6"
       borderRadius={2}
-      opacity={isCheck ? 1 : 0.5}
+      opacity={value?.isCheck ? 1 : 0.5}
     >
       <Typography>Height (m)</Typography>
 
       <GuideBox width={"100%"} horSpaceBetween row verCenter>
         <Typography variant="h1">I-End</Typography>
-        <TextField
+        <TextFieldV2
+          type="number"
+          numberOptions={{
+            min: 0.0,
+            step: 0.1,
+          }}
+          value={(value?.iEnd ?? "0.0").toString()}
+          defaultValue="0.0"
           width={PANEL_2_R_WIDTH}
           placeholder="Enter the value"
-          disabled={!isCheck}
+          disabled={!value?.isCheck}
         />
       </GuideBox>
 
       <GuideBox width={"100%"} horSpaceBetween row verCenter>
         <Typography variant="h1">J-End</Typography>
-        <TextField
+        <TextFieldV2
+          type="number"
+          numberOptions={{
+            min: 0.0,
+            step: 0.1,
+          }}
+          value={(value?.jEnd ?? "0.0").toString()}
+          defaultValue="0.0"
           width={PANEL_2_R_WIDTH}
           placeholder="Enter the value"
-          disabled={!isCheck}
+          disabled={!value?.isCheck}
         />
       </GuideBox>
     </GuideBox>

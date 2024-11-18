@@ -44,17 +44,21 @@ export default function OrgraphyEffectFactorCoz() {
               min: "greater",
             },
           }}
-          value={asFull(tempValue)?.coz?.value?.toString() ?? "1.0"}
+          value={asFull(tempValue)?.cozValue?.toString() ?? "1.0"}
           defaultValue="1.0"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCallback({
-              procedureValue: {
+              procedureFull: {
                 coz: { value: Number(e.target.value) },
               } as TypeFull,
             });
           }}
         />
-        <IconButton onClick={() => setIsOpen(true)}>
+        <IconButton
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
           <Icon iconName="MoreHoriz" />
         </IconButton>
 

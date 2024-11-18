@@ -51,19 +51,23 @@ export enum FullLocationEnum {
 }
 
 export type VelocityPressureCaseProcedureFull = {
-  velocity: FullVelocityEnum;
+  velocity?: FullVelocityEnum;
   refZ?: number;
   horLoadLength?: number;
   degree?: "1" | "2" | "3" | "4";
-  coz?: {
-    value?: number;
-    orographyType: FullOrographyTypeEnum;
+  cozValue?: number;
+  cozOptions?: {
+    orographyType?: FullOrographyTypeEnum;
     location?: FullLocationEnum;
     h?: number;
     ld?: number;
     lu?: number;
+    x?: number;
     refZ?: number;
     loadLength?: number;
+    sbz?: number;
+    scz?: number;
+    coz?: number;
   };
   kpc?: number;
 };
@@ -72,45 +76,183 @@ export type VelocityPressureCaseType = {
   name: string;
   value: number;
   procedureIndex: 1 | 2; // 1: simplified, 2: full
-  procedureValue:
-    | VelocityPressureCaseProcedureSimplified
-    | VelocityPressureCaseProcedureFull;
+  procedureSimplified?: VelocityPressureCaseProcedureSimplified;
+  procedureFull?: VelocityPressureCaseProcedureFull;
 };
 
 // 생성된 케이스들
 export const velocityPressureCases = atom<VelocityPressureCaseType[] | null>({
   key: "velocityPressureCases",
-  default: [
-    {
-      name: "name1",
-      value: 1.0,
-      procedureIndex: 1,
-      procedureValue: {
-        category: SimplifiedCategoryEnum.TABLE_3_6,
-        location: SimplifiedLocationEnum.WAGLAN_ISLAND,
-        period: 120,
-      },
-    },
-    {
-      name: "name2",
-      value: 2.7,
-      procedureIndex: 1,
-      procedureValue: {
-        category: SimplifiedCategoryEnum.TABLE_3_7,
-        location: SimplifiedLocationEnum.SHELTERED_LOCATION,
-      },
-    },
-    {
-      name: "name3",
-      value: 3.2,
-      procedureIndex: 1,
-      procedureValue: {
-        category: SimplifiedCategoryEnum.TABLE_3_8,
-        degree: "1",
-      },
-    },
-  ],
+  // default: [
+  //   {
+  //     name: "name1",
+  //     value: 1.0,
+  //     procedureIndex: 1,
+  //     procedureSimplified: {
+  //       category: SimplifiedCategoryEnum.TABLE_3_6,
+  //       location: SimplifiedLocationEnum.WAGLAN_ISLAND,
+  //       period: 120,
+  //     },
+  //     procedureFull: {
+  //       velocity: FullVelocityEnum.PEAK_VELOCITY,
+  //       refZ: 50,
+  //       horLoadLength: 600,
+  //       degree: "1",
+  //       cozValue: 1.0,
+  //       kpc: 0,
+  //     },
+  //   },
+  //   {
+  //     name: "name2",
+  //     value: 2.7,
+  //     procedureIndex: 1,
+  //     procedureSimplified: {
+  //       category: SimplifiedCategoryEnum.TABLE_3_7,
+  //       location: SimplifiedLocationEnum.SHELTERED_LOCATION,
+  //     },
+  //     procedureFull: {
+  //       velocity: FullVelocityEnum.PEAK_VELOCITY,
+  //       refZ: 50,
+  //       horLoadLength: 600,
+  //       degree: "1",
+  //       cozValue: 1.0,
+  //       kpc: 0,
+  //     },
+  //   },
+  //   {
+  //     name: "name3",
+  //     value: 3.2,
+  //     procedureIndex: 1,
+  //     procedureSimplified: {
+  //       category: SimplifiedCategoryEnum.TABLE_3_8,
+  //       degree: "1",
+  //     },
+  //     procedureFull: {
+  //       velocity: FullVelocityEnum.PEAK_VELOCITY,
+  //       refZ: 50,
+  //       horLoadLength: 600,
+  //       degree: "1",
+  //       cozValue: 1.0,
+  //       kpc: 0,
+  //     },
+  //   },
+  // ],
+  default: null,
 });
+
+// 생성된 케이스 중 선택된 DropList Item
+export const mainSelVelocityPressureState = atom<string | null>({
+  key: "mainSelVelocityPressureState",
+  default: null,
+});
+
+export const mainSelVelocityPressureSelector = selector<string | null>({
+  key: "mainSelVelocityPressureSelector",
+  get: ({ get }) => {
+    return get(mainSelVelocityPressureState);
+  },
+  set: ({ set }, newValue) => {
+    set(mainSelVelocityPressureState, newValue);
+  },
+});
+
+// 생성된 케이스 중 선택된 케이스의 값만 추출
+export const mainSelVelocityPressureValueSelector = selector<number | null>({
+  key: "mainSelVelocityPressureValueSelector",
+  get: ({ get }) => {
+    const sel = get(mainSelVelocityPressureState);
+    const cases = get(velocityPressureCases);
+    if (!sel || !cases) return null;
+    return cases.find((item) => item.name === sel)?.value ?? null;
+  },
+});
+
+// 메인의 Cf 값
+export const mainCfValueState = atom<number | null>({
+  key: "mainCfValueState",
+  default: null,
+});
+
+export const mainCfValueSelector = selector<number | null>({
+  key: "mainCfValueSelector",
+  get: ({ get }) => {
+    return get(mainCfValueState);
+  },
+  set: ({ set }, newValue) => {
+    set(mainCfValueState, newValue);
+  },
+});
+
+// 메인의 CsCd 값
+export const mainCsCdValueState = atom<number | null>({
+  key: "mainCsCdValueState",
+  default: null,
+});
+
+export const mainCsCdValueSelector = selector<number | null>({
+  key: "mainCsCdValueSelector",
+  get: ({ get }) => {
+    return get(mainCsCdValueState);
+  },
+  set: ({ set }, newValue) => {
+    set(mainCsCdValueState, newValue);
+  },
+});
+
+// 메인의 TargetElements
+export const mainTargetElementsState = atom<number[] | null>({
+  key: "mainTargetElementsState",
+  default: null,
+});
+
+export const mainTargetElementsSelector = selector<number[] | null>({
+  key: "mainTargetElementsSelector",
+  get: ({ get }) => {
+    return get(mainTargetElementsState);
+  },
+  set: ({ set }, newValue) => {
+    set(mainTargetElementsState, newValue);
+  },
+});
+
+// 메인의 Direction
+export const mainSelDirectionState = atom<string | null>({
+  key: "mainSelDirectionState",
+  default: "LY+",
+});
+
+export const mainSelDirectionSelector = selector<string | null>({
+  key: "mainSelDirectionSelector",
+  get: ({ get }) => {
+    return get(mainSelDirectionState);
+  },
+  set: ({ set }, newValue) => {
+    set(mainSelDirectionState, newValue);
+  },
+});
+
+// 메인의 HeightOfRestraint
+interface HeightOfRestraintType {
+  isCheck: boolean;
+  iEnd?: number;
+  jEnd?: number;
+}
+
+export const mainHeightOfRestraintState = atom<HeightOfRestraintType | null>({
+  key: "mainHeightOfRestraintState",
+  default: null,
+});
+
+export const mainHeightOfRestraintSelector =
+  selector<HeightOfRestraintType | null>({
+    key: "mainHeightOfRestraintSelector",
+    get: ({ get }) => {
+      return get(mainHeightOfRestraintState);
+    },
+    set: ({ set }, newValue) => {
+      set(mainHeightOfRestraintState, newValue);
+    },
+  });
 
 export const velocityPressureCasesSelector = selector<
   VelocityPressureCaseType[] | null
@@ -126,7 +268,7 @@ export const velocityPressureCasesSelector = selector<
 
 type VelocityPressureCaseRemoveProcedure = Omit<
   VelocityPressureCaseType,
-  "procedureIndex" | "procedureValue"
+  "procedureIndex" | "procedureSimplified" | "procedureFull"
 >;
 type VelocityPressureCaseLight = {
   index: number;
@@ -168,93 +310,18 @@ export const tempProcedureValueDefalutForAdd: VelocityPressureCaseType = {
   name: "new name",
   value: 3.865,
   procedureIndex: 1,
-  procedureValue: {
+  procedureSimplified: {
     category: SimplifiedCategoryEnum.TABLE_3_6,
     location: SimplifiedLocationEnum.WAGLAN_ISLAND,
     period: 120,
   },
-};
-
-// 기본 값 (Procedure별)
-export const tempProcedureValueDefaultSimplified1: Omit<
-  VelocityPressureCaseType,
-  "name" | "value"
-> = {
-  procedureIndex: 1,
-  procedureValue: {
-    category: SimplifiedCategoryEnum.TABLE_3_6,
-    location: SimplifiedLocationEnum.WAGLAN_ISLAND,
-    period: 120,
-  },
-};
-
-export const tempProcedureValueDefaultSimplified2: Omit<
-  VelocityPressureCaseType,
-  "name" | "value"
-> = {
-  procedureIndex: 1,
-  procedureValue: {
-    category: SimplifiedCategoryEnum.TABLE_3_7,
-    location: SimplifiedLocationEnum.SHELTERED_LOCATION,
-  },
-};
-
-export const tempProcedureValueDefaultSimplified3: Omit<
-  VelocityPressureCaseType,
-  "name" | "value"
-> = {
-  procedureIndex: 1,
-  procedureValue: {
-    category: SimplifiedCategoryEnum.TABLE_3_8,
-    degree: "1",
-  },
-};
-
-export const tempProcedureValueDefaultFull1: Omit<
-  VelocityPressureCaseType,
-  "name" | "value"
-> = {
-  procedureIndex: 2,
-  procedureValue: {
+  procedureFull: {
     velocity: FullVelocityEnum.PEAK_VELOCITY,
     refZ: 50,
     horLoadLength: 600,
     degree: "1",
-    coz: {
-      value: 0.5,
-      orographyType: FullOrographyTypeEnum.CLIFFS_AND_ESCARPMENTS,
-      location: FullLocationEnum.UPWIND,
-      h: 10,
-      ld: 10,
-      lu: 10,
-      refZ: 10,
-      loadLength: 10,
-    },
-    kpc: 10,
-  },
-};
-
-export const tempProcedureValueDefaultFull2: Omit<
-  VelocityPressureCaseType,
-  "name" | "value"
-> = {
-  procedureIndex: 2,
-  procedureValue: {
-    velocity: FullVelocityEnum.MEAN_VELOCITY,
-    refZ: 50,
-    horLoadLength: 600,
-    degree: "1",
-    coz: {
-      value: 0.5,
-      orographyType: FullOrographyTypeEnum.CLIFFS_AND_ESCARPMENTS,
-      location: FullLocationEnum.UPWIND,
-      h: 10,
-      ld: 10,
-      lu: 10,
-      refZ: 10,
-      loadLength: 10,
-    },
-    kpc: 10,
+    cozValue: 1.0,
+    kpc: 0,
   },
 };
 
@@ -288,5 +355,38 @@ export const TempProcedureFlagSelector = selector<"add" | "modify" | null>({
   },
   set: ({ set }, newValue) => {
     set(TempProcedureFlagState, newValue);
+  },
+});
+
+// 기본 값
+export const tempProcedureValueCozOptionsDefalutForAdd = {
+  orographyType: FullOrographyTypeEnum.CLIFFS_AND_ESCARPMENTS,
+  location: FullLocationEnum.UPWIND,
+  h: 0.0,
+  ld: 0.0,
+  lu: 0.0,
+  refZ: 50,
+  loadLength: 600,
+  sbz: 0.0,
+  scz: 0.0,
+  coz: 0.0,
+};
+
+export const TempProcedureValueCozOptionsState = atom<
+  VelocityPressureCaseProcedureFull["cozOptions"] | null
+>({
+  key: "TempProcedureValueCozOptionsState",
+  default: tempProcedureValueCozOptionsDefalutForAdd,
+});
+
+export const TempProcedureValueCozOptionsSelector = selector<
+  VelocityPressureCaseProcedureFull["cozOptions"] | null
+>({
+  key: "TempProcedureValueCozOptionsSelector",
+  get: ({ get }) => {
+    return get(TempProcedureValueCozOptionsState);
+  },
+  set: ({ set }, newValue) => {
+    set(TempProcedureValueCozOptionsState, newValue);
   },
 });

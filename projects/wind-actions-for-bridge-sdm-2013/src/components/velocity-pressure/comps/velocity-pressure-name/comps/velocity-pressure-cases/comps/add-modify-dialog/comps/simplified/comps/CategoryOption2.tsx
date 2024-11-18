@@ -16,7 +16,7 @@ export default function CategoryOption2() {
       ].includes(asSimplified(tempValue)?.location as SimplifiedLocationEnum)
     ) {
       setTempValueCallback({
-        procedureValue: {
+        procedureSimplified: {
           location: SimplifiedLocationEnum.SHELTERED_LOCATION,
         } as TypeSimplified,
       });
@@ -31,7 +31,7 @@ export default function CategoryOption2() {
           onChange={(e: React.ChangeEvent, value: string) => {
             console.log(value);
             setTempValueCallback({
-              procedureValue: {
+              procedureSimplified: {
                 location: value as TypeSimplified["location"],
               } as TypeSimplified,
             });

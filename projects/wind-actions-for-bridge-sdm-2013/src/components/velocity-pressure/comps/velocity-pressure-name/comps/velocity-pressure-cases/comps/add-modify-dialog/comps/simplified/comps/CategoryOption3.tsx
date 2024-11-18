@@ -34,7 +34,7 @@ export default function CategoryOption3() {
           onChange={(e: SelectChangeEvent) => {
             const selIndex = Number(e.target.value);
             setTempValueCallback({
-              procedureValue: {
+              procedureSimplified: {
                 degree: selIndex.toString() as TypeSimplified["degree"],
               } as TypeSimplified,
             });

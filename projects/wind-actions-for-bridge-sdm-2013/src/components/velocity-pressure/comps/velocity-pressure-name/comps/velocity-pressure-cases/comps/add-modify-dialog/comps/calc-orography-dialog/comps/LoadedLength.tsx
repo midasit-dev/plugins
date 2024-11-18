@@ -6,8 +6,11 @@ import {
   Typography,
 } from "@midasit-dev/moaui";
 import { CALC_OROGRAPHY_DIALOG_R_WIDTH_M } from "../../../../../../../../../../../defines/widthDefines";
+import useTemporaryValueCozOptions from "../../../../../../../../../../../hooks/useTemporaryValueCozOptions";
 
 export default function LoadedLength() {
+  const { tempValueCozOptions, setTempValueCozOptionsCallback } =
+    useTemporaryValueCozOptions();
   return (
     <GuideBox width="100%" horSpaceBetween verCenter row>
       <div className="w-full flex items-center">
@@ -22,13 +25,16 @@ export default function LoadedLength() {
           type="number"
           placeholder="Enter value"
           width={CALC_OROGRAPHY_DIALOG_R_WIDTH_M}
-          defaultValue="0.1"
+          defaultValue="0.0"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setTempValueCozOptionsCallback({
+              loadLength: Number.parseFloat(e.target.value),
+            });
+          }}
+          value={String(tempValueCozOptions?.loadLength) ?? "0.0"}
           numberOptions={{
             min: 0.0,
             step: 0.1,
-            condition: {
-              min: "greater",
-            },
           }}
         />
         <Typography>m</Typography>

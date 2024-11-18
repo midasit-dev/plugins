@@ -42,7 +42,7 @@ export default function Full() {
                   }}
                   onClick={(e: React.MouseEvent) => {
                     setTempValueCallback({
-                      procedureValue: { velocity: item as FullVelocityEnum },
+                      procedureFull: { velocity: item as FullVelocityEnum },
                     });
                   }}
                 >

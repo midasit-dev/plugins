@@ -43,7 +43,7 @@ export default function ClimateChargingFactorKpc() {
           defaultValue="1.22"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCallback({
-              procedureValue: {
+              procedureFull: {
                 kpc: Number(e.target.value),
               } as TypeFull,
             });

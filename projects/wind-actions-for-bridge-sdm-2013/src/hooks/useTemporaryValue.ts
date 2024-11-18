@@ -15,64 +15,88 @@ export default function useTemporaryValue() {
   const [tempValue, setTempValue] = useRecoilState(TempProcedureValueSelector);
 
   const setTempValueCallback = useCallback(
-    (data: Partial<TypeRoot>) => {
+    (data: Partial<TypeRoot> | null) => {
       setTempValue((prev: TypeRoot | null) => {
+        if (data === null) return null;
         if (!data) return prev;
 
-        const payload = {
+        let payload = {
           ...prev,
 
-          ...(data.name ? { name: data.name } : {}),
-          ...(data.value ? { value: data.value } : {}),
-          ...(data.procedureIndex
+          ...(data.name !== undefined ? { name: data.name } : {}),
+          ...(data.value !== undefined ? { value: data.value } : {}),
+          ...(data.procedureIndex !== undefined
             ? { procedureIndex: data.procedureIndex }
             : {}),
         };
 
-        const simplified = data.procedureValue as TypeSimplified;
-        if (payload.procedureIndex === 1 && simplified !== undefined) {
-          return {
+        const simplified = data.procedureSimplified as TypeSimplified;
+        if (simplified !== undefined) {
+          payload = {
             ...payload,
 
-            procedureValue: {
-              ...prev?.procedureValue,
+            procedureSimplified: {
+              ...prev?.procedureSimplified,
 
-              ...(simplified.category ? { category: simplified.category } : {}),
-              ...(simplified.location ? { location: simplified.location } : {}),
-              ...(simplified.period ? { period: simplified.period } : {}),
-              ...(simplified.degree ? { degree: simplified.degree } : {}),
+              ...(simplified.category !== undefined
+                ? { category: simplified.category }
+                : {}),
+              ...(simplified.location !== undefined
+                ? { location: simplified.location }
+                : {}),
+              ...(simplified.period !== undefined
+                ? { period: simplified.period }
+                : {}),
+              ...(simplified.degree !== undefined
+                ? { degree: simplified.degree }
+                : {}),
             } as TypeSimplified,
           } as TypeRoot;
         }
 
-        const full = data.procedureValue as TypeFull;
-        if (payload.procedureIndex === 2 && full !== undefined) {
-          return {
+        const full = data.procedureFull as TypeFull;
+        if (full !== undefined) {
+          payload = {
             ...payload,
 
-            procedureValue: {
-              ...prev?.procedureValue,
+            procedureFull: {
+              ...prev?.procedureFull,
 
-              ...(full.velocity ? { velocity: full.velocity } : {}),
-              ...(full.refZ ? { refZ: full.refZ } : {}),
-              ...(full.horLoadLength
+              ...(full.velocity !== undefined
+                ? { velocity: full.velocity }
+                : {}),
+              ...(full.refZ !== undefined ? { refZ: full.refZ } : {}),
+              ...(full.horLoadLength !== undefined
                 ? { horLoadLength: full.horLoadLength }
                 : {}),
-              ...(full.degree ? { degree: full.degree } : {}),
-              coz: {
-                ...(prev?.procedureValue as TypeFull).coz,
+              ...(full.degree !== undefined ? { degree: full.degree } : {}),
+              ...(full.cozValue !== undefined
+                ? { cozValue: full.cozValue }
+                : {}),
 
-                ...(full.coz?.value ? { value: full.coz.value } : {}),
-                ...(full.coz?.location ? { location: full.coz.location } : {}),
-                ...(full.coz?.h ? { h: full.coz.h } : {}),
-                ...(full.coz?.ld ? { ld: full.coz.ld } : {}),
-                ...(full.coz?.lu ? { lu: full.coz.lu } : {}),
-                ...(full.coz?.refZ ? { refZ: full.coz.refZ } : {}),
-                ...(full.coz?.loadLength
-                  ? { loadLength: full.coz.loadLength }
+              cozOptions: {
+                ...(prev?.procedureFull as TypeFull)?.cozOptions,
+
+                ...(full.cozOptions?.location !== undefined
+                  ? { location: full.cozOptions.location }
+                  : {}),
+                ...(full.cozOptions?.h !== undefined
+                  ? { h: full.cozOptions.h }
+                  : {}),
+                ...(full.cozOptions?.ld !== undefined
+                  ? { ld: full.cozOptions.ld }
+                  : {}),
+                ...(full.cozOptions?.lu !== undefined
+                  ? { lu: full.cozOptions.lu }
+                  : {}),
+                ...(full.cozOptions?.refZ !== undefined
+                  ? { refZ: full.cozOptions.refZ }
+                  : {}),
+                ...(full.cozOptions?.loadLength !== undefined
+                  ? { loadLength: full.cozOptions.loadLength }
                   : {}),
               },
-              ...(full.kpc ? { kpc: full.kpc } : {}),
+              ...(full.kpc !== undefined ? { kpc: full.kpc } : {}),
             } as TypeFull,
           } as TypeRoot;
         }
@@ -86,14 +110,14 @@ export default function useTemporaryValue() {
   const asSimplified = useCallback(
     (data: TypeRoot | null): TypeSimplified | null => {
       if (!data) return null;
-      return data.procedureValue as TypeSimplified;
+      return data.procedureSimplified as TypeSimplified;
     },
     []
   );
 
   const asFull = useCallback((data: TypeRoot | null): TypeFull | null => {
     if (!data) return null;
-    return data.procedureValue as TypeFull;
+    return data.procedureFull as TypeFull;
   }, []);
 
   return {

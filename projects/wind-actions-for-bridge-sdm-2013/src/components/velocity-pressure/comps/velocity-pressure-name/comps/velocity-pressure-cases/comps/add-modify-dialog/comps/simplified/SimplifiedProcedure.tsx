@@ -61,7 +61,7 @@ export default function Simplified() {
               itemList={items}
               onChange={(e: SelectChangeEvent) => {
                 setTempValueCallback({
-                  procedureValue: {
+                  procedureSimplified: {
                     category: e.target.value as TypeSimplified["category"],
                   },
                 });

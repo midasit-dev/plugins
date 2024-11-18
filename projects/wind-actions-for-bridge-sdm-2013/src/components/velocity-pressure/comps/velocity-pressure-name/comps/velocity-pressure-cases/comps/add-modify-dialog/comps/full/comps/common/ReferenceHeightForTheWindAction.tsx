@@ -33,7 +33,7 @@ export default function ReferenceHeightForTheWindAction() {
           defaultValue="50"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCallback({
-              procedureValue: {
+              procedureFull: {
                 refZ: Number(e.target.value),
               } as TypeFull,
             });

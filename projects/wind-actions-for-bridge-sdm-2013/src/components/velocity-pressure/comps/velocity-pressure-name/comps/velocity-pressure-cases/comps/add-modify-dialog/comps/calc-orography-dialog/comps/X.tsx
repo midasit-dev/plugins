@@ -1,7 +1,11 @@
 import { GuideBox, TextFieldV2, Typography } from "@midasit-dev/moaui";
 import { CALC_OROGRAPHY_DIALOG_R_WIDTH_M } from "../../../../../../../../../../../defines/widthDefines";
+import useTemporaryValueCozOptions from "../../../../../../../../../../../hooks/useTemporaryValueCozOptions";
 
 export default function X() {
+  const { tempValueCozOptions, setTempValueCozOptionsCallback } =
+    useTemporaryValueCozOptions();
+
   return (
     <GuideBox width="100%" horSpaceBetween verCenter row>
       <Typography>Crest-Building Distance, x</Typography>
@@ -11,14 +15,17 @@ export default function X() {
           type="number"
           placeholder="Enter value"
           width={CALC_OROGRAPHY_DIALOG_R_WIDTH_M}
-          defaultValue="0.1"
+          defaultValue="0.0"
           numberOptions={{
             min: 0.0,
             step: 0.1,
-            condition: {
-              min: "greater",
-            },
           }}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setTempValueCozOptionsCallback({
+              x: Number.parseFloat(e.target.value),
+            });
+          }}
+          value={String(tempValueCozOptions?.x) ?? "0.0"}
         />
         <Typography>m</Typography>
       </div>

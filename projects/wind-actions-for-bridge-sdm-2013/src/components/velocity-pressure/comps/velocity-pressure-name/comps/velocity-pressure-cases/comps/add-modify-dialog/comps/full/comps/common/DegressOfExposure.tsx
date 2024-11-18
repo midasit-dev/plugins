@@ -40,7 +40,7 @@ export default function DegreeOfExposure() {
           onChange={(e: SelectChangeEvent) => {
             const selIndex = Number(e.target.value);
             setTempValueCallback({
-              procedureValue: {
+              procedureFull: {
                 degree: selIndex.toString() as TypeFull["degree"],
               } as TypeFull,
             });

@@ -1,7 +1,11 @@
 import { GuideBox, TextFieldV2, Typography } from "@midasit-dev/moaui";
 import { CALC_OROGRAPHY_DIALOG_R_WIDTH_M } from "../../../../../../../../../../../defines/widthDefines";
+import useTemporaryValueCozOptions from "../../../../../../../../../../../hooks/useTemporaryValueCozOptions";
 
 export default function Ld() {
+  const { tempValueCozOptions, setTempValueCozOptionsCallback } =
+    useTemporaryValueCozOptions();
+
   return (
     <GuideBox width="100%" horSpaceBetween verCenter row>
       <Typography>Length of Downwind Slope, Ld</Typography>
@@ -16,6 +20,12 @@ export default function Ld() {
             min: 0.0,
             step: 0.1,
           }}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setTempValueCozOptionsCallback({
+              ld: Number.parseFloat(e.target.value),
+            });
+          }}
+          value={String(tempValueCozOptions?.ld) ?? "0.0"}
         />
         <Typography>m</Typography>
       </div>
