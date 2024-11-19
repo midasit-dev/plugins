@@ -9,6 +9,8 @@ import {
 import { PANEL_2_R_WIDTH } from "../../../defines/widthDefines";
 import { useRecoilState } from "recoil";
 import { mainHeightOfRestraintSelector } from "../../../defines/applyDefines";
+import { motion } from "framer-motion";
+import InfoWrapper from "../../common/InfoWrapper";
 
 export default function HeightOfRestraint() {
   return (
@@ -31,15 +33,24 @@ function Title() {
           setValue((prev) => ({ ...prev, isCheck: checked }))
         }
       />
-      <IconButton transparent>
-        <Icon iconName="Info" />
-      </IconButton>
+
+      <InfoWrapper
+        tooltip={
+          <GuideBox width={150}>
+            <Typography>test</Typography>
+          </GuideBox>
+        }
+      >
+        <IconButton transparent>
+          <Icon iconName="Info" />
+        </IconButton>
+      </InfoWrapper>
     </GuideBox>
   );
 }
 
 function Options() {
-  const [value] = useRecoilState(mainHeightOfRestraintSelector);
+  const [value, setValue] = useRecoilState(mainHeightOfRestraintSelector);
 
   return (
     <GuideBox
@@ -66,24 +77,55 @@ function Options() {
           width={PANEL_2_R_WIDTH}
           placeholder="Enter the value"
           disabled={!value?.isCheck}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const newValue = Number.parseFloat(e.target.value);
+            setValue((prev) => ({ ...prev, iEnd: newValue }));
+          }}
         />
       </GuideBox>
 
-      <GuideBox width={"100%"} horSpaceBetween row verCenter>
-        <Typography variant="h1">J-End</Typography>
-        <TextFieldV2
-          type="number"
-          numberOptions={{
-            min: 0.0,
-            step: 0.1,
+      <div className="w-full flex justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <div
+            style={{
+              pointerEvents: value?.isCheckJEnd ? "auto" : "none",
+              opacity: value?.isCheckJEnd ? 1 : 0.5,
+            }}
+          >
+            <Typography variant="h1">J-End</Typography>
+          </div>
+          <Check
+            checked={value?.isCheckJEnd ?? false}
+            onChange={(e: React.SyntheticEvent, checked: boolean) => {
+              setValue((prev) => ({ ...prev, isCheckJEnd: checked }));
+            }}
+          />
+        </div>
+
+        <div
+          style={{
+            pointerEvents: value?.isCheckJEnd ? "auto" : "none",
+            opacity: value?.isCheckJEnd ? 1 : 0.5,
           }}
-          value={(value?.jEnd ?? "0.0").toString()}
-          defaultValue="0.0"
-          width={PANEL_2_R_WIDTH}
-          placeholder="Enter the value"
-          disabled={!value?.isCheck}
-        />
-      </GuideBox>
+        >
+          <TextFieldV2
+            type="number"
+            numberOptions={{
+              min: 0.0,
+              step: 0.1,
+            }}
+            value={(value?.jEnd ?? "0.0").toString()}
+            defaultValue="0.0"
+            width={PANEL_2_R_WIDTH}
+            placeholder="Enter the value"
+            disabled={!value?.isCheck}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const newValue = Number.parseFloat(e.target.value);
+              setValue((prev) => ({ ...prev, jEnd: newValue }));
+            }}
+          />
+        </div>
+      </div>
     </GuideBox>
   );
 }

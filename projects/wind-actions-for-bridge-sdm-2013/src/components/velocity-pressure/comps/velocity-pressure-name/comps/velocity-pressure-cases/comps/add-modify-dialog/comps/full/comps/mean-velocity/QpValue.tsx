@@ -6,7 +6,9 @@ import {
   Typography,
 } from "@midasit-dev/moaui";
 import useTemporaryValue from "../../../../../../../../../../../../hooks/useTemporaryValue";
+import InfoWrapper from "../../../../../../../../../../../common/InfoWrapper";
 
+//TEST Python 계산 결과 보여주는 곳
 export default function MeanVelocityQz() {
   const { tempValue, setTempValueCallback } = useTemporaryValue();
 
@@ -16,9 +18,18 @@ export default function MeanVelocityQz() {
         <Typography center width={"100%"}>
           Hourly Mean Velocity Pressure at Referenace Height,q’(z)
         </Typography>
-        <IconButton transparent>
-          <Icon iconName="Info" />
-        </IconButton>
+        <InfoWrapper
+          tooltip={
+            <GuideBox width={150}>
+              <Typography>test</Typography>
+            </GuideBox>
+          }
+        >
+          <IconButton transparent>
+            <Icon iconName="Info" />
+          </IconButton>
+        </InfoWrapper>
+        ]
       </div>
       <div className="flex items-center gap-2">
         <TextFieldV2

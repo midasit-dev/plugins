@@ -38,7 +38,9 @@ export default function VelocityPressureName() {
 
   return (
     <GuideBox width={"100%"} horSpaceBetween row verCenter>
-      <Typography variant="h1">Velocity Pressure</Typography>
+      <Typography variant="h1" color={selItem === null ? "#FF5733" : "primary"}>
+        Velocity Pressure
+      </Typography>
 
       <div className="flex gap-4 items-center">
         <DropList

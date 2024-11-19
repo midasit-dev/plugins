@@ -6,7 +6,12 @@
 		{
 			"files": [
 				"./py_base_sub.py",
-				"./py_base.py"
+				"./py_base.py",
+				"./simplified_calc_qp.py",
+				"./full_peak_calc_qp.py",
+				"./full_mean_calc_qp.py",
+				"./full_calc_coz.py",
+				"./apply.py"
 			]
 		}
 	]

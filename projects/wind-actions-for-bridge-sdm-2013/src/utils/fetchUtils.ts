@@ -12,7 +12,7 @@ interface STLDObject {
   };
 }
 
-export async function fetchSTLD(): Promise<Array<[string, number]> | null> {
+export async function fetchSTLD(): Promise<Array<[string, string]> | null> {
   const baseUrl = await getBaseUrlAsync();
   const mapiKey = getMapiKey();
 
@@ -34,7 +34,7 @@ export async function fetchSTLD(): Promise<Array<[string, number]> | null> {
   }
 
   const dataNameArray = Object.entries(dataObject).map(
-    ([key, value]) => [value.NAME, Number(key)] as [string, number]
+    ([key, value]) => [value.NAME, value.NAME] as [string, string]
   );
 
   return dataNameArray;

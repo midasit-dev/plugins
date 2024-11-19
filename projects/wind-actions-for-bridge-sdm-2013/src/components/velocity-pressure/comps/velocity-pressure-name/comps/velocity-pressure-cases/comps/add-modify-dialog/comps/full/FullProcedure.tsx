@@ -1,9 +1,9 @@
 import { Button, GuideBox, Typography } from "@midasit-dev/moaui";
 import PeakVelocity from "./comps/peak-velocity/PeakVelocity";
 import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
-import PeakVelocityQpz from "./comps/peak-velocity/PeakVelocityQpz";
+import PeakVelocityQpz from "./comps/peak-velocity/QpValue";
 import MeanVelocity from "./comps/mean-velocity/MeanVelocity";
-import MeanVelocityQz from "./comps/mean-velocity/MeanVelocityQz";
+import MeanVelocityQz from "./comps/mean-velocity/QpValue";
 import { FullVelocityEnum } from "../../../../../../../../../../defines/applyDefines";
 
 export default function Full() {
@@ -67,10 +67,6 @@ export default function Full() {
         {asFull(tempValue)?.velocity === FullVelocityEnum.MEAN_VELOCITY && (
           <MeanVelocity />
         )}
-
-        <Button color="negative" width="100%">
-          Calculate
-        </Button>
       </GuideBox>
 
       {asFull(tempValue)?.velocity === FullVelocityEnum.PEAK_VELOCITY && (

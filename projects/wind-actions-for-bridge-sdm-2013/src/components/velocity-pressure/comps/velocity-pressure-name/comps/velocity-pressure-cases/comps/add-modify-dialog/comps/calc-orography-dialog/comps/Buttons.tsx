@@ -20,7 +20,10 @@ export default function Btns() {
           const tempOptions = tempValueCozOptions;
           if (tempOptions) {
             setTempValueCallback({
-              procedureFull: { cozOptions: tempOptions },
+              procedureFull: {
+                cozOptions: tempOptions,
+                cozValue: tempOptions.coz,
+              },
             });
           }
         }}

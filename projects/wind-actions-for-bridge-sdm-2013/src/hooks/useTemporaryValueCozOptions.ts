@@ -30,7 +30,7 @@ export default function useTemporaryValueCozOptions() {
           ...(data.ld !== undefined ? { ld: data.ld } : {}),
           ...(data.lu !== undefined ? { lu: data.lu } : {}),
           ...(data.refZ !== undefined ? { refZ: data.refZ } : {}),
-          ...(data.x !== undefined ? { refZ0: data.x } : {}),
+          ...(data.x !== undefined ? { x: data.x } : {}),
           ...(data.loadLength !== undefined
             ? { loadLength: data.loadLength }
             : {}),

@@ -16,16 +16,12 @@ export default function X() {
           placeholder="Enter value"
           width={CALC_OROGRAPHY_DIALOG_R_WIDTH_M}
           defaultValue="0.0"
-          numberOptions={{
-            min: 0.0,
-            step: 0.1,
-          }}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCozOptionsCallback({
               x: Number.parseFloat(e.target.value),
             });
           }}
-          value={String(tempValueCozOptions?.x) ?? "0.0"}
+          value={(tempValueCozOptions?.x ?? 0.0).toString()}
         />
         <Typography>m</Typography>
       </div>

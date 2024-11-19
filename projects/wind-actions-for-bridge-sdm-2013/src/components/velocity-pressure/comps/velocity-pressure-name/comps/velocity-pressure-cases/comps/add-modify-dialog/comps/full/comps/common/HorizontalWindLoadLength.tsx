@@ -1,4 +1,10 @@
-import { Icon, IconButton, TextFieldV2, Typography } from "@midasit-dev/moaui";
+import {
+  GuideBox,
+  Icon,
+  IconButton,
+  TextFieldV2,
+  Typography,
+} from "@midasit-dev/moaui";
 import {
   VELOCITY_PRESSURE_FULL_PANEL_4_R_WIDTH,
   VELOCITY_PRESSURE_FULL_PANEL_5_R_WIDTH,
@@ -6,6 +12,7 @@ import {
 import useTemporaryValue, {
   type TypeFull,
 } from "../../../../../../../../../../../../hooks/useTemporaryValue";
+import InfoWrapper from "../../../../../../../../../../../common/InfoWrapper";
 
 interface HorizontalWindLoadLengthProps {
   disabled?: boolean;
@@ -25,9 +32,18 @@ export default function HorizontalWindLoadLength({
     >
       <div className="flex gap-0 items-center">
         <Typography>Horizontal Wind Load Length</Typography>
-        <IconButton transparent>
-          <Icon iconName="Info" />
-        </IconButton>
+
+        <InfoWrapper
+          tooltip={
+            <GuideBox width={150}>
+              <Typography>test</Typography>
+            </GuideBox>
+          }
+        >
+          <IconButton transparent>
+            <Icon iconName="Info" />
+          </IconButton>
+        </InfoWrapper>
       </div>
       <div
         className="flex gap-2 items-center"

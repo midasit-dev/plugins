@@ -13,6 +13,7 @@ import type { SelectChangeEvent } from "@mui/material";
 import useTemporaryValue, {
   type TypeFull,
 } from "../../../../../../../../../../../../hooks/useTemporaryValue";
+import InfoWrapper from "../../../../../../../../../../../common/InfoWrapper";
 
 export default function DegreeOfExposure() {
   const { tempValue, setTempValueCallback, asFull } = useTemporaryValue();
@@ -21,9 +22,18 @@ export default function DegreeOfExposure() {
     <GuideBox width="100%" horSpaceBetween row verCenter>
       <div className="flex gap-0 items-center">
         <Typography>Degree of Exposure</Typography>
-        <IconButton transparent>
-          <Icon iconName="Info" />
-        </IconButton>
+
+        <InfoWrapper
+          tooltip={
+            <GuideBox width={150}>
+              <Typography>test</Typography>
+            </GuideBox>
+          }
+        >
+          <IconButton transparent>
+            <Icon iconName="Info" />
+          </IconButton>
+        </InfoWrapper>
       </div>
       <div
         className="flex gap-2 items-center"

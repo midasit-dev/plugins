@@ -15,6 +15,7 @@ import { isOpenCalcOrographyDialogSelector } from "../../../../../../../../../..
 import useTemporaryValue, {
   type TypeFull,
 } from "../../../../../../../../../../../../hooks/useTemporaryValue";
+import InfoWrapper from "../../../../../../../../../../../common/InfoWrapper";
 
 export default function OrgraphyEffectFactorCoz() {
   const [isOpen, setIsOpen] = useRecoilState(isOpenCalcOrographyDialogSelector);
@@ -24,9 +25,18 @@ export default function OrgraphyEffectFactorCoz() {
     <GuideBox width={"100%"} horSpaceBetween row verCenter>
       <div className="flex gap-0 items-center">
         <Typography>Orography Effect Factor, Co(z)</Typography>
-        <IconButton transparent>
-          <Icon iconName="Info" />
-        </IconButton>
+
+        <InfoWrapper
+          tooltip={
+            <GuideBox width={150}>
+              <Typography>test</Typography>
+            </GuideBox>
+          }
+        >
+          <IconButton transparent>
+            <Icon iconName="Info" />
+          </IconButton>
+        </InfoWrapper>
       </div>
 
       <div
@@ -38,7 +48,7 @@ export default function OrgraphyEffectFactorCoz() {
           placeholder="Enter the period ..."
           type="number"
           numberOptions={{
-            min: 0,
+            min: 0.0,
             step: 0.1,
             condition: {
               min: "greater",
@@ -49,7 +59,7 @@ export default function OrgraphyEffectFactorCoz() {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCallback({
               procedureFull: {
-                coz: { value: Number(e.target.value) },
+                cozValue: Number(e.target.value),
               } as TypeFull,
             });
           }}

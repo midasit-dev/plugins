@@ -7,6 +7,7 @@ import {
 } from "@midasit-dev/moaui";
 import { CALC_OROGRAPHY_DIALOG_R_WIDTH_M } from "../../../../../../../../../../../defines/widthDefines";
 import useTemporaryValueCozOptions from "../../../../../../../../../../../hooks/useTemporaryValueCozOptions";
+import InfoWrapper from "../../../../../../../../../../common/InfoWrapper";
 
 export default function LoadedLength() {
   const { tempValueCozOptions, setTempValueCozOptionsCallback } =
@@ -15,9 +16,18 @@ export default function LoadedLength() {
     <GuideBox width="100%" horSpaceBetween verCenter row>
       <div className="w-full flex items-center">
         <Typography>Loaded Length</Typography>
-        <IconButton transparent>
-          <Icon iconName="Info" />
-        </IconButton>
+
+        <InfoWrapper
+          tooltip={
+            <GuideBox width={150}>
+              <Typography>test</Typography>
+            </GuideBox>
+          }
+        >
+          <IconButton transparent>
+            <Icon iconName="Info" />
+          </IconButton>
+        </InfoWrapper>
       </div>
 
       <div className="flex w-auto justify-between items-center gap-2">

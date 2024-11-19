@@ -10,13 +10,21 @@ import { enqueueSnackbar } from "notistack";
 
 export default function LoadCasesName() {
   const [isEmpty, setIsEmpty] = useState(false);
-  const [allNames, setAllNames] = useState<Array<[string, number]>>([]);
+  const [allNames, setAllNames] = useState<Array<[string, string]>>([]);
+  const [selLoadCaseName, setSelLoadCaseName] = useRecoilState(
+    selLoadCaseNameSelector
+  );
 
   useQuery(["fetchSTLD"], fetchSTLD, {
     onSuccess: (data) => {
-      const arr = data as Array<[string, number]>;
+      const arr = data as Array<[string, string]>;
       setAllNames(arr);
       setIsEmpty(arr.length === 0);
+
+      // 값 없으면 하나 채워주자!
+      if (arr.length > 0 && selLoadCaseName === "") {
+        setSelLoadCaseName(arr[0][0]);
+      }
     },
     onError: (error) => {
       setAllNames([]);
@@ -25,10 +33,6 @@ export default function LoadCasesName() {
       });
     },
   });
-
-  const [selLoadCaseName, setSelLoadCaseName] = useRecoilState(
-    selLoadCaseNameSelector
-  );
 
   return (
     <GuideBox width="100%" horSpaceBetween row verCenter>
@@ -39,23 +43,12 @@ export default function LoadCasesName() {
         width={ROOT_R_WIDTH}
         itemList={allNames}
         onChange={(e: SelectChangeEvent) => {
-          const selIndex = Number(e.target.value);
-          setSelLoadCaseName(toLoadCasePack(allNames, selIndex));
+          setSelLoadCaseName(e.target.value as string);
         }}
-        value={selLoadCaseName[1]}
-        defaultValue={1}
+        value={selLoadCaseName}
+        defaultValue={selLoadCaseName}
         placeholder="Select ..."
       />
     </GuideBox>
   );
-}
-
-function toLoadCasePack(
-  allNames: Array<[string, number]>,
-  index: number
-): [string, number] {
-  if (!allNames) return ["", 1];
-
-  const found = allNames.find((elem) => elem[1] === index);
-  return found ? found : ["", 1];
 }

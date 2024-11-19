@@ -4,6 +4,7 @@ import HorizontalWindLoadLength from "../common/HorizontalWindLoadLength";
 import DegreeOfExposure from "../common/DegressOfExposure";
 import OrgraphyEffectFactorCoz from "../common/OrographyEffectFactorCoz";
 import ClimateChargingFactorKpc from "../common/ClimateChargingFactorKpc";
+import CalculateButton from "./CalculateButton";
 
 export default function MeanVelocity() {
   return (
@@ -13,6 +14,8 @@ export default function MeanVelocity() {
       <DegreeOfExposure />
       <OrgraphyEffectFactorCoz />
       <ClimateChargingFactorKpc />
+
+      <CalculateButton />
     </GuideBox>
   );
 }

@@ -1,5 +1,4 @@
 import {
-  Button,
   DropList,
   GuideBox,
   Icon,
@@ -17,6 +16,8 @@ import useTemporaryValue, {
   type TypeSimplified,
 } from "../../../../../../../../../../hooks/useTemporaryValue";
 import { SimplifiedCategoryEnum } from "../../../../../../../../../../defines/applyDefines";
+import CalculateButton from "./CalculateButton";
+import QpValue from "./QpValue";
 
 const CategoryOptions = memo(
   ({ category }: { category: TypeSimplified["category"] | undefined }) => (
@@ -78,42 +79,11 @@ export default function Simplified() {
         </GuideBox>
 
         <GuideBox width={"100%"} center>
-          <Button color="negative" width="100%">
-            Calculate
-          </Button>
+          <CalculateButton />
         </GuideBox>
       </GuideBox>
 
-      <GuideBox width="100%" center spacing={1}>
-        <div className="flex items-center">
-          <Typography>Peak Velocity Pressure (qp)</Typography>
-          <IconButton transparent>
-            <Icon iconName="Info" />
-          </IconButton>
-        </div>
-        <div className="flex items-center gap-2">
-          <TextFieldV2
-            type="number"
-            numberOptions={{
-              min: 0,
-              onlyInteger: false,
-              condition: {
-                min: "greater",
-              },
-            }}
-            value={tempValue?.value.toString()}
-            width={100}
-            placeholder="Value ..."
-            defaultValue="3.865"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setTempValueCallback({
-                value: Number.parseFloat(e.target.value),
-              });
-            }}
-          />
-          <Typography>kN/m2</Typography>
-        </div>
-      </GuideBox>
+      <QpValue />
     </GuideBox>
   );
 }

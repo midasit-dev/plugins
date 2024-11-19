@@ -19,7 +19,7 @@ export default function CategoryOption1() {
     if (
       ![
         SimplifiedLocationEnum.WAGLAN_ISLAND,
-        SimplifiedLocationEnum.HONG_KONG_OBSERVATION,
+        SimplifiedLocationEnum.HONG_KONG_OBSERVATORY,
       ].includes(asSimplified(tempValue)?.location as SimplifiedLocationEnum)
     ) {
       setTempValueCallback({
@@ -53,8 +53,8 @@ export default function CategoryOption1() {
             value={SimplifiedLocationEnum.WAGLAN_ISLAND}
           />
           <Radio
-            name={SimplifiedLocationEnum.HONG_KONG_OBSERVATION}
-            value={SimplifiedLocationEnum.HONG_KONG_OBSERVATION}
+            name={SimplifiedLocationEnum.HONG_KONG_OBSERVATORY}
+            value={SimplifiedLocationEnum.HONG_KONG_OBSERVATORY}
           />
         </RadioGroup>
       </GuideBox>

@@ -1,4 +1,4 @@
-import { Button, GuideBox, Typography } from "@midasit-dev/moaui";
+import { GuideBox, Typography } from "@midasit-dev/moaui";
 import OrographyType from "./comps/OrographyType";
 import { VELOCITY_PRESSURE_CASES_WIDTH } from "../../../../../../../../../../defines/widthDefines";
 import Location from "./comps/Location";
@@ -7,7 +7,7 @@ import Lu from "./comps/Lu";
 import Ld from "./comps/Ld";
 import Refz from "./comps/Refz";
 import LoadedLength from "./comps/LoadedLength";
-import Result from "./comps/Result";
+import Result from "./SbScCoz";
 import Btns from "./comps/Buttons";
 import X from "./comps/X";
 import useTemporaryValue, {
@@ -16,6 +16,7 @@ import useTemporaryValue, {
 import useTemporaryValueCozOptions from "../../../../../../../../../../hooks/useTemporaryValueCozOptions";
 import { useEffect } from "react";
 import { tempProcedureValueCozOptionsDefalutForAdd } from "../../../../../../../../../../defines/applyDefines";
+import CalculateButton from "./CalculateButton";
 
 export default function CalcOrographyDialog() {
   const { tempValue } = useTemporaryValue();
@@ -71,9 +72,7 @@ export default function CalcOrographyDialog() {
           <Refz />
           <LoadedLength />
 
-          <Button width="100%" color="negative">
-            Calculate
-          </Button>
+          <CalculateButton />
         </GuideBox>
 
         <GuideBox

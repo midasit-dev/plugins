@@ -1,11 +1,11 @@
 import { atom, selector } from "recoil";
 
-export const selLoadCaseNameState = atom<[string, number]>({
+export const selLoadCaseNameState = atom<string>({
   key: "selLoadCaseNameState",
-  default: ["", 1],
+  default: "",
 });
 
-export const selLoadCaseNameSelector = selector<[string, number]>({
+export const selLoadCaseNameSelector = selector<string>({
   key: "selLoadCaseNameSelector",
   get: ({ get }) => {
     return get(selLoadCaseNameState);
@@ -23,7 +23,7 @@ export enum SimplifiedCategoryEnum {
 
 export enum SimplifiedLocationEnum {
   WAGLAN_ISLAND = "Waglan Island",
-  HONG_KONG_OBSERVATION = "Hong Kong Observation",
+  HONG_KONG_OBSERVATORY = "Hong Kong Observatory",
   SHELTERED_LOCATION = "Sheltered Location",
   EXPOSED_LOCATION = "Exposed Location",
 }
@@ -65,8 +65,9 @@ export type VelocityPressureCaseProcedureFull = {
     x?: number;
     refZ?: number;
     loadLength?: number;
-    sbz?: number;
-    scz?: number;
+
+    sbz?: number | string;
+    scz?: number | string;
     coz?: number;
   };
   kpc?: number;
@@ -170,7 +171,7 @@ export const mainSelVelocityPressureValueSelector = selector<number | null>({
 // 메인의 Cf 값
 export const mainCfValueState = atom<number | null>({
   key: "mainCfValueState",
-  default: null,
+  default: 1.0,
 });
 
 export const mainCfValueSelector = selector<number | null>({
@@ -186,7 +187,7 @@ export const mainCfValueSelector = selector<number | null>({
 // 메인의 CsCd 값
 export const mainCsCdValueState = atom<number | null>({
   key: "mainCsCdValueState",
-  default: null,
+  default: 1.0,
 });
 
 export const mainCsCdValueSelector = selector<number | null>({
@@ -234,25 +235,30 @@ export const mainSelDirectionSelector = selector<string | null>({
 // 메인의 HeightOfRestraint
 interface HeightOfRestraintType {
   isCheck: boolean;
-  iEnd?: number;
-  jEnd?: number;
+  iEnd: number;
+  jEnd: number;
+  isCheckJEnd: boolean;
 }
 
-export const mainHeightOfRestraintState = atom<HeightOfRestraintType | null>({
+export const mainHeightOfRestraintState = atom<HeightOfRestraintType>({
   key: "mainHeightOfRestraintState",
-  default: null,
+  default: {
+    isCheck: false,
+    iEnd: 0.0,
+    jEnd: 0.0,
+    isCheckJEnd: false,
+  },
 });
 
-export const mainHeightOfRestraintSelector =
-  selector<HeightOfRestraintType | null>({
-    key: "mainHeightOfRestraintSelector",
-    get: ({ get }) => {
-      return get(mainHeightOfRestraintState);
-    },
-    set: ({ set }, newValue) => {
-      set(mainHeightOfRestraintState, newValue);
-    },
-  });
+export const mainHeightOfRestraintSelector = selector<HeightOfRestraintType>({
+  key: "mainHeightOfRestraintSelector",
+  get: ({ get }) => {
+    return get(mainHeightOfRestraintState);
+  },
+  set: ({ set }, newValue) => {
+    set(mainHeightOfRestraintState, newValue);
+  },
+});
 
 export const velocityPressureCasesSelector = selector<
   VelocityPressureCaseType[] | null
@@ -314,6 +320,7 @@ export const tempProcedureValueDefalutForAdd: VelocityPressureCaseType = {
     category: SimplifiedCategoryEnum.TABLE_3_6,
     location: SimplifiedLocationEnum.WAGLAN_ISLAND,
     period: 120,
+    degree: "1",
   },
   procedureFull: {
     velocity: FullVelocityEnum.PEAK_VELOCITY,
@@ -321,7 +328,7 @@ export const tempProcedureValueDefalutForAdd: VelocityPressureCaseType = {
     horLoadLength: 600,
     degree: "1",
     cozValue: 1.0,
-    kpc: 0,
+    kpc: 1.22,
   },
 };
 
@@ -359,18 +366,21 @@ export const TempProcedureFlagSelector = selector<"add" | "modify" | null>({
 });
 
 // 기본 값
-export const tempProcedureValueCozOptionsDefalutForAdd = {
-  orographyType: FullOrographyTypeEnum.CLIFFS_AND_ESCARPMENTS,
-  location: FullLocationEnum.UPWIND,
-  h: 0.0,
-  ld: 0.0,
-  lu: 0.0,
-  refZ: 50,
-  loadLength: 600,
-  sbz: 0.0,
-  scz: 0.0,
-  coz: 0.0,
-};
+export const tempProcedureValueCozOptionsDefalutForAdd: VelocityPressureCaseProcedureFull["cozOptions"] =
+  {
+    orographyType: FullOrographyTypeEnum.HILLS_AND_RIDGES,
+    location: FullLocationEnum.UPWIND,
+    h: 30.0,
+    ld: 0.0,
+    lu: 500.0,
+    x: -100.0,
+    refZ: 850,
+    loadLength: 1950,
+
+    sbz: 0.0,
+    scz: 0.0,
+    coz: 0.0,
+  };
 
 export const TempProcedureValueCozOptionsState = atom<
   VelocityPressureCaseProcedureFull["cozOptions"] | null

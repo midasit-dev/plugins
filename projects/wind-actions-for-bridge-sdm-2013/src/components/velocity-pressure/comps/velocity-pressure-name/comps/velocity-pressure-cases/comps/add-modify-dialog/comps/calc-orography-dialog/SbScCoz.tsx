@@ -1,8 +1,14 @@
 import { GuideBox, TextFieldV2, Typography } from "@midasit-dev/moaui";
-import useTemporaryValueCozOptions from "../../../../../../../../../../../hooks/useTemporaryValueCozOptions";
+import useTemporaryValueCozOptions from "../../../../../../../../../../hooks/useTemporaryValueCozOptions";
+import { useEffect } from "react";
 
+//TEST Python 계산 결과 보여주는 곳
 export default function Result() {
   const { tempValueCozOptions } = useTemporaryValueCozOptions();
+
+  useEffect(() => {
+    console.log(tempValueCozOptions);
+  }, [tempValueCozOptions]);
 
   return (
     <GuideBox width={"100%"} spacing={2}>
