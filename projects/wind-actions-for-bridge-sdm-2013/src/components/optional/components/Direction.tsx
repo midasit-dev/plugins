@@ -1,4 +1,4 @@
-import { DropList, GuideBox, TextField, Typography } from "@midasit-dev/moaui";
+import { DropList, GuideBox, Typography } from "@midasit-dev/moaui";
 import type { SelectChangeEvent } from "@mui/material";
 import { PANEL_1_R_WIDTH } from "../../../defines/widthDefines";
 import { useRecoilState, useRecoilValue } from "recoil";

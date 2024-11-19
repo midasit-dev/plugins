@@ -2,19 +2,29 @@ import { GuideBox, DropList, Typography } from "@midasit-dev/moaui";
 import type { SelectChangeEvent } from "@mui/material";
 import { useRecoilState } from "recoil";
 import { selLoadCaseNameSelector } from "../../defines/applyDefines";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ROOT_R_WIDTH } from "../../defines/widthDefines";
+import { fetchSTLD } from "../../utils/fetchUtils";
+import { useQuery } from "react-query";
+import { enqueueSnackbar } from "notistack";
 
 export default function LoadCasesName() {
+  const [isEmpty, setIsEmpty] = useState(false);
   const [allNames, setAllNames] = useState<Array<[string, number]>>([]);
 
-  useEffect(() => {
-    //TODO-PY 파이썬 코드를 통해 STLD를 가져온다!
-    setAllNames([
-      ["STLD-1", 1],
-      ["STLD-2", 2],
-    ]);
-  }, []);
+  useQuery(["fetchSTLD"], fetchSTLD, {
+    onSuccess: (data) => {
+      const arr = data as Array<[string, number]>;
+      setAllNames(arr);
+      setIsEmpty(arr.length === 0);
+    },
+    onError: (error) => {
+      setAllNames([]);
+      enqueueSnackbar((error as Error).message, {
+        variant: "error",
+      });
+    },
+  });
 
   const [selLoadCaseName, setSelLoadCaseName] = useRecoilState(
     selLoadCaseNameSelector
@@ -22,7 +32,9 @@ export default function LoadCasesName() {
 
   return (
     <GuideBox width="100%" horSpaceBetween row verCenter>
-      <Typography variant="h1">Load Case Name</Typography>
+      <Typography variant="h1" color={isEmpty ? "#FF5733" : "primary"}>
+        {`Load Case Name (${allNames.length ?? 0})`}
+      </Typography>
       <DropList
         width={ROOT_R_WIDTH}
         itemList={allNames}

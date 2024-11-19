@@ -7,8 +7,7 @@ import useTemporaryValueCozOptions from "../../../../../../../../../../../hooks/
 export default function Btns() {
   const [, setIsOpen] = useRecoilState(isOpenCalcOrographyDialogSelector);
   const { setTempValueCallback } = useTemporaryValue();
-  const { tempValueCozOptions, setTempValueCozOptionsCallback } =
-    useTemporaryValueCozOptions();
+  const { tempValueCozOptions } = useTemporaryValueCozOptions();
 
   return (
     <GuideBox width={"100%"} row horRight verCenter spacing={1} paddingTop={1}>

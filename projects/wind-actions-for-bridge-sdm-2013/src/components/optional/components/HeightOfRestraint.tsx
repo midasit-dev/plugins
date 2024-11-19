@@ -39,7 +39,7 @@ function Title() {
 }
 
 function Options() {
-  const [value, setValue] = useRecoilState(mainHeightOfRestraintSelector);
+  const [value] = useRecoilState(mainHeightOfRestraintSelector);
 
   return (
     <GuideBox

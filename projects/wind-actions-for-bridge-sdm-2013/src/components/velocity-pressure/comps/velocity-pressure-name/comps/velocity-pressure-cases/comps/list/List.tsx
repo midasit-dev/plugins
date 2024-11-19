@@ -11,7 +11,7 @@ import useTemporaryValue from "../../../../../../../../hooks/useTemporaryValue";
 
 export default function List() {
   const [sel, setSel] = useRecoilState(selVelocityPressureCaseLightSelector);
-  const [cases, setCases] = useRecoilState(velocityPressureCasesSelector);
+  const [cases] = useRecoilState(velocityPressureCasesSelector);
 
   const setFlag = useSetRecoilState(TempProcedureFlagSelector);
   const [, setIsOpen] = useRecoilState(isOpenAddModVelocityPressureSelector);

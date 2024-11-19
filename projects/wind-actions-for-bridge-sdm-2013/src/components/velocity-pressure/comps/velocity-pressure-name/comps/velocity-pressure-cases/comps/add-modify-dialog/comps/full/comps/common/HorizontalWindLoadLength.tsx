@@ -1,10 +1,4 @@
-import {
-  GuideBox,
-  Icon,
-  IconButton,
-  TextFieldV2,
-  Typography,
-} from "@midasit-dev/moaui";
+import { Icon, IconButton, TextFieldV2, Typography } from "@midasit-dev/moaui";
 import {
   VELOCITY_PRESSURE_FULL_PANEL_4_R_WIDTH,
   VELOCITY_PRESSURE_FULL_PANEL_5_R_WIDTH,

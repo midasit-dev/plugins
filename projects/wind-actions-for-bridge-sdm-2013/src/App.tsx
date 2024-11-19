@@ -6,21 +6,26 @@ import Optional from "./components/optional/Optional";
 import Btns from "./components/btns/Buttons";
 import { useRecoilValue } from "recoil";
 import { isBlurSelector } from "./defines/blurDefines";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 const App = () => {
   const isBlur = useRecoilValue(isBlurSelector);
 
   return (
-    <GuideBox>
-      <div className="relative p-4 gap-4 flex flex-col bg-[#f4f5f6] w-[500px]">
-        {isBlur && <Blur />}
+    <QueryClientProvider client={queryClient}>
+      <GuideBox>
+        <div className="relative p-4 gap-4 flex flex-col bg-[#f4f5f6] w-[500px]">
+          {isBlur && <Blur />}
 
-        <LoadCasesName />
-        <VelocityPressure />
-        <Optional />
-        <Btns />
-      </div>
-    </GuideBox>
+          <LoadCasesName />
+          <VelocityPressure />
+          <Optional />
+          <Btns />
+        </div>
+      </GuideBox>
+    </QueryClientProvider>
   );
 };
 
