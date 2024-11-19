@@ -199,9 +199,10 @@ function MainWindow() {
     }
 
     // Beta 값 계산
-    const Beta_Normal = CalculateBeta(soilData, piletableData, 'normal', slopeEffectState, groupEffectValue)
-    const Beta_Seismic = CalculateBeta(soilData, piletableData, 'seismic', slopeEffectState, groupEffectValue)
-    const Beta_Period = CalculateBeta(soilData, piletableData, 'period', slopeEffectState, groupEffectValue)
+    const Beta_Normal = CalculateBeta(soilData, piletableData, 'normal', slopeEffectState, groupEffectValue, topLevel, groundLevel)
+    console.log('Beta_Normal', Beta_Normal)
+    const Beta_Seismic = CalculateBeta(soilData, piletableData, 'seismic', slopeEffectState, groupEffectValue, topLevel, groundLevel)
+    const Beta_Period = CalculateBeta(soilData, piletableData, 'period', slopeEffectState, groupEffectValue, topLevel, groundLevel)
     setBetaNormalResult(Beta_Normal)
     setBetaSeismicResult(Beta_Seismic)
     setBetaPeriodResult(Beta_Period)
@@ -215,6 +216,7 @@ function MainWindow() {
     const KValue_Seismic = CalculateKvalue(piletableData, groundLevel, topLevel, soilData, 'seismic', headCondition, bottomCondition, AlphaHTheta, Beta_Normal, Beta_Seismic, Beta_Period, 'no')
     const KValue_Seismic_Liq = CalculateKvalue(piletableData, groundLevel, topLevel, soilData, 'seismic', headCondition, bottomCondition, AlphaHTheta, Beta_Normal, Beta_Seismic, Beta_Period, 'yes')
     const KValue_Period = CalculateKvalue(piletableData, groundLevel, topLevel, soilData, 'period', headCondition, bottomCondition, AlphaHTheta, Beta_Normal, Beta_Seismic, Beta_Period, 'no')
+    console.log('KValue_Normal', KValue_Normal)
     setKValueNormalResult(KValue_Normal)
     setKValueSeismicResult(KValue_Seismic)
     setKValueSeismicLiqResult(KValue_Seismic_Liq)
@@ -222,10 +224,11 @@ function MainWindow() {
 
     // Kv 값 계산
     const KvResult = CalculateKv(piletableData, groundLevel, topLevel)
-
     // Axx ~ Aaa Matrix 계산
     const Matrix_Normal_X = CalculateMatrix(piletableData, foundationWidth, sideLength, soilData, 'normal', 'X', KvResult, KValue_Normal, KValue_Seismic, KValue_Seismic_Liq, KValue_Period, forcePointX, forcePointY, 'no')
     const Matrix_Noraml_Z = CalculateMatrix(piletableData, foundationWidth, sideLength, soilData, 'normal', 'Z', KvResult, KValue_Normal, KValue_Seismic, KValue_Seismic_Liq, KValue_Period, forcePointX, forcePointY, 'no')
+    console.log('Matrix_Normal_X', Matrix_Normal_X)
+    console.log('Matrix_Noraml_Z', Matrix_Noraml_Z)
     const Matrix_Seismic_X = CalculateMatrix(piletableData, foundationWidth, sideLength, soilData, 'seismic', 'X', KvResult, KValue_Normal, KValue_Seismic, KValue_Seismic_Liq, KValue_Period, forcePointX, forcePointY, 'no')
     const Matrix_Seismic_Z = CalculateMatrix(piletableData, foundationWidth, sideLength, soilData, 'seismic', 'Z', KvResult, KValue_Normal, KValue_Seismic, KValue_Seismic_Liq, KValue_Period, forcePointX, forcePointY, 'no')
     const Matrix_Seismic_Liq_X = CalculateMatrix(piletableData, foundationWidth, sideLength, soilData, 'seismic', 'X', KvResult, KValue_Normal, KValue_Seismic, KValue_Seismic_Liq, KValue_Period, forcePointX, forcePointY, 'yes')
@@ -308,7 +311,7 @@ function MainWindow() {
     }
 
     const NormalInputJson = {
-      "NAME" : projectName + "_Normal",
+      "NAME" : projectName + "_N",
       "SPRING" : Normal_Matrix,
       "MASS": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
           "DAMPING": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -318,7 +321,7 @@ function MainWindow() {
     }
 
     const SeismicInputJson = {
-      "NAME" : projectName + "_Seismic",
+      "NAME" : projectName + "_S",
       "SPRING" : Seismic_Matrix,
       "MASS": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
       "DAMPING": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -328,7 +331,7 @@ function MainWindow() {
     }
 
     const SeismicLiqInputJson = {
-      "NAME" : projectName + "_Seismic_Liq",
+      "NAME" : projectName + "_SL",
       "SPRING" : Seismic_Liq_Matrix,
       "MASS": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
       "DAMPING": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -338,7 +341,7 @@ function MainWindow() {
     }
 
     const PeriodInputJson = {
-      "NAME" : projectName + "_Period",
+      "NAME" : projectName + "_P",
       "SPRING" : Period_Matrix,
       "MASS": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
       "DAMPING": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -356,17 +359,24 @@ function MainWindow() {
     }
     const updateUnit = dbUpdateItem("UNIT", "1", UnitJson)
     const MaxID = py_db_get_maxid("GSTP")
-    
+    console.log(JSON.stringify(NormalInputJson))
     const Import_NormalMatrix = dbCreateItem("GSTP", MaxID+1, NormalInputJson)
     const Import_SeismicMatrix = dbCreateItem("GSTP", MaxID+2, SeismicInputJson)
     const Import_SeismicLiqMatrix = dbCreateItem("GSTP", MaxID+3, SeismicLiqInputJson)
     const Import_PeriodMatrix = dbCreateItem("GSTP", MaxID+4, PeriodInputJson)
 
-    enqueueSnackbar("Import General Spring Success", {
-      variant: "success",
-      autoHideDuration: 3000, 
-    });
-  };
+    if (Import_NormalMatrix.includes("GSTP") && Import_SeismicMatrix.includes("GSTP") && Import_SeismicLiqMatrix.includes("GSTP") && Import_PeriodMatrix.includes("GSTP")){
+      enqueueSnackbar("Import General Spring Success", {
+        variant: "success",
+        autoHideDuration: 3000, 
+      });
+    }
+    else {
+      enqueueSnackbar("Import General Spring Fail", {
+        variant: "error",
+        autoHideDuration: 3000,
+    })}
+  }
 
   const CombineMatrix = (XResult: any, ZResult: any) => {
     let matrix = [];

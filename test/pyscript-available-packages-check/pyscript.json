@@ -1,0 +1,9 @@
+{
+	"packages": [
+		"arrr",
+		"numpy",
+		"pandas",
+		"matplotlib",
+		"polars"
+	]
+}

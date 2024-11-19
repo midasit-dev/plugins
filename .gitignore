@@ -1,3 +1,7 @@
 /projects/build.bat
 /projects/success_dirs.txt
 /projects/update_readme.py
+
+# Ignore all .zip files in the docs directory
+/docs/**/*.zip
+/test/build/**

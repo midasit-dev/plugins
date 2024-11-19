@@ -1126,31 +1126,37 @@ function App() {
         const response = await midasAPI("GET", endpoint);
         console.log(response);
         if (response && !response.error) {
-          let responseData = response[dataKey];
-          if (!Array.isArray(responseData)) {
-            responseData = Object.values(responseData);
+          if (response[dataKey] === undefined) {
+            console.log('DataKey not found');
           }
-          const keys = Object.keys(response[dataKey]);
-          const lastindex = parseInt(keys[keys.length - 1]);
-          console.log(lastindex);
-          responseData.forEach((item) => {
-            combData.push({ name: item.NAME, endpoint, lastindex: lastindex });
-          });
-          if (allData.length > 0) {
-            const lastElement = allData[0];
-            const lastNumber = Object.keys(lastElement).length - 1;
-            for (let index = 0; index < responseData.length; index++) {
-              const item = responseData[index];
-              item.someProperty = lastNumber + index + 1;
-              allData.push(item);
+          else{
+            console.log(response[dataKey]);
+            let responseData = response[dataKey];
+            if (!Array.isArray(responseData)) {
+              responseData = Object.values(responseData);
             }
-          } else {
-            allData = allData.concat(responseData);
-            console.log(allData);
+            const keys = Object.keys(response[dataKey]);
+            const lastindex = parseInt(keys[keys.length - 1]);
+            console.log(lastindex);
+            responseData.forEach((item) => {
+              combData.push({ name: item.NAME, endpoint, lastindex: lastindex });
+            });
+            if (allData.length > 0) {
+              const lastElement = allData[0];
+              const lastNumber = Object.keys(lastElement).length - 1;
+              for (let index = 0; index < responseData.length; index++) {
+                const item = responseData[index];
+                item.someProperty = lastNumber + index + 1;
+                allData.push(item);
+              }
+            } else {
+              allData = allData.concat(responseData);
+              console.log(allData);
+            }
+            check = true;
+            console.log(`Data from ${endpoint}:`, responseData);
           }
-          check = true;
-          console.log(`Data from ${endpoint}:`, responseData);
-        }
+      }
       }
 
       if (check) {
@@ -1158,6 +1164,7 @@ function App() {
         return null;
       }
     } catch (error) {
+      console.log('error', error)
       enqueueSnackbar("Unable to Fetch Data Check Connection", {
         variant: "error",
         anchorOrigin: {

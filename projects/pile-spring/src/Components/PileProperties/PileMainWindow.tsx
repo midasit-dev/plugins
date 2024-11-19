@@ -200,7 +200,7 @@ function PileProperties(){
                 enqueueSnackbar(translate('Error_CompStartLength'), {variant: 'error', autoHideDuration: 3000})
                 return true
             }
-            if (Number(compStartLength) > Number(pileLength)){
+            if (Number(compStartLength) >= Number(pileLength)){
                 enqueueSnackbar(translate('Error_CompStartLength2'), {variant: 'error', autoHideDuration: 3000})
                 return true
             }
@@ -618,6 +618,9 @@ function PileProperties(){
 
     // PileTable 데이터 수정
     const UpdateDataButtonClick = (e:any) => {
+        if (ErrorCheck()){
+            return
+        }
         const indexToUpdate = selectedRow
         const updatedPileTableData = pileTableData.map((data, index) => {
             if (index === indexToUpdate) {
