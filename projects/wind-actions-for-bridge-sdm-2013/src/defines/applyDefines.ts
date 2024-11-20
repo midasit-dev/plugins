@@ -370,12 +370,12 @@ export const tempProcedureValueCozOptionsDefalutForAdd: VelocityPressureCaseProc
   {
     orographyType: FullOrographyTypeEnum.HILLS_AND_RIDGES,
     location: FullLocationEnum.UPWIND,
-    h: 30.0,
+    h: 0.0,
+    lu: 0.0,
     ld: 0.0,
-    lu: 500.0,
-    x: -100.0,
-    refZ: 850,
-    loadLength: 1950,
+    x: 0.0,
+    refZ: 50.0,
+    loadLength: 600.0,
 
     sbz: 0.0,
     scz: 0.0,

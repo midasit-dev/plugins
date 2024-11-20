@@ -33,11 +33,19 @@ export default function CalcOrographyDialog() {
       "cozOptions" in tempValue.procedureFull &&
       Object.keys(tempValue.procedureFull.cozOptions ?? {}).length > 0
     ) {
-      setTempValueCozOptionsCallback(
-        tempValue.procedureFull.cozOptions as TypeFull["cozOptions"]
-      );
+      // refZ와 LoadLength는 이전 값으로 유지!
+      setTempValueCozOptionsCallback({
+        ...(tempValue.procedureFull.cozOptions as TypeFull["cozOptions"]),
+        refZ: tempValue.procedureFull.refZ,
+        loadLength: tempValue.procedureFull.horLoadLength,
+      });
     } else {
-      setTempValueCozOptionsCallback(tempProcedureValueCozOptionsDefalutForAdd);
+      // 기본 값도 tempValue의 값을 가져와서 유지한다!
+      setTempValueCozOptionsCallback({
+        ...tempProcedureValueCozOptionsDefalutForAdd,
+        refZ: tempValue.procedureFull.refZ,
+        loadLength: tempValue.procedureFull.horLoadLength,
+      });
     }
   }, [setTempValueCozOptionsCallback, tempValue]);
 
