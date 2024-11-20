@@ -24,12 +24,16 @@ export default function List() {
     <div className="w-full bg-white p-4 border border-[#e3e3e3] rounded-md h-[300px] overflow-y-auto">
       <ul className="w-full border-b border-b-[#e3e3e3] pb-4">
         <li className="grid grid-cols-2 justify-items-center">
-          <Typography variant="h1" color="#4B5563">
-            <InlineMath>{"\\text{Name}"}</InlineMath>
+          <Typography variant="h1" color="#4B5563" verCenter>
+            Name
           </Typography>
-          <Typography variant="h1" color="#4B5563">
-            <InlineMath>{"\\text{Value} \\; (kN/m^2)"}</InlineMath>
-          </Typography>
+
+          <div className="flex items-center gap-2">
+            <Typography variant="h1">Value</Typography>
+            <p style={{ fontSize: 10 }} className="items-center mt-0.5">
+              <InlineMath math={"kN/m^2"} />
+            </p>
+          </div>
         </li>
       </ul>
 

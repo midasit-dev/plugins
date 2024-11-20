@@ -58,39 +58,43 @@ export default function Simplified() {
             Peak wind Pressure Selection
           </Typography>
           <GuideBox width="100%" spacing={1} row horSpaceBetween verCenter>
-            <Typography>Category by</Typography>
-            <InfoWrapper
-              tooltipProps={{
-                left: -120,
-                bottom: 30,
-              }}
-              tooltip={
-                <GuideBox width={300} spacing={1}>
-                  {currentTable === "Table 3.6" && (
-                    <img
-                      src="./assets/Table_3.6_rev.png"
-                      alt="Refer to Table 3.6"
-                    />
-                  )}
-                  {currentTable === "Table 3.7" && (
-                    <img
-                      src="./assets/Table_3.7.png"
-                      alt="Refer to Table 3.7"
-                    />
-                  )}
-                  {currentTable === "Table 3.8" && (
-                    <img
-                      src="./assets/Table_3.8.png"
-                      alt="Refer to Table 3.8"
-                    />
-                  )}
-                </GuideBox>
-              }
-            >
-              <IconButton transparent>
-                <Icon iconName="Info" />
-              </IconButton>
-            </InfoWrapper>
+            <div className="flex items-center">
+              <Typography>Category by</Typography>
+
+              <InfoWrapper
+                tooltipProps={{
+                  left: -120,
+                  bottom: 30,
+                }}
+                tooltip={
+                  <GuideBox width={300} spacing={1}>
+                    {currentTable === "Table 3.6" && (
+                      <img
+                        src="./assets/Table_3.6_rev.png"
+                        alt="Refer to Table 3.6"
+                      />
+                    )}
+                    {currentTable === "Table 3.7" && (
+                      <img
+                        src="./assets/Table_3.7.png"
+                        alt="Refer to Table 3.7"
+                      />
+                    )}
+                    {currentTable === "Table 3.8" && (
+                      <img
+                        src="./assets/Table_3.8.png"
+                        alt="Refer to Table 3.8"
+                      />
+                    )}
+                  </GuideBox>
+                }
+              >
+                <IconButton transparent>
+                  <Icon iconName="Info" />
+                </IconButton>
+              </InfoWrapper>
+            </div>
+
             <DropList
               width={PANEL_3_R_WIDTH}
               itemList={items}

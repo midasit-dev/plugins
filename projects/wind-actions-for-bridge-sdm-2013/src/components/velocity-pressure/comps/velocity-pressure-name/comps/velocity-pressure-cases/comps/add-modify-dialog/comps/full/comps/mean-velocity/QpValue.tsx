@@ -22,12 +22,14 @@ export default function MeanVelocityQz() {
   return (
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
-        <Typography center width={"100%"}>
-          {/* Hourly Mean Velocity Pressure at Reference Height,q’(z) */}
-          <InlineMath>
-            {"\\text{Hourly Mean Velocity Pressure,} \\; q'(z)"}
-          </InlineMath>
-        </Typography>
+        <div className="flex items-center gap-2">
+          <Typography>Hourly Mean Velocity Pressure</Typography>
+
+          <p className="text-xs">
+            <InlineMath math={"q'(z)"} />
+          </p>
+        </div>
+
         <InfoWrapper
           tooltipProps={{
             left: -250,
@@ -71,9 +73,10 @@ export default function MeanVelocityQz() {
           }}
           disabled={true}
         />
-        <Typography>
-          <InlineMath>kN/m^2</InlineMath>
-        </Typography>
+
+        <p className="text-xs">
+          <InlineMath math={"kN/m^2"} />
+        </p>
         <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>
