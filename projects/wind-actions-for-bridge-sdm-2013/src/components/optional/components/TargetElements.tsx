@@ -28,7 +28,7 @@ export default function TargetElements() {
   return (
     <GuideBox width={"100%"} horSpaceBetween row verCenter>
       <Typography variant="h1" color={isEmpty ? "#FF5733" : "primary"}>
-        {`Target Elements (${value?.length ?? 0})`}
+        {`Select Target Elements (${value?.length ?? 0})`}
       </Typography>
       <TextField
         width={PANEL_1_R_WIDTH}

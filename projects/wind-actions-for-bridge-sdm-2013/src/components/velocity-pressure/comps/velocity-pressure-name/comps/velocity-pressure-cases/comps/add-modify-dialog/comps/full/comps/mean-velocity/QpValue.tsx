@@ -11,6 +11,8 @@ import {
   DoneBanner,
   useChangeBanner,
 } from "../../../../../../../../../../../../utils/loadingUtils";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 //TEST Python 계산 결과 보여주는 곳
 export default function MeanVelocityQz() {
@@ -21,12 +23,25 @@ export default function MeanVelocityQz() {
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
         <Typography center width={"100%"}>
-          Hourly Mean Velocity Pressure at Referenace Height,q’(z)
+          {/* Hourly Mean Velocity Pressure at Reference Height,q’(z) */}
+          <InlineMath>
+            {"\\text{Hourly Mean Velocity Pressure,} \\; q'(z)"}
+          </InlineMath>
         </Typography>
         <InfoWrapper
+          tooltipProps={{
+            left: -250,
+            bottom: 30,
+          }}
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={300}>
+              <Typography variant="h1" color="gray">
+                Hourly Mean Velocity Pressure
+              </Typography>
+              <img
+                src="./assets/hourly mean velocity pressure.png"
+                alt="Hourly Mean Velocity Pressure"
+              />
             </GuideBox>
           }
         >
@@ -56,7 +71,9 @@ export default function MeanVelocityQz() {
           }}
           disabled={true}
         />
-        <Typography>kN/m2</Typography>
+        <Typography>
+          <InlineMath>kN/m^2</InlineMath>
+        </Typography>
         <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>

@@ -20,6 +20,7 @@ import InfoWrapper from "../../../../../../../../../../../common/InfoWrapper";
 export default function OrgraphyEffectFactorCoz() {
   const [isOpen, setIsOpen] = useRecoilState(isOpenCalcOrographyDialogSelector);
   const { tempValue, setTempValueCallback, asFull } = useTemporaryValue();
+  const currentVelocity = asFull(tempValue)?.velocity;
 
   return (
     <GuideBox width={"100%"} horSpaceBetween row verCenter>
@@ -27,9 +28,34 @@ export default function OrgraphyEffectFactorCoz() {
         <Typography>Orography Effect Factor, Co(z)</Typography>
 
         <InfoWrapper
+          tooltipProps={{
+            left: -150,
+            bottom: 30,
+          }}
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={300} spacing={1}>
+              {currentVelocity === "Peak Velocity" && (
+                <div>
+                  <Typography variant="h1" color="gray">
+                    Co(z) for qpb(z)
+                  </Typography>
+                  <img
+                    src="./assets/coz_peak_wind.png"
+                    alt="Co(z) for qpb(z)"
+                  />
+                </div>
+              )}
+              {currentVelocity === "Mean Velocity" && (
+                <div>
+                  <Typography variant="h1" color="gray">
+                    Co(z) for qb'(z)
+                  </Typography>
+                  <img
+                    src="./assets/coz_mean_wind.png"
+                    alt="Co(z) for qb'(z)"
+                  />
+                </div>
+              )}
             </GuideBox>
           }
         >

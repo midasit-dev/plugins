@@ -11,6 +11,8 @@ import {
   DoneBanner,
   useChangeBanner,
 } from "../../../../../../../../../../../../utils/loadingUtils";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 //TEST Python 계산 결과 보여주는 곳
 export default function PeakVelocityQpz() {
@@ -21,13 +23,26 @@ export default function PeakVelocityQpz() {
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
         <Typography center width={"100%"}>
-          Peak Velocity Pressure at Referenace Height,qp(z)
+          {/* Peak Velocity Pressure at Referenace Height,qp(z) */}
+          <InlineMath>
+            {"\\text{Peak Velecity Pressure,} \\; q_p(z)"}
+          </InlineMath>
         </Typography>
 
         <InfoWrapper
+          tooltipProps={{
+            left: -250,
+            bottom: 30,
+          }}
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={300}>
+              <Typography variant="h1" color="gray">
+                Peak Veocity Pressure
+              </Typography>
+              <img
+                src="./assets/Peak Velocity Pressure.png"
+                alt="Peak Velocity Pressure"
+              />
             </GuideBox>
           }
         >
@@ -57,7 +72,9 @@ export default function PeakVelocityQpz() {
           }}
           disabled={true}
         />
-        <Typography>kN/m2</Typography>
+        <Typography>
+          <InlineMath>kN/m^2</InlineMath>
+        </Typography>
         <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>

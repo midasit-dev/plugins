@@ -18,6 +18,7 @@ import useTemporaryValue, {
 import { SimplifiedCategoryEnum } from "../../../../../../../../../../defines/applyDefines";
 import CalculateButton from "./CalculateButton";
 import QpValue from "./QpValue";
+import InfoWrapper from "../../../../../../../../../common/InfoWrapper";
 
 const CategoryOptions = memo(
   ({ category }: { category: TypeSimplified["category"] | undefined }) => (
@@ -37,6 +38,7 @@ const items: [string, string][] = [
 
 export default function Simplified() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
+  const currentTable = asSimplified(tempValue)?.category;
 
   return (
     <GuideBox width="100%" spacing={2}>
@@ -57,6 +59,38 @@ export default function Simplified() {
           </Typography>
           <GuideBox width="100%" spacing={1} row horSpaceBetween verCenter>
             <Typography>Category by</Typography>
+            <InfoWrapper
+              tooltipProps={{
+                left: -120,
+                bottom: 30,
+              }}
+              tooltip={
+                <GuideBox width={300} spacing={1}>
+                  {currentTable === "Table 3.6" && (
+                    <img
+                      src="./assets/Table_3.6_rev.png"
+                      alt="Refer to Table 3.6"
+                    />
+                  )}
+                  {currentTable === "Table 3.7" && (
+                    <img
+                      src="./assets/Table_3.7.png"
+                      alt="Refer to Table 3.7"
+                    />
+                  )}
+                  {currentTable === "Table 3.8" && (
+                    <img
+                      src="./assets/Table_3.8.png"
+                      alt="Refer to Table 3.8"
+                    />
+                  )}
+                </GuideBox>
+              }
+            >
+              <IconButton transparent>
+                <Icon iconName="Info" />
+              </IconButton>
+            </InfoWrapper>
             <DropList
               width={PANEL_3_R_WIDTH}
               itemList={items}

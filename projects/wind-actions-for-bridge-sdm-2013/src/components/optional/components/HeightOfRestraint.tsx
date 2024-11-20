@@ -34,9 +34,25 @@ function Title() {
       />
 
       <InfoWrapper
+        tooltipProps={{
+          left: -200,
+          bottom: 30,
+        }}
         tooltip={
-          <GuideBox width={150}>
-            <Typography>test</Typography>
+          <GuideBox width={400} spacing={1}>
+            <Typography variant="h1" color="gray">
+              Height of restraint
+            </Typography>
+            <img
+              src="./assets/Height_of_restraint.png"
+              alt="Height of restraint"
+            />
+            <Typography>
+              This option applies the pressure load by considering the height of
+              the restraint, such as a parapet or barrier, that is not part of
+              the model. The additional height is measured from the top in the
+              local y or z (+) direction, depending on the load direction.
+            </Typography>
           </GuideBox>
         }
       >

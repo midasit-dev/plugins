@@ -24,9 +24,22 @@ export default function DegreeOfExposure() {
         <Typography>Degree of Exposure</Typography>
 
         <InfoWrapper
+          tooltipProps={{
+            left: -150,
+            bottom: 30,
+          }}
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={400} spacing={1}>
+              <Typography variant="h1" color="gray">
+                Degree of Exposure
+              </Typography>
+              <Typography>
+                Refer to Table 3.9(1) for the degree of exposure.
+              </Typography>
+              <img
+                src="./assets/Degree of Exposure.png"
+                alt="Degree of exposure"
+              />
             </GuideBox>
           }
         >

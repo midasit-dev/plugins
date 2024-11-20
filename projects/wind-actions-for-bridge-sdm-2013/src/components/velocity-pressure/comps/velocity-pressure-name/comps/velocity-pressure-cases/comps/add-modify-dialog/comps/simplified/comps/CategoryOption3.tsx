@@ -20,18 +20,6 @@ export default function CategoryOption3() {
       <GuideBox width="100%" horSpaceBetween row verCenter>
         <GuideBox row verCenter>
           <Typography>Degree of Exposure</Typography>
-
-          <InfoWrapper
-            tooltip={
-              <GuideBox width={150}>
-                <Typography>test</Typography>
-              </GuideBox>
-            }
-          >
-            <IconButton transparent>
-              <Icon iconName="Info" />
-            </IconButton>
-          </InfoWrapper>
         </GuideBox>
         <DropList
           width={PANEL_3_R_WIDTH}

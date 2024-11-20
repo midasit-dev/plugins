@@ -11,6 +11,8 @@ import {
   useChangeBanner,
   DoneBanner,
 } from "../../../../../../../../../../utils/loadingUtils";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 //TEST Python 계산 결과 보여주는 곳
 export default function QpValue() {
@@ -20,19 +22,9 @@ export default function QpValue() {
   return (
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
-        <Typography>Peak Velocity Pressure (qp)</Typography>
-
-        <InfoWrapper
-          tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
-            </GuideBox>
-          }
-        >
-          <IconButton transparent>
-            <Icon iconName="Info" />
-          </IconButton>
-        </InfoWrapper>
+        <Typography>
+          <InlineMath>{"\\text{Peak Velocity Pressure} \\; (q_p)"}</InlineMath>
+        </Typography>
       </div>
       <div className="flex items-center gap-2">
         <TextFieldV2
@@ -54,7 +46,9 @@ export default function QpValue() {
             });
           }}
         />
-        <Typography>kN/m2</Typography>
+        <Typography>
+          <InlineMath>kN/m^2</InlineMath>
+        </Typography>
         <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>

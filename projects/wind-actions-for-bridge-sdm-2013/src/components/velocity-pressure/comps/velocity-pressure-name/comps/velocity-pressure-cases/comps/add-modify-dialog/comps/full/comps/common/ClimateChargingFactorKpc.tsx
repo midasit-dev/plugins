@@ -23,8 +23,10 @@ export default function ClimateChargingFactorKpc() {
         <Typography>Climate Changing Factor, Kpc</Typography>
         <InfoWrapper
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={130} center>
+              <Typography variant="h1" color="gray">
+                Refer to Clause 3.4.3.6
+              </Typography>
             </GuideBox>
           }
         >

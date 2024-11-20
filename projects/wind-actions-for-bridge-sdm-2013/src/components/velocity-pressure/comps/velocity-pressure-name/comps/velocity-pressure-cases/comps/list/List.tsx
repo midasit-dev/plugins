@@ -8,6 +8,8 @@ import {
 } from "../../../../../../../../defines/applyDefines";
 import { isOpenAddModVelocityPressureSelector } from "../../../../../../../../defines/openDefines";
 import useTemporaryValue from "../../../../../../../../hooks/useTemporaryValue";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 export default function List() {
   const [sel, setSel] = useRecoilState(selVelocityPressureCaseLightSelector);
@@ -23,10 +25,10 @@ export default function List() {
       <ul className="w-full border-b border-b-[#e3e3e3] pb-4">
         <li className="grid grid-cols-2 justify-items-center">
           <Typography variant="h1" color="#4B5563">
-            Name
+            <InlineMath>{"\\text{Name}"}</InlineMath>
           </Typography>
           <Typography variant="h1" color="#4B5563">
-            Value (kN/m2)
+            <InlineMath>{"\\text{Value} \\; (kN/m^2)"}</InlineMath>
           </Typography>
         </li>
       </ul>
