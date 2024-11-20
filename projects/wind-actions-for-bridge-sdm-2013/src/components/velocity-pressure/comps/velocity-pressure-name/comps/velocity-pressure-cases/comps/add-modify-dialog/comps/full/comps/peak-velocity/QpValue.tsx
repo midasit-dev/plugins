@@ -22,12 +22,13 @@ export default function PeakVelocityQpz() {
   return (
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
-        <Typography center width={"100%"}>
-          {/* Peak Velocity Pressure at Referenace Height,qp(z) */}
-          <InlineMath>
-            {"\\text{Peak Velecity Pressure,} \\; q_p(z)"}
-          </InlineMath>
-        </Typography>
+        <div className="flex items-center gap-2">
+          <Typography>Peak Velocity Pressure</Typography>
+
+          <p className="text-xs">
+            <InlineMath math={"q_p(z)"} />
+          </p>
+        </div>
 
         <InfoWrapper
           tooltipProps={{
@@ -72,9 +73,10 @@ export default function PeakVelocityQpz() {
           }}
           disabled={true}
         />
-        <Typography>
-          <InlineMath>kN/m^2</InlineMath>
-        </Typography>
+
+        <p className="text-xs">
+          <InlineMath math={"kN/m^2"} />
+        </p>
         <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>

@@ -25,7 +25,7 @@ export async function fetchSTLD(): Promise<Array<[string, string]> | null> {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch load cases (STLD)!.");
+    throw new Error("Failed to fetching load cases (Disconnected, maybe)");
   }
 
   const dataObject = (await response.json()).STLD as STLDObject;
@@ -58,7 +58,7 @@ export async function fetchSelect() {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch select!.");
+    throw new Error("Failed to fetching target elements (Disconnected, maybe)");
   }
 
   const dataObject = (await response.json()).SELECT as SELECTObject;

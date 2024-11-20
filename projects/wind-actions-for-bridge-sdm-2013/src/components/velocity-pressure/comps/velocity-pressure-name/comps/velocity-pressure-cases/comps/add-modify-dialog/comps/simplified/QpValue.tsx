@@ -22,10 +22,15 @@ export default function QpValue() {
   return (
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
-        <Typography>
-          <InlineMath>{"\\text{Peak Velocity Pressure} \\; (q_p)"}</InlineMath>
-        </Typography>
+        <div className="flex items-center gap-2">
+          <Typography>Peak Velocity Pressure</Typography>
+
+          <p className="text-xs">
+            <InlineMath math={"q_p"} />
+          </p>
+        </div>
       </div>
+
       <div className="flex items-center gap-2">
         <TextFieldV2
           type="number"
@@ -46,9 +51,9 @@ export default function QpValue() {
             });
           }}
         />
-        <Typography>
-          <InlineMath>kN/m^2</InlineMath>
-        </Typography>
+        <p className="text-xs">
+          <InlineMath math={"kN/m^2"} />
+        </p>
         <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>
