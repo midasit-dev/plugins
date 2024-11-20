@@ -1,8 +1,5 @@
 import { GuideBox, TextFieldV2, Typography } from "@midasit-dev/moaui";
-import {
-  PANEL_1_R_WIDTH,
-  PANEL_3_R_WIDTH,
-} from "../../../../defines/widthDefines";
+import { PANEL_1_R_WIDTH } from "../../../../defines/widthDefines";
 import { useRecoilValue } from "recoil";
 import { mainSelVelocityPressureValueSelector } from "../../../../defines/applyDefines";
 

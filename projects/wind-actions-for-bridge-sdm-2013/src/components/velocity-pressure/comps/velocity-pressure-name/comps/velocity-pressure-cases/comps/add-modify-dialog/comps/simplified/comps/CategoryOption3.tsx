@@ -1,16 +1,9 @@
-import {
-  DropList,
-  GuideBox,
-  Icon,
-  IconButton,
-  Typography,
-} from "@midasit-dev/moaui";
+import { DropList, GuideBox, Typography } from "@midasit-dev/moaui";
 import { PANEL_3_R_WIDTH } from "../../../../../../../../../../../defines/widthDefines";
 import type { SelectChangeEvent } from "@mui/material";
 import useTemporaryValue, {
   type TypeSimplified,
 } from "../../../../../../../../../../../hooks/useTemporaryValue";
-import InfoWrapper from "../../../../../../../../../../common/InfoWrapper";
 
 export default function CategoryOption3() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();

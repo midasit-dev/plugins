@@ -1,12 +1,5 @@
-import {
-  GuideBox,
-  Icon,
-  IconButton,
-  TextFieldV2,
-  Typography,
-} from "@midasit-dev/moaui";
+import { GuideBox, TextFieldV2, Typography } from "@midasit-dev/moaui";
 import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
-import InfoWrapper from "../../../../../../../../../common/InfoWrapper";
 import {
   useChangeBanner,
   DoneBanner,

@@ -3,7 +3,6 @@ import {
   GuideBox,
   Icon,
   IconButton,
-  TextFieldV2,
   Typography,
 } from "@midasit-dev/moaui";
 import { PANEL_3_R_WIDTH } from "../../../../../../../../../../defines/widthDefines";

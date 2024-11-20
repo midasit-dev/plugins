@@ -4,6 +4,7 @@ import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryV
 import { full_calculate_coz } from "../../../../../../../../../../utils_pyscript";
 import useTemporaryValueCozOptions from "../../../../../../../../../../hooks/useTemporaryValueCozOptions";
 import { useDelayCallback } from "../../../../../../../../../../utils/loadingUtils";
+import { enqueueSnackbar } from "notistack";
 
 function toFixed3Number(value: number) {
   return Number(value.toFixed(3));
@@ -24,6 +25,13 @@ export default function CalculateButton() {
       const { velocity } = tempValue.procedureFull;
       const { refZ, h, lu, ld, x, loadLength, orographyType, location } =
         tempValueCozOptions;
+
+      if ((lu !== undefined && lu <= 0) || (ld !== undefined && ld <= 0)) {
+        enqueueSnackbar("Please enter a value greater than 0 for Lu and Ld.", {
+          variant: "error",
+        });
+      }
+
       if (
         velocity === undefined ||
         refZ === undefined ||

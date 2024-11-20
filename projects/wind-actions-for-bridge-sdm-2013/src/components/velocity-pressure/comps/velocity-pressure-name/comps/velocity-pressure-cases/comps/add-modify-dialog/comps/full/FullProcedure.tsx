@@ -1,4 +1,4 @@
-import { Button, GuideBox, Typography } from "@midasit-dev/moaui";
+import { GuideBox, Typography } from "@midasit-dev/moaui";
 import PeakVelocity from "./comps/peak-velocity/PeakVelocity";
 import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
 import PeakVelocityQpz from "./comps/peak-velocity/QpValue";
