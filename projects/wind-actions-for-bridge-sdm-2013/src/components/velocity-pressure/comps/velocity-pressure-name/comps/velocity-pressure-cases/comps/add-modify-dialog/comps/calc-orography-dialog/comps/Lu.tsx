@@ -25,6 +25,9 @@ export default function Lu() {
           numberOptions={{
             min: 0.0,
             step: 0.1,
+            condition: {
+              min: "greater",
+            },
           }}
         />
         <Typography>m</Typography>

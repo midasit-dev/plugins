@@ -46,6 +46,9 @@ export default function Ld() {
           numberOptions={{
             min: 0.0,
             step: 0.1,
+            condition: {
+              min: "greater",
+            },
           }}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCozOptionsCallback({

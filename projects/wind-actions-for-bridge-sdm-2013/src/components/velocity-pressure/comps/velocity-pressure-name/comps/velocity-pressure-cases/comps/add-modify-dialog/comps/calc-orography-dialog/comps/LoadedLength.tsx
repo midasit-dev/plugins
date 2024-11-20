@@ -46,7 +46,10 @@ export default function LoadedLength() {
           value={String(tempValueCozOptions?.loadLength) ?? "0.0"}
           numberOptions={{
             min: 0.0,
-            step: 0.1,
+            step: 1.0,
+            condition: {
+              min: "greater",
+            },
           }}
         />
         <Typography>m</Typography>

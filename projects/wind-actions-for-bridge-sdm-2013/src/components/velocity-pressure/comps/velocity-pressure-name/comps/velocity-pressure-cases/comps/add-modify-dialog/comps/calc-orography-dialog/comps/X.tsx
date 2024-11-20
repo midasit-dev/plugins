@@ -8,7 +8,7 @@ export default function X() {
 
   return (
     <GuideBox width="100%" horSpaceBetween verCenter row>
-      <Typography>Crest-Building Distance, x</Typography>
+      <Typography>Horizontal distance from the crest top, x</Typography>
 
       <div className="flex w-auto justify-between items-center gap-2">
         <TextFieldV2
