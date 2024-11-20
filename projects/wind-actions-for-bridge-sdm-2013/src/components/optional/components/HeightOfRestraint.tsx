@@ -9,7 +9,6 @@ import {
 import { PANEL_2_R_WIDTH } from "../../../defines/widthDefines";
 import { useRecoilState } from "recoil";
 import { mainHeightOfRestraintSelector } from "../../../defines/applyDefines";
-import { motion } from "framer-motion";
 import InfoWrapper from "../../common/InfoWrapper";
 
 export default function HeightOfRestraint() {
