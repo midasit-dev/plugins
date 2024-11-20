@@ -12,6 +12,7 @@ import {
   selLoadCaseNameSelector,
 } from "../../../defines/applyDefines";
 import { enqueueSnackbar } from "notistack";
+import { useDelayCallback } from "../../../utils/loadingUtils";
 
 //TEST Python 계산 연결부
 export default function ApplyBtn() {
@@ -25,58 +26,63 @@ export default function ApplyBtn() {
   const csCd = useRecoilValue(mainCsCdValueSelector);
   const additional = useRecoilValue(mainHeightOfRestraintSelector);
 
-  const onClickHandler = useCallback(() => {
-    if (
-      null === lcName ||
-      null === targetElements ||
-      null === direction ||
-      null === windPressureValue ||
-      null === cf ||
-      null === csCd ||
-      null === additional ||
-      null === additional.isCheck ||
-      null === additional.iEnd ||
-      null === additional.jEnd ||
-      null === additional.isCheckJEnd
-    ) {
-      enqueueSnackbar("There are undefined values in 'Apply'", {
-        variant: "error",
-      });
+  const { isPending, delayCallback } = useDelayCallback();
 
-      console.error(
-        'there are undefined values in "ApplyBtn"',
+  const onClickHandler = useCallback(() => {
+    delayCallback(() => {
+      if (
+        null === lcName ||
+        null === targetElements ||
+        null === direction ||
+        null === windPressureValue ||
+        null === cf ||
+        null === csCd ||
+        null === additional ||
+        null === additional.isCheck ||
+        null === additional.iEnd ||
+        null === additional.jEnd ||
+        null === additional.isCheckJEnd
+      ) {
+        enqueueSnackbar("There are undefined values in 'Apply'", {
+          variant: "error",
+        });
+
+        console.error(
+          'there are undefined values in "ApplyBtn"',
+          lcName,
+          targetElements,
+          direction,
+          windPressureValue,
+          cf,
+          csCd,
+          additional
+        );
+
+        return;
+      }
+
+      apply(
         lcName,
         targetElements,
         direction,
         windPressureValue,
         cf,
         csCd,
-        additional
+        additional.isCheck,
+        additional.iEnd,
+        additional.jEnd,
+        additional.isCheckJEnd
       );
 
-      return;
-    }
-
-    apply(
-      lcName,
-      targetElements,
-      direction,
-      windPressureValue,
-      cf,
-      csCd,
-      additional.isCheck,
-      additional.iEnd,
-      additional.jEnd,
-      additional.isCheckJEnd
-    );
-
-    enqueueSnackbar("Successfully applied!", {
-      variant: "success",
+      enqueueSnackbar("Successfully applied!", {
+        variant: "success",
+      });
     });
   }, [
     additional,
     cf,
     csCd,
+    delayCallback,
     direction,
     lcName,
     targetElements,
@@ -84,7 +90,13 @@ export default function ApplyBtn() {
   ]);
 
   return (
-    <Button variant="contained" color="negative" onClick={onClickHandler}>
+    <Button
+      variant="contained"
+      color="negative"
+      onClick={onClickHandler}
+      loading={isPending}
+      width="100px"
+    >
       Apply
     </Button>
   );

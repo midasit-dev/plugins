@@ -7,10 +7,15 @@ import {
 } from "@midasit-dev/moaui";
 import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
 import InfoWrapper from "../../../../../../../../../common/InfoWrapper";
+import {
+  useChangeBanner,
+  DoneBanner,
+} from "../../../../../../../../../../utils/loadingUtils";
 
 //TEST Python 계산 결과 보여주는 곳
 export default function QpValue() {
   const { tempValue, setTempValueCallback } = useTemporaryValue();
+  const { isVisible } = useChangeBanner(tempValue?.value, 500);
 
   return (
     <GuideBox width="100%" center spacing={1}>
@@ -50,6 +55,7 @@ export default function QpValue() {
           }}
         />
         <Typography>kN/m2</Typography>
+        <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>
   );
