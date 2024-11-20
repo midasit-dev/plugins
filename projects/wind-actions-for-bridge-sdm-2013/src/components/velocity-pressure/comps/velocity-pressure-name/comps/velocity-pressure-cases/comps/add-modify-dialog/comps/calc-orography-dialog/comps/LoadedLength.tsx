@@ -21,7 +21,7 @@ export default function LoadedLength() {
           tooltip={
             <GuideBox width={130} center>
               <Typography variant="h1" color="gray">
-                Refer to Table 3.9(2)
+                Refer to Table 3.10
               </Typography>
             </GuideBox>
           }

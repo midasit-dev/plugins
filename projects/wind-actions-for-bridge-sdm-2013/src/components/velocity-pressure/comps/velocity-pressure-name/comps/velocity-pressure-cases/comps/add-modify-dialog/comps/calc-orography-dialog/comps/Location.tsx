@@ -11,7 +11,6 @@ export default function Location() {
   return (
     <GuideBox width={"100%"} horSpaceBetween verCenter row>
       <Typography>Location</Typography>
-
       <DropList
         width={CALC_OROGRAPHY_DIALOG_R_WIDTH}
         itemList={[
