@@ -9,7 +9,6 @@ export default function Lu() {
 
   const [isError, setIsError] = useState(false);
   useEffect(() => {
-    console.log(tempValueCozOptions?.lu);
     if (
       tempValueCozOptions?.lu === undefined ||
       tempValueCozOptions?.lu === null
@@ -43,6 +42,7 @@ export default function Lu() {
               min: "greater",
             },
           }}
+          error={isError}
         />
         <Typography>m</Typography>
       </div>
