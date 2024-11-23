@@ -34,6 +34,10 @@ export default function HorizontalWindLoadLength({
         <Typography>Horizontal Wind Load Length</Typography>
 
         <InfoWrapper
+          tooltipProps={{
+            left: -100,
+            bottom: 30,
+          }}
           tooltip={
             <GuideBox width={130} center>
               <Typography variant="h1" color="gray">

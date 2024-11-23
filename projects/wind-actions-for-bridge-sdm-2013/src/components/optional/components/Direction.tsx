@@ -51,7 +51,7 @@ export default function Direction() {
       <Typography variant="h1">Loading Direction</Typography>
       <InfoWrapper
         tooltipProps={{
-          left: -200,
+          left: -150,
           bottom: 30,
         }}
         tooltip={

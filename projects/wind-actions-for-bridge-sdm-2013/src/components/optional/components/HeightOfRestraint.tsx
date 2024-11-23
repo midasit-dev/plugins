@@ -35,7 +35,7 @@ function Title() {
 
       <InfoWrapper
         tooltipProps={{
-          left: -200,
+          left: -240,
           bottom: 30,
         }}
         tooltip={

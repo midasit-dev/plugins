@@ -22,11 +22,16 @@ export default function ClimateChargingFactorKpc() {
       <div className="flex gap-0 items-center">
         <Typography>Climate Changing Factor, Kpc</Typography>
         <InfoWrapper
+          tooltipProps={{
+            left: -100,
+            bottom: 30,
+          }}
           tooltip={
-            <GuideBox width={130} center>
+            <GuideBox width={170} horLeft spacing={1}>
               <Typography variant="h1" color="gray">
                 Refer to Clause 3.4.3.6
               </Typography>
+              <Typography>The recommended value for Kpc is 1.22.</Typography>
             </GuideBox>
           }
         >
