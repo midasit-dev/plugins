@@ -54,7 +54,7 @@ export default function ForceCoefficientCf() {
         }
       >
         <IconButton transparent>
-          <Icon iconName="Info" />
+          <Icon iconName="Help" />
         </IconButton>
       </InfoWrapper>
 

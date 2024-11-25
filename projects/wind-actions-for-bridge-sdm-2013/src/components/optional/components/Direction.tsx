@@ -80,7 +80,7 @@ export default function Direction() {
         }
       >
         <IconButton transparent>
-          <Icon iconName="Info" />
+          <Icon iconName="Help" />
         </IconButton>
       </InfoWrapper>
       <DropList

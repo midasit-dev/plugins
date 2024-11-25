@@ -47,7 +47,7 @@ export default function HorizontalWindLoadLength({
           }
         >
           <IconButton transparent>
-            <Icon iconName="Info" />
+            <Icon iconName="Help" />
           </IconButton>
         </InfoWrapper>
       </div>

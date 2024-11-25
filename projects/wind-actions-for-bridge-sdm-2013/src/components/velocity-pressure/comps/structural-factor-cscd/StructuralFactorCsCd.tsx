@@ -55,7 +55,7 @@ export default function StructuralFactorCscd() {
         }
       >
         <IconButton transparent>
-          <Icon iconName="Info" />
+          <Icon iconName="Help" />
         </IconButton>
       </InfoWrapper>
       <TextFieldForRealNumber

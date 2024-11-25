@@ -36,7 +36,7 @@ export default function ClimateChargingFactorKpc() {
           }
         >
           <IconButton transparent>
-            <Icon iconName="Info" />
+            <Icon iconName="Help" />
           </IconButton>
         </InfoWrapper>
       </div>

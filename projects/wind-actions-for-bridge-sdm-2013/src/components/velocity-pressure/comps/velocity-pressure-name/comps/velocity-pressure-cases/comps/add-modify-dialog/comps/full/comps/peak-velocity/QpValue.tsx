@@ -48,7 +48,7 @@ export default function PeakVelocityQpz() {
           }
         >
           <IconButton transparent>
-            <Icon iconName="Info" />
+            <Icon iconName="Help" />
           </IconButton>
         </InfoWrapper>
       </div>

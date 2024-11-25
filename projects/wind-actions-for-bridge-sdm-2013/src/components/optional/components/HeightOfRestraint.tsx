@@ -60,7 +60,7 @@ function Title() {
         }
       >
         <IconButton transparent>
-          <Icon iconName="Info" />
+          <Icon iconName="Help" />
         </IconButton>
       </InfoWrapper>
     </GuideBox>

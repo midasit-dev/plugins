@@ -89,7 +89,7 @@ export default function Simplified() {
                 }
               >
                 <IconButton transparent>
-                  <Icon iconName="Info" />
+                  <Icon iconName="Help" />
                 </IconButton>
               </InfoWrapper>
             </div>

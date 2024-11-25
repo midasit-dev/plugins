@@ -27,7 +27,7 @@ export default function LoadedLength() {
           }
         >
           <IconButton transparent>
-            <Icon iconName="Info" />
+            <Icon iconName="Help" />
           </IconButton>
         </InfoWrapper>
       </div>

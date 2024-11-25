@@ -169,9 +169,12 @@ export const mainSelVelocityPressureValueSelector = selector<number | null>({
 });
 
 // 메인의 Cf 값
+export const DEFAULT_MAIN_CF_VALUE = 1.3;
+export const DEFAULT_MAIN_CSCD_VALUE = 1.0;
+
 export const mainCfValueState = atom<number | null>({
   key: "mainCfValueState",
-  default: 1.0,
+  default: DEFAULT_MAIN_CF_VALUE,
 });
 
 export const mainCfValueSelector = selector<number | null>({
@@ -187,7 +190,7 @@ export const mainCfValueSelector = selector<number | null>({
 // 메인의 CsCd 값
 export const mainCsCdValueState = atom<number | null>({
   key: "mainCsCdValueState",
-  default: 1.0,
+  default: DEFAULT_MAIN_CSCD_VALUE,
 });
 
 export const mainCsCdValueSelector = selector<number | null>({
