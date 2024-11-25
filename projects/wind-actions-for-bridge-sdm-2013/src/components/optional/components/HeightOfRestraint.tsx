@@ -48,10 +48,13 @@ function Title() {
               alt="Height of restraint"
             />
             <Typography>
-              This option applies the pressure load by considering the height of
-              the restraint, such as a parapet or barrier, that is not part of
-              the model. The additional height is measured from the top in the
-              local y or z (+) direction, depending on the load direction.
+              This option applies the pressure loadby considering the height of
+              the restraint,such as a parapet or barrier, that is not part of
+              the model.
+            </Typography>
+            <Typography>
+              The additional height is measured from the top in the local y or z
+              (+) direction, depending on the load direction.
             </Typography>
           </GuideBox>
         }

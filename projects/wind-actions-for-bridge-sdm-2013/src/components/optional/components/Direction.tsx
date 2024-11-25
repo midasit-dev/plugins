@@ -55,7 +55,7 @@ export default function Direction() {
           bottom: 30,
         }}
         tooltip={
-          <GuideBox width={380} spacing={1}>
+          <GuideBox width={390} spacing={1}>
             <Typography variant="h1" color="gray">
               Set the direction of beam loads.
             </Typography>
@@ -70,9 +70,12 @@ export default function Direction() {
             <img src="./assets/direction.png" alt="Loading Direction" />
 
             <Typography>
-              If you want the wind pressure to be applied in this direction,
+              If you want the wind pressure to be applied in this direction, set
+              it to
             </Typography>
-            <Typography>Set it to "Local y-".</Typography>
+            <div>
+              <Typography variant="h1"> Local y-.</Typography>
+            </div>
           </GuideBox>
         }
       >
