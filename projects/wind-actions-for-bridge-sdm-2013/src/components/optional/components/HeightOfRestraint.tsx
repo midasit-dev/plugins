@@ -26,7 +26,7 @@ function Title() {
   return (
     <GuideBox width="100%" row>
       <Check
-        name="Height of restraint (parapet of barrier)"
+        name="Height of restraint"
         checked={value?.isCheck ?? false}
         onChange={(e: React.SyntheticEvent, checked: boolean) =>
           setValue((prev) => ({ ...prev, isCheck: checked }))
@@ -35,7 +35,7 @@ function Title() {
 
       <InfoWrapper
         tooltipProps={{
-          left: -240,
+          left: -130,
           bottom: 30,
         }}
         tooltip={

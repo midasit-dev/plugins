@@ -107,31 +107,40 @@ export type StyledProps = {
    * The max rows of the textfield.
    */
   maxRows?: number;
+
+  onlyPlusEnabled?: boolean;
 };
 
 const StyledComponent = styled((props: StyledProps) => {
   const [value, setValue] = useState(props?.value);
 
-  const handleKeyDown = useCallback((e: any) => {
-    // 허용할 키들 정의
-    const allowedKeys = [
-      "Backspace",
-      "Tab",
-      "ArrowLeft",
-      "ArrowRight",
-      "Delete",
-      "Home",
-      "End",
-      "-",
-      ".",
-    ];
-    if (
-      !allowedKeys.includes(e.key) && // 허용된 키가 아니고
-      !/[0-9-]/.test(e.key) // 숫자도 아닌 경우
-    ) {
-      e.preventDefault(); // 입력 막기
-    }
-  }, []);
+  const handleKeyDown = useCallback(
+    (e: any) => {
+      // 허용할 키들 정의
+      const allowedKeys = [
+        "Backspace",
+        "Tab",
+        "ArrowLeft",
+        "ArrowRight",
+        "Delete",
+        "Home",
+        "End",
+        ".",
+        "Control",
+        "a",
+        ...(props?.onlyPlusEnabled ? [] : ["-"]),
+      ];
+
+      if (
+        !allowedKeys.includes(e.key) && // 허용된 키가 아니고
+        !/[0-9]/.test(e.key) // 숫자도 아닌 경우
+      ) {
+        console.log("not allowed!");
+        e.preventDefault(); // 입력 막기
+      }
+    },
+    [props?.onlyPlusEnabled]
+  );
 
   const handleChange = useCallback(
     (e: any) => {
