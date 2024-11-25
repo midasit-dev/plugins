@@ -1,5 +1,4 @@
 import { GuideBox, Typography, IconButton, Icon } from "@midasit-dev/moaui";
-import { PANEL_1_R_WIDTH } from "../../../../defines/widthDefines";
 import { useRecoilState } from "recoil";
 import {
   DEFAULT_MAIN_CF_VALUE,
@@ -8,8 +7,14 @@ import {
 import InfoWrapper from "../../../common/InfoWrapper";
 import { useEffect, useState } from "react";
 import TextFieldForRealNumber from "../../../common/TextFieldForRealNumber";
+import { isOpenCfDialogSelector } from "../../../../defines/openDefines";
+import GraphSample from "./comps/GraphSample";
+import { isBlurSelector } from "../../../../defines/blurDefines";
 
 export default function ForceCoefficientCf() {
+  const [isOpen, setIsOpen] = useRecoilState(isOpenCfDialogSelector);
+  const [, setIsBlur] = useRecoilState(isBlurSelector);
+
   //전역 값
   const [value, setValue] = useRecoilState(mainCfValueSelector);
 
@@ -35,6 +40,7 @@ export default function ForceCoefficientCf() {
       <Typography variant="h1" color={isError ? "#FF5733" : "primary"}>
         Force Coefficient, Cf
       </Typography>
+
       <InfoWrapper
         tooltipProps={{
           left: -130,
@@ -58,16 +64,31 @@ export default function ForceCoefficientCf() {
         </IconButton>
       </InfoWrapper>
 
-      {/** 텍스트 필드 교체 */}
-      <TextFieldForRealNumber
-        placeholder="Enter the value"
-        width={PANEL_1_R_WIDTH}
-        defaultValue={String(DEFAULT_MAIN_CF_VALUE)}
-        onChange={(value: string) => setTempValue(value)}
-        value={tempValue}
-        error={isError}
-        onlyPlusEnabled
-      />
+      <div className="flex gap-4 items-center">
+        {/** 텍스트 필드 교체 */}
+        <TextFieldForRealNumber
+          placeholder="Enter the value"
+          width={161}
+          defaultValue={String(DEFAULT_MAIN_CF_VALUE)}
+          onChange={(value: string) => setTempValue(value)}
+          value={tempValue}
+          error={isError}
+          onlyPlusEnabled
+        />
+
+        <div className="relative">
+          <IconButton
+            onClick={() => {
+              setIsOpen(!isOpen);
+              setIsBlur(!isOpen);
+            }}
+          >
+            <Icon iconName="MoreHoriz" />
+          </IconButton>
+
+          {isOpen && <GraphSample />}
+        </div>
+      </div>
     </GuideBox>
   );
 }
