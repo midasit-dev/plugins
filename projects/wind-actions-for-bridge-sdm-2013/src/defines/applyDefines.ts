@@ -169,9 +169,12 @@ export const mainSelVelocityPressureValueSelector = selector<number | null>({
 });
 
 // 메인의 Cf 값
+export const DEFAULT_MAIN_CF_VALUE = 1.3;
+export const DEFAULT_MAIN_CSCD_VALUE = 1.0;
+
 export const mainCfValueState = atom<number | null>({
   key: "mainCfValueState",
-  default: 1.0,
+  default: DEFAULT_MAIN_CF_VALUE,
 });
 
 export const mainCfValueSelector = selector<number | null>({
@@ -187,7 +190,7 @@ export const mainCfValueSelector = selector<number | null>({
 // 메인의 CsCd 값
 export const mainCsCdValueState = atom<number | null>({
   key: "mainCsCdValueState",
-  default: 1.0,
+  default: DEFAULT_MAIN_CSCD_VALUE,
 });
 
 export const mainCsCdValueSelector = selector<number | null>({
@@ -370,12 +373,12 @@ export const tempProcedureValueCozOptionsDefalutForAdd: VelocityPressureCaseProc
   {
     orographyType: FullOrographyTypeEnum.HILLS_AND_RIDGES,
     location: FullLocationEnum.UPWIND,
-    h: 30.0,
+    h: 0.0,
+    lu: 0.0,
     ld: 0.0,
-    lu: 500.0,
-    x: -100.0,
-    refZ: 850,
-    loadLength: 1950,
+    x: 0.0,
+    refZ: 50.0,
+    loadLength: 600.0,
 
     sbz: 0.0,
     scz: 0.0,

@@ -34,14 +34,20 @@ export default function HorizontalWindLoadLength({
         <Typography>Horizontal Wind Load Length</Typography>
 
         <InfoWrapper
+          tooltipProps={{
+            left: -100,
+            bottom: 30,
+          }}
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={130} center>
+              <Typography variant="h1" color="gray">
+                Refer to Table 3.9(2)
+              </Typography>
             </GuideBox>
           }
         >
           <IconButton transparent>
-            <Icon iconName="Info" />
+            <Icon iconName="Help" />
           </IconButton>
         </InfoWrapper>
       </div>

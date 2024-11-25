@@ -9,7 +9,6 @@ import {
 import { PANEL_2_R_WIDTH } from "../../../defines/widthDefines";
 import { useRecoilState } from "recoil";
 import { mainHeightOfRestraintSelector } from "../../../defines/applyDefines";
-import { motion } from "framer-motion";
 import InfoWrapper from "../../common/InfoWrapper";
 
 export default function HeightOfRestraint() {
@@ -27,7 +26,7 @@ function Title() {
   return (
     <GuideBox width="100%" row>
       <Check
-        name="Height of restraint (parapet of barrier)"
+        name="Height of restraint"
         checked={value?.isCheck ?? false}
         onChange={(e: React.SyntheticEvent, checked: boolean) =>
           setValue((prev) => ({ ...prev, isCheck: checked }))
@@ -35,14 +34,33 @@ function Title() {
       />
 
       <InfoWrapper
+        tooltipProps={{
+          left: -130,
+          bottom: 30,
+        }}
         tooltip={
-          <GuideBox width={150}>
-            <Typography>test</Typography>
+          <GuideBox width={400} spacing={1}>
+            <Typography variant="h1" color="gray">
+              Height of restraint
+            </Typography>
+            <img
+              src="./assets/Height_of_restraint.png"
+              alt="Height of restraint"
+            />
+            <Typography>
+              This option applies the pressure loadby considering the height of
+              the restraint,such as a parapet or barrier, that is not part of
+              the model.
+            </Typography>
+            <Typography>
+              The additional height is measured from the top in the local y or z
+              (+) direction, depending on the load direction.
+            </Typography>
           </GuideBox>
         }
       >
         <IconButton transparent>
-          <Icon iconName="Info" />
+          <Icon iconName="Help" />
         </IconButton>
       </InfoWrapper>
     </GuideBox>

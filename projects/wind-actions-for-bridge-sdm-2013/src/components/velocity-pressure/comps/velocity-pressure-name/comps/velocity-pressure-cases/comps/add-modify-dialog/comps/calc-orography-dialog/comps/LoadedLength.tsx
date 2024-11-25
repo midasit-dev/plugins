@@ -19,13 +19,15 @@ export default function LoadedLength() {
 
         <InfoWrapper
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={130} center>
+              <Typography variant="h1" color="gray">
+                Refer to Table 3.10
+              </Typography>
             </GuideBox>
           }
         >
           <IconButton transparent>
-            <Icon iconName="Info" />
+            <Icon iconName="Help" />
           </IconButton>
         </InfoWrapper>
       </div>
@@ -44,7 +46,10 @@ export default function LoadedLength() {
           value={String(tempValueCozOptions?.loadLength) ?? "0.0"}
           numberOptions={{
             min: 0.0,
-            step: 0.1,
+            step: 1.0,
+            condition: {
+              min: "greater",
+            },
           }}
         />
         <Typography>m</Typography>

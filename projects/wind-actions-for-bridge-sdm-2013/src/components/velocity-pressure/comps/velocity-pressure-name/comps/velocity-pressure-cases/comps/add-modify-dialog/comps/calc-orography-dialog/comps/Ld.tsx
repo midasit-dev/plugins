@@ -27,6 +27,16 @@ export default function Ld() {
     }
   }, [tempValueCozOptions?.location, tempValueCozOptions?.orographyType]);
 
+  const [isError, setIsError] = useState(false);
+  useEffect(() => {
+    if (
+      tempValueCozOptions?.ld === undefined ||
+      tempValueCozOptions?.ld === null
+    )
+      return;
+    setIsError(tempValueCozOptions?.ld <= 0);
+  }, [tempValueCozOptions?.ld]);
+
   return (
     <div
       className="w-full flex items-center justify-between"
@@ -35,7 +45,9 @@ export default function Ld() {
         opacity: isDisabled ? 0.5 : 1,
       }}
     >
-      <Typography>Length of Downwind Slope, Ld</Typography>
+      <Typography color={!isDisabled && isError ? "#FF5733" : "primary"}>
+        Length of Downwind Slope, Ld
+      </Typography>
 
       <div className="flex w-auto justify-between items-center gap-2">
         <TextFieldV2
@@ -46,6 +58,9 @@ export default function Ld() {
           numberOptions={{
             min: 0.0,
             step: 0.1,
+            condition: {
+              min: "greater",
+            },
           }}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCozOptionsCallback({

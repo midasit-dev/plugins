@@ -7,29 +7,50 @@ import {
 } from "@midasit-dev/moaui";
 import useTemporaryValue from "../../../../../../../../../../../../hooks/useTemporaryValue";
 import InfoWrapper from "../../../../../../../../../../../common/InfoWrapper";
+import {
+  DoneBanner,
+  useChangeBanner,
+} from "../../../../../../../../../../../../utils/loadingUtils";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 //TEST Python 계산 결과 보여주는 곳
 export default function MeanVelocityQz() {
   const { tempValue, setTempValueCallback } = useTemporaryValue();
+  const { isVisible } = useChangeBanner(tempValue?.value, 500);
 
   return (
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
-        <Typography center width={"100%"}>
-          Hourly Mean Velocity Pressure at Referenace Height,q’(z)
-        </Typography>
+        <div className="flex items-center gap-2">
+          <Typography>Hourly Mean Velocity Pressure</Typography>
+
+          <p className="text-xs">
+            <InlineMath math={"q'(z)"} />
+          </p>
+        </div>
+
         <InfoWrapper
+          tooltipProps={{
+            left: -250,
+            bottom: 30,
+          }}
           tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
+            <GuideBox width={300}>
+              <Typography variant="h1" color="gray">
+                Hourly Mean Velocity Pressure
+              </Typography>
+              <img
+                src="./assets/hourly mean velocity pressure.png"
+                alt="Hourly Mean Velocity Pressure"
+              />
             </GuideBox>
           }
         >
           <IconButton transparent>
-            <Icon iconName="Info" />
+            <Icon iconName="Help" />
           </IconButton>
         </InfoWrapper>
-        ]
       </div>
       <div className="flex items-center gap-2">
         <TextFieldV2
@@ -52,7 +73,11 @@ export default function MeanVelocityQz() {
           }}
           disabled={true}
         />
-        <Typography>kN/m2</Typography>
+
+        <p className="text-xs">
+          <InlineMath math={"kN/m^2"} />
+        </p>
+        <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>
   );

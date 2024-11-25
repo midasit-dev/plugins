@@ -1,16 +1,9 @@
-import {
-  DropList,
-  GuideBox,
-  Icon,
-  IconButton,
-  Typography,
-} from "@midasit-dev/moaui";
+import { DropList, GuideBox, Typography } from "@midasit-dev/moaui";
 import { PANEL_3_R_WIDTH } from "../../../../../../../../../../../defines/widthDefines";
 import type { SelectChangeEvent } from "@mui/material";
 import useTemporaryValue, {
   type TypeSimplified,
 } from "../../../../../../../../../../../hooks/useTemporaryValue";
-import InfoWrapper from "../../../../../../../../../../common/InfoWrapper";
 
 export default function CategoryOption3() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
@@ -20,18 +13,6 @@ export default function CategoryOption3() {
       <GuideBox width="100%" horSpaceBetween row verCenter>
         <GuideBox row verCenter>
           <Typography>Degree of Exposure</Typography>
-
-          <InfoWrapper
-            tooltip={
-              <GuideBox width={150}>
-                <Typography>test</Typography>
-              </GuideBox>
-            }
-          >
-            <IconButton transparent>
-              <Icon iconName="Info" />
-            </IconButton>
-          </InfoWrapper>
         </GuideBox>
         <DropList
           width={PANEL_3_R_WIDTH}

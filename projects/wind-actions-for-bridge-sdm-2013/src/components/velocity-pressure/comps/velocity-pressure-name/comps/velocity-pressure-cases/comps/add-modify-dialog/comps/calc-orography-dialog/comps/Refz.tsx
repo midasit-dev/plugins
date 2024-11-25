@@ -18,7 +18,10 @@ export default function Refz() {
           defaultValue="0.0"
           numberOptions={{
             min: 0.0,
-            step: 0.1,
+            step: 1.0,
+            condition: {
+              min: "greater",
+            },
           }}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setTempValueCozOptionsCallback({

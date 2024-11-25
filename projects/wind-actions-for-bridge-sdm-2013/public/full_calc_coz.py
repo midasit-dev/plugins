@@ -12,12 +12,12 @@ def full_calculate_coz(velocity, z, H, Lu, Ld, x, loadLength, OrographyType, loc
             [
                 [2.36, 2.15, 2.05, 1.93, 1.79, 1.68, 1.62, 1.55, 1.46],
                 [2.36, 2.15, 2.05, 1.93, 1.81, 1.70, 1.65, 1.58, 1.51],
-                [2.36, 2.16, 2.05, 1.93, 1.83, 1.73, 1.68, 1.61, 1.54],
+                [2.36, 2.15, 2.05, 1.94, 1.82, 1.73, 1.67, 1.61, 1.54],
                 [2.36, 2.16, 2.07, 1.97, 1.86, 1.77, 1.72, 1.67, 1.60],
-                [2.36, 2.17, 2.09, 2.00, 1.89, 1.81, 1.76, 1.71, 1.63],
+                [2.36, 2.17, 2.09, 2.00, 1.89, 1.81, 1.76, 1.71, 1.65],
                 [2.37, 2.19, 2.11, 2.02, 1.92, 1.84, 1.80, 1.75, 1.69],
-                [2.38, 2.20, 2.13, 2.04, 1.95, 1.87, 1.84, 1.79, 1.73],
-                [2.40, 2.21, 2.16, 2.08, 2.00, 1.92, 1.89, 1.85, 1.78],
+                [2.38, 2.21, 2.13, 2.04, 1.95, 1.87, 1.83, 1.78, 1.72],
+                [2.40, 2.24, 2.16, 2.08, 2.00, 1.92, 1.88, 1.84, 1.78],
                 [2.42, 2.27, 2.20, 2.12, 2.04, 1.97, 1.93, 1.89, 1.84],
                 [2.47, 2.33, 2.27, 2.20, 2.12, 2.06, 2.02, 1.98, 1.94],
                 [2.52, 2.39, 2.33, 2.26, 2.19, 2.13, 2.10, 2.06, 2.01],
@@ -42,19 +42,27 @@ def full_calculate_coz(velocity, z, H, Lu, Ld, x, loadLength, OrographyType, loc
                 1.91,
             ]
         )
+        t_table = np.array([3, 4.8, 6.3, 9.0, 14.5, 23.4, 31.0, 44.1, 71.1])
 
-        if z in heights and loadLength in lengths:
-            z_index = np.where(heights == z)[0][0]
-            L_index = np.where(lengths == location)[0][0]
-            sb = sb_table[z_index, L_index]
-            sc = sc_table[z_index]
+        z = max(10, min(z, 300))
+        loadLength = max(20, min(loadLength, 2000))
+        # Determine t based on table values or formula
+        if loadLength in lengths:
+            t = t_table[np.where(lengths == loadLength)[0][0]]
         else:
             if loadLength <= 20:
                 t = 3
             else:
                 t = 0.375 * (loadLength**0.69)
 
-            if z < 25:
+        if z in heights and loadLength in lengths:
+            z_index = np.where(heights == z)[0][0]
+            L_index = np.where(lengths == loadLength)[0][0]
+            sb = sb_table[z_index, L_index]
+            sc = sc_table[z_index]
+        else:
+            sc = (z / 10) ** 0.19
+            if loadLength < 50 and z < 25:
                 z = 25
             try:
                 sb = (1 + (z / 10) ** -0.4 * (1.48 - 0.704 * np.log(np.log(t)))) * (
@@ -63,8 +71,6 @@ def full_calculate_coz(velocity, z, H, Lu, Ld, x, loadLength, OrographyType, loc
             except ValueError:
                 print("Invalid value.")
                 return None, None
-
-            sc = (z / 10) ** 0.19
 
         return sb, sc
 
@@ -135,7 +141,7 @@ def full_calculate_coz(velocity, z, H, Lu, Ld, x, loadLength, OrographyType, loc
                 s = 0
 
         # Downwind section for Hills and Ridges (Case 3)
-        elif location == "Downwind" and OrographyType == "Hills or Ridges":
+        elif location == "Downwind" and OrographyType == "Hills and Ridges":
             x_Ld = x / Ld
             z_Le = z / Le
             if 0 <= x_Ld <= 2.0 and 0 <= z_Le <= 2.0:
@@ -210,7 +216,7 @@ def full_calculate_coz(velocity, z, H, Lu, Ld, x, loadLength, OrographyType, loc
 if __name__ == "__main__":
     # Example usage
     velocity = "Peak Velocity"  # "Peak Velocity" or "Mean Velocity"
-    OrographyType = "Hills or Ridges"  # "Cliffs and Escarpments" or "Hills or Ridges"
+    OrographyType = "Hills and Ridges"  # "Cliffs and Escarpments" or "Hills and Ridges"
     location = "Upwind"  # "Upwind" or "Downwind"
     H = 30  # Height of Topographic Feature, H (m)
     Lu = 500  # Length of Upwind Slope, Lu (m)

@@ -37,7 +37,8 @@ export default function LoadCasesName() {
   return (
     <GuideBox width="100%" horSpaceBetween row verCenter>
       <Typography variant="h1" color={isEmpty ? "#FF5733" : "primary"}>
-        {`Load Case Name (${allNames.length ?? 0})`}
+        {`Load Case Name`}
+        {/* {`Load Case Name (${allNames.length ?? 0})`} */}
       </Typography>
       <DropList
         width={ROOT_R_WIDTH}

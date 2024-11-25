@@ -44,3 +44,18 @@ export const isOpenCalcOrographyDialogSelector = selector<boolean>({
     set(isOpenCalcOrographyDialogState, newValue);
   },
 });
+
+export const isOpenCfDialogState = atom<boolean>({
+  key: "isOpenCfDialogState",
+  default: false,
+});
+
+export const isOpenCfDialogSelector = selector<boolean>({
+  key: "isOpenCfDialogSelector",
+  get: ({ get }) => {
+    return get(isOpenCfDialogState);
+  },
+  set: ({ set }, newValue) => {
+    set(isOpenCfDialogState, newValue);
+  },
+});

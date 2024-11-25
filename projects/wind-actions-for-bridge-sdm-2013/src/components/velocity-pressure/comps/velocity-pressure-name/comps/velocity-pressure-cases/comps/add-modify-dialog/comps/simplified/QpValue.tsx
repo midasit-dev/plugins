@@ -1,34 +1,29 @@
-import {
-  GuideBox,
-  Icon,
-  IconButton,
-  TextFieldV2,
-  Typography,
-} from "@midasit-dev/moaui";
+import { GuideBox, TextFieldV2, Typography } from "@midasit-dev/moaui";
 import useTemporaryValue from "../../../../../../../../../../hooks/useTemporaryValue";
-import InfoWrapper from "../../../../../../../../../common/InfoWrapper";
+import {
+  useChangeBanner,
+  DoneBanner,
+} from "../../../../../../../../../../utils/loadingUtils";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 //TEST Python 계산 결과 보여주는 곳
 export default function QpValue() {
   const { tempValue, setTempValueCallback } = useTemporaryValue();
+  const { isVisible } = useChangeBanner(tempValue?.value, 500);
 
   return (
     <GuideBox width="100%" center spacing={1}>
       <div className="flex items-center">
-        <Typography>Peak Velocity Pressure (qp)</Typography>
+        <div className="flex items-center gap-2">
+          <Typography>Peak Velocity Pressure</Typography>
 
-        <InfoWrapper
-          tooltip={
-            <GuideBox width={150}>
-              <Typography>test</Typography>
-            </GuideBox>
-          }
-        >
-          <IconButton transparent>
-            <Icon iconName="Info" />
-          </IconButton>
-        </InfoWrapper>
+          <p className="text-xs">
+            <InlineMath math={"q_p"} />
+          </p>
+        </div>
       </div>
+
       <div className="flex items-center gap-2">
         <TextFieldV2
           type="number"
@@ -49,7 +44,10 @@ export default function QpValue() {
             });
           }}
         />
-        <Typography>kN/m2</Typography>
+        <p className="text-xs">
+          <InlineMath math={"kN/m^2"} />
+        </p>
+        <DoneBanner isVisible={isVisible} />
       </div>
     </GuideBox>
   );
