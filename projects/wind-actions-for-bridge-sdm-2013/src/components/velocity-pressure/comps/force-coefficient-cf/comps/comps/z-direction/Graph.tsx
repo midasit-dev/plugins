@@ -88,7 +88,7 @@ export default function Graph(props: PlotWithFixedAnnotationProps) {
           l: 30,
           r: 20,
           t: 20,
-          b: 50,
+          b: 30,
         },
         annotations: [
           // Y축 표기

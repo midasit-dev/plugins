@@ -6,7 +6,7 @@ import ZDirection from "./comps/z-direction/ZDirection";
 
 const items = [
   ["x-direction", 1],
-  ["y-direction", 2],
+  ["z-direction", 2],
 ] as [string, number][];
 
 export default function CfDialog() {

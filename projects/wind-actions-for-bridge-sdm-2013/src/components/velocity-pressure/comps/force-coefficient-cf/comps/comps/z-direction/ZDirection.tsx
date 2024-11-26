@@ -50,7 +50,7 @@ export default function ZDirection() {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="w-full bg-white p-4 border border-[#e3e3e3] rounded-md">
+      <div className="w-full bg-white p-4 border border-[#e3e3e3] rounded-md h-[290px]">
         <Graph
           basePoints={[
             {
@@ -81,70 +81,69 @@ export default function ZDirection() {
           fixedX={getX(b_dtot)}
           fixedY={cfz}
           width={350}
-          height={275}
+          height={270}
         />
-
-        <div className="w-full flex flex-col gap-2">
-          <div className="w-full flex gap-2 items-center justify-between">
-            <p
-              className="text-xs"
-              style={{
-                color: isErrorTheta ? "#FF5733" : "#000",
-              }}
-            >
-              <InlineMath math={"\\theta"} />
-            </p>
-            <TextField
-              defaultValue="0"
-              width={150}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                let cur = e.target.value;
-                if (!cur) return;
-                const curNumber = Number(cur);
-                setTheta(curNumber);
-              }}
-              error={isErrorTheta}
-            />
-          </div>
-
-          <div className="w-full flex gap-2 items-center justify-between">
-            <p
-              className="text-xs flex items-center"
-              style={{
-                color: isError ? "#FF5733" : "#000",
-              }}
-            >
-              <InlineMath math={"b/d_{tot}"} />
-            </p>
-
-            <TextField
-              defaultValue={String(b_dtot)}
-              width="150px"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const cur = e.target.value;
-                if (!cur) return;
-                const curNumber = Number(cur);
-                setB_dtot(curNumber);
-              }}
-              error={isError}
-            />
-          </div>
-
-          <div className="w-full flex gap-2 items-center justify-between">
-            <p className="text-xs flex items-center">
-              <InlineMath math={"C_{f,z}"} />
-            </p>
-
-            <TextField
-              defaultValue={cfz.toString()}
-              width="150px"
-              value={cfz.toString()}
-              disabled
-            />
-          </div>
-        </div>
       </div>
 
+      <div className="w-full flex flex-col gap-2">
+        <div className="w-full flex gap-2 items-center justify-between">
+          <p
+            className="text-xs"
+            style={{
+              color: isErrorTheta ? "#FF5733" : "#000",
+            }}
+          >
+            <InlineMath math={"\\theta"} />
+          </p>
+          <TextField
+            defaultValue="0"
+            width={150}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              let cur = e.target.value;
+              if (!cur) return;
+              const curNumber = Number(cur);
+              setTheta(curNumber);
+            }}
+            error={isErrorTheta}
+          />
+        </div>
+
+        <div className="w-full flex gap-2 items-center justify-between">
+          <p
+            className="text-xs flex items-center"
+            style={{
+              color: isError ? "#FF5733" : "#000",
+            }}
+          >
+            <InlineMath math={"b/d_{tot}"} />
+          </p>
+
+          <TextField
+            defaultValue={String(b_dtot)}
+            width="150px"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const cur = e.target.value;
+              if (!cur) return;
+              const curNumber = Number(cur);
+              setB_dtot(curNumber);
+            }}
+            error={isError}
+          />
+        </div>
+
+        <div className="w-full flex gap-2 items-center justify-between">
+          <p className="text-xs flex items-center">
+            <InlineMath math={"C_{f,z}"} />
+          </p>
+
+          <TextField
+            defaultValue={cfz.toString()}
+            width="150px"
+            value={cfz.toString()}
+            disabled
+          />
+        </div>
+      </div>
       <div className="w-full flex justify-end gap-2 mt-2">
         <Button width={"71px"} onClick={onOkHandler} disabled={isError}>
           OK
