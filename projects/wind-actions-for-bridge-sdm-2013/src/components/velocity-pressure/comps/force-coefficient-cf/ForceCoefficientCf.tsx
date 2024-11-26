@@ -3,12 +3,13 @@ import { useRecoilState } from "recoil";
 import {
   DEFAULT_MAIN_CF_VALUE,
   mainCfValueSelector,
+  mainTempCfValueSelector,
 } from "../../../../defines/applyDefines";
 import InfoWrapper from "../../../common/InfoWrapper";
 import { useEffect, useState } from "react";
 import TextFieldForRealNumber from "../../../common/TextFieldForRealNumber";
 import { isOpenCfDialogSelector } from "../../../../defines/openDefines";
-import GraphSample from "./comps/GraphSample";
+import CfDialog from "./comps/CfDialog";
 import { isBlurSelector } from "../../../../defines/blurDefines";
 
 export default function ForceCoefficientCf() {
@@ -19,8 +20,8 @@ export default function ForceCoefficientCf() {
   const [value, setValue] = useRecoilState(mainCfValueSelector);
 
   //임시 값
-  const [tempValue, setTempValue] = useState<string>(
-    value?.toString() ?? String(DEFAULT_MAIN_CF_VALUE)
+  const [tempValue, setTempValue] = useRecoilState<string>(
+    mainTempCfValueSelector
   );
   const [isError, setIsError] = useState<boolean>(false);
 
@@ -32,7 +33,7 @@ export default function ForceCoefficientCf() {
     if (isLessZero || isNotNumber) return;
 
     setValue(Number(tempValue));
-  }, [tempValue, setValue]);
+  }, [tempValue, setValue, value]);
 
   return (
     <GuideBox width="100%" horSpaceBetween row verCenter>
@@ -86,7 +87,7 @@ export default function ForceCoefficientCf() {
             <Icon iconName="MoreHoriz" />
           </IconButton>
 
-          {isOpen && <GraphSample />}
+          {isOpen && <CfDialog />}
         </div>
       </div>
     </GuideBox>

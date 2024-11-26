@@ -187,6 +187,22 @@ export const mainCfValueSelector = selector<number | null>({
   },
 });
 
+// 메인의 Cf 임시 값! Temp Value
+export const mainTempCfValueState = atom<string>({
+  key: "mainTempCfValueState",
+  default: String(DEFAULT_MAIN_CF_VALUE),
+});
+
+export const mainTempCfValueSelector = selector<string>({
+  key: "mainTempCfValueSelector",
+  get: ({ get }) => {
+    return get(mainTempCfValueState);
+  },
+  set: ({ set }, newValue) => {
+    set(mainTempCfValueState, newValue);
+  },
+});
+
 // 메인의 CsCd 값
 export const mainCsCdValueState = atom<number | null>({
   key: "mainCsCdValueState",
