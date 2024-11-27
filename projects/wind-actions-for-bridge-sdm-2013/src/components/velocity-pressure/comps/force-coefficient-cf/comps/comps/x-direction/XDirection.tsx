@@ -1,4 +1,12 @@
-import { Button, DropList, TextField, Typography } from "@midasit-dev/moaui";
+import {
+  Button,
+  DropList,
+  TextField,
+  Typography,
+  GuideBox,
+  Icon,
+  IconButton,
+} from "@midasit-dev/moaui";
 import Graph from "./Graph";
 import { useCallback, useEffect } from "react";
 import { useState } from "react";
@@ -13,6 +21,7 @@ import { isOpenCfDialogSelector } from "../../../../../../../defines/openDefines
 import { isBlurSelector } from "../../../../../../../defines/blurDefines";
 import { type Type, typeA, typeB } from "./type";
 import useGraph from "./hooks/useGraph";
+import InfoWrapper from "../../../../../../common/InfoWrapper";
 
 export default function XDirection() {
   const [, setIsOpen] = useRecoilState(isOpenCfDialogSelector);
@@ -71,7 +80,27 @@ export default function XDirection() {
 
       <div className="w-full flex flex-col gap-2">
         <div className="w-full flex gap-2 items-center justify-between">
-          <Typography>Bridge Type</Typography>
+          <GuideBox width={"100%"} horLeft verCenter row>
+            <Typography>Bridge Type</Typography>
+            <InfoWrapper
+              tooltipProps={{
+                left: -50,
+                bottom: 30,
+              }}
+              tooltip={
+                <GuideBox width={300} spacing={1}>
+                  <Typography variant="h1" color="gray">
+                    Refer to Figure 8.3 of BS EN 1991-1-4
+                  </Typography>
+                  <img src="./assets/cf_bridge_type.png" alt="Bridge Type" />
+                </GuideBox>
+              }
+            >
+              <IconButton transparent>
+                <Icon iconName="Help" />
+              </IconButton>
+            </InfoWrapper>
+          </GuideBox>
           <DropList
             width={150}
             itemList={[

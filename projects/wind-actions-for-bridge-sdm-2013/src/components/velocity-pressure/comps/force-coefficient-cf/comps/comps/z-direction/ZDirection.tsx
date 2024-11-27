@@ -1,4 +1,12 @@
-import { Button, DropList, TextField } from "@midasit-dev/moaui";
+import {
+  Button,
+  DropList,
+  TextField,
+  Icon,
+  IconButton,
+  GuideBox,
+  Typography,
+} from "@midasit-dev/moaui";
 import Graph from "./Graph";
 import { useCallback, useEffect } from "react";
 import { useState } from "react";
@@ -12,6 +20,7 @@ import { mainTempCfValueSelector } from "../../../../../../../defines/applyDefin
 import { isOpenCfDialogSelector } from "../../../../../../../defines/openDefines";
 import { isBlurSelector } from "../../../../../../../defines/blurDefines";
 import useGraph from "./hooks/useGraph";
+import InfoWrapper from "../../../../../../common/InfoWrapper";
 
 export default function ZDirection() {
   const [, setIsOpen] = useRecoilState(isOpenCfDialogSelector);
@@ -95,6 +104,26 @@ export default function ZDirection() {
           >
             <InlineMath math={"\\theta"} />
           </p>
+          <GuideBox width={"100%"} horLeft verCenter row>
+            <InfoWrapper
+              tooltipProps={{
+                left: 0,
+                bottom: 30,
+              }}
+              tooltip={
+                <GuideBox width={300} spacing={1}>
+                  <Typography variant="h1" color="gray">
+                    Refer to Figure 8.6 of BS EN 1991-1-4
+                  </Typography>
+                  <img src="./assets/cf_bridge_type2.png" alt="Bridge Angle" />
+                </GuideBox>
+              }
+            >
+              <IconButton transparent>
+                <Icon iconName="Help" />
+              </IconButton>
+            </InfoWrapper>
+          </GuideBox>
           <TextField
             defaultValue="0"
             width={150}
