@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import XDirection from "./comps/x-direction/XDirection";
 import ZDirection from "./comps/z-direction/ZDirection";
+import { useDelayCallback } from "../../../../../utils/loadingUtils";
 
 const items = [
   ["x-direction", 1],
@@ -12,9 +13,15 @@ const items = [
 export default function CfDialog() {
   const [dir, setDir] = useState<number>(1);
 
+  const { delayCallback, isPending } = useDelayCallback();
+
   const handleChange = useCallback(
-    (e: SelectChangeEvent) => setDir(Number(e.target.value)),
-    []
+    (e: SelectChangeEvent) => {
+      delayCallback(() => {
+        setDir(Number(e.target.value));
+      }, 500);
+    },
+    [delayCallback]
   );
 
   return (
@@ -35,8 +42,10 @@ export default function CfDialog() {
           />
         </div>
 
-        {dir === 1 && <XDirection />}
-        {dir === 2 && <ZDirection />}
+        <GuideBox loading={isPending}>
+          {dir === 1 && <XDirection />}
+          {dir === 2 && <ZDirection />}
+        </GuideBox>
       </GuideBox>
     </div>
   );

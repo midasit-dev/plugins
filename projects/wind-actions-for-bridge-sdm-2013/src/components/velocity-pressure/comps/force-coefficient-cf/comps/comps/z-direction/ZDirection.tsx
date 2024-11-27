@@ -1,6 +1,5 @@
 import {
   Button,
-  DropList,
   TextField,
   Icon,
   IconButton,
@@ -14,13 +13,14 @@ import { useState } from "react";
 import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
 
-import type { SelectChangeEvent } from "@mui/material";
 import { useRecoilState } from "recoil";
 import { mainTempCfValueSelector } from "../../../../../../../defines/applyDefines";
 import { isOpenCfDialogSelector } from "../../../../../../../defines/openDefines";
 import { isBlurSelector } from "../../../../../../../defines/blurDefines";
 import useGraph from "./hooks/useGraph";
 import InfoWrapper from "../../../../../../common/InfoWrapper";
+import { useChangeBanner } from "../../../../../../../utils/loadingUtils";
+import { DoneBanner } from "../../../../../../../utils/loadingUtils";
 
 export default function ZDirection() {
   const [, setIsOpen] = useRecoilState(isOpenCfDialogSelector);
@@ -56,6 +56,9 @@ export default function ZDirection() {
   useEffect(() => {
     setIsErrorTheta(isErrorThetaFunction(theta));
   }, [isErrorThetaFunction, theta]);
+
+  // Cf 값 변환시 이벤트
+  const { isVisible } = useChangeBanner(cfz, 500);
 
   return (
     <div className="flex flex-col gap-2">
@@ -96,15 +99,15 @@ export default function ZDirection() {
 
       <div className="w-full flex flex-col gap-2">
         <div className="w-full flex gap-2 items-center justify-between">
-          <p
-            className="text-xs"
-            style={{
-              color: isErrorTheta ? "#FF5733" : "#000",
-            }}
-          >
-            <InlineMath math={"\\theta"} />
-          </p>
-          <GuideBox width={"100%"} horLeft verCenter row>
+          <div className="flex items-center">
+            <p
+              className="text-xs"
+              style={{
+                color: isErrorTheta ? "#FF5733" : "#000",
+              }}
+            >
+              <InlineMath math={"\\theta"} />
+            </p>
             <InfoWrapper
               tooltipProps={{
                 left: 0,
@@ -123,7 +126,8 @@ export default function ZDirection() {
                 <Icon iconName="Help" />
               </IconButton>
             </InfoWrapper>
-          </GuideBox>
+          </div>
+
           <TextField
             defaultValue="0"
             width={150}
@@ -165,12 +169,15 @@ export default function ZDirection() {
             <InlineMath math={"C_{f,z}"} />
           </p>
 
-          <TextField
-            defaultValue={cfz.toString()}
-            width="150px"
-            value={cfz.toString()}
-            disabled
-          />
+          <div className="flex items-center gap-4">
+            <DoneBanner isVisible={isVisible} />
+            <TextField
+              defaultValue={cfz.toString()}
+              width="150px"
+              value={cfz.toString()}
+              disabled
+            />
+          </div>
         </div>
       </div>
       <div className="w-full flex justify-end gap-2 mt-2">

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
-import _ from "lodash";
 
 interface PlotWithFixedAnnotationProps {
   basePoints: Plotly.Data[];

@@ -30,7 +30,7 @@ export default function InfoWrapper({
       {isHover && (
         <AnimatePresence>
           <motion.div
-            className="absolute w-auto h-auto rounded-md shadow-lg bg-white p-4 flex border border-gray-300"
+            className="absolute w-auto h-auto rounded-md shadow-lg bg-white p-4 flex border border-gray-300 z-40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

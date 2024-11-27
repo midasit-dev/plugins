@@ -22,6 +22,10 @@ import { isBlurSelector } from "../../../../../../../defines/blurDefines";
 import { type Type, typeA, typeB } from "./type";
 import useGraph from "./hooks/useGraph";
 import InfoWrapper from "../../../../../../common/InfoWrapper";
+import {
+  DoneBanner,
+  useChangeBanner,
+} from "../../../../../../../utils/loadingUtils";
 
 export default function XDirection() {
   const [, setIsOpen] = useRecoilState(isOpenCfDialogSelector);
@@ -48,6 +52,9 @@ export default function XDirection() {
     setIsOpen(false);
     setIsBlur(false);
   }, [cfx, setIsBlur, setIsOpen, setTempCf]);
+
+  // Cf 값 변환시 이벤트
+  const { isVisible } = useChangeBanner(cfx, 500);
 
   return (
     <div className="flex flex-col gap-2">
@@ -80,8 +87,9 @@ export default function XDirection() {
 
       <div className="w-full flex flex-col gap-2">
         <div className="w-full flex gap-2 items-center justify-between">
-          <GuideBox width={"100%"} horLeft verCenter row>
+          <GuideBox width={"100%"} horLeft verCenter row spacing={0}>
             <Typography>Bridge Type</Typography>
+
             <InfoWrapper
               tooltipProps={{
                 left: -50,
@@ -145,12 +153,15 @@ export default function XDirection() {
             <InlineMath math={"C_{f,x}"} />
           </p>
 
-          <TextField
-            defaultValue={cfx.toString()}
-            width="150px"
-            value={cfx.toString()}
-            disabled
-          />
+          <div className="flex items-center gap-4">
+            <DoneBanner isVisible={isVisible} />
+            <TextField
+              defaultValue={cfx.toString()}
+              width="150px"
+              value={cfx.toString()}
+              disabled
+            />
+          </div>
         </div>
 
         <div className="w-full flex justify-end gap-2 mt-4">

@@ -37,33 +37,35 @@ export default function ForceCoefficientCf() {
 
   return (
     <GuideBox width="100%" horSpaceBetween row verCenter>
-      {/** 에러 상태에 따라 문자열 색상 표시 */}
-      <Typography variant="h1" color={isError ? "#FF5733" : "primary"}>
-        Force Coefficient, Cf
-      </Typography>
+      <div className="flex items-center">
+        {/** 에러 상태에 따라 문자열 색상 표시 */}
+        <Typography variant="h1" color={isError ? "#FF5733" : "primary"}>
+          Force Coefficient, Cf
+        </Typography>
 
-      <InfoWrapper
-        tooltipProps={{
-          left: -130,
-          bottom: 30,
-        }}
-        tooltip={
-          <GuideBox width={300}>
-            <Typography variant="h1" color="gray">
-              Refer to Clause 3.4.6
-            </Typography>
-            <Typography>
-              Force coefficients give the overall effect of the wind on a
-              structure, structural element or component as a whole, including
-              friction, if not specifically excluded.
-            </Typography>
-          </GuideBox>
-        }
-      >
-        <IconButton transparent>
-          <Icon iconName="Help" />
-        </IconButton>
-      </InfoWrapper>
+        <InfoWrapper
+          tooltipProps={{
+            left: -130,
+            bottom: 30,
+          }}
+          tooltip={
+            <GuideBox width={300}>
+              <Typography variant="h1" color="gray">
+                Refer to Clause 3.4.6
+              </Typography>
+              <Typography>
+                Force coefficients give the overall effect of the wind on a
+                structure, structural element or component as a whole, including
+                friction, if not specifically excluded.
+              </Typography>
+            </GuideBox>
+          }
+        >
+          <IconButton transparent>
+            <Icon iconName="Help" />
+          </IconButton>
+        </InfoWrapper>
+      </div>
 
       <div className="flex gap-4 items-center">
         {/** 텍스트 필드 교체 */}

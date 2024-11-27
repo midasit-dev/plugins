@@ -48,41 +48,44 @@ export default function Direction() {
 
   return (
     <GuideBox width={"100%"} horSpaceBetween verCenter row>
-      <Typography variant="h1">Loading Direction</Typography>
-      <InfoWrapper
-        tooltipProps={{
-          left: -150,
-          bottom: 30,
-        }}
-        tooltip={
-          <GuideBox width={390} spacing={1}>
-            <Typography variant="h1" color="gray">
-              Set the direction of beam loads.
-            </Typography>
-            <Typography>
-              Local y+/-: Beam load applied in the element local y(+) or
-              y(-)direction.
-            </Typography>
-            <Typography>
-              Local z+/-: Beam load applied in the element local z(+) or z(-)
-              direction.
-            </Typography>
-            <img src="./assets/direction.png" alt="Loading Direction" />
+      <div className="flex items-center">
+        <Typography variant="h1">Loading Direction</Typography>
+        <InfoWrapper
+          tooltipProps={{
+            left: -150,
+            bottom: 30,
+          }}
+          tooltip={
+            <GuideBox width={390} spacing={1}>
+              <Typography variant="h1" color="gray">
+                Set the direction of beam loads.
+              </Typography>
+              <Typography>
+                Local y+/-: Beam load applied in the element local y(+) or
+                y(-)direction.
+              </Typography>
+              <Typography>
+                Local z+/-: Beam load applied in the element local z(+) or z(-)
+                direction.
+              </Typography>
+              <img src="./assets/direction.png" alt="Loading Direction" />
 
-            <Typography>
-              If you want the wind pressure to be applied in this direction, set
-              it to
-            </Typography>
-            <div>
-              <Typography variant="h1"> Local y-.</Typography>
-            </div>
-          </GuideBox>
-        }
-      >
-        <IconButton transparent>
-          <Icon iconName="Help" />
-        </IconButton>
-      </InfoWrapper>
+              <Typography>
+                If you want the wind pressure to be applied in this direction,
+                set it to
+              </Typography>
+              <div>
+                <Typography variant="h1"> Local y-.</Typography>
+              </div>
+            </GuideBox>
+          }
+        >
+          <IconButton transparent>
+            <Icon iconName="Help" />
+          </IconButton>
+        </InfoWrapper>
+      </div>
+
       <DropList
         width={PANEL_1_R_WIDTH}
         itemList={items as [string, string | number][]}
