@@ -1,6 +1,5 @@
-# import requests
 from py_base import MidasAPI, Product, requests_json, get_g_values
-
+import json
 
 def do_apply(
     lcname,
@@ -73,41 +72,41 @@ def do_apply(
         },
     )
 
-    # 변경된 사용자 단위 가져오기
-    # updated_unit_data = put_unit.json()
-    # print("변경된 사용자 단위:", updated_unit_data)
 
     ############################################################################################################
-    # 기존 BMLD 데이터를 가져오기 위한 GET 요청
-    # response_get = requests.get(base_url + bmld_data, headers=headers)
 
-    bmld_body = civil.db_read("bmld")
-    bmld_data = bmld_body.get("BMLD", {})
+
+    bmld_body = civil.db_read("BMLD")
+
+    print('bmld_body', bmld_body)
+
 
     # BMLD 아이템 생성 및 추가 함수
     def add_bmld_item(bmld_body, element_id, new_item):
         # element_id를 문자열로 변환
-        element_id_str = str(element_id)
+        element_id_int = int(element_id)
 
         # bmld_body에 element_id가 존재하는지 확인
-        if element_id_str in bmld_body:
+        if element_id_int in bmld_body:
             # 기존 ITEMS 리스트 가져오기
-            items = bmld_body[element_id_str].get("ITEMS", [])
+            items = bmld_body[element_id_int].get("ITEMS", [])
             # 기존 아이템들의 ID 리스트 생성
-            existing_lcnames = [item.get("LCNAME") for item in items]
-            if new_item["LCNAME"] not in existing_lcnames:
-                # 새로운 아이템 추가
-                existing_ids = [item.get("ID") for item in items]
-                max_id = max(existing_ids) if existing_ids else 0
-                new_item["ID"] = max_id + 1
-                items.append(new_item)
-                # 업데이트된 ITEMS 리스트를 할당
-                bmld_body[element_id_str]["ITEMS"] = items
-            
+            existing_ids = [item.get("ID", 0) for item in items]
+            # 최대 ID 찾기
+            max_id = max(existing_ids) if existing_ids else 0
+            # 새로운 아이템의 ID 설정
+            new_item["ID"] = max_id + 1
+            # 새로운 아이템 추가
+            items.append(new_item)
+            # 업데이트된 ITEMS 리스트를 할당
+            bmld_body[element_id_int]["ITEMS"] = items
         else:
             # element_id가 없을 경우 새로운 항목 생성
             new_item["ID"] = 1
-            bmld_body[element_id_str] = {"ITEMS": [new_item]}
+            bmld_body[element_id_int] = {"ITEMS": [new_item]}
+
+        return bmld_body
+    
 
     # 각 요소에 대해 BMLD 아이템 생성 및 추가
     pressure = wind_pressure * force_coefficient * structural_factor
@@ -116,6 +115,8 @@ def do_apply(
     direction_axis = direction[:2]  # 'LY' 또는 'LZ'
 
     # print("boolean", use_additional, use_additional_j_end)
+
+    print('target_elements', target_elements)
 
     for elem_id in target_elements:
         new_item = {
@@ -135,17 +136,9 @@ def do_apply(
             "USE_ADDITIONAL_J_END": use_additional_j_end,
         }
         add_bmld_item(bmld_body, elem_id, new_item)
+        print('bmld-elem', elem_id,json.dumps(bmld_body, indent=2))
 
-    # 전체 데이터를 담은 딕셔너리 생성
-    final_bmld_data = {"Assign": bmld_body}  # "BMLD"를 "Assign"으로 변경합니다.
-
-    # BMLD API 요청 URL 설정
-    # request_bmld = base_url + bmld_data
-
-    # BMLD API 호출 및 응답 처리
-    # response_put = requests.put(request_bmld, headers=headers, json=final_bmld_data)
     response_put = civil.db_update("bmld", bmld_body)
-    
 
     ############################################################################################################
     # UNIT API 요청 URL 설정 (PUT : 사용자 단위를 원래대로 되돌립니다.)
@@ -156,9 +149,6 @@ def do_apply(
     # put_unit = requests.put(request_unit, headers=headers, json=unit_body_restore)
     reverted_unit_data = civil.db_update("unit", initial_unit_data)
 
-    # 변경된 사용자 단위 가져오기
-    # reverted_unit_data = put_unit.json()
-    # print("원래 사용자 단위:", reverted_unit_data)
 
     # BMLD 응답 데이터 반환
     return response_put

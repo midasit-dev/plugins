@@ -1,24 +1,31 @@
 py-config {
   display: none;
 }
+
 py-script:not(:defined) {
   display: none;
 }
+
 py-repl:not(:defined) {
   display: none;
 }
+
 py-title:not(:defined) {
   display: none;
 }
+
 py-inputbox:not(:defined) {
   display: none;
 }
+
 py-button:not(:defined) {
   display: none;
 }
+
 py-box:not(:defined) {
   display: none;
 }
+
 html {
   font-family:
     ui-sans-serif,
@@ -36,12 +43,14 @@ html {
     "Segoe UI Symbol",
     "Noto Color Emoji";
   line-height: 1.5;
-	overflow: hidden;
+  overflow: hidden;
 }
+
 html, body {
-	padding: 0;
-	margin: 0;
+  padding: 0;
+  margin: 0;
 }
+
 .spinner::after {
   content: "";
   box-sizing: border-box;
@@ -52,17 +61,20 @@ html, body {
   left: calc(50% - 32px);
   border-radius: 50%;
 }
+
 .spinner.smooth::after {
   border-top: 4px solid rgba(97, 157, 242, 1);
   border-left: 4px solid rgba(97, 157, 242, 1);
   border-right: 4px solid rgba(255, 255, 255, 0);
   animation: spinner 0.6s linear infinite;
 }
+
 @keyframes spinner {
   to {
     transform: rotate(360deg);
   }
 }
+
 .label {
   text-align: center;
   width: 100%;
@@ -71,6 +83,7 @@ html, body {
   font-size: 0.8rem;
   margin-top: 6rem;
 }
+
 .py-overlay {
   position: fixed;
   display: flex;
@@ -86,20 +99,24 @@ html, body {
   color: visible;
   opacity: 1;
 }
+
 .py-overlay {
   visibility: visible;
   opacity: 1;
 }
+
 .py-pop-up {
   text-align: center;
   width: 600px;
 }
+
 .py-pop-up p {
-	display: none;
+  display: none;
   margin: 5px;
 }
+
 .py-pop-up a {
-	display: none;
+  display: none;
   position: absolute;
   color: white;
   text-decoration: none;
@@ -107,32 +124,39 @@ html, body {
   top: 3.5%;
   right: 5%;
 }
+
 .alert-banner {
   position: relative;
   padding: 0.5rem 1.5rem 0.5rem 0.5rem;
   margin: 5px 0;
 }
+
 .alert-banner p {
   margin: 0;
 }
+
 .py-error {
   background-color: #ffe9e8;
   border: solid;
   border-color: #f0625f;
   color: #9d041c;
 }
+
 .py-warning {
   background-color: rgb(255, 244, 229);
   border: solid;
   border-color: #ffa016;
   color: #794700;
 }
-.alert-banner.py-error > #alert-close-button {
+
+.alert-banner.py-error>#alert-close-button {
   color: #9d041c;
 }
-.alert-banner.py-warning > #alert-close-button {
+
+.alert-banner.py-warning>#alert-close-button {
   color: #794700;
 }
+
 #alert-close-button {
   position: absolute;
   right: 0.5rem;
@@ -141,17 +165,21 @@ html, body {
   background: transparent;
   border: none;
 }
+
 .py-box {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 }
+
 .py-box div.py-box-child * {
   max-width: 100%;
 }
+
 .py-repl-box {
   flex-direction: column;
 }
+
 .py-repl-editor {
   --tw-border-opacity: 1;
   border-color: rgba(209, 213, 219, var(--tw-border-opacity));
@@ -170,9 +198,11 @@ html, body {
   border-style: solid;
   border-color: rgb(209, 213, 219);
 }
+
 .editor-box:hover button {
   opacity: 1;
 }
+
 .py-repl-run-button {
   opacity: 0;
   bottom: 0.25rem;
@@ -206,17 +236,21 @@ html, body {
   padding: 1px 6px;
   border: 0;
 }
+
 .py-repl-run-button:hover {
   opacity: 1;
 }
+
 .py-title {
   text-transform: uppercase;
   text-align: center;
 }
+
 .py-title h1 {
   font-weight: 700;
   font-size: 1.875rem;
 }
+
 .py-input {
   padding: 0.5rem;
   --tw-border-opacity: 1;
@@ -227,14 +261,17 @@ html, body {
   border-style: solid;
   width: auto;
 }
+
 .py-box input.py-input {
   width: -webkit-fill-available;
 }
+
 .central-content {
   max-width: 20rem;
   margin-left: auto;
   margin-right: auto;
 }
+
 /* input {
   text-rendering: auto;
   color: -internal-light-dark(black, white);
@@ -268,12 +305,15 @@ html, body {
   border-radius: 0.25rem;
   cursor: pointer;
 }
+
 .py-li-element p {
   margin: 5px;
 }
+
 .py-li-element p {
   display: inline;
 }
+
 button,
 input,
 optgroup,
@@ -284,22 +324,28 @@ textarea {
   line-height: 1.15;
   margin: 0;
 }
+
 .line-through {
   text-decoration: line-through;
 }
+
 .py-terminal {
+  display: none;
   min-height: 10em;
   background-color: black;
   color: white;
   padding: 0.5rem;
   overflow: auto;
 }
+
 .py-terminal-hidden {
   display: none;
 }
+
 html:has(py-terminal[docked]:not(py-terminal[docked].py-terminal-hidden)) {
   padding-bottom: 40vh;
 }
+
 py-terminal[docked] {
   position: fixed;
   bottom: 0;
@@ -307,6 +353,7 @@ py-terminal[docked] {
   max-height: 40vh;
   overflow: auto;
 }
+
 py-terminal[docked] .py-terminal {
   margin: 0;
 }
