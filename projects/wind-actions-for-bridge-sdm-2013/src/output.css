@@ -667,12 +667,12 @@ video {
   z-index: 30;
 }
 
-.z-\[200\] {
-  z-index: 200;
-}
-
 .z-40 {
   z-index: 40;
+}
+
+.z-\[200\] {
+  z-index: 200;
 }
 
 .m-0 {
@@ -995,6 +995,11 @@ video {
 .outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+.blur {
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .filter {

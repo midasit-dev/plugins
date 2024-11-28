@@ -6,11 +6,14 @@ import {
 } from "../../../../../../../../../../utils/loadingUtils";
 import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
+import { useState } from "react";
 
 //TEST Python 계산 결과 보여주는 곳
 export default function QpValue() {
+  const [isBlock, setIsBlock] = useState<boolean>(false);
+
   const { tempValue, setTempValueCallback } = useTemporaryValue();
-  const { isVisible } = useChangeBanner(tempValue?.value, 500);
+  const { isVisible } = useChangeBanner(tempValue?.value, 500, isBlock);
 
   return (
     <GuideBox width="100%" center spacing={1}>
@@ -24,7 +27,11 @@ export default function QpValue() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div
+        className="flex items-center gap-2"
+        onFocus={() => setIsBlock(true)}
+        onBlur={() => setIsBlock(false)}
+      >
         <TextFieldV2
           type="number"
           numberOptions={{
