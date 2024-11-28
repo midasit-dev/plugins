@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { VarTabGroupMain, VarLoadCase_TUH, VarLoadCase_TUC, VarLoadCase_TGH, VarLoadCase_TGC, VarAdjOpt, VarDiffOpt, VarStldlist } from "./variables";
 import { VarSuperType, VarStructType, VarDeckSurfType, VarDeckSurfThick, VarHeightSeaLevel } from "./variables";
 import { TabGroup, Tab, GuideBox, Panel, Typography, DropList, Icon, Switch, IconButton, FloatingBox, TextFieldV2 } from "@midasit-dev/moaui";
 import { checkPyScriptReady } from "../utils_pyscript";
 import { enqueueSnackbar } from "notistack";
+import { debounce } from "lodash";
 
 // UI 크기
 const fieldwidth = 150;
@@ -190,6 +191,18 @@ const ResultsDetail = () => {
 		});
 	},[tempType, superType, structType, deckSurfType, deckSurfThick, heightSeaLevel, adjOpt, diffOpt, sectHeight]);
 	
+	// 디바운스 처리
+  const debouncedSetSectHeight = debounce(
+    useCallback(
+      (e: any) => {
+        console.log("real?");
+        setSectHeight(Number(e.target.value));
+      },
+      [setSectHeight]
+    ),
+    300
+  );
+
 	if (tempType === "Uniform") {
 		return (
 			<>
@@ -292,7 +305,7 @@ const ResultsDetail = () => {
 							type="number"
 							width={120}
 							defaultValue={"600"}
-							onChange={(e: any) => setSectHeight(Number(e.target.value))}
+							onChange={debouncedSetSectHeight}
 							numberOptions={{
 								min: 135,
 								step: 1,
