@@ -82,14 +82,7 @@ def do_apply(
     # response_get = requests.get(base_url + bmld_data, headers=headers)
 
     bmld_body = civil.db_read("bmld")
-
-    # if response_get.status_code == 200:
-    #     existing_bmld_data = response_get.json()
-    #     # 기존 데이터에서 "BMLD" 키 아래의 데이터를 가져옵니다.
-    #     bmld_body = existing_bmld_data.get("BMLD", {})
-    # else:
-    #     print(f"기존 BMLD 데이터를 가져오는 중 오류 발생: {response_get.status_code}")
-    #     bmld_body = {}
+    bmld_data = bmld_body.get("BMLD", {})
 
     # BMLD 아이템 생성 및 추가 함수
     def add_bmld_item(bmld_body, element_id, new_item):
@@ -101,15 +94,16 @@ def do_apply(
             # 기존 ITEMS 리스트 가져오기
             items = bmld_body[element_id_str].get("ITEMS", [])
             # 기존 아이템들의 ID 리스트 생성
-            existing_ids = [item.get("ID", 0) for item in items]
-            # 최대 ID 찾기
-            max_id = max(existing_ids) if existing_ids else 0
-            # 새로운 아이템의 ID 설정
-            new_item["ID"] = max_id + 1
-            # 새로운 아이템 추가
-            items.append(new_item)
-            # 업데이트된 ITEMS 리스트를 할당
-            bmld_body[element_id_str]["ITEMS"] = items
+            existing_lcnames = [item.get("LCNAME") for item in items]
+            if new_item["LCNAME"] not in existing_lcnames:
+                # 새로운 아이템 추가
+                existing_ids = [item.get("ID") for item in items]
+                max_id = max(existing_ids) if existing_ids else 0
+                new_item["ID"] = max_id + 1
+                items.append(new_item)
+                # 업데이트된 ITEMS 리스트를 할당
+                bmld_body[element_id_str]["ITEMS"] = items
+            
         else:
             # element_id가 없을 경우 새로운 항목 생성
             new_item["ID"] = 1
@@ -151,6 +145,7 @@ def do_apply(
     # BMLD API 호출 및 응답 처리
     # response_put = requests.put(request_bmld, headers=headers, json=final_bmld_data)
     response_put = civil.db_update("bmld", bmld_body)
+    
 
     ############################################################################################################
     # UNIT API 요청 URL 설정 (PUT : 사용자 단위를 원래대로 되돌립니다.)
