@@ -78,9 +78,6 @@ def do_apply(
 
     bmld_body = civil.db_read("BMLD")
 
-    print('bmld_body', bmld_body)
-
-
     # BMLD 아이템 생성 및 추가 함수
     def add_bmld_item(bmld_body, element_id, new_item):
         # element_id를 문자열로 변환
@@ -116,8 +113,6 @@ def do_apply(
 
     # print("boolean", use_additional, use_additional_j_end)
 
-    print('target_elements', target_elements)
-
     for elem_id in target_elements:
         new_item = {
             # 'ID'는 함수 내에서 설정됩니다.
@@ -136,7 +131,6 @@ def do_apply(
             "USE_ADDITIONAL_J_END": use_additional_j_end,
         }
         add_bmld_item(bmld_body, elem_id, new_item)
-        print('bmld-elem', elem_id,json.dumps(bmld_body, indent=2))
 
     response_put = civil.db_update("bmld", bmld_body)
 
