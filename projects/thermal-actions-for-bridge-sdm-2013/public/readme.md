@@ -1,4 +1,4 @@
-# Thermal Action for Bridge (SDM 2013)
+# Temperature Load Calculator for bridges (HK)
 
 This plug-in calculates thermal actions on bridge structures based on Section 3.5 **Temperature Effects** from the **STRUCTURES DESIGN MANUAL for Highways and Railways 2013 Edition (SDM 2013)**, published by the Hong Kong Highways Department.
 

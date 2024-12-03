@@ -1,4 +1,4 @@
-# Wind Action for Bridge (SDM 2013)
+# Wind Load Calculator for bridges (HK)
 
 This plug-in calculates the Peak Velocity Pressure for wind actions applied to bridge structures, based on Section 3.4 **Wind Actions** from the **STRUCTURES DESIGN MANUAL for Highways and Railways 2013 Edition (SDM 2013)**, published by the Hong Kong Highways Department.
 
