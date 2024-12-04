@@ -1,6 +1,6 @@
 {
-  "short_name": "Thermal Action for Bridge (SDM 2013)",
-  "name": "Thermal Action for Bridge (SDM 2013)",
+  "short_name": "Temperature Load Calculator for bridges (HK)",
+  "name": "Temperature Load Calculator for bridges (HK)",
   "icons": [
     {
       "src": "favicon.ico",
