@@ -1,7 +1,10 @@
 {
-  "welcome_midas_plugin": "ようこそ、これはMIDASプラグインCRAテンプレートです！",
-  "dev_mode_developing": "現在、プラグインアイテムをより便利にするために開発モードを開発中です",
-  "turn_on_development_mode": "開発モードをオンにするには、Windowsターミナルを開いてください。",
-  "type_command_below": "そして、以下のコマンドを入力してください。",
-  "example": "ゼロより大きい数字をいれてください。"
+  "elementType": "要素タイプ",
+  "Truss": "トラス",
+  "BeamColumn": "梁-柱",
+  "GenericLink": "汎用リンク",
+
+  "componentType": " ヒンジ成分",
+  "requestBtn": "ヒンジデータの読込み",
+  "pointType": "折れ点の数"
 }

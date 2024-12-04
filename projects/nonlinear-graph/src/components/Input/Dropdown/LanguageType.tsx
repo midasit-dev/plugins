@@ -12,7 +12,6 @@ const LanguageType = () => {
   const items = new Map<string, number>([
     ["en", 1],
     ["jp", 2],
-    ["kr", 3],
   ]);
   const [value, setValue] = useState(items.get(nowLang));
 
@@ -28,23 +27,13 @@ const LanguageType = () => {
     });
   }
   return (
-    <GuideBox horRight>
-      <Stack direction="row" spacing={5}>
-        <GuideBox center>
-          <Typography variant="h1" size="large">
-            {nowLang} :
-          </Typography>
-        </GuideBox>
-        <GuideBox center>
-          <DropList
-            width={"10vh"}
-            itemList={items}
-            defaultValue="en"
-            value={value}
-            onChange={onChangeHandler}
-          />
-        </GuideBox>
-      </Stack>
+    <GuideBox horRight margin={2}>
+      <DropList
+        itemList={items}
+        defaultValue="en"
+        value={value}
+        onChange={onChangeHandler}
+      />
     </GuideBox>
   );
 };

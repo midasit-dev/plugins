@@ -1,7 +1,10 @@
 {
-  "welcome_midas_plugin": "Welcome, This is a MIDAS Plug-in CRA Template!",
-  "dev_mode_developing": "We are currently developing the dev mode to make the plug-in item more convenient",
-  "turn_on_development_mode": "To turn on the development mode, open the windows terminal.",
-  "type_command_below": "And type the command below.",
-  "example": "bigger than 0 number"
+  "elementType": "Element Type",
+  "Truss": "Truss",
+  "BeamColumn": "Beam and Column",
+  "GenericLink": "Generic Link",
+
+  "componentType": "Component",
+  "requestBtn": "Import of Hinge",
+  "pointType": "Num. of point"
 }

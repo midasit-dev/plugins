@@ -2,114 +2,56 @@ import {
   GuideBox,
   Grid,
   Panel,
+  TabGroup,
+  Tab,
   Color,
   Typography,
   Stack,
   Button,
 } from "@midasit-dev/moaui";
-import { useTranslation } from "react-i18next";
-import LanguageType from "../../Input/Dropdown/LanguageType";
-import RequestBtnPy from "../../Input/Button/RequestBtnPy";
-import { useState } from "react";
-import DefalutTextEdit from "../../Input/TextEdit/TextEdit";
+import React, { useEffect } from "react";
+import DefalutTable from "../../Input/TableGrid/DefaultTable";
 
-const Contents = () => {
-  const [exampleAPI, setexampleAPI] = useState([]);
-  const [examplePython, setexamplePython] = useState(0);
-  const [resultPython, setresultPython] = useState(0);
-  const { t: translate } = useTranslation();
-  const resultPython2 = translate("example");
+interface Props {
+  props: {
+    UnitData: object;
+    GetValue: Array<object>;
+    tableType: number;
+  };
+  propFuncs: {
+    setTableValue: React.Dispatch<React.SetStateAction<Array<object>>>;
+    setTableType: React.Dispatch<React.SetStateAction<number>>;
+  };
+}
 
-  const onClick = () => {
-    if (pyscript && pyscript.interpreter) {
-      const exampleFunc = pyscript.interpreter.globals.get("example");
-      if (examplePython > 0) setresultPython(exampleFunc(examplePython));
-      else setresultPython(0);
-    }
+const Contents: React.FC<Props> = ({ props, propFuncs }) => {
+  const { UnitData, GetValue, tableType } = props;
+  const { setTableValue, setTableType } = propFuncs;
+  let bUnit: Boolean = false;
+  let bGetValue: Boolean = false;
+
+  const onTabChange = (event: any) => {
+    setTableType(parseInt(event.target.id));
   };
   return (
     <GuideBox verCenter width={"100%"} padding={2}>
-      {/* Language Change */}
-      <GuideBox verCenter width={"100%"} padding={2}>
-        <Panel
-          width="100%"
-          variant="shadow2"
-          padding={2}
-          border={`1px solid ${Color.secondary.main}`}
-        >
-          <LanguageType />
-          <Grid container direction={"column"} spacing={2} margin={2}>
-            <Grid item>
-              <Typography variant="h1" size="large">
-                {translate("welcome_midas_plugin")}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="body1" size="medium">
-                {translate("dev_mode_developing")}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="body2" size="small">
-                {translate("turn_on_development_mode")}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="body3" size="small">
-                {translate("type_command_below")}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Panel>
+      <GuideBox horRight margin={1}>
+        {JSON.stringify(UnitData)};
       </GuideBox>
-
-      {/* API test  */}
-      <GuideBox verCenter width={"100%"} padding={2}>
-        <Panel
-          width="100%"
-          variant="shadow2"
-          padding={2}
-          border={`1px solid ${Color.secondary.main}`}
-        >
-          <Stack direction="row" spacing={2}>
-            <Grid margin={2}>
-              <Typography variant="h1" size="large">
-                API test
-              </Typography>
-            </Grid>
-            <Grid margin={2}>
-              <RequestBtnPy setexampleAPI={setexampleAPI} />
-            </Grid>
-          </Stack>
-          <Grid margin={2}>
-            <Typography variant="h1" size="large">
-              {exampleAPI && JSON.stringify(exampleAPI)}
-            </Typography>
+      <GuideBox center>
+        <Panel>
+          <Grid>
+            <TabGroup onChange={onTabChange} value={1}>
+              <Tab label="Tab 1" value={1} id="1" />
+              <Tab label="Tab 2" value={2} id="2" />
+              <Tab label="Tab 3" value={3} id="3" />
+            </TabGroup>
           </Grid>
-        </Panel>
-      </GuideBox>
-
-      {/* factorial example  */}
-      <GuideBox verCenter width={"100%"} padding={2}>
-        <Panel
-          width="100%"
-          variant="shadow2"
-          padding={2}
-          border={`1px solid ${Color.secondary.main}`}
-        >
-          <Grid margin={2}>
-            <Typography variant="h1" size="large">
-              factorial example
-            </Typography>
-          </Grid>
-          <Grid margin={2}>
-            <DefalutTextEdit setexamplePython={setexamplePython} />
-          </Grid>
-          <Grid margin={2}>
-            <Button onClick={onClick}> factorial </Button>
-          </Grid>
-          <Grid margin={2}>
-            Result : {resultPython > 0 ? resultPython : resultPython2}
+          <Grid>
+            {/* <DefalutTable /> */}
+            {tableType === 1 && tableType}
+            {tableType === 2 && tableType}
+            {tableType === 3 && <DefalutTable />}
           </Grid>
         </Panel>
       </GuideBox>
