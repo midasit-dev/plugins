@@ -5,27 +5,11 @@ import RequestBtnpy from "../Input/Button/RequestBtnPy";
 import LanguageType from "../Input/Dropdown/LanguageType";
 import PointType from "../Input/Dropdown/PointType";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { TableTypeState } from "../../values/RecoilValue";
 
-interface Props {
-  props: {
-    tableType: number;
-  };
-  propFuncs: {
-    Get_UNIT: React.EffectCallback;
-    setGetValue: React.Dispatch<React.SetStateAction<Array<object>>>;
-  };
-}
-
-const Header: React.FC<Props> = ({ props, propFuncs }) => {
-  const { tableType } = props;
-
-  const [ElementValue, setElementValue] = useState(1);
-  const [ComponentValue, setComponentValue] = useState(1);
-  const [pointValue, setPointValue] = useState(1);
-
-  useEffect(() => {
-    setComponentValue(1);
-  }, [ElementValue]);
+const Header = () => {
+  const [TableType, setTableType] = useRecoilState(TableTypeState);
 
   return (
     <GuideBox center show padding={1}>
@@ -38,15 +22,8 @@ const Header: React.FC<Props> = ({ props, propFuncs }) => {
         >
           <Grid style={container}>
             <Stack direction="row" spacing={5} margin={1}>
-              <ElementType
-                ElementValue={ElementValue}
-                setElementValue={setElementValue}
-              />
-              <ComponentType
-                ElementValue={ElementValue}
-                ComponentValue={ComponentValue}
-                setComponentValue={setComponentValue}
-              />
+              <ElementType />
+              <ComponentType />
             </Stack>
           </Grid>
         </Panel>
@@ -58,19 +35,11 @@ const Header: React.FC<Props> = ({ props, propFuncs }) => {
         >
           <Grid style={container}>
             <Stack direction={"row"} spacing={5} margin={1}>
-              <RequestBtnpy
-                props={{
-                  ElementValue,
-                  ComponentValue,
-                }}
-                propFuncs={propFuncs}
-              />
+              <RequestBtnpy />
               <LanguageType />
             </Stack>
           </Grid>
-          {tableType === 3 && (
-            <PointType pointValue={pointValue} setPointValue={setPointValue} />
-          )}
+          {TableType === 3 && <PointType />}
         </Panel>
       </GuideBox>
     </GuideBox>

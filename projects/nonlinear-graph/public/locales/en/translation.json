@@ -6,5 +6,27 @@
 
   "componentType": "Component",
   "requestBtn": "Import of Hinge",
-  "pointType": "Num. of point"
+  "pointType": "Num. of point",
+
+  "unit": "unit",
+  "TabDisp": "Strength - Disp.",
+  "TabStiff": "Strength - stiff.",
+  "TabMulti": "Multi Linear",
+
+  "Name": "Name",
+  "Material": "Material",
+  "Hysteresis_model": "Hysteresis_model",
+  "Type": "Type",
+
+  "Force_Deformation": "Force_Deformation",
+  "Hysteresis_Type_Parameter": "Hysteresis_Type_Parameter",
+
+  "Both": "Both",
+  "Tensile_Only": "Tensile_Only",
+  "Compression_Only": "Compression_Only",
+
+  "Multi-Linear_Elastic": "Multi-Linear Elastic",
+  "Multi-Linear_Plastic_Kinematic": "Linear_Plastic Kinematic",
+  "Multi-Linear_Plastic_Takeda": "Linear_Plastic Takeda",
+  "Multi-Linear_Plastic_Pivot": "Linear_Plastic Pivot"
 }

@@ -1,57 +1,58 @@
 import {
-  GuideBox,
   Grid,
+  GuideBox,
   Panel,
-  TabGroup,
   Tab,
-  Color,
+  TabGroup,
   Typography,
-  Stack,
-  Button,
 } from "@midasit-dev/moaui";
 import React, { useEffect } from "react";
-import DefalutTable from "../../Input/TableGrid/DefaultTable";
-
-interface Props {
-  props: {
-    UnitData: object;
-    GetValue: Array<object>;
-    tableType: number;
-  };
-  propFuncs: {
-    setTableValue: React.Dispatch<React.SetStateAction<Array<object>>>;
-    setTableType: React.Dispatch<React.SetStateAction<number>>;
-  };
-}
-
-const Contents: React.FC<Props> = ({ props, propFuncs }) => {
-  const { UnitData, GetValue, tableType } = props;
-  const { setTableValue, setTableType } = propFuncs;
-  let bUnit: Boolean = false;
-  let bGetValue: Boolean = false;
+import { useTranslation } from "react-i18next";
+import MutiTable from "../../Input/TableGrid/MutiTable";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  ElementState,
+  ComponentState,
+  GetDBState,
+  UnitState,
+  TableListState,
+  TableTypeState,
+} from "../../../values/RecoilValue";
+const Contents = () => {
+  const UnitData = useRecoilValue(UnitState);
+  const [TableType, setTableType] = useRecoilState(TableTypeState);
+  const { t: translate, i18n: internationalization } = useTranslation();
+  const UnitText = translate("unit");
 
   const onTabChange = (event: any) => {
     setTableType(parseInt(event.target.id));
   };
+
   return (
-    <GuideBox verCenter width={"100%"} padding={2}>
-      <GuideBox horRight margin={1}>
-        {JSON.stringify(UnitData)};
+    <GuideBox verCenter center width={"100%"} padding={2}>
+      <GuideBox horRight width={"100%"}>
+        <Typography variant="body1" size="medium" center>
+          {`${UnitText} : ${UnitData.FORCE}, ${UnitData.DIST}`}
+        </Typography>
       </GuideBox>
-      <GuideBox center>
-        <Panel>
+      <GuideBox horLeft width={"100%"}>
+        <Panel
+          height="fit-content"
+          variant="shadow"
+          width="fit-content"
+          margin={2}
+        >
           <Grid>
             <TabGroup onChange={onTabChange} value={1}>
-              <Tab label="Tab 1" value={1} id="1" />
-              <Tab label="Tab 2" value={2} id="2" />
-              <Tab label="Tab 3" value={3} id="3" />
+              <Tab label={translate("TabDisp")} value={1} id="1" />
+              <Tab label={translate("TabStiff")} value={2} id="2" />
+              <Tab label={translate("TabMulti")} value={3} id="3" />
             </TabGroup>
           </Grid>
           <Grid>
-            {/* <DefalutTable /> */}
-            {tableType === 1 && tableType}
-            {tableType === 2 && tableType}
-            {tableType === 3 && <DefalutTable />}
+            {TableType === 1 && TableType}
+            {TableType === 2 && TableType}
+            {TableType === 3 && <MutiTable />}
           </Grid>
         </Panel>
       </GuideBox>

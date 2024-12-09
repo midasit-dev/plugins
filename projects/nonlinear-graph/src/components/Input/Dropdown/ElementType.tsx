@@ -1,13 +1,13 @@
 import { Stack, DropList, Typography, GuideBox } from "@midasit-dev/moaui";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useRecoilState } from "recoil";
+import { ElementState, ComponentState } from "../../../values/RecoilValue";
 
-interface Props {
-  ElementValue: number;
-  setElementValue: React.Dispatch<React.SetStateAction<number>>;
-}
+const ElementType = () => {
+  const [ElementValue, setElementValue] = useRecoilState(ElementState);
+  const [ComponentValue, setComponentValue] = useRecoilState(ComponentState);
 
-const ElementType: React.FC<Props> = ({ ElementValue, setElementValue }) => {
   const { t: translate, i18n: internationalization } = useTranslation();
   const elementType = translate("elementType");
   const items = new Map<string, number>([
@@ -18,6 +18,7 @@ const ElementType: React.FC<Props> = ({ ElementValue, setElementValue }) => {
 
   function onChangeHandler(event: any) {
     setElementValue(event.target.value);
+    setComponentValue(1);
   }
   return (
     <GuideBox center>

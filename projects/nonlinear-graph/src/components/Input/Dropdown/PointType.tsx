@@ -1,13 +1,10 @@
 import { Stack, DropList, Typography, GuideBox } from "@midasit-dev/moaui";
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRecoilState } from "recoil";
+import { PointState } from "../../../values/RecoilValue";
+const PointType = () => {
+  const [PointValue, setPointValue] = useRecoilState(PointState);
 
-interface Props {
-  pointValue: number;
-  setPointValue: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const PointType: React.FC<Props> = ({ pointValue, setPointValue }) => {
   const { t: translate, i18n: internationalization } = useTranslation();
   const pointType = translate("pointType");
   const items = new Map<string, number>([
@@ -17,7 +14,6 @@ const PointType: React.FC<Props> = ({ pointValue, setPointValue }) => {
     ["4", 4],
     ["5", 5],
   ]);
-
   function onChangeHandler(event: any) {
     setPointValue(event.target.value);
   }
@@ -29,7 +25,7 @@ const PointType: React.FC<Props> = ({ pointValue, setPointValue }) => {
         </Typography>
         <DropList
           itemList={items}
-          value={pointValue}
+          value={PointValue}
           onChange={onChangeHandler}
         />
       </Stack>

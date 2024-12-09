@@ -6,5 +6,27 @@
 
   "componentType": " ヒンジ成分",
   "requestBtn": "ヒンジデータの読込み",
-  "pointType": "折れ点の数"
+  "pointType": "折れ点の数",
+
+  "unit": "単位",
+  "TabDisp": "折れ点入力",
+  "TabStiff": "勾配率入力",
+  "TabMulti": "マルチリニア入力",
+
+  "Name": "名称",
+  "Material": "材料",
+  "Hysteresis_model": "履歴タイプ",
+  "Type": "入力タイプ",
+
+  "Force_Deformation": "力-変位関係",
+  "Hysteresis_Type_Parameter": "履歴パラメータ",
+
+  "Both": "両方",
+  "Tensile_Only": "引張専用",
+  "Compression_Only": "圧縮専用",
+
+  "Multi-Linear_Elastic": "マルチリニア-弾性",
+  "Multi-Linear_Plastic_Kinematic": "マルチリニア-塑性移動硬化",
+  "Multi-Linear_Plastic_Takeda": "マルチリニア-塑性武田",
+  "Multi-Linear_Plastic_Pivot": "マルチリニア-塑性ピボット"
 }

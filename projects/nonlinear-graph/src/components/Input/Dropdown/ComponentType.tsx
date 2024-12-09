@@ -1,54 +1,49 @@
 import { Stack, DropList, Typography, GuideBox } from "@midasit-dev/moaui";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRecoilState } from "recoil";
+import { ElementState, ComponentState } from "../../../values/RecoilValue";
 
-interface Props {
-  ElementValue: number;
-  ComponentValue: number;
-  setComponentValue: React.Dispatch<React.SetStateAction<number>>;
-}
+const BeamCoulmItems = new Map<string, number>([
+  ["Fx", 1],
+  ["Fy", 2],
+  ["Fz", 3],
+  ["My", 5],
+  ["Mz", 6],
+]);
+const TrussItems = new Map<string, number>([["Fx", 1]]);
+const GenericLinkItems = new Map<string, number>([
+  ["Fx", 1],
+  ["Fy", 2],
+  ["Fz", 3],
+  ["Mx", 4],
+  ["My", 5],
+  ["Mz", 6],
+]);
 
-const ComponentType: React.FC<Props> = ({
-  ElementValue,
-  ComponentValue,
-  setComponentValue,
-}) => {
+const ComponentType = () => {
+  const [ElementValue, setElementValue] = useRecoilState(ElementState);
+  const [ComponentValue, setComponentValue] = useRecoilState(ComponentState);
+  const [Items, setItems] = useState<Map<string, number>>(BeamCoulmItems);
   const { t: translate, i18n: internationalization } = useTranslation();
   const componentType = translate("componentType");
-  let Items = new Map<string, number>();
-  const BeamCoulmItems = new Map<string, number>([
-    ["Fx", 1],
-    ["Fy", 2],
-    ["Fz", 3],
-    ["My", 5],
-    ["Mz", 6],
-  ]);
-  const TrussItems = new Map<string, number>([["Fx", 1]]);
-  const GenericLinkItems = new Map<string, number>([
-    ["Fx", 1],
-    ["Fy", 2],
-    ["Fz", 3],
-    ["Mx", 4],
-    ["My", 5],
-    ["Mz", 6],
-  ]);
 
   useEffect(() => {
     initItems();
-  }, [ElementValue, ComponentValue]);
+  }, [ElementValue]);
 
   const initItems = () => {
     switch (ElementValue) {
       case 1: {
-        BeamCoulmItems.forEach((value, key) => Items.set(key, value));
+        setItems(BeamCoulmItems);
         break;
       }
       case 2: {
-        TrussItems.forEach((value, key) => Items.set(key, value));
+        setItems(TrussItems);
         break;
       }
       case 3: {
-        GenericLinkItems.forEach((value, key) => Items.set(key, value));
+        setItems(GenericLinkItems);
         break;
       }
       default:
@@ -60,7 +55,6 @@ const ComponentType: React.FC<Props> = ({
     setComponentValue(event.target.value);
   }
 
-  initItems();
   return (
     <GuideBox center>
       <Stack direction="row" spacing={2} content="center">
