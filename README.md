@@ -1,7 +1,7 @@
 # Plugin Repository of Midas Products (🔓 Public Space)
 
 - [📟 About plugin development ![SOUTH KOREA](/assets/flag-kr.svg)](/README.plugin-kr.md)
-- [🔒 Repo, MIDASIT-Co-Ltd/plugins](https://github.com/MIDASIT-Co-Ltd/plugins)
+- [🔒 Repo, MIDASIT-Co-Ltd/plugins](https://bitbucket.org/mit_dev/rpm-plugins/)
 - [🔒 Excel Sheet, List of Plugins 2024](https://midasinfra-my.sharepoint.com/:x:/g/personal/kh1012_midasit_com/Ed9FhcqA7AFBnLYfn7LX1k0B_Gm43YXmQEQZrP5nsEvIZA?e=PbccWH)
 - [Version Rules of Plugin Item](https://midasitdev.atlassian.net/l/cp/Tm6dAmBA)
 
