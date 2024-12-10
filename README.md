@@ -55,6 +55,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - Rebar Spacing Converter
 - Rigid Link Generator
 - Tunnel Lining Generator
+- - 6x6 General Spring for Pile Foundation (KR) / 24.12.09 PR Release / Simon
 
 ## PyScript Package Compatibility Testing Page
 
