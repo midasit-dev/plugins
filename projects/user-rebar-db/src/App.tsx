@@ -1,13 +1,54 @@
-import { Panel, DataGrid, Typography, GuideBox } from "@midasit-dev/moaui";
+import { Panel, DataGrid, Typography, GuideBox, Button, VerifyUtil } from "@midasit-dev/moaui";
+import { useEffect, useState } from "react";
+
+function transformInputToResult(input: any) {
+    return input.map((item: any, index: any) => ({
+        id: index + 1, // id는 1부터 시작
+        matlname: item.MATLNAME || '', // MATLNAME -> matlname
+        elast: item.ELAST || 0, // ELAST -> elast
+        densidy: item.DENSITY || 0, // DENSITY -> densidy
+        fy: item.FY || 0 // FY -> fy
+    }));
+}
 
 const ComponentsDataGridPagination = () => {
+	const [userRebars, setUserRebars] = useState({});
+
+	const [rowMaterials, setRowMaterials] = useState({});
+
+	useEffect(() => {
+		async function getUserRebarDB() {
+			const endPoint = (await VerifyUtil.getBaseUrlAsync()) + '/db/mdgn';
+			const mapiKey = VerifyUtil.getMapiKey();
+			const response = await fetch(endPoint, {
+				headers: {
+					"Content-Type": "application/json",
+					"MAPI-Key": mapiKey,
+				}
+			});
+			if (!response.ok) {
+				console.error('error', response.statusText);
+			}
+
+			const data = await response.json();
+			const rawData = data["MDGN"]["1"];
+
+			const MATL = rawData["vMATL"];
+			// console.log(transformInputToResult(MATL));
+			const realMaterial = transformInputToResult(MATL);
+			setRowMaterials(realMaterial);
+		}
+
+		getUserRebarDB();
+	}, []);
+
 	return (
 		<Panel>
-			<GuideBox spacing={5} padding={2}>
+			<GuideBox spacing={5} padding={2} horRight>
 				<GuideBox spacing={2}>
 					<Typography variant="h1" size="large">Material</Typography>
 					<DataGrid 
-						rows={rowsMatl}
+						rows={rowMaterials as any}
 						columns={columnsMatl}
 						hideFooter
 					/>
@@ -21,6 +62,8 @@ const ComponentsDataGridPagination = () => {
 						hideFooter
 					/>
 				</GuideBox>
+
+				<Button color="negative">Send</Button>
 			</GuideBox>
 		</Panel>
 	);
@@ -28,14 +71,14 @@ const ComponentsDataGridPagination = () => {
 
 export default ComponentsDataGridPagination;
 
-	const columnsMatl = [
-		{ field: 'matlname', headerName: 'MATLNAME', width: 100, editable: true, },
-		{ field: 'elast', headerName: 'ELAST', width: 100, editable: true },
-		{ field: 'densidy', headerName: 'DENSIDY', width: 100, editable: true,  },
-		{ field: 'fy', headerName: 'FY', width: 100, editable: true,  },
-	];
+const columnsMatl = [
+	{ field: 'matlname', headerName: 'MATLNAME', width: 100, editable: true, },
+	{ field: 'elast', headerName: 'ELAST', width: 100, editable: true },
+	{ field: 'densidy', headerName: 'DENSIDY', width: 100, editable: true,  },
+	{ field: 'fy', headerName: 'FY', width: 100, editable: true,  },
+];
 
-	const rowsMatl = [
+const rowsMatl = [
     { id: 1, matlname: 'Steel', elast: 200000, densidy: 7850, fy: 250 },
     { id: 2, matlname: 'Concrete', elast: 30000, densidy: 2400, fy: 40 },
     { id: 3, matlname: 'Aluminum', elast: 70000, densidy: 2700, fy: 150 },
@@ -46,7 +89,7 @@ export default ComponentsDataGridPagination;
     { id: 8, matlname: 'Titanium', elast: 116000, densidy: 4500, fy: 140 },
     { id: 9, matlname: 'Brass', elast: 97000, densidy: 8500, fy: 90 },
     { id: 10, matlname: 'Carbon Fiber', elast: 70000, densidy: 1600, fy: 500 },
-	];
+];
 
 const columnsDia = [
     { field: 'dianame', headerName: 'DIANAME', width: 100, editable: true },
