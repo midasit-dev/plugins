@@ -12,7 +12,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 [![pages-build-deployment](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/midasit-dev/plugintest/actions/workflows/pages/pages-build-deployment)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/midasit-dev/plugins)
 
-## Official (32)
+## Official (33)
 
 ### Documentation
 
@@ -33,7 +33,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - [🌐 Temperature-Gradient-Stress-Calculator](https://midasit-dev.github.io/plugins/temperature-gradient-stress-calculator)
 - [🌐 Tendon-Profile-Converter](https://midasit-dev.github.io/plugins/tendon-profile-converter)
 
-### 2024 Plugins (20)
+### 2024 Plugins (21)
 
 - 6x6 General Spring for Pile Foundation (JP) - (for JAPAN)
 - Spacegass Importer - (for AUSTRAILIA)
@@ -55,6 +55,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - Rebar Spacing Converter
 - Rigid Link Generator
 - Tunnel Lining Generator
+- 6x6 General Spring for Pile Foundation (KR) / 24.12.09 PR Release / Simon
 
 ## PyScript Package Compatibility Testing Page
 
