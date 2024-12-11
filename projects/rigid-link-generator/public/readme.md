@@ -12,3 +12,7 @@
 - Similarly, select the nodes corresponding to the Slave Nodes and click in the input box.
 - Select the Rigid Link's Properties.
 - When you click the Create button, a Rigid Link is created from each Master Node to the nearest Slave Node.
+
+### version 1.1.0
+
+- We have updated and improved the internal libraries, enhancing performance and stability.
