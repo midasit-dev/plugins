@@ -14,3 +14,7 @@
 - If the correlation coefficient is lower than the threshold value, it will be displayed in blue, and if higher, it will be displayed in red.
 - **"NG"** in the results indicates that the correlation coefficient cannot be reviewed.
 - Ensure that the number of data points in the two Time History Functions to be reviewed matches.
+
+### version 1.1.0
+
+- We have updated and improved the internal libraries, enhancing performance and stability.
