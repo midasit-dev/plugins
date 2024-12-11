@@ -21,3 +21,7 @@ Manual : [https://github.com/midasit-dev/plugins/blob/main/projects/pile-spring/
 ### version 1.1.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
+
+### version 1.1.0
+
+- We have updated and improved the internal libraries, enhancing performance and stability.
