@@ -1,0 +1,15 @@
+{
+	"packages": [
+		"numpy",
+		"pyNastran"
+	],
+	"fetch": [
+		{
+			"files": [
+				"./py_base_sub.py",
+				"./py_base.py",
+				"./pydef2.py"
+			]
+		}
+	]
+}
