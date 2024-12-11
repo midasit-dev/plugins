@@ -6,10 +6,6 @@
 
 ## Details
 
-### version 1.1.0
-
-- Fixed the issue where Moving Load of Eurocode was not being loaded.
-
 ### version 1.0.0
 
 - Import and update load cases automatically, just the same as your MIDAS modeling file.
@@ -17,5 +13,9 @@
 - Send your combined load cases into your model by clicking one time.
 
 ### version 1.1.0
+
+- Fixed the issue where Moving Load of Eurocode was not being loaded.
+
+### version 1.2.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
