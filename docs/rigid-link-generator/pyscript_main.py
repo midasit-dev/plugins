@@ -176,3 +176,7 @@ def py_get_boundary_group_list():
 		error_message = {"error" : "Cannot get boundary group list"}
 		return json.dumps(error_message)
 	return json.dumps(boundary_group_list)
+
+def Test():
+  
+  return "test"

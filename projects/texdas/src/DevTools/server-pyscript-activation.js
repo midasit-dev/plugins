@@ -354,7 +354,7 @@ const active_index_html = `<!DOCTYPE html>
 	<link rel="stylesheet" href="./index.css" />
 
 	<!-- PYSCRIPT Configuration -->
-	<script defer src="https://pyscript.net/latest/pyscript.js"></script>
+	<script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
 	<py-config type="json" src="./pyscript_config.json"></py-config>
 
 	<script>
@@ -390,7 +390,7 @@ const inactive_index_html = `<!DOCTYPE html>
 	<link rel="stylesheet" href="./index.css" />
 
 	<!-- PYSCRIPT Configuration -->
-	<!-- <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
+	<!-- <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script> -->
 	<!-- <py-config type="json" src="./pyscript_config.json"></py-config> -->
 
 	<script>
@@ -415,8 +415,8 @@ const inactive_index_html = `<!DOCTYPE html>
 </html>`;
 
 module.exports = {
-	active_wrapper_tsx,
-	inactive_wrapper_tsx,
-	active_index_html,
-	inactive_index_html,
+  active_wrapper_tsx,
+  inactive_wrapper_tsx,
+  active_index_html,
+  inactive_index_html,
 };

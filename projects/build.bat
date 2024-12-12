@@ -9,7 +9,7 @@ REM 임시 파일 초기화 (UTF-8 인코딩으로 생성)
 
 REM 실행할 디렉토리명을 설정
 REM example) "run_dirs=dir1 dir2 dir3" or "run_dirs=all"
-set "run_dirs=spacegass-importer"
+set "run_dirs=all"
 
 REM 현재 실행 경로를 가져온다
 set "current_dir=%~dp0"
@@ -20,23 +20,45 @@ if "%run_dirs%"=="" (
 		exit /b 1
 )
 
+REM 처리될 디렉토리 목록 출력
+echo.
+echo === Directories to process ===
+echo.
+
 REM run_dirs가 비어있을 경우 전체 디렉토리를 처리
 if "%run_dirs%"=="all" (
+		set "run_dirs="
+
 		REM 현재 디렉토리의 하위 디렉토리를 run_dirs에 추가
 		for /d %%d in (*) do (
-				set "run_dirs=!run_dirs! %%d"
+				if "!run_dirs!"=="" (
+						set "run_dirs=%%d"
+				) else (
+						set "run_dirs=!run_dirs! %%d"
+				)
+				echo %%d
 		)
 )
 
-for %%d in (%run_dirs%) do (
-		REM run_dirs에 포함된 디렉토리만 처리
-		call :process_directory "%%d"
+echo.
+echo run_dirs: %run_dirs%
+echo.
+
+echo.
+echo ==============================
+echo.
+
+set "run_dirs=%run_dirs:"=%"
+for %%d in ("%run_dirs: =" "%") do (
+    echo [build start] %%~d
+    REM run_dirs에 포함된 디렉토리만 처리
+    call :process_directory %%~d
 )
 
 echo All builds and copies completed successfully
 
 REM Python 스크립트를 호출하여 README.md 업데이트
-call python update_readme.py
+REM call python update_readme.py
 
 endlocal
 exit /b

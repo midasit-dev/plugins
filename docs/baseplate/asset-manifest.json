@@ -82,8 +82,8 @@
     "static/media/KaTeX_Size4-Regular.woff2": "./static/media/KaTeX_Size4-Regular.e418bf257af1052628d8.woff2",
     "static/media/KaTeX_Size3-Regular.woff": "./static/media/KaTeX_Size3-Regular.7947224e8a9914fa332b.woff",
     "static/media/KaTeX_Size3-Regular.woff2": "./static/media/KaTeX_Size3-Regular.e1951519f6f0596f7356.woff2",
-    "static/media/CircularProgress.svg": "./static/media/CircularProgress.1753b237f046b83f7dd00116d0e84c84.svg",
     "index.html": "./index.html",
+    "static/media/CircularProgress.svg": "./static/media/CircularProgress.1753b237f046b83f7dd00116d0e84c84.svg",
     "main.5b48ebcd.css.map": "./static/css/main.5b48ebcd.css.map",
     "main.49a27f8f.js.map": "./static/js/main.49a27f8f.js.map"
   },

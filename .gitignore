@@ -4,3 +4,4 @@
 
 # Ignore all .zip files in the docs directory
 /docs/**/*.zip
+/test/build/**

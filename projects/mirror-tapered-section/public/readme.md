@@ -1,10 +1,15 @@
 # Mirror Tapered Section
-- Tappered Section의 I 단과 J 단을 바꾸어 Mirror Section 을 생성합니다.
-<br />
 
-## Details <br />
-- Tappered Section List 를 가져옵니다. (Tappered 가 아닌 Section 은 가져오지 않습니다.) <br />
-- "New Section Name Tag" 는 새롭게 만들어질 Section의 Name Tag 입니다. <br />
-- 만약 기존 Section의 이름이 "Section 1" 이고, Name Tag가 "_Mirror"라면, 새로운 Section 의 이름은 "Section 1_Mirror" 입니다. <br />
+- This tool generates a mirrored section by swapping the I-end and J-end of a Tapered Section.
 
-### version 1.0.0 <br />
+## Details
+
+### Version 1.0.0
+
+- It retrieves a list of Tapered Sections (non-tapered sections will not be included).
+- The "New Section Name Tag" is used to define the Name Tag for the newly created mirrored section.
+- For example, if the original section name is "Section 1" and the Name Tag is "\_Mirror," the new section name will be "Section 1_Mirror."
+
+### version 1.1.0
+
+- We have updated and improved the internal libraries, enhancing performance and stability.
