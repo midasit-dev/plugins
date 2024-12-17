@@ -1,0 +1,16 @@
+{
+	"packages": [
+		"numpy",
+		"mdutils"
+	],
+	"fetch": [
+		{
+			"files": [
+				"./py_base_sub.py",
+				"./py_base.py",
+				"./MDReport.py",
+				"./ReportUtil.py"
+			]
+		}
+	]
+}
