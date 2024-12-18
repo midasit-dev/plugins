@@ -80,6 +80,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - pile-spring
 - pile-spring-jp
 - rebar-spacing-converter
+- resposne-spectrum-generator
 - rigid-link-generator
 - seismic-hazard-map
 - temperature-gradient-stress-calculator
