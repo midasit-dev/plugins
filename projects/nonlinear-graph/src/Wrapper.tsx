@@ -7,7 +7,7 @@
  * ┴┘└┘   ┴ ┴└─┘ ┴ ┴ └┘ └─┘
  */
 
-import React from "react";
+import React, { useCallback } from "react";
 import { RecoilRoot } from "recoil";
 import App from "./App";
 import {
@@ -67,7 +67,6 @@ const ValidWrapper = (props: any) => {
         }
       }
       setCheckMapiKey(_checkMapiKey);
-
       //최종 결과 Set
       if (!_checkUri || !_checkMapiKey) {
         setIsValid(false);
@@ -193,7 +192,6 @@ const ValidWrapper = (props: any) => {
 
 const PyscriptWrapper = () => {
   const [installed, setInstalled] = React.useState(false);
-
   //fill in global variables
   React.useEffect(() => {
     function checkPyScriptReady(callback: any) {

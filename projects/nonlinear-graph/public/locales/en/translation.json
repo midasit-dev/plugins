@@ -15,18 +15,41 @@
 
   "Name": "Name",
   "Material": "Material",
-  "Hysteresis_model": "Hysteresis_model",
+  "Hysteresis_model": "Hysteresis Model",
   "Type": "Type",
 
-  "Force_Deformation": "Force_Deformation",
-  "Hysteresis_Type_Parameter": "Hysteresis_Type_Parameter",
+  "Axisymmetric": "Axisymmetric",
+  "Symmetric": "Symmetric",
+  "Asymmetric": "Asymmetric",
+  "Direction": "",
+  "Gap": "Initial Gap",
+
+  "Kinematic_Hardening": "Kinematic Hardening",
+  "Origin_oriented": "Origin oriented",
+  "Peak_oriented": "Peak oriented",
+  "Clough": "Clough",
+  "Degrading_Trilinear": "Degrading Trilinear",
+  "Takeda": "Takeda",
+  "Takeda_Slip": "Takeda Slip",
+  "Modified_Takeda": "Modified Takeda",
+  "Normal_Bilinear": "Normal Bilinear",
+  "Elastic_Bilinear": "Elastic Bilinear",
+  "SLIP": "SLIP",
+  "SLIP_Tension": "SLIP/Tension",
+  "SLIP_Compression": "SLIP/Compression",
+
+  "Force_Deformation": "Force Deformation",
+  "Hysteresis_Type_Parameter": "Hysteresis Type_Parameter",
 
   "Both": "Both",
-  "Tensile_Only": "Tensile_Only",
-  "Compression_Only": "Compression_Only",
+  "Tensile_Only": "Tensile Only",
+  "Compression_Only": "Compression Only",
 
   "Multi-Linear_Elastic": "Multi-Linear Elastic",
-  "Multi-Linear_Plastic_Kinematic": "Linear_Plastic Kinematic",
-  "Multi-Linear_Plastic_Takeda": "Linear_Plastic Takeda",
-  "Multi-Linear_Plastic_Pivot": "Linear_Plastic Pivot"
+  "Multi-Linear_Plastic_Kinematic": "Linear-Plastic Kinematic",
+  "Multi-Linear_Plastic_Takeda": "Linear-Plastic Takeda",
+  "Multi-Linear_Plastic_Pivot": "Linear-Plastic Pivot",
+
+  "row_col_valid_error": "Row or Column is wrong",
+  "success_change_data": "Success Change Data"
 }

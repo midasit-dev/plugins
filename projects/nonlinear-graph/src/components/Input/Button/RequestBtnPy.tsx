@@ -9,6 +9,7 @@ import {
   UnitState,
   TableListState,
 } from "../../../values/RecoilValue";
+import { isEmpty } from "lodash";
 
 const RequestBtnPy = () => {
   const ElementValue = useRecoilValue(ElementState);
@@ -22,21 +23,21 @@ const RequestBtnPy = () => {
   const onClick = () => {
     setGetDB({});
     if (pyscript && pyscript.interpreter) {
-      setUnitData(Get_UNIT());
+      Get_UNIT();
       Get_IEHP();
     }
   };
 
-  const Get_UNIT = () => {
+  const Get_UNIT = async () => {
     try {
       const getData = dbRead("UNIT"); // 데이터베이스에서 데이터 읽기
-      return getData["1"]; // 전체 데이터로 상태 설정
+      setUnitData(getData["1"]);
     } catch (error) {
       console.error("Failed to load UNIT data", error);
     }
   };
 
-  const Get_IEHP = () => {
+  const Get_IEHP = async () => {
     try {
       setTableList({});
       const getData = dbRead("IEHP");
@@ -49,7 +50,7 @@ const RequestBtnPy = () => {
           key,
           getData[key]
         );
-        if (Object.keys(setData).length !== 0) {
+        if (!isEmpty(setData)) {
           const tableKey = Object.keys(setData)[0];
           setTableList((List: any) => ({
             ...List,
@@ -92,7 +93,6 @@ const findDataFunc = (
       break;
     }
   }
-
   if (rawData.DEFINITION !== "SKEL") return {};
   if (rawData.HINGE_TYPE !== hingeType) return {};
   if (rawData.INTERACTION_TYPE !== "NONE") return {};
@@ -108,11 +108,11 @@ const findDataFunc = (
 
   if (NAME === "MULTLIN") {
     const setData = {
-      ID: key,
+      KEY: key,
       NAME: rawData.NAME,
       MATERIAL_TYPE: rawData.MATERIAL_TYPE == "STEEL" ? "S" : "RS",
       HISTORY_MODEL: rawData.HYSTERESIS_MODEL[ComponentValue - 1],
-      DATA: setMULTLINData(dataObject[NAME]),
+      DATA: setMULTLINData(dataObject[NAME], rawData?.MULT_DATA),
     };
     // MULTLIN 안에  DEFORMCAPACITY -> 레벨 값
     // MULTLIN 안에  nType -> 양방향인지 ... + or - 인지
@@ -121,23 +121,38 @@ const findDataFunc = (
   } else {
     if (dataObject[NAME].YIELDSTRENGTHOPT !== 0) return {};
     const setData = {
-      ID: key,
+      KEY: key,
       NAME: rawData.NAME,
       MATERIAL_TYPE: rawData.MATERIAL_TYPE == "STEEL" ? "S" : "RS",
       HISTORY_MODEL: rawData.HYSTERESIS_MODEL[ComponentValue - 1],
-      DATA: dataObject[NAME],
+      SYMMETRIC: dataObject[NAME].SYMMETRIC,
+      DATA: dataObject[NAME].COMPONENTPROPS,
+      BETA: dataObject[NAME]?.UNLOADSTIFFCALCEXPO,
+      ALPA: dataObject[NAME]?.UNLOADSTIFFREDUFAC,
+      GAMMA: dataObject[NAME]?.PINCHINGRULEFAC,
+      INIT_GAP: [
+        dataObject[NAME]?.INITGAPPOSITIVE,
+        dataObject[NAME]?.INITGAPNEGATIVE,
+      ],
     };
     switch (dataObject[NAME].PALPHADELTA) {
       case 0:
-        return { "1": setData };
-      case 1:
         return { "2": setData };
+      case 1:
+        return { "1": setData };
     }
   }
   return {};
 };
 
-const setMULTLINData = (DATA: any) => {
+const setMULTLINData = (DATA: any, MULT_DATA: []) => {
+  let mult_data: any[][];
+  if (MULT_DATA !== undefined) {
+    mult_data = MULT_DATA.map((value: any) => {
+      return [value.DISP, value.FORCE];
+    });
+  } else mult_data = [[0.0, 0.0]];
+
   let nType = 0;
   switch (DATA.nType) {
     default:
@@ -161,7 +176,7 @@ const setMULTLINData = (DATA: any) => {
     DEFORMCAPACITY: DATA.DEFORMCAPACITY,
     dScaleF_Displ: DATA.dScaleF_Displ,
     dScaleF_Force: DATA.dScaleF_Force,
-    PnD_Data: [[0, 0]],
+    PnD_Data: mult_data,
   };
 };
 

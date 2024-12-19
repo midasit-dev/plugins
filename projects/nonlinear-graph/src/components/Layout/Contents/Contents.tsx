@@ -18,6 +18,8 @@ import {
   TableListState,
   TableTypeState,
 } from "../../../values/RecoilValue";
+import MultiDataGrid from "../../Input/TableGrid/MultiDataGrid";
+import DispDataGrid from "../../Input/TableGrid/DispDataGrid";
 const Contents = () => {
   const UnitData = useRecoilValue(UnitState);
   const [TableType, setTableType] = useRecoilState(TableTypeState);
@@ -29,19 +31,20 @@ const Contents = () => {
   };
 
   return (
-    <GuideBox verCenter center width={"100%"} padding={2}>
-      <GuideBox horRight width={"100%"}>
-        <Typography variant="body1" size="medium" center>
-          {`${UnitText} : ${UnitData.FORCE}, ${UnitData.DIST}`}
-        </Typography>
-      </GuideBox>
-      <GuideBox horLeft width={"100%"}>
+    <GuideBox center width={"60vw"} padding={1}>
+      <GuideBox width={"100%"}>
         <Panel
           height="fit-content"
           variant="shadow"
-          width="fit-content"
+          width="100%"
           margin={2}
+          overflow={"scroll"}
         >
+          <GuideBox horRight width={"100%"}>
+            <Typography variant="body1" size="medium" center margin={1}>
+              {`${UnitText} : ${UnitData.FORCE}, ${UnitData.DIST}`}
+            </Typography>
+          </GuideBox>
           <Grid>
             <TabGroup onChange={onTabChange} value={1}>
               <Tab label={translate("TabDisp")} value={1} id="1" />
@@ -49,10 +52,10 @@ const Contents = () => {
               <Tab label={translate("TabMulti")} value={3} id="3" />
             </TabGroup>
           </Grid>
-          <Grid>
-            {TableType === 1 && TableType}
+          <Grid width={"100%"}>
+            {TableType === 1 && <DispDataGrid />}
             {TableType === 2 && TableType}
-            {TableType === 3 && <MutiTable />}
+            {TableType === 3 && <MultiDataGrid />}
           </Grid>
         </Panel>
       </GuideBox>

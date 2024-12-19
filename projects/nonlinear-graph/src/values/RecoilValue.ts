@@ -61,3 +61,8 @@ export const ComponentState = atom<number>({
   key: "ComponentValue",
   default: 1,
 });
+
+export const CheckBoxState = atom<number[]>({
+  key: "CheckBoxState",
+  default: [],
+});

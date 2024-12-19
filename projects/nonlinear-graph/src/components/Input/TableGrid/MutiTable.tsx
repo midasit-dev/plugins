@@ -11,7 +11,7 @@ import {
   Button,
   TextField,
 } from "@midasit-dev/moaui";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Table,
@@ -21,26 +21,26 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Alert,
   // styled,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  ElementState,
-  ComponentState,
-  GetDBState,
   TableTypeState,
-  UnitState,
   TableListState,
   filteredTableListState,
   TableChangeState,
+  CheckBoxState,
 } from "../../../values/RecoilValue";
 import { MULTLIN_HistoryType, MULTLIN_nType } from "../../../values/EnumValue";
+import { filter, isNull, isUndefined } from "lodash";
 
 interface HeaderProps {
   props: {
     PnD_size: number;
     hoverColumn: number | null;
+    DataList: any[];
   };
   propFunc: {
     setPnD_size: React.Dispatch<React.SetStateAction<number>>;
@@ -49,13 +49,16 @@ interface HeaderProps {
 }
 
 const SetHeader: React.FC<HeaderProps> = ({ props, propFunc }) => {
-  const { PnD_size, hoverColumn } = props;
+  const { PnD_size, hoverColumn, DataList } = props;
   const { setPnD_size, setHoverColumn } = propFunc;
   const filterList = useRecoilValue(filteredTableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
+  const [CheckBox, setCheckBox] = useRecoilState(CheckBoxState);
+
+  const [allCheck, setAllCheck] = useState(false);
+  const [dynamicHeader, setDynamicHeader] = useState<string[]>([]);
 
   const { t: translate, i18n: internationalization } = useTranslation();
-  const [dynamicHeader, setDynamicHeader] = useState<string[]>([]);
 
   useEffect(() => {
     // header
@@ -85,6 +88,18 @@ const SetHeader: React.FC<HeaderProps> = ({ props, propFunc }) => {
   ];
   const paramHeader = ["β", "α1", "α2", "β1", "β2", "η"];
 
+  function onSelectAllClick(event: any) {
+    const checFalsekList = filterList.map(() => false);
+    const checTruekList = filterList.map(() => true);
+    if (allCheck) {
+      setAllCheck(false);
+      setCheckBox(checFalsekList);
+    } else {
+      setAllCheck(true);
+      setCheckBox(checTruekList);
+    }
+  }
+
   function onClickPlus(idx: any) {
     if (idx == 4 + PnD_size * 2) {
       setPnD_size(PnD_size + 1);
@@ -109,12 +124,15 @@ const SetHeader: React.FC<HeaderProps> = ({ props, propFunc }) => {
         })}
       </TableRow>
       <TableRow>
-        <Checkbox
-          color="primary"
-          // indeterminate={numSelected > 0 && numSelected < rowCount}
-          // checked={rowCount > 0 && numSelected === rowCount}
-          // onChange={onSelectAllClick}
-        />
+        <TableCell>
+          <Checkbox
+            sx={checkboxStyle}
+            color="primary"
+            checked={allCheck}
+            // indeterminate={allCheck}
+            onChange={(event) => onSelectAllClick(event)}
+          />
+        </TableCell>
         {dynamicHeader.map((header, idx) => {
           return (
             <HeaderStyleCell
@@ -135,15 +153,20 @@ const SetHeader: React.FC<HeaderProps> = ({ props, propFunc }) => {
 };
 
 const MutiTable = () => {
-  const { t: translate, i18n: internationalization } = useTranslation();
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
   const filterList = useRecoilValue(filteredTableListState);
+  const [CheckBox, setCheckBox] = useRecoilState(CheckBoxState);
 
+  const [bError, setbError] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
   const [DataList, setDataList] = useState<any>([]);
   const [PnD_size, setPnD_size] = useState(1);
   const [hoverColumn, setHoverColumn] = useState<number | null>(null);
+  const [ClipboardData, setClipboardData] = useState<string[][]>([]);
+
+  const { t: translate, i18n: internationalization } = useTranslation();
 
   useEffect(() => {
     initDataList();
@@ -152,6 +175,8 @@ const MutiTable = () => {
   const initDataList = () => {
     if (filterList !== undefined) {
       setDataList([]);
+      // setCheckBox([]);
+      let maxSize = 0;
       filterList.forEach((value: any) => {
         let list = [
           value.NAME,
@@ -161,36 +186,42 @@ const MutiTable = () => {
         ];
 
         // PnD data init
-        setPnD_size(value.DATA.PnD_Data.length);
+        maxSize = Math.max(maxSize, value.DATA.PnD_Data.length);
         value.DATA.PnD_Data.forEach((PnD: any) => {
-          const SFactDispl = value.DATA.dScaleF_Displ;
-          const SFactForce = value.DATA.dScaleF_Force;
-          const dSFact = SFactDispl / SFactForce;
-          const Pdata = PnD[0] * SFactDispl;
-          const Ddata = PnD[1] * SFactForce;
+          const Pdata = PnD[0];
+          const Ddata = PnD[1];
           list.push(Pdata);
           list.push(Ddata);
         });
-        list.push("");
+        if (maxSize > value.DATA.PnD_Data.length) {
+          const gap = maxSize - value.DATA.PnD_Data.length;
+          for (let i = 0; i < gap * 2; i++) {
+            list.push("[NULL]");
+          }
+        }
+        list.push("[PLUS]");
 
         // HISTORY_MODEL case
-        if (value.HISTORY_MODEL === "MLPT")
-          list.push(value.DATA.dHysParam_Beta1);
-        else if (value.HISTORY_MODEL === "MLPP") {
-          list.push("");
-          list.push(value.DATA.dHysParam_Alpha1);
-          list.push(value.DATA.dHysParam_Alpha2);
-          list.push(value.DATA.dHysParam_Beta1);
-          list.push(value.DATA.dHysParam_Beta2);
-          list.push(value.DATA.dHysParam_Eta);
-        }
+        const bMLPT: boolean = value.HISTORY_MODEL === "MLPT" ? true : false;
+        const bMLPP: boolean = value.HISTORY_MODEL === "MLPP" ? true : false;
+        list.push(bMLPT ? value.DATA.dHysParam_Beta1 : "[NULL]");
+        list.push(bMLPP ? value.DATA.dHysParam_Alpha1 : "[NULL]");
+        list.push(bMLPP ? value.DATA.dHysParam_Alpha2 : "[NULL]");
+        list.push(bMLPP ? value.DATA.dHysParam_Beta1 : "[NULL]");
+        list.push(bMLPP ? value.DATA.dHysParam_Beta2 : "[NULL]");
+        list.push(bMLPP ? value.DATA.dHysParam_Eta : "[NULL]");
+
         setDataList((preList: any) => [...preList, list]);
+        // setCheckBox((check) => [...check, false]);
       });
+      setPnD_size(maxSize);
     }
   };
 
   // tableList 변경
   useEffect(() => {
+    if (bChange === false) return;
+
     for (let row = 0; row < DataList.length; row++) {
       // name
       const NAME: string = DataList[row][0];
@@ -216,23 +247,26 @@ const MutiTable = () => {
       const PnD_Data = [];
       for (let i = 0; i < PnD_size; i++) {
         if (
-          DataList[row][4 + i * 2] === undefined ||
-          DataList[row][4 + i * 2] === "" ||
-          DataList[row][4 + (i * 2 + 1)] === undefined ||
-          DataList[row][4 + (i * 2 + 1)] === ""
-        )
+          DataList[row][4 + i * 2] === "[PLUS]" ||
+          DataList[row][4 + (i * 2 + 1)] === "[PLUS]"
+        ) {
           PnD_Data.push([0, 0]);
-        else
+        } else if (
+          DataList[row][4 + i * 2] === "[NULL]" ||
+          DataList[row][4 + (i * 2 + 1)] === "[NULL]"
+        ) {
+          continue;
+        } else
           PnD_Data.push([
-            DataList[row][4 + i * 2],
-            DataList[row][4 + (i * 2 + 1)],
+            parseFloat(DataList[row][4 + i * 2]),
+            parseFloat(DataList[row][4 + (i * 2 + 1)]),
           ]);
       }
       if (bChange === true)
         updateData(row, NAME, MATERIAL_TYPE, HISTORY_MODEL, MUL_TYPE, PnD_Data);
     }
     if (bChange === true) setbChange(false);
-  }, [PnD_size, bChange]);
+  }, [bChange]);
 
   const updateData = (
     row: number,
@@ -253,10 +287,73 @@ const MutiTable = () => {
           DATA: {
             ...item.DATA,
             nType: idx === row ? MUL_TYPE : item.DATA.nType,
-            PnD_Data: newPnDData,
+            PnD_Data: idx === row ? newPnDData : item.DATA.PnD_Data,
           },
         })),
       }));
+    }
+  };
+
+  const DataValid = (row: number, col: number, InputValue: any): boolean => {
+    let dbUpdate: boolean = false;
+    switch (col) {
+      case 0: // name
+        dbUpdate = true;
+        break;
+      case 1: // material
+        if (InputValue === "RS" || InputValue === "S") dbUpdate = true;
+        break;
+      case 2: // historyType
+        Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
+          if (translate(value) === InputValue) dbUpdate = true;
+        });
+        break;
+      case 3: // MUL_nType
+        Object.entries(MULTLIN_nType).forEach(([key, value]) => {
+          if (translate(value) === InputValue) dbUpdate = true;
+        });
+        break;
+      case 4 + PnD_size * 2 + 1: // B
+      case 4 + PnD_size * 2 + 2: // a1
+      case 4 + PnD_size * 2 + 3: // a2
+      case 4 + PnD_size * 2 + 4: // b1
+      case 4 + PnD_size * 2 + 5: // b2
+      case 4 + PnD_size * 2 + 6: // n
+        if (isNaN(InputValue) === false) dbUpdate = true;
+        break;
+      default: // 4 < ~~ < 4 + PnD_size*2
+        if (isNaN(InputValue) === false) {
+          const MUL_nType = DataList[row][3];
+          Object.entries(MULTLIN_nType).forEach(([key, value]) => {
+            if (translate(value) === MUL_nType) {
+              switch (key) {
+                case "1":
+                  if (InputValue >= 0) dbUpdate = true;
+                  break;
+                case "2":
+                  if (InputValue <= 0) dbUpdate = true;
+                  break;
+                default:
+                  dbUpdate = true;
+                  break;
+              }
+            }
+          });
+        }
+        break;
+    }
+    if (dbUpdate) {
+      const succesMsg = translate("success_change_data");
+      setbError(false);
+      setAlertMsg(succesMsg);
+      return dbUpdate;
+    } else {
+      const errMsg =
+        translate("row_col_valid_error") +
+        `: [${row + 1}, ${col + 1}] -> InputValue : ${InputValue}`;
+      setbError(true);
+      setAlertMsg(errMsg);
+      return dbUpdate;
     }
   };
 
@@ -264,113 +361,229 @@ const MutiTable = () => {
     const element = document.getElementById(
       event.target.id
     ) as HTMLInputElement;
-
     setDataList(
       DataList.map((Item: any, idx: number) =>
         row === idx
           ? Item.map((el: any, colIdx: number) =>
-              colIdx === col ? event.target.value : el
+              colIdx === col ? element.value : el
             )
           : Item
       )
     );
   }
 
-  const keydownHandler = (eventkey: any, col: number) => {
-    let dbUpdate = false;
-    if (eventkey.key === "Enter") {
-      const Inputvalue = eventkey.target.value; // 현재 input의 값을 참조
-      switch (col) {
-        case 0: // name
-          dbUpdate = true;
-          break;
-        case 1: // material
-          if (Inputvalue === "RS" || Inputvalue === "S") dbUpdate = true;
-          break;
-        case 2: // historyType
-          Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
-            if (translate(value) === Inputvalue) dbUpdate = true;
-          });
-          break;
-        case 3: // MUL_nType
-          Object.entries(MULTLIN_nType).forEach(([key, value]) => {
-            if (translate(value) === Inputvalue) dbUpdate = true;
-          });
-          break;
-        case 4: // ...
-          break;
-        default:
-          break;
-      }
+  function onCheckBox(event: any, row: number) {
+    const tmp = [...CheckBox];
+    // if (event.target.checked) {
+    //   tmp[row] = true;
+    //   setCheckBox(tmp);
+    // } else {
+    //   tmp[row] = false;
+    //   setCheckBox(tmp);
+    // }
+  }
+
+  function onBlurInit(event: any, row: number, col: number) {
+    // initDataList();
+    const InputValue = event.target.value; // 현재 input의 값을 참조
+    const dbUpdate = DataValid(row, col, InputValue);
+    if (dbUpdate) {
+      setbChange(dbUpdate);
+    } else {
+      initDataList();
+    }
+  }
+
+  async function onKeydownHandler(event: any, row: number, col: number) {
+    if (event.key === "Enter") {
+      const InputValue = event.target.value; // 현재 input의 값을 참조
+      const dbUpdate = DataValid(row, col, InputValue);
       if (dbUpdate) {
         setbChange(dbUpdate);
       } else {
         initDataList();
       }
     }
-  };
+  }
+
+  async function onCopyPaste(event: any, row: number) {
+    if (DataList.length === 0) return;
+
+    if (event.ctrlKey && event.key === "c") {
+      // ctrl + c 동작
+      // const checkRows = CheckBox.map((check: boolean, idx: number) =>
+      //   check ? idx : null
+      // );
+      // let clipboard = [];
+      // for (let checkRow of checkRows) {
+      //   if (isNull(checkRow)) continue;
+      //   const copyRow: number = checkRow;
+      //   clipboard.push(DataList[copyRow]);
+      // }
+      const newList = DataList[row].map((list: any) => {
+        if (list === "[NULL]") return "";
+        else if (list === "[PLUS]") return "";
+        else return list;
+      });
+      setClipBoard([newList]);
+      event.preventDefault(); // 기본 동작 방지
+    }
+
+    if (event.ctrlKey && event.key === "v") {
+      const getData = await getClipBoard();
+      console.log(event.target.value);
+      console.log(getData);
+      // const makeData = [];
+      // getData.map((data) => {
+      //   if(data.length < DataList[0].length)
+      //   {
+      //     const gap = DataList[0].length - data.length;
+      //     for(let i=0; i<gap -1; i++)
+      //       data.push("[NULL]")
+      //     data.push("[PLUS]")
+      //   }
+      //   if(data.length > DataList[0].length)
+      //     return data.slice(0, DataList[0].length)
+      // });
+
+      // const checkRows = CheckBox.map((check: boolean, idx: number) =>
+      //   check ? idx : null
+      // );
+      // const applyArr = [];
+      // for (let checkRow of checkRows) {
+      //   if (isNull(checkRow)) continue;
+      //   const copyRow: number = checkRow;
+      //   for (let DataElement of getData) {
+      //     const bData = DataElement.every((value, col) => {
+      //       if (value === "[NULL]" || value === "[PLUS]") return true;
+      //       else return DataValid(copyRow, col, value);
+      //     });
+
+      //     if (bData) {
+      //       setDataList(
+      //         DataList.map((list: any, row: number) => {
+      //           if (row === copyRow) {
+      //             return DataElement;
+      //           } else return list;
+      //         })
+      //       );
+      //     }
+      //   }
+      // }
+    }
+    // event.preventDefault(); // 기본 동작 방지
+  }
 
   return (
     <GuideBox width={"100%"}>
       <TableContainer>
-        <Table padding="normal" style={tableStyle}>
+        {alertMsg !== "" && (
+          <Grid>
+            {bError ? (
+              <Alert severity="error">{alertMsg}</Alert>
+            ) : (
+              <Alert severity="success">{alertMsg}</Alert>
+            )}
+          </Grid>
+        )}
+        <Table
+          padding="normal"
+          style={tableStyle}
+          sx={{ tableLayout: "fixed" }}
+        >
           {/* header 고정 */}
           <SetHeader
-            props={{ PnD_size, hoverColumn }}
+            props={{ PnD_size, hoverColumn, DataList }}
             propFunc={{ setPnD_size, setHoverColumn }}
           />
           <TableBody style={bodyStyles}>
             {DataList !== undefined &&
               DataList.map((list: any, row: any) => {
                 return (
-                  <TableRow key={row} hover role="checkbox">
-                    <TableCell key={row}>
+                  <TableRow
+                    key={row}
+                    hover
+                    role="checkbox"
+                    onKeyDown={(event) => onCopyPaste(event, row)}
+                  >
+                    <TableCell key={row} padding={"none"} align="center">
+                      {/* Check Box Cell */}
                       <Checkbox
+                        sx={checkboxStyle}
+                        key={row}
                         color="primary"
-                        //  indeterminate={numSelected > 0 && numSelected < rowCount}
-                        //  checked={rowCount > 0 && numSelected === rowCount}
-                        //  onChange={onSelectAllClick}
+                        // indeterminate={CheckBox[row]}
+                        checked={CheckBox[row] ? true : false}
+                        onChange={(event) => onCheckBox(event, row)}
+                        // onKeyDown={(event) => onCopyPaste(event)}
                       />
                     </TableCell>
-                    {list.map((element: string, col: number) =>
-                      col !== 4 + PnD_size * 2 && element !== "" ? (
-                        // not Plus Cell
-                        <BodyStyleCell
-                          // contentEditable
-                          key={col}
-                          mycolumn={col}
-                          hovercolumn={hoverColumn}
-                          onMouseEnter={() => setHoverColumn(col)}
-                          onMouseLeave={() => setHoverColumn(null)}
-                          onKeyDown={(eventKey) => {
-                            keydownHandler(eventKey, col);
-                          }}
-                        >
-                          {/* <Typography center>{element}</Typography> */}
-                          <TextField
-                            value={element}
-                            width={col === 2 ? "170px" : "70px"}
-                            textAlign="center"
-                            onChange={(event) => {
-                              onChangeTextHandler(event, row, col);
-                            }}
-                          />
-                        </BodyStyleCell>
-                      ) : (
+                    {/* Data Cell */}
+                    {list.map((element: string, col: number) => {
+                      if (col === 4 + PnD_size * 2 && element === "[PLUS]") {
                         // Plus Cell
-                        <BodyStyleCell
-                          key={col}
-                          mycolumn={col}
-                          hovercolumn={hoverColumn}
-                          onMouseEnter={() => setHoverColumn(col)}
-                          onMouseLeave={() => setHoverColumn(null)}
-                          onClick={() => {
-                            setPnD_size(PnD_size + 1);
-                            setbChange(true);
-                          }}
-                        ></BodyStyleCell>
-                      )
-                    )}
+                        return (
+                          <BodyStyleCell
+                            key={col}
+                            mycolumn={col}
+                            hovercolumn={hoverColumn}
+                            onMouseEnter={() => setHoverColumn(col)}
+                            onMouseLeave={() => setHoverColumn(null)}
+                            onClick={() => {
+                              setPnD_size(PnD_size + 1);
+                              setbChange(true);
+                            }}
+                          ></BodyStyleCell>
+                        );
+                      } else if (element === "[NULL]") {
+                        // null type cell
+                        return (
+                          <BodyStyleCell
+                            key={col}
+                            mycolumn={col}
+                            hovercolumn={hoverColumn}
+                            onMouseEnter={() => setHoverColumn(col)}
+                            onMouseLeave={() => setHoverColumn(null)}
+                          >
+                            <TextField
+                              value={""}
+                              disabled={true}
+                              width={col === 2 ? "170px" : "80px"}
+                              textAlign="center"
+                              onChange={(event) => {
+                                onChangeTextHandler(event, row, col);
+                              }}
+                            />
+                          </BodyStyleCell>
+                        );
+                      } else {
+                        // data cell
+                        return (
+                          <BodyStyleCell
+                            // contentEditable
+                            key={col}
+                            mycolumn={col}
+                            hovercolumn={hoverColumn}
+                            onMouseEnter={() => setHoverColumn(col)}
+                            onMouseLeave={() => setHoverColumn(null)}
+                            onKeyDown={(event) => {
+                              onKeydownHandler(event, row, col);
+                            }}
+                            onBlur={(event) => onBlurInit(event, row, col)}
+                          >
+                            {/* <Typography center>{element}</Typography> */}
+                            <TextField
+                              value={element}
+                              width={col === 2 ? "170px" : "80px"}
+                              textAlign="center"
+                              onChange={(event) => {
+                                onChangeTextHandler(event, row, col);
+                              }}
+                            />
+                          </BodyStyleCell>
+                        );
+                      }
+                    })}
                   </TableRow>
                 );
               })}
@@ -381,13 +594,59 @@ const MutiTable = () => {
   );
 };
 ////////////////////////////////////////////////////////////////////////
+/// ClipBoard
+const getClipBoard = async (): Promise<string[][]> => {
+  const parseExcelData = (clipboardText: string) => {
+    const rows = clipboardText.split("\n").filter((row) => row.trim() !== "");
+
+    const filterRows = rows
+      .map((rowData) => rowData.replace("\r", ""))
+      .map((row) =>
+        row.split("\t").map((txt) => (txt === "" ? "[NULL]" : txt))
+      );
+    return filterRows; // 각 행을 열로 나누기
+  };
+
+  try {
+    const clipboardText = await navigator.clipboard.readText();
+    const getData = parseExcelData(clipboardText);
+    return getData;
+  } catch (error) {
+    console.error("Failed to read clipboard contents: ", error);
+  }
+  return [];
+};
+
+const setClipBoard = async (data: string[][]) => {
+  const formatExcelData = (data: string[][]): string => {
+    const noNullPuls = data.map((row) => row.join("\t")).join("\n");
+    console.log(noNullPuls);
+    return data.map((row) => row.join("\t")).join("\n");
+  };
+
+  try {
+    const clipboardText = formatExcelData(data);
+    await navigator.clipboard.writeText(clipboardText);
+  } catch (error) {
+    console.error("Failed to copy to clipboard:", error);
+  }
+};
+
+////////////////////////////////////////////////////////////////////////
 /// Style
 // table
 const tableStyle: any = {
-  width: "100%",
+  // width: "100%",
   borderCollapse: "collapse",
   margin: "10px",
   display: "block",
+};
+// checkBox
+const checkboxStyle: any = {
+  transform: "scale(2)", // 크기 배율 조정
+  "& .MuiSvgIcon-root": {
+    fontSize: 10, // 아이콘 크기 조정
+  },
 };
 // header
 const headerStyles: any = {
@@ -422,6 +681,7 @@ const BodyStyleCell = styled(TableCell)<CustomTableCellProps>(
     // border: "1px solid #ddd",
     backgroundColor: hovercolumn === mycolumn ? "#cccccc" : "#FFFFFF",
     margin: "5px",
+    padding: 0,
     "&:hover": {
       backgroundColor: "#b1b1b1", // 호버 시 배경색 변경
     },

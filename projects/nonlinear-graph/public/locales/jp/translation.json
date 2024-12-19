@@ -18,6 +18,26 @@
   "Hysteresis_model": "履歴タイプ",
   "Type": "入力タイプ",
 
+  "Axisymmetric": "軸対称",
+  "Symmetric": "対称",
+  "Asymmetric": "非対称",
+  "Direction": "側",
+  "Gap": "初期ギャップ",
+
+  "Kinematic_Hardening": "ノーマルトリリニア型",
+  "Origin_oriented": "原点志向型",
+  "Peak_oriented": "最大点志向型",
+  "Clough": "Clough型",
+  "Degrading_Trilinear": "深田型",
+  "Takeda": "オリジナル武田型",
+  "Takeda_Slip": "オリジナル武田スリップ型",
+  "Modified_Takeda": "修正武田型",
+  "Normal_Bilinear": "ノーマルバイリニア型",
+  "Elastic_Bilinear": "非線形弾性型",
+  "SLIP": "スリップ型",
+  "SLIP_Tension": "スリップ型/引張のみ",
+  "SLIP_Compression": "スリップ型/圧縮のみ",
+
   "Force_Deformation": "力-変位関係",
   "Hysteresis_Type_Parameter": "履歴パラメータ",
 
@@ -28,5 +48,8 @@
   "Multi-Linear_Elastic": "マルチリニア-弾性",
   "Multi-Linear_Plastic_Kinematic": "マルチリニア-塑性移動硬化",
   "Multi-Linear_Plastic_Takeda": "マルチリニア-塑性武田",
-  "Multi-Linear_Plastic_Pivot": "マルチリニア-塑性ピボット"
+  "Multi-Linear_Plastic_Pivot": "マルチリニア-塑性ピボット",
+
+  "row_col_valid_error": "列または行が間違っています。",
+  "success_change_data": "成功的にデータを変えました。"
 }

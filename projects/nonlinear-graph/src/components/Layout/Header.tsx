@@ -12,14 +12,9 @@ const Header = () => {
   const [TableType, setTableType] = useRecoilState(TableTypeState);
 
   return (
-    <GuideBox center show padding={1}>
-      <GuideBox row>
-        <Panel
-          height="fit-content"
-          variant="shadow"
-          width="fit-content"
-          margin={2}
-        >
+    <GuideBox center padding={1} width={"60vw"}>
+      <GuideBox row width={"100%"}>
+        <Panel height="fit-content" variant="shadow" width="70%" margin={2}>
           <Grid style={container}>
             <Stack direction="row" spacing={5} margin={1}>
               <ElementType />
@@ -27,19 +22,14 @@ const Header = () => {
             </Stack>
           </Grid>
         </Panel>
-        <Panel
-          height="fit-content"
-          variant="shadow"
-          width="fit-content"
-          margin={2}
-        >
+        <Panel height="fit-content" variant="shadow" width="30%" margin={2}>
           <Grid style={container}>
             <Stack direction={"row"} spacing={5} margin={1}>
               <RequestBtnpy />
               <LanguageType />
             </Stack>
           </Grid>
-          {TableType === 3 && <PointType />}
+          {/* {TableType === 3 && <PointType />} */}
         </Panel>
       </GuideBox>
     </GuideBox>
