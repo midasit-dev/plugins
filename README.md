@@ -60,3 +60,40 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ## PyScript Package Compatibility Testing Page
 
 - [README.md](https://github.com/midasit-dev/plugins/tree/main/test/pyscript-available-packages-check)
+
+## The list of using PyScript
+
+### In Production
+- align-local-axis-for-element
+- artificial-earthquake
+- artificial-eq-correlation
+- auto-saver
+- concrete-material-set-en1992-1-1
+- convert-load-combinations-into-sds-format
+- flared-pier
+- floor-transition
+- girder-wizard-lining-extractor
+- group-pile-creator
+- inertial-forces-controller
+- mirror-tapered-section
+- nastran-importer
+- pile-spring
+- pile-spring-jp
+- rebar-spacing-converter
+- resposne-spectrum-generator
+- rigid-link-generator
+- seismic-hazard-map
+- temperature-gradient-stress-calculator
+- tendon-profile-converter
+- tunnel-lining
+
+### In Experiment
+- baseplate
+- buoyancy-stability-check
+- lumped-hinge-checker
+- nonlinear-spring
+- seismic_load
+- texdas
+- thermal-actions-for-bridge-sdm-2013
+- wind-actions-for-bridge-sdm-2013
+

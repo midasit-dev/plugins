@@ -20,8 +20,8 @@
     "static/media/Pretendard-Light.woff2": "./static/media/Pretendard-Light.1fc5521353ec20635e8e.woff2",
     "static/media/Pretendard-ExtraLight.woff2": "./static/media/Pretendard-ExtraLight.6a3dddfd84c05761ef44.woff2",
     "static/media/Pretendard-Thin.woff2": "./static/media/Pretendard-Thin.bb7cedf4446fa24dda9d.woff2",
-    "static/media/CircularProgress.svg": "./static/media/CircularProgress.1753b237f046b83f7dd00116d0e84c84.svg",
     "index.html": "./index.html",
+    "static/media/CircularProgress.svg": "./static/media/CircularProgress.1753b237f046b83f7dd00116d0e84c84.svg",
     "main.05110283.css.map": "./static/css/main.05110283.css.map",
     "main.387b9a8c.js.map": "./static/js/main.387b9a8c.js.map"
   },

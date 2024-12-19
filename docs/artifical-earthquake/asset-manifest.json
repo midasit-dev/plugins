@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.7b738cfb.css",
-    "main.js": "./static/js/main.5a8b72a1.js",
+    "main.css": "./static/css/main.c7feaca1.css",
+    "main.js": "./static/js/main.b9e42d14.js",
     "static/media/Pretendard-Black.woff": "./static/media/Pretendard-Black.c51355ddc1caec596031.woff",
     "static/media/Pretendard-ExtraBold.woff": "./static/media/Pretendard-ExtraBold.f6491e200d1fb5c5917b.woff",
     "static/media/Pretendard-Bold.woff": "./static/media/Pretendard-Bold.1f1dbbbf311ffffcc770.woff",
@@ -82,12 +82,10 @@
     "static/media/KaTeX_Size3-Regular.woff": "./static/media/KaTeX_Size3-Regular.7947224e8a9914fa332b.woff",
     "static/media/KaTeX_Size3-Regular.woff2": "./static/media/KaTeX_Size3-Regular.e1951519f6f0596f7356.woff2",
     "index.html": "./index.html",
-    "static/media/getFetch.cjs": "./static/media/getFetch.c4cca45e22bc1b2c7d0d.cjs",
-    "main.7b738cfb.css.map": "./static/css/main.7b738cfb.css.map",
-    "main.5a8b72a1.js.map": "./static/js/main.5a8b72a1.js.map"
+    "static/media/getFetch.cjs": "./static/media/getFetch.c4cca45e22bc1b2c7d0d.cjs"
   },
   "entrypoints": [
-    "static/css/main.7b738cfb.css",
-    "static/js/main.5a8b72a1.js"
+    "static/css/main.c7feaca1.css",
+    "static/js/main.b9e42d14.js"
   ]
 }

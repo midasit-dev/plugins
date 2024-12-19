@@ -20,3 +20,7 @@
 ### version 1.2.0
 
 - The frame size has been adjusted.
+
+### version 1.3.0
+
+- Bug fix for nodal body force conversion.

@@ -77,7 +77,6 @@ def main(jsonInput: str):
               "NAME":stld_name,
               "TYPE":"USER"
           }
-      
       # Create cnld data
       res_cnld = civil.db_read("CNLD")
       update_cnld_data = {}
@@ -110,7 +109,6 @@ def main(jsonInput: str):
                   update_cnld_data[key] = {
                       "ITEMS":items_list
                   }
-      
       # Create nbof data
       res_nbof = civil.db_read("NBOF")
       update_nbof_data = {}
@@ -121,7 +119,9 @@ def main(jsonInput: str):
           if base_nbof_data == {}:
               pass
           else:
-              base_nbof_data = base_nbof_data[inputs["StaticLoadLC"]]
+              ## base_nbof_data 의 첫번째 value 값을 가져옴.
+              base_nbof_data = list(base_nbof_data.values())[0]
+              ##base_nbof_data = base_nbof_data[inputs["StaticLoadLC"]]
               key_number = max(res_nbof.keys())
               for index, angle in enumerate(angle_list):
                   key_number += 1
@@ -136,7 +136,6 @@ def main(jsonInput: str):
                       "Y": base_nbof_data['X']*math.sin(math.radians(angle))+base_nbof_data['Y']*math.cos(math.radians(angle)),
                       "Z": base_nbof_data['Z']
                   }
-      
       # Time History Load Case
       res_this = civil.db_read_try_catch("THIS")
       base_this_data = res_this[inputs["TimeHistoryLC"]]
@@ -147,7 +146,6 @@ def main(jsonInput: str):
           max_this_key += 1
           update_this_data[max_this_key] = copy.deepcopy(base_this_data)
           update_this_data[max_this_key]["COMMON"]["NAME"] = stld_new_name_list[index]
-  
       #Time History Forcing Functions
       res_thfc = civil.db_read("THFC")
       if res_thfc != None:
@@ -239,4 +237,4 @@ def main(jsonInput: str):
       return json.dumps({"success": "Successfully!"})
     
     except Exception as e:
-      return json.dumps(e.args[0])
+        return json.dumps(e.args[0])

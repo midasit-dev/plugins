@@ -1,2 +1,17 @@
-# Align Local Axis For Element
-Element를 선택하고 기준좌표/기준 Node를 설정하면 Element의 Local Axis-Z축이 기준점을 향하도록 정렬합니다.
+# Align Plate Element Local Z Axis to Reference Point
+
+- Aligns the **local Z axis of plate element** with the **Reference Node Point**.
+  <br />
+
+## Details
+
+### version 1.0.0
+
+- Select the elements in midas Civil.
+- Selected elements are automatically displayed in the Plug In.
+- The Element's Local Z Axis will be aligned with the Reference Node Point.
+- If the orientation is not appropriate, it may not convert.
+
+### version 1.1.0
+
+- We have updated and improved the internal libraries, enhancing performance and stability.

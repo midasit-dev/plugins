@@ -15,4 +15,8 @@
 
 ### version 1.1.0
 
+- Hotfixes and improvements
+
+### version 1.2.0
+
 - We have updated and improved the internal libraries, enhancing performance and stability.
