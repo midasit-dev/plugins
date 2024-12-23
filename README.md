@@ -56,6 +56,8 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - Rigid Link Generator
 - Tunnel Lining Generator
 - 6x6 General Spring for Pile Foundation (KR) / 24.12.09 PR Release / Simon
+- Temperature Load Calculator for bridges (HK)
+- Wind Load Calculator for bridges (HK)
 
 ## PyScript Package Compatibility Testing Page
 
@@ -64,6 +66,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ## The list of using PyScript
 
 ### In Production
+
 - align-local-axis-for-element
 - artificial-earthquake
 - artificial-eq-correlation
@@ -86,15 +89,15 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - temperature-gradient-stress-calculator
 - tendon-profile-converter
 - tunnel-lining
+- Temperature Load Calculator for bridges (HK)
+- Wind Load Calculator for bridges (HK)
 
 ### In Experiment
+
 - baseplate
 - buoyancy-stability-check
 - lumped-hinge-checker
 - nonlinear-spring
 - seismic_load
 - texdas
-- Temperature Load Calculator for bridges (HK) 
-- Wind Load Calculator for bridges (HK) 
 - Customized Load Combination
-
