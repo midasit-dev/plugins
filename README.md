@@ -94,6 +94,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - nonlinear-spring
 - seismic_load
 - texdas
-- thermal-actions-for-bridge-sdm-2013
-- wind-actions-for-bridge-sdm-2013
+- Temperature Load Calculator for bridges (HK) 
+- Wind Load Calculator for bridges (HK) 
+- Customized Load Combination
 
