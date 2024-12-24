@@ -33,7 +33,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - [🌐 Temperature-Gradient-Stress-Calculator](https://midasit-dev.github.io/plugins/temperature-gradient-stress-calculator)
 - [🌐 Tendon-Profile-Converter](https://midasit-dev.github.io/plugins/tendon-profile-converter)
 
-### 2024 Plugins (21)
+### 2024 Plugins (23)
 
 - 6x6 General Spring for Pile Foundation (JP) - (for JAPAN)
 - Spacegass Importer - (for AUSTRAILIA)
@@ -56,6 +56,8 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - Rigid Link Generator
 - Tunnel Lining Generator
 - 6x6 General Spring for Pile Foundation (KR) / 24.12.09 PR Release / Simon
+- Temperature Load Calculator for bridges (HK)
+- Wind Load Calculator for bridges (HK)
 
 ## PyScript Package Compatibility Testing Page
 
@@ -64,6 +66,7 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 ## The list of using PyScript
 
 ### In Production
+
 - align-local-axis-for-element
 - artificial-earthquake
 - artificial-eq-correlation
@@ -86,14 +89,15 @@ it includes plugins related to Civil NX. In the future, we plan to include plugi
 - temperature-gradient-stress-calculator
 - tendon-profile-converter
 - tunnel-lining
+- Temperature Load Calculator for bridges (HK)
+- Wind Load Calculator for bridges (HK)
 
 ### In Experiment
+
 - baseplate
 - buoyancy-stability-check
 - lumped-hinge-checker
 - nonlinear-spring
 - seismic_load
 - texdas
-- thermal-actions-for-bridge-sdm-2013
-- wind-actions-for-bridge-sdm-2013
-
+- Customized Load Combination

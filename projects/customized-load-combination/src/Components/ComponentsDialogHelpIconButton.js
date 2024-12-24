@@ -43,7 +43,7 @@ const ComponentsDialogHelpIconButton = () => {
   const json = {
     type: "help",
     data: {
-      titleText: "Customized Load Combiantion",
+      titleText: "Customized Load Combination",
       body: [
         {
           content: (
