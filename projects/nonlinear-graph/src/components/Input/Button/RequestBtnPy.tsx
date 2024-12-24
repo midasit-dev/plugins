@@ -10,6 +10,7 @@ import {
   TableListState,
 } from "../../../values/RecoilValue";
 import { isEmpty } from "lodash";
+import { ALL_Histroy_PND } from "../../../values/EnumValue";
 
 const RequestBtnPy = () => {
   const ElementValue = useRecoilValue(ElementState);
@@ -105,36 +106,26 @@ const findDataFunc = (
   // 데이터 유형 내부 PALPHADELTA -> 탭 유형 0, 1 //
   const dataObject = rawData.ALL_PROP[ComponentValue - 1];
   const NAME = Object.keys(dataObject)[0];
-
+  const setData: { [key: string]: any } = {
+    KEY: key,
+    NAME: rawData.NAME,
+    MATERIAL_TYPE: rawData.MATERIAL_TYPE == "STEEL" ? "S" : "RC",
+    HISTORY_MODEL: rawData.HYSTERESIS_MODEL[ComponentValue - 1],
+  };
   if (NAME === "MULTLIN") {
-    const setData = {
-      KEY: key,
-      NAME: rawData.NAME,
-      MATERIAL_TYPE: rawData.MATERIAL_TYPE == "STEEL" ? "S" : "RS",
-      HISTORY_MODEL: rawData.HYSTERESIS_MODEL[ComponentValue - 1],
-      DATA: setMULTLINData(dataObject[NAME], rawData?.MULT_DATA),
-    };
+    setData["DATA"] = setMULTLINData(dataObject[NAME], rawData?.MULT_DATA);
     // MULTLIN 안에  DEFORMCAPACITY -> 레벨 값
     // MULTLIN 안에  nType -> 양방향인지 ... + or - 인지
     // MULTLIN 안에 nDeformDefineType ->  D1 or D2
     return { "3": setData };
   } else {
     if (dataObject[NAME].YIELDSTRENGTHOPT !== 0) return {};
-    const setData = {
-      KEY: key,
-      NAME: rawData.NAME,
-      MATERIAL_TYPE: rawData.MATERIAL_TYPE == "STEEL" ? "S" : "RS",
-      HISTORY_MODEL: rawData.HYSTERESIS_MODEL[ComponentValue - 1],
-      SYMMETRIC: dataObject[NAME].SYMMETRIC,
-      DATA: dataObject[NAME].COMPONENTPROPS,
-      BETA: dataObject[NAME]?.UNLOADSTIFFCALCEXPO,
-      ALPA: dataObject[NAME]?.UNLOADSTIFFREDUFAC,
-      GAMMA: dataObject[NAME]?.PINCHINGRULEFAC,
-      INIT_GAP: [
-        dataObject[NAME]?.INITGAPPOSITIVE,
-        dataObject[NAME]?.INITGAPNEGATIVE,
-      ],
-    };
+    setData["DATA"] = setOtherAllData(
+      dataObject[NAME],
+      rawData.HYSTERESIS_MODEL[ComponentValue - 1],
+      dataObject[NAME].PALPHADELTA
+    );
+
     switch (dataObject[NAME].PALPHADELTA) {
       case 0:
         return { "2": setData };
@@ -180,4 +171,52 @@ const setMULTLINData = (DATA: any, MULT_DATA: []) => {
   };
 };
 
+const setOtherAllData = (
+  DATA: any,
+  HISTORY_MODEL: string,
+  PALPHADELTA: number
+) => {
+  let pData: any[] = [];
+  let dData: any[] = [];
+
+  const data = DATA.COMPONENTPROPS;
+  if (data?.CRACKMOMENT !== undefined) pData.push(data.CRACKMOMENT);
+  if (data?.YIELDMOMENT !== undefined) pData.push(data.YIELDMOMENT);
+  if (data?.ULTIMATEMOMENT !== undefined) pData.push(data.ULTIMATEMOMENT);
+  if (data?.FRACTUREMOMENT !== undefined) pData.push(data.FRACTUREMOMENT);
+  if (data?.YIELDROTN1ST !== undefined)
+    PALPHADELTA === 1
+      ? dData.push(data.YIELDROTN1ST)
+      : dData.push(data.STIFFRATIO1ST);
+  if (data?.YIELDROTN2ND !== undefined)
+    PALPHADELTA === 1
+      ? dData.push(data.YIELDROTN2ND)
+      : dData.push(data.STIFFRATIO2ND);
+  if (data?.YIELDROTN3RD !== undefined)
+    PALPHADELTA === 1
+      ? dData.push(data.YIELDROTN3RD)
+      : dData.push(data.STIFFRATIO3RD);
+  if (data?.YIELDROTN4TH !== undefined)
+    PALPHADELTA === 1
+      ? dData.push(data.YIELDROTN4TH)
+      : dData.push(data.STIFFRATIO4TH);
+
+  // if (PALPHADELTA === 0 && pData.length > 3) pData = pData.slice(0, 3);
+  // if (PALPHADELTA === 0 && dData.length > 3) dData = dData.slice(0, 3);
+
+  return {
+    SYMMETRIC: DATA.SYMMETRIC,
+    INITSTIFFNESS: DATA.INITSTIFFNESS,
+    BETA: DATA?.UNLOADSTIFFCALCEXPO,
+    ALPA: DATA?.UNLOADSTIFFREDUFAC,
+    GAMMA: DATA?.PINCHINGRULEFAC,
+    INIT_GAP: [DATA?.INITGAPPOSITIVE, DATA?.INITGAPNEGATIVE],
+    P_DATA: pData,
+    D_DATA: dData,
+    PND:
+      PALPHADELTA === 1
+        ? ALL_Histroy_PND[HISTORY_MODEL]
+        : ALL_Histroy_PND[HISTORY_MODEL] - 1,
+  };
+};
 export default RequestBtnPy;

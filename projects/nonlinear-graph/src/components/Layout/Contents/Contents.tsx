@@ -20,6 +20,7 @@ import {
 } from "../../../values/RecoilValue";
 import MultiDataGrid from "../../Input/TableGrid/MultiDataGrid";
 import DispDataGrid from "../../Input/TableGrid/DispDataGrid";
+import StiffDataGrid from "../../Input/TableGrid/StiffDataGrid copy";
 const Contents = () => {
   const UnitData = useRecoilValue(UnitState);
   const [TableType, setTableType] = useRecoilState(TableTypeState);
@@ -54,7 +55,7 @@ const Contents = () => {
           </Grid>
           <Grid width={"100%"}>
             {TableType === 1 && <DispDataGrid />}
-            {TableType === 2 && TableType}
+            {TableType === 2 && <StiffDataGrid />}
             {TableType === 3 && <MultiDataGrid />}
           </Grid>
         </Panel>

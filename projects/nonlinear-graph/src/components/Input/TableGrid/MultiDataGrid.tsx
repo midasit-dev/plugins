@@ -46,7 +46,7 @@ const MultiDataGrid = () => {
     initRows();
     initCloumns();
     initGroupColumns();
-  }, [filterList, PnD_size]);
+  }, [filterList, PnD_size, alertMsg]);
 
   const initRows = () => {
     if (filterList !== undefined) {
@@ -97,21 +97,25 @@ const MultiDataGrid = () => {
         field: "NAME",
         headerName: translate("Name"),
         editable: true,
+        width: 68,
       },
       {
         field: "MATERIAL_TYPE",
         headerName: translate("Material"),
         editable: true,
+        width: 68,
       },
       {
         field: "HISTORY_MODEL",
         headerName: translate("Hysteresis_model"),
         editable: true,
+        width: 160,
       },
       {
         field: "Type",
         headerName: translate("Type"),
         editable: true,
+        width: 130,
       },
     ];
     for (let i = 1; i < PnD_size + 1; i++) {
@@ -119,11 +123,13 @@ const MultiDataGrid = () => {
         field: `P${i}`,
         headerName: `P${i}`,
         editable: true,
+        width: 68,
       };
       const columnD = {
         field: `D${i}`,
         headerName: `D${i}`,
         editable: true,
+        width: 68,
       };
       baseColumns.push(columnP);
       baseColumns.push(columnD);
@@ -133,11 +139,13 @@ const MultiDataGrid = () => {
         field: "plus",
         headerName: "+",
         editable: false,
+        width: 40,
       },
       {
         field: "B",
         headerName: "β",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -147,6 +155,7 @@ const MultiDataGrid = () => {
         field: "a1",
         headerName: "α1",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -156,6 +165,7 @@ const MultiDataGrid = () => {
         field: "a2",
         headerName: "α2",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -165,6 +175,7 @@ const MultiDataGrid = () => {
         field: "B1",
         headerName: "β1",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -174,6 +185,7 @@ const MultiDataGrid = () => {
         field: "B2",
         headerName: "β2",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -183,6 +195,7 @@ const MultiDataGrid = () => {
         field: "n",
         headerName: "η",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -208,14 +221,14 @@ const MultiDataGrid = () => {
     ForceChildren.push({ field: "plus" });
     const groupColumn = [
       {
-        groupId: translate("Force_Deformation"),
+        groupId: "Force_Deformation",
+        headerName: translate("Force_Deformation"),
         description: "",
-        field: "Force_Deformation",
         children: ForceChildren,
       },
       {
-        groupId: translate("Hysteresis_Type_Parameter"),
-        field: "Hysteresis_Type_Parameter",
+        groupId: "Hysteresis_Type_Parameter",
+        headerName: translate("Hysteresis_Type_Parameter"),
         children: [
           { field: "B" },
           { field: "a1" },
@@ -281,12 +294,12 @@ const MultiDataGrid = () => {
       // PnD_Size
       const PnD_Data = [];
       for (let i = 1; i < PnD_size + 1; i++) {
-        if (isNaN(rows[row][`P${i}`]) || isNaN(rows[row][`D${i}`])) {
+        if (isEmpty(rows[row][`P${i}`]) || isEmpty(rows[row][`D${i}`])) {
           const noData = "No Data";
-          if (isNaN(rows[row][`P${i}`]) === false)
-            AlertFunc(false, `D${i}`, noData);
-          else if (isNaN(rows[row][`D${i}`]) === false)
-            AlertFunc(false, `P${i}`, noData);
+          if (isEmpty(rows[row][`P${i}`]) === false)
+            AlertFunc(false, 0, `D${i}`, noData);
+          else if (isEmpty(rows[row][`D${i}`]) === false)
+            AlertFunc(false, 0, `P${i}`, noData);
           continue;
         } else
           PnD_Data.push([
@@ -299,12 +312,15 @@ const MultiDataGrid = () => {
 
       // a1,a2, b1, b2, n - values
       const bMLPT: boolean = HISTORY_MODEL === "MLPT" ? true : false;
+      const B1 = bMLPT
+        ? parseFloat(rows[row][`B`])
+        : parseFloat(rows[row]["B1"]);
       const dValues: any = {
-        a1: parseFloat(rows[row]["a1"]),
-        a2: parseFloat(rows[row][`a2`]),
-        B1: bMLPT ? parseFloat(rows[row][`B`]) : parseFloat(rows[row]["B1"]),
-        B2: parseFloat(rows[row][`B2`]),
-        n: parseFloat(rows[row][`n`]),
+        a1: isEmpty(rows[row]["a1"]) ? 10.0 : parseFloat(rows[row]["a1"]),
+        a2: isEmpty(rows[row]["a2"]) ? 10.0 : parseFloat(rows[row]["a2"]),
+        B1: isEmpty(B1) ? 0.7 : B1,
+        B2: isEmpty(rows[row]["B2"]) ? 0.7 : parseFloat(rows[row]["B2"]),
+        n: isEmpty(rows[row]["n"]) ? 0.0 : parseFloat(rows[row]["n"]),
       };
 
       if (bChange === true)
@@ -367,11 +383,12 @@ const MultiDataGrid = () => {
     switch (col) {
       case "plus":
       case "id":
+      case "disable":
       case "NAME": // name
         dbUpdate = true;
         break;
       case "MATERIAL_TYPE": // material
-        if (InputValue === "RS" || InputValue === "S") dbUpdate = true;
+        if (InputValue === "RC" || InputValue === "S") dbUpdate = true;
         break;
       case "HISTORY_MODEL": // historyType
         Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
@@ -426,7 +443,7 @@ const MultiDataGrid = () => {
         }
         break;
     }
-    AlertFunc(dbUpdate, col, InputValue);
+    AlertFunc(dbUpdate, row.id, col, InputValue);
     return dbUpdate;
   };
   // alert
@@ -441,6 +458,7 @@ const MultiDataGrid = () => {
 
   const AlertFunc = (
     bSuccess: boolean,
+    rowID: number = 0,
     colFild: string = "",
     msg: string = ""
   ) => {
@@ -449,11 +467,12 @@ const MultiDataGrid = () => {
       setbError(false);
       setAlertMsg(succesMsg);
     } else {
+      const rowIdx = rowID === 0 ? cursur : rowID;
       const colIdx = columns.findIndex((col) => col.field === colFild);
       if (colIdx !== -1) {
         const errMsg =
           translate("row_col_valid_error") +
-          `: [Name : ${rows[cursur].NAME}, Header : ${columns[colIdx].headerName}] -> Input : ${msg}`;
+          `: [Name : ${rows[rowIdx].NAME}, Header : ${columns[colIdx].headerName}] -> Input : ${msg}`;
         setbError(true);
         setAlertMsg(errMsg);
       }
@@ -565,7 +584,7 @@ const MultiDataGrid = () => {
       if (rows.length === i) break;
       const data = paramsData[i - startRowId];
 
-      let dataObj: { [key: string]: any } = { id: i };
+      let dataObj: { [key: string]: any } = {};
       startColumns.forEach((column: any, idx) => {
         if (column.field === "plus") return;
 
@@ -573,7 +592,18 @@ const MultiDataGrid = () => {
         if (bCheck) dataObj[column.field] = data[idx];
         else throw new Error("Paste operation cancelled");
       });
-      if (!isEmpty(dataObj)) {
+
+      let errCol = "";
+      if (isEmpty(dataObj["MATERIAL_TYPE"])) errCol = "MATERIAL_TYPE";
+      else if (isEmpty(dataObj["HISTORY_MODEL"])) errCol = "HISTORY_MODEL";
+      else if (isEmpty(dataObj["Type"])) errCol = "Type";
+
+      if (!isEmpty(errCol)) {
+        const msg = `no data column [${errCol}]`;
+        AlertFunc(false, i, errCol, msg);
+        throw new Error("Paste operation cancelled");
+      } else {
+        dataObj["id"] = i;
         setRows((preRows) =>
           preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
         );
@@ -642,13 +672,11 @@ function formatSmallNumber(value: number) {
     maximumFractionDigits: 20, // 최대 소수점 자릿수 확장
   });
 
-  if (value < Number.MIN_VALUE) {
+  if (Math.abs(value) < 1e-10) {
     return "0.0"; // 너무 작은 값은 0 처리
-  } else if (value < 1e-21) {
-    return "0.0"; // 과학적 표기법으로 출력
   }
 
-  return formatter.format(value);
+  return formatter.format(value).replace(/,/, "");
 }
 
 export default MultiDataGrid;

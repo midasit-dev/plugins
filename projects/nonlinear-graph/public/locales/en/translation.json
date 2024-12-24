@@ -18,7 +18,7 @@
   "Hysteresis_model": "Hysteresis Model",
   "Type": "Type",
 
-  "Axisymmetric": "Axisymmetric",
+  "Axisymmetric": "Symmetric",
   "Symmetric": "Symmetric",
   "Asymmetric": "Asymmetric",
   "Direction": "",
@@ -51,5 +51,7 @@
   "Multi-Linear_Plastic_Pivot": "Linear-Plastic Pivot",
 
   "row_col_valid_error": "Row or Column is wrong",
-  "success_change_data": "Success Change Data"
+  "success_change_data": "Success Change Data",
+
+  "Init_Stiff": "Initial Stiff."
 }

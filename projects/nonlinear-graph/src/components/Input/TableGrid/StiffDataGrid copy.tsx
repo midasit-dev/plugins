@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MULTLIN_HistoryType, MULTLIN_nType } from "../../../values/EnumValue";
+import {
+  ALL_HistoryType_LNG,
+  ALL_Histroy_PND,
+  GetKeyFromLNG,
+  getModelAlpa,
+  getModelBeta,
+  getModelGamma,
+  getModelInitGap,
+  SYMMETRIC,
+} from "../../../values/EnumValue";
 import { isEmpty } from "lodash";
 // recoil
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -22,7 +31,7 @@ import {
 import { Alert } from "@mui/material";
 import { DataGridPremium, GridColDef } from "@mui/x-data-grid-premium";
 
-const MultiDataGrid = () => {
+const StiffDataGrid = () => {
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
@@ -31,7 +40,6 @@ const MultiDataGrid = () => {
 
   const [bError, setbError] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
-  const [PnD_size, setPnD_size] = useState(1);
   const [cursur, setCursur] = useState<number>(0);
   const [field, setField] = useState<string>("");
   const [bEnter, setbEnter] = useState(false);
@@ -46,53 +54,86 @@ const MultiDataGrid = () => {
     initRows();
     initCloumns();
     initGroupColumns();
-  }, [filterList, PnD_size]);
+  }, [filterList, alertMsg]);
 
   const initRows = () => {
     if (filterList !== undefined) {
-      let maxSize = 0;
       setRows([]);
       filterList.forEach((value: any, idx: any) => {
+        const HISTORY_MODEL = ALL_HistoryType_LNG[value.HISTORY_MODEL];
+
         const obj: { [key: string]: any } = {
           id: idx,
           NAME: value.NAME,
           MATERIAL_TYPE: value.MATERIAL_TYPE,
-          HISTORY_MODEL: translate(MULTLIN_HistoryType[value.HISTORY_MODEL]),
-          Type: translate(MULTLIN_nType[value.DATA.nType]),
+          HISTORY_MODEL: translate(HISTORY_MODEL),
+          SYMMETRIC: translate(SYMMETRIC[value.DATA.SYMMETRIC]),
         };
 
         // PnD data init
-        maxSize = Math.max(maxSize, value.DATA.PnD_Data.length);
-        value.DATA.PnD_Data.forEach((PnD: any, idx: number) => {
-          const Pdata = PnD[0];
-          const Ddata = PnD[1];
-          obj[`P${idx + 1}`] = Pdata;
-          obj[`D${idx + 1}`] = Ddata;
+        const nPnd = value.DATA.PND;
+        obj["pnd"] = nPnd;
+        let maxPnd = nPnd;
+        Object.entries(ALL_HistoryType_LNG).forEach(([key, value], idx) => {
+          if (value === HISTORY_MODEL)
+            maxPnd = Math.max(maxPnd, ALL_Histroy_PND[key] - 1);
+        });
+        const pDataArr = [
+          ["Plus_P1", "Minus_P1"],
+          ["Plus_P2", "Minus_P2"],
+          ["Plus_P3", "Minus_P3"],
+        ];
+        const dDataArr = [
+          ["Plus_A1", "Minus_A1"],
+          ["Plus_A2", "Minus_A2"],
+          ["Plus_A3", "Minus_A3"],
+        ];
+        pDataArr.some(([plusField, minusField], idx) => {
+          // if (maxPnd < idx + 1) return false;
+          if (nPnd < idx + 1) {
+            obj[plusField] = "";
+            obj[minusField] = "";
+          } else {
+            const pData = value.DATA.P_DATA?.[idx];
+            obj[plusField] = isEmpty(pData) ? "" : formatSmallNumber(pData[0]);
+            obj[minusField] = isEmpty(pData) ? "" : formatSmallNumber(pData[1]);
+          }
+        });
+        dDataArr.some(([plusField, minusField], idx) => {
+          // if (maxPnd < idx + 1) return false;
+          if (nPnd < idx + 1) {
+            obj[plusField] = "";
+            obj[minusField] = "";
+          } else {
+            const dData = value.DATA.D_DATA?.[idx];
+            obj[plusField] = isEmpty(dData) ? "" : formatSmallNumber(dData[0]);
+            obj[minusField] = isEmpty(dData) ? "" : formatSmallNumber(dData[1]);
+          }
         });
 
-        // b, a1, a2, b1, b2, n
-        const bMLPT: boolean = value.HISTORY_MODEL === "MLPT" ? true : false;
-        const bMLPP: boolean = value.HISTORY_MODEL === "MLPP" ? true : false;
-        if (bMLPP) {
-          obj["disable"] = 3;
-          obj["a1"] = value.DATA.dHysParam_Alpha1;
-          obj["a2"] = value.DATA.dHysParam_Alpha2;
-          obj["B1"] = value.DATA.dHysParam_Beta1;
-          obj["B2"] = value.DATA.dHysParam_Beta2;
-          obj["n"] = value.DATA.dHysParam_Eta;
-        } else if (bMLPT) {
-          obj["disable"] = 2;
-          obj["B"] = value.DATA.dHysParam_Beta1;
-        } else obj["disable"] = 1;
-        // obj["B"] = bMLPT ? value.DATA.dHysParam_Beta1 : undefined;
-        // obj["a1"] = bMLPP ? value.DATA.dHysParam_Alpha1 : undefined;
-        // obj["a2"] = bMLPP ? value.DATA.dHysParam_Alpha2 : undefined;
-        // obj["B1"] = bMLPP ? value.DATA.dHysParam_Beta1 : undefined;
-        // obj["B2"] = bMLPP ? value.DATA.dHysParam_Beta2 : undefined;
-        // obj["n"] = bMLPP ? value.DATA.dHysParam_Eta : undefined;
+        // Init Stiff
+        obj["INITSTIFFNESS"] =
+          value.DATA.INITSTIFFNESS === 1
+            ? "E"
+            : formatSmallNumber(value.DATA.INITSTIFFNESS);
+
+        // b, a, g
+        const HistoryModelLNG = ALL_HistoryType_LNG[value.HISTORY_MODEL];
+        const bBeta = getModelBeta(HistoryModelLNG);
+        const bAlpa = getModelAlpa(HistoryModelLNG);
+        const bGamma = getModelGamma(HistoryModelLNG);
+        if (bBeta) obj["B"] = formatSmallNumber(parseFloat(value.DATA.BETA));
+        if (bAlpa) obj["a"] = formatSmallNumber(value.DATA.ALPA);
+        if (bGamma) obj["g"] = formatSmallNumber(value.DATA.GAMMA);
+
+        // init gap
+        const bInitGap = getModelInitGap(HistoryModelLNG);
+        if (bInitGap) {
+          obj["plus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[0]);
+          obj["minus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[1]);
+        }
         setRows((row) => [...row, obj]);
       });
-      setPnD_size(maxSize);
     }
   };
 
@@ -103,132 +144,255 @@ const MultiDataGrid = () => {
         field: "NAME",
         headerName: translate("Name"),
         editable: true,
+        width: 68,
       },
       {
         field: "MATERIAL_TYPE",
         headerName: translate("Material"),
         editable: true,
+        width: 68,
       },
       {
         field: "HISTORY_MODEL",
         headerName: translate("Hysteresis_model"),
         editable: true,
+        width: 135,
       },
       {
-        field: "Type",
-        headerName: translate("Type"),
+        field: "SYMMETRIC",
+        headerName: translate("Axisymmetric"),
         editable: true,
+        width: 87,
       },
     ];
-    for (let i = 1; i < PnD_size + 1; i++) {
-      const columnP = {
-        field: `P${i}`,
-        headerName: `P${i}`,
+
+    const Plus_Columns = [
+      {
+        field: "Plus_P1",
+        headerName: "P1",
         editable: true,
-      };
-      const columnD = {
-        field: `D${i}`,
-        headerName: `D${i}`,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+      {
+        field: "Plus_P2",
+        headerName: "P2",
         editable: true,
-      };
-      baseColumns.push(columnP);
-      baseColumns.push(columnD);
-    }
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+      {
+        field: "Plus_P3",
+        headerName: "P3",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+      {
+        field: "Plus_A1",
+        headerName: "α1",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+
+      {
+        field: "Plus_A2",
+        headerName: "α2",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+      {
+        field: "Plus_A3",
+        headerName: "α3",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+    ];
+
+    const Minus_Columns = [
+      {
+        field: "Minus_P1",
+        headerName: "P1",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+      {
+        field: "Minus_P2",
+        headerName: "P2",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+      {
+        field: "Minus_P3",
+        headerName: "P3",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+      {
+        field: "Minus_A1",
+        headerName: "α1",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+
+      {
+        field: "Minus_A2",
+        headerName: "α2",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+
+      {
+        field: "Minus_A3",
+        headerName: "α3",
+        editable: true,
+        width: 68,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
+      },
+    ];
+
     const remainColumns = [
       {
-        field: "plus",
-        headerName: "+",
-        editable: false,
+        field: "INITSTIFFNESS",
+        headerName: translate("Init_Stiff"),
+        editable: true,
+        width: 75,
+        cellClassName: (params: any) => {
+          const bDisable = disableCell(params);
+          return bDisable ? "enable-cell" : "disable-cell";
+        },
       },
       {
         field: "B",
         headerName: "β",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
         },
       },
       {
-        field: "a1",
-        headerName: "α1",
+        field: "a",
+        headerName: "α",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
         },
       },
       {
-        field: "a2",
-        headerName: "α2",
+        field: "g",
+        headerName: "λ",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
         },
       },
       {
-        field: "B1",
-        headerName: "β1",
+        field: "plus_gap",
+        headerName: "(+)",
         editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
         },
       },
       {
-        field: "B2",
-        headerName: "β2",
+        field: "minus_gap",
+        headerName: "(-)",
         editable: true,
-        cellClassName: (params: any) => {
-          const bDisable = disableCell(params);
-          return bDisable ? "enable-cell" : "disable-cell";
-        },
-      },
-      {
-        field: "n",
-        headerName: "η",
-        editable: true,
+        width: 68,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
         },
       },
     ];
-    setColumns(baseColumns.concat(remainColumns));
+    setColumns(baseColumns.concat(Plus_Columns, Minus_Columns, remainColumns));
   };
 
   const initGroupColumns = () => {
     setGroupColumns([]);
-    const ForceChildren = [];
-    for (let i = 1; i < PnD_size + 1; i++) {
-      const columnP = {
-        field: `P${i}`,
-      };
-      const columnD = {
-        field: `D${i}`,
-      };
-      ForceChildren.push(columnP);
-      ForceChildren.push(columnD);
-    }
-    ForceChildren.push({ field: "plus" });
+    const Plus_children = [
+      { field: "Plus_P1" },
+      { field: "Plus_P2" },
+      { field: "Plus_P3" },
+      { field: "Plus_A1" },
+      { field: "Plus_A2" },
+      { field: "Plus_A3" },
+    ];
+    const Minus_children = [
+      { field: "Minus_P1" },
+      { field: "Minus_P2" },
+      { field: "Minus_P3" },
+      { field: "Minus_A1" },
+      { field: "Minus_A2" },
+      { field: "Minus_A3" },
+    ];
     const groupColumn = [
       {
-        groupId: translate("Force_Deformation"),
-        description: "",
-
-        children: ForceChildren,
+        groupId: "PnD_Plus",
+        headerName: `(+) ${translate("Direction")}`,
+        children: Plus_children,
       },
       {
-        groupId: translate("Hysteresis_Type_Parameter"),
-        children: [
-          { field: "B" },
-          { field: "a1" },
-          { field: "a2" },
-          { field: "B1" },
-          { field: "B2" },
-          { field: "n" },
-        ],
+        groupId: "PnD_Minus",
+        headerName: `(-) ${translate("Direction")}`,
+        children: Minus_children,
+      },
+      {
+        groupId: "Gap",
+        headerName: translate("Gap"),
+        children: [{ field: "plus_gap" }, { field: "minus_gap" }],
       },
     ];
 
@@ -237,27 +401,9 @@ const MultiDataGrid = () => {
 
   const disableCell = (params: any) => {
     const disableField = params.field;
-    const disableCase = ["B", "a1", "a2", "B1", "B2", "n"];
-    switch (params.row.disable) {
-      case 1:
-        if (disableCase.some((e) => e === disableField)) {
-          return false;
-        }
-        break;
-      case 2:
-        if (disableCase.slice(1).some((e) => e === disableField)) {
-          return false;
-        }
-        break;
-      case 3:
-        if (disableField === "B") {
-          return false;
-        }
-        return true;
-      default:
-        return true;
-    }
-    return true;
+
+    if (params.row[disableField] === undefined) return false;
+    else return true;
   };
 
   // tableList 변경
@@ -269,46 +415,110 @@ const MultiDataGrid = () => {
       // MATERIAL_TYPE
       const MATERIAL_TYPE: string = rows[row].MATERIAL_TYPE;
 
-      // HISTORY_MODEL
-      let HISTORY_MODEL: string = "";
-      Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
-        if (translate(value) === rows[row].HISTORY_MODEL) HISTORY_MODEL = key;
+      // SYMMETRIC
+      let symmetric: string = "";
+      Object.entries(SYMMETRIC).forEach(([key, value]) => {
+        if (translate(value) === rows[row].SYMMETRIC) symmetric = key;
       });
 
-      // MULTLIN_nType
-      let MUL_TYPE: string = "";
-      Object.entries(MULTLIN_nType).forEach(([key, value]) => {
-        if (translate(value) === rows[row].Type) {
-          MUL_TYPE = key;
-        }
-      });
-
-      // PnD_Size
-      const PnD_Data = [];
-      for (let i = 1; i < PnD_size + 1; i++) {
-        if (isNaN(rows[row][`P${i}`]) || isNaN(rows[row][`D${i}`])) {
+      // p_data
+      const pData = [];
+      for (let i = 1; i < 4; i++) {
+        if (
+          isEmpty(rows[row][`Plus_P${i}`]) ||
+          isEmpty(rows[row][`Minus_P${i}`])
+        ) {
           const noData = "No Data";
-          if (isNaN(rows[row][`P${i}`]) === false)
-            AlertFunc(false, rows[row], `D${i}`, noData);
-          else if (isNaN(rows[row][`D${i}`]) === false)
-            AlertFunc(false, rows[row], `P${i}`, noData);
+          if (isEmpty(rows[row][`Plus_P${i}`]) === false)
+            AlertFunc(false, 0, `Minus_P${i}`, noData);
+          else if (isEmpty(rows[row][`Minus_P${i}`]) === false)
+            AlertFunc(false, 0, `Plus_P${i}`, noData);
           continue;
         } else
-          PnD_Data.push([
-            parseFloat(rows[row][`P${i}`]),
-            parseFloat(rows[row][`D${i}`]),
+          pData.push([
+            parseFloat(rows[row][`Plus_P${i}`]),
+            parseFloat(rows[row][`Minus_P${i}`]),
           ]);
       }
-      if (bEnter === false && PnD_Data.length < PnD_size) PnD_Data.push([0, 0]);
 
-      // a1,a2, b1, b2, n - values
-      const bMLPT: boolean = HISTORY_MODEL === "MLPT" ? true : false;
+      // A_data
+      const dData = [];
+      for (let i = 1; i < 4; i++) {
+        if (
+          isEmpty(rows[row][`Plus_A${i}`]) ||
+          isEmpty(rows[row][`Minus_A${i}`])
+        ) {
+          const noData = "No Data";
+          if (isEmpty(rows[row][`Plus_A${i}`]) === false)
+            AlertFunc(false, 0, `Minus_A${i}`, noData);
+          else if (isEmpty(rows[row][`Minus_A${i}`]) === false)
+            AlertFunc(false, 0, `Plus_A${i}`, noData);
+          continue;
+        } else
+          dData.push([
+            parseFloat(rows[row][`Plus_A${i}`]),
+            parseFloat(rows[row][`Minus_A${i}`]),
+          ]);
+      }
+      if (pData.length !== dData.length) {
+        const noData = "+ or - No Data";
+        const col =
+          pData.length > dData.length
+            ? `Plus_A${dData.length + 1}`
+            : `Plus_P${pData.length + 1}`;
+        AlertFunc(false, 0, col, noData);
+        continue;
+      }
+
+      // HISTORY_MODEL
+      let HISTORY_MODEL: string = "";
+      let HISTORY_MODEL_LNG: string = "";
+      Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
+        if (translate(value) === rows[row].HISTORY_MODEL) {
+          const getKey = GetKeyFromLNG(value, pData.length + 1);
+          if (key === getKey) {
+            HISTORY_MODEL = key;
+            HISTORY_MODEL_LNG = value;
+          }
+        }
+      });
+      if (HISTORY_MODEL === "") {
+        const noData = `[P or α] Data don't match ${translate(
+          "Hysteresis_model"
+        )}`;
+        const col = "HISTORY_MODEL";
+        AlertFunc(false, row, col, noData);
+        continue;
+      }
+      // Init Stiff
+      const defaultStiff =
+        rows[row].INITSTIFFNESS === "" || rows[row].INITSTIFFNESS === "E"
+          ? 1
+          : parseFloat(rows[row].INITSTIFFNESS);
+      const InitStiff = defaultStiff;
+
+      // b, a, g, plus_gap, minus_gap- values
+      const bBeta = getModelBeta(HISTORY_MODEL_LNG);
+      const bAlpa = getModelAlpa(HISTORY_MODEL_LNG);
+      const bGamma = getModelGamma(HISTORY_MODEL_LNG);
+      const bInitGap = getModelInitGap(HISTORY_MODEL_LNG);
+
+      const Beta = isEmpty(rows[row].B) ? 0.5 : parseFloat(rows[row].B);
+      const Alpa = isEmpty(rows[row].a) ? 1.0 : parseFloat(rows[row].a);
+      const Gamma = isEmpty(rows[row].g) ? 0.5 : parseFloat(rows[row].g);
+      const PlusGap = isEmpty(rows[row].plus_gap)
+        ? 0.0
+        : parseFloat(rows[row].plus_gap);
+      const MinusGap = isEmpty(rows[row].minus_gap)
+        ? 0.0
+        : parseFloat(rows[row].minus_gap);
       const dValues: any = {
-        a1: rows[row]["a1"],
-        a2: rows[row][`a2`],
-        B1: bMLPT ? rows[row][`B`] : rows[row]["B1"],
-        B2: rows[row][`B2`],
-        n: rows[row][`n`],
+        INITSTIFFNESS: InitStiff,
+        B: bBeta ? Beta : undefined,
+        a: bAlpa ? Alpa : undefined,
+        g: bGamma ? Gamma : undefined,
+        plus_gap: bInitGap ? PlusGap : undefined,
+        minus_gap: bInitGap ? MinusGap : undefined,
       };
 
       if (bChange === true)
@@ -317,8 +527,9 @@ const MultiDataGrid = () => {
           NAME,
           MATERIAL_TYPE,
           HISTORY_MODEL,
-          MUL_TYPE,
-          PnD_Data,
+          symmetric,
+          pData,
+          dData,
           dValues
         );
     }
@@ -333,8 +544,9 @@ const MultiDataGrid = () => {
     NAME: string,
     MATERIAL_TYPE: string,
     HISTORY_MODEL: string,
-    MUL_TYPE: string,
-    newPnDData: Array<Array<number>>,
+    SYMMETRIC: string,
+    pData: Array<Array<number>>,
+    dData: Array<Array<number>>,
     dValues: any
   ) => {
     if (TableList !== undefined) {
@@ -347,17 +559,19 @@ const MultiDataGrid = () => {
           HISTORY_MODEL: idx === row ? HISTORY_MODEL : item.HISTORY_MODEL,
           DATA: {
             ...item.DATA,
-            nType: idx === row ? MUL_TYPE : item.DATA.nType,
-            dHysParam_Alpha1:
-              idx === row ? dValues.a1 : item.DATA.dHysParam_Alpha1,
-            dHysParam_Alpha2:
-              idx === row ? dValues.a2 : item.DATA.dHysParam_Alpha2,
-            dHysParam_Beta1:
-              idx === row ? dValues.B1 : item.DATA.dHysParam_Beta1,
-            dHysParam_Beta2:
-              idx === row ? dValues.B2 : item.DATA.dHysParam_Beta2,
-            dHysParam_Eta: idx === row ? dValues.n : item.DATA.dHysParam_Eta,
-            PnD_Data: idx === row ? newPnDData : item.DATA.PnD_Data,
+            SYMMETRIC: idx === row ? SYMMETRIC : item.DATA.SYMMETRIC,
+            INITSTIFFNESS:
+              idx === row ? dValues.INITSTIFFNESS : item.DATA.INITSTIFFNESS,
+            BETA: idx === row ? dValues.B : item.DATA.BETA,
+            ALPA: idx === row ? dValues.a : item.DATA.ALPA,
+            GAMMA: idx === row ? dValues.g : item.DATA.GAMMA,
+            INIT_GAP:
+              idx === row
+                ? [dValues.plus_gap, dValues.minus_gap]
+                : item.DATA.INIT_GAP,
+            P_DATA: idx === row ? pData : item.DATA.P_DATA,
+            D_DATA: idx === row ? dData : item.DATA.D_DATA,
+            PND: idx === row ? pData.length : item.DATA.PND,
           },
         })),
       }));
@@ -366,73 +580,99 @@ const MultiDataGrid = () => {
 
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
     let dbUpdate: boolean = false;
-    if (InputValue === undefined || InputValue === "") dbUpdate = true;
+    if (InputValue === undefined) dbUpdate = true;
+    // if (InputValue === undefined || InputValue === "") dbUpdate = true;
 
     switch (col) {
-      case "plus":
       case "id":
       case "NAME": // name
+      case "pnd":
         dbUpdate = true;
         break;
       case "MATERIAL_TYPE": // material
-        if (InputValue === "RS" || InputValue === "S") dbUpdate = true;
+        if (InputValue === "RC" || InputValue === "S") dbUpdate = true;
         break;
       case "HISTORY_MODEL": // historyType
-        Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
+        Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
+          if (translate(value) === InputValue) {
+            const nPnd = ALL_Histroy_PND[key];
+            const getKey = GetKeyFromLNG(value, nPnd);
+            if (key === getKey) dbUpdate = true;
+          }
+        });
+        break;
+      case "SYMMETRIC": // SYMMETRIC
+        Object.entries(SYMMETRIC).forEach(([key, value]) => {
           if (translate(value) === InputValue) dbUpdate = true;
         });
         break;
-      case "Type": // MUL_nType
-        Object.entries(MULTLIN_nType).forEach(([key, value]) => {
-          if (translate(value) === InputValue) dbUpdate = true;
-        });
-        break;
-      case "B": // B
-        if (isNaN(InputValue) === false) {
-          const HISTORY_MODEL_B = row.HISTORY_MODEL;
-          Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
-            if (translate(value) === HISTORY_MODEL_B && key === "MLPT")
-              dbUpdate = true;
-          });
+      case "INITSTIFFNESS":
+        if (InputValue === "E") dbUpdate = true;
+        else if (isNaN(InputValue) === false) {
+          dbUpdate = true;
         }
         break;
-      case "a1": // a1
-      case "a2": // a2
-      case "B1": // b1
-      case "B2": // b2
-      case "n": // n
+      case "B": // B
+      case "a": // a
+      case "g": // a
+      case "plus_gap": // b1
+      case "minus_gap": // b2
         if (isNaN(InputValue) === false) {
+          let bBeta = false;
+          let bAlpa = false;
+          let bGamma = false;
+          let bInitGap = false;
           const HISTORY_MODEL = row.HISTORY_MODEL;
-          Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
-            if (translate(value) === HISTORY_MODEL && key === "MLPP")
-              dbUpdate = true;
+          Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
+            if (translate(value) === HISTORY_MODEL) {
+              bBeta = getModelBeta(value);
+              bAlpa = getModelAlpa(value);
+              bGamma = getModelGamma(value);
+              bInitGap = getModelInitGap(value);
+            }
           });
+          if (bBeta && col === "B") dbUpdate = true;
+          if (bAlpa && col === "a") dbUpdate = true;
+          if (bGamma && col === "g") dbUpdate = true;
+          if (bInitGap && col === "plus_gap") dbUpdate = true;
+          if (bInitGap && col === "minus_gap") dbUpdate = true;
+        }
+        if (InputValue === "") {
+          dbUpdate = true;
         }
         break;
       default: // 4 < ~~ < 4 + PnD_size*2
         if (isNaN(InputValue) === false) {
-          const MUL_nType = row.Type;
-          Object.entries(MULTLIN_nType).forEach(([key, value]) => {
-            if (translate(value) === MUL_nType) {
-              switch (key) {
-                case "1":
-                  if (InputValue >= 0) dbUpdate = true;
-                  break;
-                case "2":
-                  if (InputValue <= 0) dbUpdate = true;
-                  break;
-                default:
-                  dbUpdate = true;
-                  break;
+          const HISTORY_MODEL = row.HISTORY_MODEL;
+          Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
+            if (translate(value) === HISTORY_MODEL) {
+              const nPnd = ALL_Histroy_PND[key];
+              const getKey = GetKeyFromLNG(value, nPnd);
+              if (key === getKey) {
+                if (parseInt(col.slice(-1)) <= nPnd) dbUpdate = true;
               }
             }
           });
         }
+        if (InputValue === "") {
+          const HISTORY_MODEL = row.HISTORY_MODEL;
+          let minPnd = 10;
+          Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
+            if (translate(value) === HISTORY_MODEL) {
+              const nPnd = ALL_Histroy_PND[key] - 1;
+              minPnd = Math.min(minPnd, nPnd);
+            }
+          });
+          if (minPnd < parseInt(col.slice(-1))) dbUpdate = true;
+          if (parseInt(col.slice(-1)) <= minPnd) dbUpdate = false;
+        }
         break;
     }
-    AlertFunc(dbUpdate, row, col, InputValue);
+
+    AlertFunc(dbUpdate, row.id, col, InputValue);
     return dbUpdate;
   };
+
   // alert
   useEffect(() => {
     // 5초 후에 Alert를 숨기기
@@ -445,7 +685,7 @@ const MultiDataGrid = () => {
 
   const AlertFunc = (
     bSuccess: boolean,
-    row: any,
+    rowID: number = 0,
     colFild: string = "",
     msg: string = ""
   ) => {
@@ -454,12 +694,15 @@ const MultiDataGrid = () => {
       setbError(false);
       setAlertMsg(succesMsg);
     } else {
+      const rowIdx = rowID === 0 ? cursur : rowID;
       const colIdx = columns.findIndex((col) => col.field === colFild);
-      const errMsg =
-        translate("row_col_valid_error") +
-        `: [Name : ${row.NAME}, Header : ${columns[colIdx].headerName}] -> Input : ${msg}`;
-      setbError(true);
-      setAlertMsg(errMsg);
+      if (colIdx !== -1) {
+        const errMsg =
+          translate("row_col_valid_error") +
+          `: [Name : ${rows[rowIdx].NAME}, Header : ${columns[colIdx].headerName}] -> Input : ${msg}`;
+        setbError(true);
+        setAlertMsg(errMsg);
+      }
     }
   };
 
@@ -499,13 +742,9 @@ const MultiDataGrid = () => {
   ) => {
     const rowID = params.id as number;
     const field = params.field;
-    if (field === "plus") {
-      setPnD_size(PnD_size + 1);
-      setbChange(true);
-    } else {
-      setCursur(rowID);
-      setField(field);
-    }
+
+    setCursur(rowID);
+    setField(field);
   };
 
   const onKeyDown: GridEventListener<"cellKeyDown"> = (
@@ -566,17 +805,28 @@ const MultiDataGrid = () => {
 
     for (let i = startRowId; i < startRowId + paramsDataCount; i++) {
       if (rows.length === i) break;
-      const data = paramsData[i - startRowId];
+      let data = paramsData[i - startRowId];
+      if (data.length < startColumns.length)
+        data = data.concat(Array(startColumns.length - data.length).fill(""));
 
-      let dataObj: { [key: string]: any } = { id: i };
+      let dataObj: { [key: string]: any } = {};
       startColumns.forEach((column: any, idx) => {
-        if (column.field === "plus") return;
-
         const bCheck = DataValid(dataObj, column.field, data[idx]);
         if (bCheck) dataObj[column.field] = data[idx];
         else throw new Error("Paste operation cancelled");
       });
-      if (!isEmpty(dataObj)) {
+
+      let errCol = "";
+      if (isEmpty(dataObj["MATERIAL_TYPE"])) errCol = "MATERIAL_TYPE";
+      else if (isEmpty(dataObj["HISTORY_MODEL"])) errCol = "HISTORY_MODEL";
+      else if (isEmpty(dataObj["SYMMETRIC"])) errCol = "SYMMETRIC";
+
+      if (!isEmpty(errCol)) {
+        const msg = `no data column [${errCol}]`;
+        AlertFunc(false, i, errCol, msg);
+        throw new Error("Paste operation cancelled");
+      } else {
+        dataObj["id"] = i;
         setRows((preRows) =>
           preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
         );
@@ -630,10 +880,25 @@ const DataGridStyle = {
   width: "100%",
   ".disable-cell": {
     backgroundColor: "#e3e3e3",
+    opacity: 0.4,
     pointerEvents: "none", // 클릭 차단
   },
   ".enable-cell": {
     // backgroundColor: "#fff",
   },
 };
-export default MultiDataGrid;
+
+function formatSmallNumber(value: number) {
+  const formatter = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 20, // 최대 소수점 자릿수 확장
+  });
+
+  if (Math.abs(value) < 1e-10) {
+    return "0.0"; // 너무 작은 값은 0 처리
+  }
+
+  return formatter.format(value).replace(/,/, "");
+}
+
+export default StiffDataGrid;
