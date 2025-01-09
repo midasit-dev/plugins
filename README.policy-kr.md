@@ -28,6 +28,7 @@
 
 ### 🧪 Build Sample
 - [대표 아이콘 파일](./docs/seismic-hazard-map/favicon.ico)
+- [마켓에 표현되는 아이콘 파일](./docs/seismic-hazard-map/icon.svg)
 - [요약 설명 파일](./docs/seismic-hazard-map/readme.md)
 - [기본 웹 베이스 파일](./docs/seismic-hazard-map/)
 

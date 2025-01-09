@@ -932,7 +932,9 @@ function App() {
               return null;
             }
             console.log(cstr_forces);
-            const forces = {
+            let forces;
+            if (cstr_forces.message !== "") {
+            forces = {
               ...static_forces,
               BeamForce: {
                 ...static_forces.BeamForce,
@@ -940,7 +942,15 @@ function App() {
                   cstr_forces.BeamForce.DATA
                 ),
               },
-            };
+            }; 
+          } else {
+              forces = {
+                ...static_forces,
+                BeamForce: {
+                  ...static_forces.BeamForce,
+                  DATA: static_forces.BeamForce.DATA
+                }, };
+            }
             console.log("forces:", forces);
 
             console.log(
