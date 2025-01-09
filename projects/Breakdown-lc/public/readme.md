@@ -23,3 +23,9 @@ Where:
 - South Africa and France moving loads are not supported.
 ### 7. Load Factors
 - Ensure only positive load factors are provided for asymmetrical loads, such as moving loads and settlement loads. Negative load factors for these load cases are not permissible.
+
+## Release notes.
+### version 1.1.0
+- {{Please enter the change log here.}}
+### version 1.0.0
+- initial release.
