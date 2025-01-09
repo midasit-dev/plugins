@@ -53,5 +53,7 @@
   "row_col_valid_error": "列または行が間違っています。",
   "success_change_data": "成功的にデータを変えました。",
 
-  "Init_Stiff": "初期剛性"
+  "Init_Stiff": "初期剛性",
+
+  "GraphBtn": "骨格曲線表示"
 }

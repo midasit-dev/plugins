@@ -613,15 +613,19 @@ const MultiDataGrid = () => {
   };
 
   return (
-    <GuideBox height={filterList !== undefined ? "50vh" : "0"} width={"100%"}>
+    <GuideBox
+      height={filterList !== undefined ? "50vh" : "10vh"}
+      width={"100%"}
+      loading={filterList === undefined ? true : false}
+    >
       {filterList !== undefined && (
         <DataGridPremium
           rows={rows} // rows
           columns={columns} // columns
           columnGroupingModel={groupColumns} // header group text
-          isCellEditable={
-            (params) => disableCell(params) // disable settting
-          }
+          // isCellEditable={
+          //   (params) => disableCell(params) // disable settting
+          // }
           columnGroupHeaderHeight={56} // header group height
           sx={DataGridStyle} // style
           editMode="row" // edit mode
@@ -658,7 +662,7 @@ const DataGridStyle = {
   ".disable-cell": {
     backgroundColor: "#e3e3e3",
     opacity: 0.4,
-    pointerEvents: "none", // 클릭 차단
+    // pointerEvents: "none", // 클릭 차단
   },
   ".enable-cell": {
     // backgroundColor: "#fff",

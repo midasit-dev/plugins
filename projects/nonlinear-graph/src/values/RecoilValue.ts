@@ -66,3 +66,8 @@ export const CheckBoxState = atom<number[]>({
   key: "CheckBoxState",
   default: [],
 });
+
+export const HiddenBtnState = atom<boolean>({
+  key: "HiddenBtnState",
+  default: false,
+});

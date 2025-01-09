@@ -12,7 +12,7 @@ const Header = () => {
   const [TableType, setTableType] = useRecoilState(TableTypeState);
 
   return (
-    <GuideBox center padding={1} width={"60vw"}>
+    <GuideBox center padding={1}>
       <GuideBox row width={"100%"}>
         <Panel height="fit-content" variant="shadow" width="70%" margin={2}>
           <Grid style={container}>

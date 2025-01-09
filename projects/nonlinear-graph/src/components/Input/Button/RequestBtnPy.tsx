@@ -123,7 +123,8 @@ const findDataFunc = (
     setData["DATA"] = setOtherAllData(
       dataObject[NAME],
       rawData.HYSTERESIS_MODEL[ComponentValue - 1],
-      dataObject[NAME].PALPHADELTA
+      dataObject[NAME].PALPHADELTA,
+      ComponentValue
     );
 
     switch (dataObject[NAME].PALPHADELTA) {
@@ -174,35 +175,54 @@ const setMULTLINData = (DATA: any, MULT_DATA: []) => {
 const setOtherAllData = (
   DATA: any,
   HISTORY_MODEL: string,
-  PALPHADELTA: number
+  PALPHADELTA: number,
+  ComponentValue: number
 ) => {
   let pData: any[] = [];
   let dData: any[] = [];
+  let aData: any[] = [];
 
   const data = DATA.COMPONENTPROPS;
-  if (data?.CRACKMOMENT !== undefined) pData.push(data.CRACKMOMENT);
-  if (data?.YIELDMOMENT !== undefined) pData.push(data.YIELDMOMENT);
-  if (data?.ULTIMATEMOMENT !== undefined) pData.push(data.ULTIMATEMOMENT);
-  if (data?.FRACTUREMOMENT !== undefined) pData.push(data.FRACTUREMOMENT);
-  if (data?.YIELDROTN1ST !== undefined)
-    PALPHADELTA === 1
-      ? dData.push(data.YIELDROTN1ST)
-      : dData.push(data.STIFFRATIO1ST);
-  if (data?.YIELDROTN2ND !== undefined)
-    PALPHADELTA === 1
-      ? dData.push(data.YIELDROTN2ND)
-      : dData.push(data.STIFFRATIO2ND);
-  if (data?.YIELDROTN3RD !== undefined)
-    PALPHADELTA === 1
-      ? dData.push(data.YIELDROTN3RD)
-      : dData.push(data.STIFFRATIO3RD);
-  if (data?.YIELDROTN4TH !== undefined)
-    PALPHADELTA === 1
-      ? dData.push(data.YIELDROTN4TH)
-      : dData.push(data.STIFFRATIO4TH);
+  // Force, Disp
+  if (ComponentValue < 4) {
+    if (data?.CRACKFORCE !== undefined && ALL_Histroy_PND[HISTORY_MODEL] !== 2)
+      pData.push(data.CRACKFORCE);
+    if (data?.YIELDFORCE !== undefined) pData.push(data.YIELDFORCE);
+    if (data?.ULTIMATEFORCE !== undefined) pData.push(data.ULTIMATEFORCE);
+    if (data?.FRACTUREFORCE !== undefined) pData.push(data.FRACTUREFORCE);
 
-  // if (PALPHADELTA === 0 && pData.length > 3) pData = pData.slice(0, 3);
-  // if (PALPHADELTA === 0 && dData.length > 3) dData = dData.slice(0, 3);
+    if (
+      data?.YIELDDISP1ST !== undefined &&
+      ALL_Histroy_PND[HISTORY_MODEL] !== 2
+    )
+      dData.push(data.YIELDDISP1ST);
+    if (data?.YIELDDISP2ND !== undefined) dData.push(data.YIELDDISP2ND);
+    if (data?.YIELDDISP3RD !== undefined) dData.push(data.YIELDDISP3RD);
+    if (data?.YIELDDISP4TH !== undefined) dData.push(data.YIELDDISP4TH);
+  }
+  // Moment, Rotn
+  else {
+    if (data?.CRACKMOMENT !== undefined && ALL_Histroy_PND[HISTORY_MODEL] !== 2)
+      pData.push(data.CRACKMOMENT);
+    if (data?.YIELDMOMENT !== undefined) pData.push(data.YIELDMOMENT);
+    if (data?.ULTIMATEMOMENT !== undefined) pData.push(data.ULTIMATEMOMENT);
+    if (data?.FRACTUREMOMENT !== undefined) pData.push(data.FRACTUREMOMENT);
+
+    if (
+      data?.YIELDROTN1ST !== undefined &&
+      ALL_Histroy_PND[HISTORY_MODEL] !== 2
+    )
+      dData.push(data.YIELDROTN1ST);
+    if (data?.YIELDROTN2ND !== undefined) dData.push(data.YIELDROTN2ND);
+    if (data?.YIELDROTN3RD !== undefined) dData.push(data.YIELDROTN3RD);
+    if (data?.YIELDROTN4TH !== undefined) dData.push(data.YIELDROTN4TH);
+  }
+
+  if (data?.STIFFRATIO1ST !== undefined && ALL_Histroy_PND[HISTORY_MODEL] !== 2)
+    aData.push(data.STIFFRATIO1ST);
+  if (data?.STIFFRATIO2ND !== undefined) aData.push(data.STIFFRATIO2ND);
+  if (data?.STIFFRATIO3RD !== undefined) aData.push(data.STIFFRATIO3RD);
+  if (data?.STIFFRATIO4TH !== undefined) aData.push(data.STIFFRATIO4TH);
 
   return {
     SYMMETRIC: DATA.SYMMETRIC,
@@ -213,6 +233,7 @@ const setOtherAllData = (
     INIT_GAP: [DATA?.INITGAPPOSITIVE, DATA?.INITGAPNEGATIVE],
     P_DATA: pData,
     D_DATA: dData,
+    A_DATA: aData,
     PND:
       PALPHADELTA === 1
         ? ALL_Histroy_PND[HISTORY_MODEL]

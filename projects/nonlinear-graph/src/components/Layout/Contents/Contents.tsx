@@ -8,7 +8,6 @@ import {
 } from "@midasit-dev/moaui";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import MutiTable from "../../Input/TableGrid/MutiTable";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   ElementState,
@@ -17,6 +16,7 @@ import {
   UnitState,
   TableListState,
   TableTypeState,
+  HiddenBtnState,
 } from "../../../values/RecoilValue";
 import MultiDataGrid from "../../Input/TableGrid/MultiDataGrid";
 import DispDataGrid from "../../Input/TableGrid/DispDataGrid";
@@ -24,24 +24,26 @@ import StiffDataGrid from "../../Input/TableGrid/StiffDataGrid copy";
 const Contents = () => {
   const UnitData = useRecoilValue(UnitState);
   const [TableType, setTableType] = useRecoilState(TableTypeState);
+  const [hidden, setHidden] = useRecoilState(HiddenBtnState);
   const { t: translate, i18n: internationalization } = useTranslation();
   const UnitText = translate("unit");
 
   const onTabChange = (event: any) => {
     setTableType(parseInt(event.target.id));
+    setHidden(false);
   };
 
   return (
-    <GuideBox center width={"60vw"} padding={1}>
+    <GuideBox center width={"100%"} padding={1}>
       <GuideBox width={"100%"}>
         <Panel
-          height="fit-content"
+          height={"100%"}
           variant="shadow"
           width="100%"
           margin={2}
           overflow={"scroll"}
         >
-          <GuideBox horRight width={"100%"}>
+          <GuideBox horRight>
             <Typography variant="body1" size="medium" center margin={1}>
               {`${UnitText} : ${UnitData.FORCE}, ${UnitData.DIST}`}
             </Typography>
@@ -53,7 +55,7 @@ const Contents = () => {
               <Tab label={translate("TabMulti")} value={3} id="3" />
             </TabGroup>
           </Grid>
-          <Grid width={"100%"}>
+          <Grid width={"100%"} minHeight={"20vh"}>
             {TableType === 1 && <DispDataGrid />}
             {TableType === 2 && <StiffDataGrid />}
             {TableType === 3 && <MultiDataGrid />}

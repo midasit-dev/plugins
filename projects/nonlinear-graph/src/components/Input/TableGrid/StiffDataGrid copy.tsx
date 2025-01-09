@@ -54,6 +54,7 @@ const StiffDataGrid = () => {
     initRows();
     initCloumns();
     initGroupColumns();
+    console.log(filterList);
   }, [filterList, alertMsg]);
 
   const initRows = () => {
@@ -69,6 +70,8 @@ const StiffDataGrid = () => {
           HISTORY_MODEL: translate(HISTORY_MODEL),
           SYMMETRIC: translate(SYMMETRIC[value.DATA.SYMMETRIC]),
         };
+        // SYMMETRIC disable
+        obj["SYMMETRIC_DISABLE"] = value.DATA.SYMMETRIC === 0 ? true : false;
 
         // PnD data init
         const nPnd = value.DATA.PND;
@@ -83,7 +86,7 @@ const StiffDataGrid = () => {
           ["Plus_P2", "Minus_P2"],
           ["Plus_P3", "Minus_P3"],
         ];
-        const dDataArr = [
+        const aDataArr = [
           ["Plus_A1", "Minus_A1"],
           ["Plus_A2", "Minus_A2"],
           ["Plus_A3", "Minus_A3"],
@@ -96,20 +99,33 @@ const StiffDataGrid = () => {
           } else {
             const pData = value.DATA.P_DATA?.[idx];
             obj[plusField] = isEmpty(pData) ? "" : formatSmallNumber(pData[0]);
-            obj[minusField] = isEmpty(pData) ? "" : formatSmallNumber(pData[1]);
+            obj[minusField] = isEmpty(pData)
+              ? ""
+              : formatSmallNumber(pData[1] * -1);
           }
         });
-        dDataArr.some(([plusField, minusField], idx) => {
+        aDataArr.some(([plusField, minusField], idx) => {
           // if (maxPnd < idx + 1) return false;
           if (nPnd < idx + 1) {
             obj[plusField] = "";
             obj[minusField] = "";
           } else {
-            const dData = value.DATA.D_DATA?.[idx];
+            const dData = value.DATA.A_DATA?.[idx];
             obj[plusField] = isEmpty(dData) ? "" : formatSmallNumber(dData[0]);
-            obj[minusField] = isEmpty(dData) ? "" : formatSmallNumber(dData[1]);
+            obj[minusField] = isEmpty(dData)
+              ? ""
+              : formatSmallNumber(dData[1] * -1);
           }
         });
+
+        if (value.HISTORY_MODEL === "SLBT" || value.HISTORY_MODEL === "SLTT")
+          obj["disable"] = "Minus";
+        else if (
+          value.HISTORY_MODEL === "SLBC" ||
+          value.HISTORY_MODEL === "SLTC"
+        )
+          obj["disable"] = "Plus";
+        else obj["disable"] = undefined;
 
         // Init Stiff
         obj["INITSTIFFNESS"] =
@@ -122,15 +138,15 @@ const StiffDataGrid = () => {
         const bBeta = getModelBeta(HistoryModelLNG);
         const bAlpa = getModelAlpa(HistoryModelLNG);
         const bGamma = getModelGamma(HistoryModelLNG);
-        if (bBeta) obj["B"] = formatSmallNumber(parseFloat(value.DATA.BETA));
+        if (bBeta) obj["B"] = formatSmallNumber(value.DATA.BETA);
         if (bAlpa) obj["a"] = formatSmallNumber(value.DATA.ALPA);
         if (bGamma) obj["g"] = formatSmallNumber(value.DATA.GAMMA);
 
         // init gap
         const bInitGap = getModelInitGap(HistoryModelLNG);
         if (bInitGap) {
-          obj["plus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[0]);
-          obj["minus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[1]);
+          obj["Plus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[0]);
+          obj["Minus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[1] * -1);
         }
         setRows((row) => [...row, obj]);
       });
@@ -337,7 +353,7 @@ const StiffDataGrid = () => {
         },
       },
       {
-        field: "plus_gap",
+        field: "Plus_gap",
         headerName: "(+)",
         editable: true,
         width: 68,
@@ -347,7 +363,7 @@ const StiffDataGrid = () => {
         },
       },
       {
-        field: "minus_gap",
+        field: "Minus_gap",
         headerName: "(-)",
         editable: true,
         width: 68,
@@ -392,7 +408,7 @@ const StiffDataGrid = () => {
       {
         groupId: "Gap",
         headerName: translate("Gap"),
-        children: [{ field: "plus_gap" }, { field: "minus_gap" }],
+        children: [{ field: "Plus_gap" }, { field: "Minus_gap" }],
       },
     ];
 
@@ -402,8 +418,59 @@ const StiffDataGrid = () => {
   const disableCell = (params: any) => {
     const disableField = params.field;
 
-    if (params.row[disableField] === undefined) return false;
-    else return true;
+    if (params.row["disable"] !== undefined) {
+      if (params.row["disable"] === "Plus") {
+        switch (disableField) {
+          case "Plus_P1":
+          case "Plus_P2":
+          case "Plus_P3":
+          case "Plus_A1":
+          case "Plus_A2":
+          case "Plus_A3":
+          case "B":
+          case "a":
+          case "g":
+          case "Plus_gap":
+            return false;
+          default:
+            return true;
+        }
+      } else {
+        switch (disableField) {
+          case "Minus_P1":
+          case "Minus_P2":
+          case "Minus_P3":
+          case "Minus_A1":
+          case "Minus_A2":
+          case "Minus_A3":
+          case "B":
+          case "a":
+          case "g":
+          case "Minus_gap":
+            return false;
+          default:
+            return true;
+        }
+      }
+    } else {
+      if (params.row["SYMMETRIC_DISABLE"]) {
+        switch (disableField) {
+          case "Minus_P1":
+          case "Minus_P2":
+          case "Minus_P3":
+          case "Minus_A1":
+          case "Minus_A2":
+          case "Minus_A3":
+          case "Minus_gap":
+            return false;
+          default:
+            break;
+        }
+      }
+
+      if (params.row[disableField] === undefined) return false;
+      else return true;
+    }
   };
 
   // tableList 변경
@@ -416,9 +483,9 @@ const StiffDataGrid = () => {
       const MATERIAL_TYPE: string = rows[row].MATERIAL_TYPE;
 
       // SYMMETRIC
-      let symmetric: string = "";
+      let symmetric: number = 0;
       Object.entries(SYMMETRIC).forEach(([key, value]) => {
-        if (translate(value) === rows[row].SYMMETRIC) symmetric = key;
+        if (translate(value) === rows[row].SYMMETRIC) symmetric = parseInt(key);
       });
 
       // p_data
@@ -429,42 +496,60 @@ const StiffDataGrid = () => {
           isEmpty(rows[row][`Minus_P${i}`])
         ) {
           const noData = "No Data";
-          if (isEmpty(rows[row][`Plus_P${i}`]) === false)
-            AlertFunc(false, 0, `Minus_P${i}`, noData);
-          else if (isEmpty(rows[row][`Minus_P${i}`]) === false)
+          if (isEmpty(rows[row][`Plus_P${i}`]) === false) {
+            if (symmetric === 0) {
+              pData.push([
+                parseFloat(rows[row][`Plus_P${i}`]),
+                parseFloat(rows[row][`Plus_P${i}`]),
+              ]);
+              continue;
+            } else AlertFunc(false, 0, `Minus_P${i}`, noData);
+          } else if (isEmpty(rows[row][`Minus_P${i}`]) === false)
             AlertFunc(false, 0, `Plus_P${i}`, noData);
           continue;
-        } else
+        } else {
           pData.push([
             parseFloat(rows[row][`Plus_P${i}`]),
-            parseFloat(rows[row][`Minus_P${i}`]),
+            symmetric === 0
+              ? parseFloat(rows[row][`Plus_P${i}`])
+              : parseFloat(rows[row][`Minus_P${i}`]) * -1,
           ]);
+        }
       }
 
       // A_data
-      const dData = [];
+      const aData = [];
       for (let i = 1; i < 4; i++) {
         if (
           isEmpty(rows[row][`Plus_A${i}`]) ||
           isEmpty(rows[row][`Minus_A${i}`])
         ) {
           const noData = "No Data";
-          if (isEmpty(rows[row][`Plus_A${i}`]) === false)
-            AlertFunc(false, 0, `Minus_A${i}`, noData);
-          else if (isEmpty(rows[row][`Minus_A${i}`]) === false)
+          if (isEmpty(rows[row][`Plus_A${i}`]) === false) {
+            if (symmetric === 0) {
+              aData.push([
+                parseFloat(rows[row][`Plus_A${i}`]),
+                parseFloat(rows[row][`Plus_A${i}`]),
+              ]);
+              continue;
+            } else AlertFunc(false, 0, `Minus_A${i}`, noData);
+          } else if (isEmpty(rows[row][`Minus_A${i}`]) === false)
             AlertFunc(false, 0, `Plus_A${i}`, noData);
           continue;
         } else
-          dData.push([
+          aData.push([
             parseFloat(rows[row][`Plus_A${i}`]),
-            parseFloat(rows[row][`Minus_A${i}`]),
+            symmetric === 0
+              ? parseFloat(rows[row][`Plus_A${i}`])
+              : parseFloat(rows[row][`Minus_A${i}`]) * -1,
           ]);
       }
-      if (pData.length !== dData.length) {
+
+      if (pData.length !== aData.length) {
         const noData = "+ or - No Data";
         const col =
-          pData.length > dData.length
-            ? `Plus_A${dData.length + 1}`
+          pData.length > aData.length
+            ? `Plus_A${aData.length + 1}`
             : `Plus_P${pData.length + 1}`;
         AlertFunc(false, 0, col, noData);
         continue;
@@ -497,7 +582,7 @@ const StiffDataGrid = () => {
           : parseFloat(rows[row].INITSTIFFNESS);
       const InitStiff = defaultStiff;
 
-      // b, a, g, plus_gap, minus_gap- values
+      // b, a, g, Plus_gap, Minus_gap- values
       const bBeta = getModelBeta(HISTORY_MODEL_LNG);
       const bAlpa = getModelAlpa(HISTORY_MODEL_LNG);
       const bGamma = getModelGamma(HISTORY_MODEL_LNG);
@@ -506,19 +591,20 @@ const StiffDataGrid = () => {
       const Beta = isEmpty(rows[row].B) ? 0.5 : parseFloat(rows[row].B);
       const Alpa = isEmpty(rows[row].a) ? 1.0 : parseFloat(rows[row].a);
       const Gamma = isEmpty(rows[row].g) ? 0.5 : parseFloat(rows[row].g);
-      const PlusGap = isEmpty(rows[row].plus_gap)
+      const PlusGap = isEmpty(rows[row].Plus_gap)
         ? 0.0
-        : parseFloat(rows[row].plus_gap);
-      const MinusGap = isEmpty(rows[row].minus_gap)
+        : parseFloat(rows[row].Plus_gap);
+      const MinusGap = isEmpty(rows[row].Minus_gap)
         ? 0.0
-        : parseFloat(rows[row].minus_gap);
+        : parseFloat(rows[row].Minus_gap) * -1;
+
       const dValues: any = {
         INITSTIFFNESS: InitStiff,
         B: bBeta ? Beta : undefined,
         a: bAlpa ? Alpa : undefined,
         g: bGamma ? Gamma : undefined,
-        plus_gap: bInitGap ? PlusGap : undefined,
-        minus_gap: bInitGap ? MinusGap : undefined,
+        Plus_gap: bInitGap ? PlusGap : undefined,
+        Minus_gap: bInitGap ? MinusGap : undefined,
       };
 
       if (bChange === true)
@@ -529,7 +615,7 @@ const StiffDataGrid = () => {
           HISTORY_MODEL,
           symmetric,
           pData,
-          dData,
+          aData,
           dValues
         );
     }
@@ -544,9 +630,9 @@ const StiffDataGrid = () => {
     NAME: string,
     MATERIAL_TYPE: string,
     HISTORY_MODEL: string,
-    SYMMETRIC: string,
+    SYMMETRIC: number,
     pData: Array<Array<number>>,
-    dData: Array<Array<number>>,
+    aData: Array<Array<number>>,
     dValues: any
   ) => {
     if (TableList !== undefined) {
@@ -567,10 +653,10 @@ const StiffDataGrid = () => {
             GAMMA: idx === row ? dValues.g : item.DATA.GAMMA,
             INIT_GAP:
               idx === row
-                ? [dValues.plus_gap, dValues.minus_gap]
+                ? [dValues.Plus_gap, dValues.Minus_gap]
                 : item.DATA.INIT_GAP,
             P_DATA: idx === row ? pData : item.DATA.P_DATA,
-            D_DATA: idx === row ? dData : item.DATA.D_DATA,
+            A_DATA: idx === row ? aData : item.DATA.A_DATA,
             PND: idx === row ? pData.length : item.DATA.PND,
           },
         })),
@@ -587,6 +673,8 @@ const StiffDataGrid = () => {
       case "id":
       case "NAME": // name
       case "pnd":
+      case "disable":
+      case "SYMMETRIC_DISABLE":
         dbUpdate = true;
         break;
       case "MATERIAL_TYPE": // material
@@ -615,9 +703,23 @@ const StiffDataGrid = () => {
       case "B": // B
       case "a": // a
       case "g": // a
-      case "plus_gap": // b1
-      case "minus_gap": // b2
+      case "Plus_gap": // b1
+      case "Minus_gap": // b2
         if (isNaN(InputValue) === false) {
+          // plus, minus check
+          if (col === "Plus_gap" || col === "Minus_gap") {
+            const fieldPM = col.split("_")[0];
+            if (fieldPM === "Plus" && InputValue < 0) break;
+            if (fieldPM === "Minus" && InputValue > 0) break;
+
+            if (row["disable"] !== undefined) {
+              if (
+                row["disable"] === fieldPM &&
+                rows[row.id][col] !== InputValue
+              )
+                break;
+            }
+          }
           let bBeta = false;
           let bAlpa = false;
           let bGamma = false;
@@ -634,8 +736,8 @@ const StiffDataGrid = () => {
           if (bBeta && col === "B") dbUpdate = true;
           if (bAlpa && col === "a") dbUpdate = true;
           if (bGamma && col === "g") dbUpdate = true;
-          if (bInitGap && col === "plus_gap") dbUpdate = true;
-          if (bInitGap && col === "minus_gap") dbUpdate = true;
+          if (bInitGap && col === "Plus_gap") dbUpdate = true;
+          if (bInitGap && col === "Minus_gap") dbUpdate = true;
         }
         if (InputValue === "") {
           dbUpdate = true;
@@ -643,17 +745,35 @@ const StiffDataGrid = () => {
         break;
       default: // 4 < ~~ < 4 + PnD_size*2
         if (isNaN(InputValue) === false) {
+          const fieldPM = col.split("_")[0];
+          if (fieldPM === "Plus" && InputValue < 0) break;
+          if (fieldPM === "Minus" && InputValue > 0) break;
+
+          if (row["disable"] !== undefined) {
+            if (row["disable"] === fieldPM && rows[row.id][col] !== InputValue)
+              break;
+          } else {
+            if (
+              row["SYMMETRIC_DISABLE"] &&
+              fieldPM === "Minus" &&
+              rows[row.id][col] !== InputValue
+            )
+              break;
+          }
+
+          // data check
           const HISTORY_MODEL = row.HISTORY_MODEL;
           Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
             if (translate(value) === HISTORY_MODEL) {
               const nPnd = ALL_Histroy_PND[key];
               const getKey = GetKeyFromLNG(value, nPnd);
               if (key === getKey) {
-                if (parseInt(col.slice(-1)) <= nPnd) dbUpdate = true;
+                if (parseInt(col.slice(-1)) <= nPnd - 1) dbUpdate = true;
               }
             }
           });
         }
+
         if (InputValue === "") {
           const HISTORY_MODEL = row.HISTORY_MODEL;
           let minPnd = 10;
@@ -836,15 +956,19 @@ const StiffDataGrid = () => {
   };
 
   return (
-    <GuideBox height={filterList !== undefined ? "50vh" : "0"} width={"100%"}>
+    <GuideBox
+      height={filterList !== undefined ? "50vh" : "10vh"}
+      width={"100%"}
+      loading={filterList === undefined ? true : false}
+    >
       {filterList !== undefined && (
         <DataGridPremium
           rows={rows} // rows
           columns={columns} // columns
           columnGroupingModel={groupColumns} // header group text
-          isCellEditable={
-            (params) => disableCell(params) // disable settting
-          }
+          // isCellEditable={
+          //   (params) => disableCell(params) // disable settting
+          // }
           columnGroupHeaderHeight={56} // header group height
           sx={DataGridStyle} // style
           editMode="row" // edit mode
@@ -881,7 +1005,7 @@ const DataGridStyle = {
   ".disable-cell": {
     backgroundColor: "#e3e3e3",
     opacity: 0.4,
-    pointerEvents: "none", // 클릭 차단
+    // pointerEvents: "none", // 클릭 차단
   },
   ".enable-cell": {
     // backgroundColor: "#fff",
