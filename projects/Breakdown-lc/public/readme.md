@@ -26,6 +26,6 @@ Where:
 
 ## Release notes.
 ### version 1.1.0
-- {{Please enter the change log here.}}
+- Fixed issue related to undefined construction stage forces.
 ### version 1.0.0
 - initial release.
