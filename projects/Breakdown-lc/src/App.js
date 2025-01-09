@@ -933,7 +933,7 @@ function App() {
             }
             console.log(cstr_forces);
             let forces;
-            if (!cstr_forces || cstr_forces.message !== "") {
+            if (cstr_forces.message !== "") {
             forces = {
               ...static_forces,
               BeamForce: {
