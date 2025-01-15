@@ -71,3 +71,8 @@ export const HiddenBtnState = atom<boolean>({
   key: "HiddenBtnState",
   default: false,
 });
+
+export const TableErrState = atom<boolean>({
+  key: "TableErrState",
+  default: false,
+});

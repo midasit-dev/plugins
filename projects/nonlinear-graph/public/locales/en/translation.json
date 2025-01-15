@@ -50,9 +50,18 @@
   "Multi-Linear_Plastic_Takeda": "Linear-Plastic Takeda",
   "Multi-Linear_Plastic_Pivot": "Linear-Plastic Pivot",
 
+  "existMsg": "It already exists.",
+  "positionErrMsg": "Invalid data for P and D.",
+  "sameForceErrMsg": "Duplicate data exists in area D",
+  "tooSmallErrMsg": "Data is too small",
+  "no_match_pnd": "The number of P and D does not match the model.",
+  "slopErrMsg": "The slope is not correct.",
+  "Force_Disp_Zero_err": "Data {displacement=0, force=0} must exist.",
   "row_col_valid_error": "Row or Column is wrong",
   "success_change_data": "Success Change Data",
 
   "Init_Stiff": "Initial Stiff.",
-  "GraphBtn": "GRAPH"
+
+  "GraphBtn": "GRAPH",
+  "Graph_err": "Invalid data entered in table."
 }

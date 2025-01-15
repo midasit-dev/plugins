@@ -14,13 +14,15 @@ import {
   Title,
 } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
+import { Alert, Stack } from "@mui/material";
 import { Grid } from "@midasit-dev/moaui";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   filteredTableListState,
   TableChangeState,
   TableTypeState,
   CheckBoxState,
+  TableErrState,
 } from "../../../values/RecoilValue";
 import { isEmpty } from "lodash";
 import { setDatasets } from "react-chartjs-2/dist/utils";
@@ -29,9 +31,11 @@ import {
   ALL_HistoryType_LNG,
   eSubType,
   getBinlinearCase,
+  getMultiCase,
   getSlipCase,
   getTetralinearCase,
   getTrilinearCase,
+  MULTLIN_HistoryType,
   TableTypeName,
 } from "../../../values/EnumValue";
 
@@ -54,16 +58,52 @@ const GraphChart = () => {
   const filterList = useRecoilValue(filteredTableListState);
   const TableType = useRecoilValue(TableTypeState);
   const CheckBox = useRecoilValue(CheckBoxState);
+  const [TableErr, setTableErr] = useRecoilState(TableErrState);
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<any>(null);
-  const [yHeight, setYHeight] = useState(0);
-  const [xWidth, setXWidth] = useState(0);
+  const [scale, setScale] = useState(0);
   const [xyPoint, setxyPoint] = useState<object[]>([]);
   const [dataList, setyDataList] = useState<any[]>([]);
+  const [errmsg, setyErrmsg] = useState<string>("");
 
   useEffect(() => {
     console.log("xyPoint", xyPoint);
+    // 차트 크기 계산
+    const [width, height] = xyPoint.reduce(
+      (acc: number[], arr: any) => {
+        if (arr.length > 0) {
+          const maxXY = arr.reduce(
+            (mm: number[], point: any) => {
+              mm[0] = Math.max(mm[0], point.x);
+              mm[1] = Math.max(mm[1], point.y);
+              return mm;
+            },
+            [0, 0]
+          );
+          const minXY = arr.reduce(
+            (mm: number[], point: any) => {
+              mm[0] = Math.min(mm[0], point.x);
+              mm[1] = Math.min(mm[1], point.y);
+              return mm;
+            },
+            [0, 0]
+          );
+          acc[0] = Math.max(
+            acc[0],
+            Math.max(Math.abs(maxXY[0]), Math.abs(minXY[0]))
+          );
+          acc[1] = Math.max(
+            acc[1],
+            Math.max(Math.abs(maxXY[1]), Math.abs(minXY[1]))
+          );
+        }
+        return acc;
+      },
+      [0, 0]
+    );
+    setScale(Math.max(width, height) + 1);
+
     // 차트 업데이트
     if (chartRef !== undefined) {
       const annotation = {
@@ -109,27 +149,38 @@ const GraphChart = () => {
   }, [filterList]);
 
   const initChart = () => {
-    setxyPoint([]);
     initDataList();
   };
 
   const initDataList = () => {
+    let errArr: boolean[] = [];
+
     switch (TableType) {
       case 1:
-        setDataGraph();
+        errArr = setDataGraph();
         break;
       case 2:
-        setDataGraph();
+        errArr = setDataGraph();
         break;
       case 3:
+        errArr = setMulDataGraph();
         break;
     }
+
+    const bErr = errArr.some((bool) => bool === true);
+    if (bErr) setyErrmsg(translate("Graph_err"));
+    else setyErrmsg("");
+    setTableErr(bErr);
   };
 
-  const setDataGraph = () => {
+  const setDataGraph = (): boolean[] => {
+    const backupXY = [...xyPoint];
+    setxyPoint([]);
+    let errArr: boolean[] = [];
+
     const list = CheckBox.map((checkIdx) => filterList[checkIdx]);
     setyDataList(list);
-    list.forEach((value) => {
+    list.forEach((value, idx) => {
       const HistoryModel = value.HISTORY_MODEL;
       const nPnd = TableType === 1 ? value.DATA.PND : value.DATA.PND + 1;
       switch (nPnd) {
@@ -146,7 +197,14 @@ const GraphChart = () => {
                 HistoryModel,
                 eSubType["Bilinear"]
               );
-              setxyPoint((preXY) => [...preXY, xyPoint]);
+              setxyPoint((preXY) => [
+                ...preXY,
+                isEmpty(xyPoint) ? backupXY[idx] : xyPoint,
+              ]);
+              if (isEmpty(xyPoint))
+                // set err
+                errArr.push(true);
+              else errArr.push(false);
             } else {
               const xyPoint = getBinlinearCase(
                 value.DATA,
@@ -154,7 +212,14 @@ const GraphChart = () => {
                 HistoryModel,
                 eSubType["Bilinear"]
               );
-              setxyPoint((preXY) => [...preXY, xyPoint]);
+              setxyPoint((preXY) => [
+                ...preXY,
+                isEmpty(xyPoint) ? backupXY[idx] : xyPoint,
+              ]);
+              if (isEmpty(xyPoint))
+                // set err
+                errArr.push(true);
+              else errArr.push(false);
             }
           }
           break;
@@ -171,7 +236,14 @@ const GraphChart = () => {
                 HistoryModel,
                 eSubType["Trilinear"]
               );
-              setxyPoint((preXY) => [...preXY, xyPoint]);
+              setxyPoint((preXY) => [
+                ...preXY,
+                isEmpty(xyPoint) ? backupXY[idx] : xyPoint,
+              ]);
+              if (isEmpty(xyPoint))
+                // set err
+                errArr.push(true);
+              else errArr.push(false);
             } else {
               const xyPoint = getTrilinearCase(
                 value.DATA,
@@ -179,7 +251,14 @@ const GraphChart = () => {
                 HistoryModel,
                 eSubType["Trilinear"]
               );
-              setxyPoint((preXY) => [...preXY, xyPoint]);
+              setxyPoint((preXY) => [
+                ...preXY,
+                isEmpty(xyPoint) ? backupXY[idx] : xyPoint,
+              ]);
+              if (isEmpty(xyPoint))
+                // set err
+                errArr.push(true);
+              else errArr.push(false);
             }
           }
           break;
@@ -191,22 +270,53 @@ const GraphChart = () => {
               HistoryModel,
               eSubType["Tetralinear"]
             );
-            setxyPoint((preXY) => [...preXY, xyPoint]);
+            setxyPoint((preXY) => [
+              ...preXY,
+              isEmpty(xyPoint) ? backupXY[idx] : xyPoint,
+            ]);
+            if (isEmpty(xyPoint))
+              // set err
+              errArr.push(true);
+            else errArr.push(false);
           }
           break;
         default:
           break;
       }
     });
+    return errArr;
   };
 
+  const setMulDataGraph = (): boolean[] => {
+    const backupXY = [...xyPoint];
+    setxyPoint([]);
+    let errArr: boolean[] = [];
+
+    const list = CheckBox.map((checkIdx) => filterList[checkIdx]);
+    setyDataList(list);
+    list.forEach((value, idx) => {
+      const HistoryModel = value.HISTORY_MODEL;
+      const xyPoint = getMultiCase(value.DATA, TableType, HistoryModel);
+      setxyPoint((preXY) => [
+        ...preXY,
+        isEmpty(xyPoint) ? backupXY[idx] : xyPoint,
+      ]);
+      if (isEmpty(xyPoint))
+        // set err
+        errArr.push(true);
+      else errArr.push(false);
+    });
+    return errArr;
+  };
   const dataSets = {
     datasets: xyPoint.map((list, idx) => {
       return {
         type: "line" as const,
-        label: `${dataList[idx].NAME} - ${translate(
-          ALL_HistoryType_LNG[dataList[idx].HISTORY_MODEL]
-        )}`,
+        label: `${dataList[idx].NAME} - ${
+          TableType === 3
+            ? translate(MULTLIN_HistoryType[dataList[idx].HISTORY_MODEL])
+            : translate(ALL_HistoryType_LNG[dataList[idx].HISTORY_MODEL])
+        }`,
         data: xyPoint[idx],
         borderDash:
           lineStyle[
@@ -305,8 +415,8 @@ const GraphChart = () => {
     scales: {
       x: {
         beginAtZero: false,
-        min: -3,
-        max: 3,
+        min: -scale,
+        max: scale,
         ticks: {
           color: "gray", // 눈금 색상 설정
           stepSize: 0.5,
@@ -317,8 +427,8 @@ const GraphChart = () => {
       },
       y: {
         beginAtZero: false,
-        min: -3,
-        max: 3,
+        min: -scale,
+        max: scale,
         ticks: {
           color: "gray",
           stepSize: 0.5,
@@ -331,8 +441,33 @@ const GraphChart = () => {
   };
 
   return (
-    <div ref={chartContainerRef} style={gridStyle}>
-      <Chart ref={chartRef} type="scatter" data={dataSets} options={options} />
+    <div style={{ width: "100%", height: "100%" }}>
+      <div
+        style={{
+          width: "100%",
+          height: "10%",
+        }}
+      >
+        <Alert
+          style={{
+            width: "100%",
+            height: "100%",
+            transition: "opacity 0.5s ease-out",
+            opacity: errmsg === "" ? 0 : 1,
+          }}
+          severity="error"
+        >
+          {errmsg}
+        </Alert>
+      </div>
+      <div ref={chartContainerRef} style={gridStyle}>
+        <Chart
+          ref={chartRef}
+          type="scatter"
+          data={dataSets}
+          options={options}
+        />
+      </div>
     </div>
   );
 };
@@ -393,4 +528,5 @@ const lineStyle: number[][] = [
   [5, 5],
   [30, 10],
 ];
+
 export default GraphChart;

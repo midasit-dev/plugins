@@ -50,10 +50,18 @@
   "Multi-Linear_Plastic_Takeda": "マルチリニア-塑性武田",
   "Multi-Linear_Plastic_Pivot": "マルチリニア-塑性ピボット",
 
+  "existMsg": "すでに存在しています。",
+  "positionErrMsg": "PとDのデータが間違っています。",
+  "sameForceErrMsg": "重複データがエリア D に存在します。",
+  "tooSmallErrMsg": "データが小さすぎます。",
+  "no_match_pnd": "モデルとP、Dの個数がマッチしません。",
+  "slopErrMsg": "傾きが正しくありません。",
+  "Force_Disp_Zero_err": "データ{変位=0, 力=0} は必須である必要があります。",
   "row_col_valid_error": "列または行が間違っています。",
   "success_change_data": "成功的にデータを変えました。",
 
   "Init_Stiff": "初期剛性",
 
-  "GraphBtn": "骨格曲線表示"
+  "GraphBtn": "骨格曲線表示",
+  "Graph_err": "テーブルに無効なデータが入力されました"
 }

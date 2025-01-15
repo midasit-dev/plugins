@@ -54,7 +54,6 @@ const StiffDataGrid = () => {
     initRows();
     initCloumns();
     initGroupColumns();
-    console.log(filterList);
   }, [filterList, alertMsg]);
 
   const initRows = () => {
@@ -690,8 +689,29 @@ const StiffDataGrid = () => {
         });
         break;
       case "SYMMETRIC": // SYMMETRIC
+        let sysValue = "";
         Object.entries(SYMMETRIC).forEach(([key, value]) => {
-          if (translate(value) === InputValue) dbUpdate = true;
+          if (translate(value) === InputValue) {
+            sysValue = value;
+            dbUpdate = true;
+          }
+        });
+        const HISTORY_MODEL = row.HISTORY_MODEL;
+        Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
+          if (translate(value) === HISTORY_MODEL) {
+            const nPnd = ALL_Histroy_PND[key];
+            const getKey = GetKeyFromLNG(value, nPnd);
+            if (key === getKey) {
+              if (
+                sysValue === "Symmetric" &&
+                (getKey === "SLBT" ||
+                  getKey === "SLTT" ||
+                  getKey === "SLBC" ||
+                  getKey === "SLTC")
+              )
+                dbUpdate = false;
+            }
+          }
         });
         break;
       case "INITSTIFFNESS":
@@ -923,17 +943,21 @@ const StiffDataGrid = () => {
     const index = columns.findIndex((col) => col.field === field);
     const startColumns = index !== -1 ? columns.slice(index) : [];
 
+    const copyErrMsg = "Paste operation cancelled";
     for (let i = startRowId; i < startRowId + paramsDataCount; i++) {
       if (rows.length === i) break;
       let data = paramsData[i - startRowId];
       if (data.length < startColumns.length)
         data = data.concat(Array(startColumns.length - data.length).fill(""));
 
-      let dataObj: { [key: string]: any } = {};
+      let dataObj: { [key: string]: any } = { id: i };
       startColumns.forEach((column: any, idx) => {
         const bCheck = DataValid(dataObj, column.field, data[idx]);
         if (bCheck) dataObj[column.field] = data[idx];
-        else throw new Error("Paste operation cancelled");
+        else {
+          AlertFunc(false, idx, column.field, copyErrMsg);
+          throw new Error(copyErrMsg);
+        }
       });
 
       let errCol = "";
@@ -944,9 +968,8 @@ const StiffDataGrid = () => {
       if (!isEmpty(errCol)) {
         const msg = `no data column [${errCol}]`;
         AlertFunc(false, i, errCol, msg);
-        throw new Error("Paste operation cancelled");
+        throw new Error(copyErrMsg);
       } else {
-        dataObj["id"] = i;
         setRows((preRows) =>
           preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
         );

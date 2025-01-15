@@ -18,6 +18,7 @@ type SYMMETRIC = {
   "1": string;
   [key: string]: string;
 };
+
 export const SYMMETRIC: SYMMETRIC = {
   0: "Symmetric",
   1: "Asymmetric",
@@ -295,6 +296,7 @@ export const SLIP_Compression_subType: SLIP_Compression_subType = {
 };
 
 // MULTLIN
+
 type MULTLIN_nType = {
   "0": string;
   "1": string;
@@ -321,6 +323,12 @@ export const MULTLIN_HistoryType: MULTLIN_HistoryType = {
   MLPK: "Multi-Linear_Plastic_Kinematic",
   MLPT: "Multi-Linear_Plastic_Takeda",
   MLPP: "Multi-Linear_Plastic_Pivot",
+};
+
+const eMultiSubType = {
+  Both: 1,
+  Tensile_Only: 2,
+  Compression_Only: 3,
 };
 
 // Graph data
@@ -363,6 +371,210 @@ const initValue = (DATA: any, HistoryModel: string) => {
     dG: dGap,
   };
   return result;
+};
+
+const getSlipBinlinear = (
+  DATA: any,
+  HistoryModel: string,
+  dP1: number[],
+  dP2: number[],
+  dA1: number[]
+) => {
+  let X1p = 0.0,
+    X2p = 0.0,
+    Am = 0.0,
+    X1m = 0.0,
+    X2m = 0.0,
+    dGap_p = 0.0,
+    dGap_m = 0.0;
+  // Option // oOm...
+  let dOp = 0.0,
+    dOm = 0.0;
+
+  dGap_p = DATA.INIT_GAP?.[0];
+  dGap_m = DATA.INIT_GAP?.[1];
+  dGap_p = dGap_p > 0 ? dGap_p / Math.max(dGap_p, dGap_m) : 0;
+  dGap_m = dGap_m > 0 ? dGap_m / Math.max(dGap_p, dGap_m) : 0;
+  if (dGap_p < 0.0 || dGap_m < 0.0) return [];
+  // Bilinear
+  X1p = dA1[0];
+  X2p = X1p * 2.0;
+  dP2[0] = X1p * dP1[0] + dP1[0];
+
+  Am = (dP1[1] / (dA1[1] * dP1[0])) * X1p;
+  X1m = Am * dA1[1];
+  X2m = 2.0 * X1m;
+  dP2[1] = X1m * dP1[1] + dP1[1];
+  if (Math.abs(dP2[0]) <= 0.0 || Math.abs(dP2[1]) <= 0.0) return [];
+
+  dGap_p *= X2p / 5.0;
+  dGap_m *= X2p / 5.0;
+  X1p += dGap_p;
+  X2p += dGap_p;
+  X1m += dGap_m;
+  X2m += dGap_m;
+
+  const dMaxX = Math.max(X2p, X2m);
+  const dMaxY = Math.max(dP2[0], dP2[1]);
+  if (Math.abs(dMaxX) <= 0.0 || Math.abs(dMaxY) <= 0.0) return [];
+
+  // x
+  let dx: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
+  dx[0] = 0;
+  dx[1] = (2.0 * dGap_p) / dMaxX;
+  dx[2] = (2.0 * X1p) / dMaxX;
+  dx[3] = (2.0 * X2p) / dMaxX;
+  dx[4] = (-2.0 * dGap_m) / dMaxX;
+  dx[5] = (-2.0 * X1m) / dMaxX;
+  dx[6] = (-2.0 * X2m) / dMaxX;
+  dx = setRoundNumber(dx);
+  // y
+  let dy: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
+  dy[0] = 0;
+  dy[1] = 0;
+  dy[2] = (2.0 * dP1[0]) / dMaxY;
+  dy[3] = (2.0 * dP2[0]) / dMaxY;
+  dy[4] = 0;
+  dy[5] = (-2.0 * dP1[1]) / dMaxY;
+  dy[6] = (-2.0 * dP2[1]) / dMaxY;
+  dy = setRoundNumber(dy);
+
+  [dx, dy] = setEndPoint(7, dx, dy);
+
+  if (HistoryModel === "SLBT") {
+    dx[4] = dx[5] = dx[6] = -2;
+    dy[4] = dy[5] = dy[6] = 0;
+  }
+  if (HistoryModel === "SLBC") {
+    dx[1] = dx[2] = dx[3] = 2;
+    dy[1] = dy[2] = dy[3] = 0;
+  }
+
+  dGap_p *= 2.0 / dMaxX;
+  dGap_m *= -2.0 / dMaxX;
+
+  if (HistoryModel === "SLBI" || HistoryModel === "SLBT") {
+    const dKE = Math.abs(dx[2] - dGap_p) < 1e-10 ? 1 : dy[2] / (dx[2] - dGap_p);
+    dOp = dx[3] - dy[3] / dKE;
+  }
+  if (HistoryModel === "SLBI" || HistoryModel === "SLBC") {
+    const dKE = Math.abs(dx[5] - dGap_m) < 1e-10 ? 1 : dy[5] / (dx[5] - dGap_m);
+    dOm = dx[6] - dy[6] / dKE;
+  }
+  const dO = [dOp, dOm];
+  const xyPoint = getPointXY(4, dx, dy, dO);
+
+  return xyPoint;
+};
+
+const getSlipTrilinea = (
+  DATA: any,
+  HistoryModel: string,
+  dP1: number[],
+  dP2: number[],
+  dP3: number[],
+  dA1: number[],
+  dA2: number[]
+) => {
+  let X1p = 0.0,
+    X2p = 0.0,
+    X3p = 0.0,
+    Am = 0.0,
+    X1m = 0.0,
+    X2m = 0.0,
+    X3m = 0.0,
+    dGap_p = 0.0,
+    dGap_m = 0.0;
+  // Option // oOm...
+  let dOp = 0.0,
+    dOm = 0.0;
+
+  dGap_p = DATA.INIT_GAP?.[0];
+  dGap_m = DATA.INIT_GAP?.[1];
+  dGap_p = dGap_p > 0 ? dGap_p / Math.max(dGap_p, dGap_m) : 0;
+  dGap_m = dGap_m > 0 ? dGap_m / Math.max(dGap_p, dGap_m) : 0;
+  if (dGap_p < 0.0 || dGap_m < 0.0) return [];
+
+  if (
+    Math.abs(dP1[0]) - Math.abs(dP2[0]) > 0.0 ||
+    Math.abs(dP1[1]) - Math.abs(dP2[1]) > 0.0
+  )
+    return [];
+
+  X1p = dA1[0] * dA2[0];
+  X2p = X1p + (dP2[0] / dP1[0] - 1) * dA2[0];
+  X3p = 2 * X2p;
+  dP3[0] = (X2p / dA1[0]) * dP1[0] + dP2[0];
+
+  Am = (dP1[1] / (dA1[1] * dA2[1] * dP1[0])) * X1p;
+  X1m = Am * dA1[1] * dA2[1];
+  X2m = X1m + Am * (dP2[1] / dP1[1] - 1) * dA2[1];
+  X3m = 2.0 * X2m;
+  dP3[1] = (X2m / (Am * dA1[1])) * dP1[1] + dP2[1];
+  if (Math.abs(dP3[0]) <= 0 || Math.abs(dP3[1]) <= 0) return [];
+  dGap_p *= X3p / 5;
+  dGap_m *= X3p / 5;
+  X1p += dGap_p;
+  X2p += dGap_p;
+  X3p += dGap_p;
+  X1m += dGap_m;
+  X2m += dGap_m;
+  X3m += dGap_m;
+
+  const dMaxX = Math.max(X3p, X3m);
+  const dMaxY = Math.max(dP3[0], dP3[1]);
+  if (Math.abs(dMaxX) <= 0 || Math.abs(dMaxY) <= 0) return [];
+
+  // x
+  let dx: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
+  dx[0] = 0;
+  dx[1] = (2.0 * dGap_p) / dMaxX;
+  dx[2] = (2.0 * X1p) / dMaxX;
+  dx[3] = (2.0 * X2p) / dMaxX;
+  dx[4] = (2.0 * X3p) / dMaxX;
+  dx[5] = (-2.0 * dGap_m) / dMaxX;
+  dx[6] = (-2.0 * X1m) / dMaxX;
+  dx[7] = (-2.0 * X2m) / dMaxX;
+  dx[8] = (-2.0 * X3m) / dMaxX;
+  dx = setRoundNumber(dx);
+  // y
+  let dy: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
+  dy[0] = 0;
+  dy[1] = 0;
+  dy[2] = (2.0 * dP1[0]) / dMaxY;
+  dy[3] = (2.0 * dP2[0]) / dMaxY;
+  dy[4] = (2.0 * dP3[0]) / dMaxY;
+  dy[5] = 0;
+  dy[6] = (-2.0 * dP1[1]) / dMaxY;
+  dy[7] = (-2.0 * dP2[1]) / dMaxY;
+  dy[8] = (-2.0 * dP3[1]) / dMaxY;
+  dy = setRoundNumber(dy);
+
+  [dx, dy] = setEndPoint(9, dx, dy);
+
+  if (HistoryModel === "SLTT") {
+    dx[5] = dx[6] = dx[7] = dx[8] = -2.0;
+    dy[5] = dy[6] = dy[7] = dy[8] = 0;
+  }
+  if (HistoryModel === "SLTC") {
+    dx[1] = dx[2] = dx[3] = dx[4] = 2.0;
+    dy[1] = dy[2] = dy[3] = dy[4] = 0;
+  }
+
+  dGap_p *= 2.0 / dMaxX;
+  dGap_m *= -2.0 / dMaxX;
+  if (HistoryModel === "SLTR" || HistoryModel === "SLTT") {
+    const dKE = Math.abs(dx[2] - dGap_p) < 1e-10 ? 1 : dy[2] / (dx[2] - dGap_p);
+    dOp = dx[4] - dy[4] / dKE;
+  }
+  if (HistoryModel === "SLTR" || HistoryModel === "SLTC") {
+    const dKE = Math.abs(dx[6] - dGap_m) < 1e-10 ? 1 : dy[6] / (dx[6] - dGap_m);
+    dOm = dx[8] - dy[8] / dKE;
+  }
+
+  const dO = [dOp, dOm];
+  const xyPoint = getPointXY(5, dx, dy, dO);
+  return xyPoint;
 };
 
 export const getSlipCase = (
@@ -445,179 +657,16 @@ export const getSlipCase = (
   if (Math.abs(dA1[0]) <= 0.0 || Math.abs(dA1[1]) <= 0.0) return [];
   if (Math.abs(dA2[0]) <= 0.0 || Math.abs(dA2[1]) <= 0.0) return [];
 
-  let X1p = 0.0,
-    X2p = 0.0,
-    X3p = 0.0,
-    Am = 0.0,
-    X1m = 0.0,
-    X2m = 0.0,
-    X3m = 0.0,
-    dGap_p = 0.0,
-    dGap_m = 0.0;
-  // Option // oOm...
-  let dOp = 0.0,
-    dOm = 0.0;
-
-  dGap_p = DATA.INIT_GAP?.[0];
-  dGap_m = DATA.INIT_GAP?.[1];
-  dGap_p = dGap_p > 0 ? dGap_p / Math.max(dGap_p, dGap_m) : 0;
-  dGap_m = dGap_m > 0 ? dGap_m / Math.max(dGap_p, dGap_m) : 0;
-  if (dGap_p < 0.0 || dGap_m < 0.0) return [];
-
   if (
     HistoryModel === "SLBI" ||
     HistoryModel === "SLBT" ||
     HistoryModel === "SLBC"
   ) {
     // Bilinear
-    X1p = dA1[0];
-    X2p = X1p * 2.0;
-    dP2[0] = X1p * dP1[0] + dP1[0];
-
-    Am = (dP1[1] / (dA1[1] * dP1[0])) * X1p;
-    X1m = Am * dA1[1];
-    X2m = 2.0 * X1m;
-    dP2[1] = X1m * dP1[1] + dP1[1];
-    if (Math.abs(dP2[0]) <= 0.0 || Math.abs(dP2[1]) <= 0.0) return [];
-
-    dGap_p *= X2p / 5.0;
-    dGap_m *= X2p / 5.0;
-    X1p += dGap_p;
-    X2p += dGap_p;
-    X1m += dGap_m;
-    X2m += dGap_m;
-
-    const dMaxX = Math.max(X2p, X2m);
-    const dMaxY = Math.max(dP2[0], dP2[1]);
-    if (Math.abs(dMaxX) <= 0.0 || Math.abs(dMaxY) <= 0.0) return [];
-
-    // x
-    let dx: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
-    dx[0] = 0;
-    dx[1] = (2.0 * dGap_p) / dMaxX;
-    dx[2] = (2.0 * X1p) / dMaxX;
-    dx[3] = (2.0 * X2p) / dMaxX;
-    dx[4] = (-2.0 * dGap_m) / dMaxX;
-    dx[5] = (-2.0 * X1m) / dMaxX;
-    dx[6] = (-2.0 * X2m) / dMaxX;
-    dx = setRoundNumber(dx);
-    // y
-    let dy: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
-    dy[0] = 0;
-    dy[1] = 0;
-    dy[2] = (2.0 * dP1[0]) / dMaxY;
-    dy[3] = (2.0 * dP2[0]) / dMaxY;
-    dy[4] = 0;
-    dy[5] = (-2.0 * dP1[1]) / dMaxY;
-    dy[6] = (-2.0 * dP2[1]) / dMaxY;
-    dy = setRoundNumber(dy);
-
-    [dx, dy] = setEndPoint(7, dx, dy);
-
-    if (HistoryModel === "SLBT") {
-      dx[4] = dx[5] = dx[6] = -2;
-      dy[4] = dy[5] = dy[6] = 0;
-    }
-    if (HistoryModel === "SLBC") {
-      dx[1] = dx[2] = dx[3] = 2;
-      dy[1] = dy[2] = dy[3] = 0;
-    }
-
-    dGap_p *= 2.0 / dMaxX;
-    dGap_m *= -2.0 / dMaxX;
-
-    if (HistoryModel === "SLBI" || HistoryModel === "SLBT") {
-      const dKE =
-        Math.abs(dx[2] - dGap_p) < 1e-10 ? 1 : dy[2] / (dx[2] - dGap_p);
-      dOp = dx[3] - dy[3] / dKE;
-    }
-    if (HistoryModel === "SLBI" || HistoryModel === "SLBC") {
-      const dKE =
-        Math.abs(dx[5] - dGap_m) < 1e-10 ? 1 : dy[5] / (dx[5] - dGap_m);
-      dOm = dx[6] - dy[6] / dKE;
-    }
-    const dO = [dOp, dOm];
-    const xyPoint = getPointXY(4, dx, dy, dO);
-
-    return xyPoint;
+    return getSlipBinlinear(DATA, HistoryModel, dP1, dP2, dA1);
   } else {
     // Trilinear
-    X1p = dA1[0] * dA2[0];
-    X2p = X1p + (dP2[0] / dP1[0] - 1) * dA2[0];
-    X3p = 2 * X2p;
-    dP3[0] = (X2p / dA1[0]) * dP1[0] + dP2[0];
-
-    Am = (dP1[1] / (dA1[1] * dA2[1] * dP1[0])) * X1p;
-    X1m = Am * dA1[1] * dA2[1];
-    X2m = X1m + Am * (dP2[1] / dP1[1] - 1) * dA2[1];
-    X3m = 2.0 * X2m;
-    dP3[1] = (X2m / (Am * dA1[1])) * dP1[1] + dP2[1];
-    if (Math.abs(dP3[0]) <= 0 || Math.abs(dP3[1]) <= 0) return [];
-    dGap_p *= X3p / 5;
-    dGap_m *= X3p / 5;
-    X1p += dGap_p;
-    X2p += dGap_p;
-    X3p += dGap_p;
-    X1m += dGap_m;
-    X2m += dGap_m;
-    X3m += dGap_m;
-
-    const dMaxX = Math.max(X3p, X3m);
-    const dMaxY = Math.max(dP3[0], dP3[1]);
-    if (Math.abs(dMaxX) <= 0 || Math.abs(dMaxY) <= 0) return [];
-
-    // x
-    let dx: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
-    dx[0] = 0;
-    dx[1] = (2.0 * dGap_p) / dMaxX;
-    dx[2] = (2.0 * X1p) / dMaxX;
-    dx[3] = (2.0 * X2p) / dMaxX;
-    dx[4] = (2.0 * X3p) / dMaxX;
-    dx[5] = (-2.0 * dGap_m) / dMaxX;
-    dx[6] = (-2.0 * X1m) / dMaxX;
-    dx[7] = (-2.0 * X2m) / dMaxX;
-    dx[8] = (-2.0 * X3m) / dMaxX;
-    dx = setRoundNumber(dx);
-    // y
-    let dy: number[] = new Array(9).fill(0); // 길이 6, 초기값 0
-    dy[0] = 0;
-    dy[1] = 0;
-    dy[2] = (2.0 * dP1[0]) / dMaxY;
-    dy[3] = (2.0 * dP2[0]) / dMaxY;
-    dy[4] = (2.0 * dP3[0]) / dMaxY;
-    dy[5] = 0;
-    dy[6] = (-2.0 * dP1[1]) / dMaxY;
-    dy[7] = (-2.0 * dP2[1]) / dMaxY;
-    dy[8] = (-2.0 * dP3[1]) / dMaxY;
-    dy = setRoundNumber(dy);
-
-    [dx, dy] = setEndPoint(9, dx, dy);
-
-    if (HistoryModel === "SLTT") {
-      dx[5] = dx[6] = dx[7] = dx[8] = -2.0;
-      dy[5] = dy[6] = dy[7] = dy[8] = 0;
-    }
-    if (HistoryModel === "SLTC") {
-      dx[1] = dx[2] = dx[3] = dx[4] = 2.0;
-      dy[1] = dy[2] = dy[3] = dy[4] = 0;
-    }
-
-    dGap_p *= 2.0 / dMaxX;
-    dGap_m *= -2.0 / dMaxX;
-    if (HistoryModel === "SLTR" || HistoryModel === "SLTT") {
-      const dKE =
-        Math.abs(dx[2] - dGap_p) < 1e-10 ? 1 : dy[2] / (dx[2] - dGap_p);
-      dOp = dx[4] - dy[4] / dKE;
-    }
-    if (HistoryModel === "SLTR" || HistoryModel === "SLTC") {
-      const dKE =
-        Math.abs(dx[6] - dGap_m) < 1e-10 ? 1 : dy[6] / (dx[6] - dGap_m);
-      dOm = dx[8] - dy[8] / dKE;
-    }
-
-    const dO = [dOp, dOm];
-    const xyPoint = getPointXY(5, dx, dy, dO);
-    return xyPoint;
+    return getSlipTrilinea(DATA, HistoryModel, dP1, dP2, dP3, dA1, dA2);
   }
 };
 
@@ -1022,6 +1071,21 @@ export const getTetralinearCase = (
   return xyPoint;
 };
 
+export const getMultiCase = (
+  DATA: any,
+  nTableType: number,
+  HistoryModel: string
+  // nSubType: number
+) => {
+  const PnD = DATA.PnD_Data;
+  if (PnD.length === 0) return [];
+
+  const xyPoint = PnD.map((value: number[]) => {
+    return { x: value[0], y: value[1] };
+  });
+  return xyPoint;
+};
+
 const getAlapa = (
   nType: number,
   nHysModel: string,
@@ -1108,9 +1172,6 @@ const getPointXY = (
   const toScaledInteger = (value: number): number =>
     Math.round(value * scaleFactor);
   let xyPoint: any[] = [];
-  console.log("!!!!!!!!!!", xArr);
-  console.log("!!!!!!!!!!", yArr);
-  console.log("@@@@@@@@@@@@@", doArr);
   let bstop = false;
   for (let i = 0; i <= 9; i++) {
     const x = xArr[i];

@@ -138,12 +138,12 @@ const findDataFunc = (
 };
 
 const setMULTLINData = (DATA: any, MULT_DATA: []) => {
-  let mult_data: any[][];
+  let multi_data: any[][];
   if (MULT_DATA !== undefined) {
-    mult_data = MULT_DATA.map((value: any) => {
+    multi_data = MULT_DATA.map((value: any) => {
       return [value.DISP, value.FORCE];
     });
-  } else mult_data = [[0.0, 0.0]];
+  } else multi_data = [[0.0, 0.0]];
 
   let nType = 0;
   switch (DATA.nType) {
@@ -162,13 +162,13 @@ const setMULTLINData = (DATA: any, MULT_DATA: []) => {
     nType: nType,
     dHysParam_Alpha1: DATA.dHysParam_Alpha1,
     dHysParam_Alpha2: DATA.dHysParam_Alpha2,
-    dHysParam_Beta1: DATA.dHysParam_Alpha1,
+    dHysParam_Beta1: DATA.dHysParam_Beta1,
     dHysParam_Beta2: DATA.dHysParam_Beta2,
     dHysParam_Eta: DATA.dHysParam_Eta,
     DEFORMCAPACITY: DATA.DEFORMCAPACITY,
     dScaleF_Displ: DATA.dScaleF_Displ,
     dScaleF_Force: DATA.dScaleF_Force,
-    PnD_Data: mult_data,
+    PnD_Data: multi_data,
   };
 };
 

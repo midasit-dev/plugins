@@ -16,6 +16,12 @@ const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
     // 새 창 생성
     const win = window.open("", "_blank", "width=800,height=600");
     const div = document.createElement("div");
+    const styles = Array.from(
+      document.querySelectorAll('style, link[rel="stylesheet"]')
+    );
+    styles.forEach((style) => {
+      win?.document.head.appendChild(style.cloneNode(true));
+    });
     if (win) {
       win.document.body.appendChild(div);
       setContainer(div);

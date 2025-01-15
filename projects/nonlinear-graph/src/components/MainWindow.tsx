@@ -29,23 +29,25 @@ function MainWindow() {
   };
   return (
     <GuideBox center width={"60vw"} height={"100vh"} padding={2}>
-      <Stack width={"100%"} direction="row">
-        <Grid width={"100%"} margin={1}>
-          {!hidden && <Header />}
-          <Contents />
-          {!hidden && <Footer />}
-        </Grid>
-        <Grid width={"100%"} margin={1}>
-          <GraphBtn />
-        </Grid>
-        <Grid width={hidden ? "100%" : "0px"} margin={1}>
-          {hidden && (
-            <NewWindow>
-              <GraphChart />
-            </NewWindow>
-          )}
-        </Grid>
-      </Stack>
+      {UnitData !== undefined && (
+        <Stack width={"100%"} direction="row">
+          <Grid width={"100%"} margin={1}>
+            {!hidden && <Header />}
+            <Contents />
+            {!hidden && <Footer />}
+          </Grid>
+          <Grid width={"100%"} margin={1}>
+            <GraphBtn />
+          </Grid>
+          <Grid width={hidden ? "100%" : "0px"} margin={1}>
+            {hidden && (
+              <NewWindow>
+                <GraphChart />
+              </NewWindow>
+            )}
+          </Grid>
+        </Stack>
+      )}
     </GuideBox>
   );
 }

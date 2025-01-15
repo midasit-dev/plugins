@@ -69,6 +69,7 @@ const MultiDataGrid = () => {
           obj[`P${idx + 1}`] = formatSmallNumber(Pdata);
           obj[`D${idx + 1}`] = formatSmallNumber(Ddata);
         });
+        obj["pnd"] = value.DATA.PnD_Data.length;
 
         // b, a1, a2, b1, b2, n
         const bMLPT: boolean = value.HISTORY_MODEL === "MLPT" ? true : false;
@@ -83,10 +84,18 @@ const MultiDataGrid = () => {
         } else if (bMLPT) {
           obj["disable"] = 2;
           obj["B"] = formatSmallNumber(value.DATA.dHysParam_Beta1);
-        } else obj["disable"] = 1;
+        } else {
+          obj["disable"] = 1;
+          obj["B"] = undefined;
+          obj["a1"] = undefined;
+          obj["a2"] = undefined;
+          obj["B1"] = undefined;
+          obj["B2"] = undefined;
+          obj["n"] = undefined;
+        }
         setRows((row) => [...row, obj]);
       });
-      setPnD_size(maxSize);
+      setPnD_size(maxSize + 1);
     }
   };
 
@@ -135,12 +144,6 @@ const MultiDataGrid = () => {
       baseColumns.push(columnD);
     }
     const remainColumns = [
-      {
-        field: "plus",
-        headerName: "+",
-        editable: false,
-        width: 40,
-      },
       {
         field: "B",
         headerName: "β",
@@ -218,7 +221,6 @@ const MultiDataGrid = () => {
       ForceChildren.push(columnP);
       ForceChildren.push(columnD);
     }
-    ForceChildren.push({ field: "plus" });
     const groupColumn = [
       {
         groupId: "Force_Deformation",
@@ -307,18 +309,18 @@ const MultiDataGrid = () => {
             parseFloat(rows[row][`D${i}`]),
           ]);
       }
-      if (bEnter === false && PnD_Data.length < PnD_size)
-        PnD_Data.push([0.0, 0.0]);
+      PnD_Data.sort((a, b) => a[0] - b[0]);
+
+      // PnD err Check
+      if (!pndErrCheck(PnD_Data, HISTORY_MODEL, MUL_TYPE)) continue;
 
       // a1,a2, b1, b2, n - values
       const bMLPT: boolean = HISTORY_MODEL === "MLPT" ? true : false;
-      const B1 = bMLPT
-        ? parseFloat(rows[row][`B`])
-        : parseFloat(rows[row]["B1"]);
+      const B1 = bMLPT ? rows[row][`B`] : rows[row]["B1"];
       const dValues: any = {
         a1: isEmpty(rows[row]["a1"]) ? 10.0 : parseFloat(rows[row]["a1"]),
         a2: isEmpty(rows[row]["a2"]) ? 10.0 : parseFloat(rows[row]["a2"]),
-        B1: isEmpty(B1) ? 0.7 : B1,
+        B1: isEmpty(B1) ? 0.7 : parseFloat(B1),
         B2: isEmpty(rows[row]["B2"]) ? 0.7 : parseFloat(rows[row]["B2"]),
         n: isEmpty(rows[row]["n"]) ? 0.0 : parseFloat(rows[row]["n"]),
       };
@@ -378,12 +380,13 @@ const MultiDataGrid = () => {
 
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
     let dbUpdate: boolean = false;
-    if (InputValue === undefined || InputValue === "") dbUpdate = true;
+    if (InputValue === undefined) dbUpdate = true;
+    // if (InputValue === undefined || InputValue === "") dbUpdate = true;
 
     switch (col) {
-      case "plus":
       case "id":
       case "disable":
+      case "pnd":
       case "NAME": // name
         dbUpdate = true;
         break;
@@ -407,6 +410,14 @@ const MultiDataGrid = () => {
             if (translate(value) === HISTORY_MODEL_B && key === "MLPT")
               dbUpdate = true;
           });
+          if (
+            col === "B" &&
+            (parseFloat(InputValue) <= 0.0 || parseFloat(InputValue) > 1.0)
+          )
+            dbUpdate = false;
+        }
+        if (InputValue === "") {
+          dbUpdate = true;
         }
         break;
       case "a1": // a1
@@ -420,10 +431,28 @@ const MultiDataGrid = () => {
             if (translate(value) === HISTORY_MODEL && key === "MLPP")
               dbUpdate = true;
           });
+
+          if (col === "a1" && parseFloat(InputValue) < 1.0) dbUpdate = false;
+          if (col === "a2" && parseFloat(InputValue) < 1.0) dbUpdate = false;
+          if (
+            col === "B1" &&
+            (parseFloat(InputValue) <= 0.0 || parseFloat(InputValue) > 1.0)
+          )
+            dbUpdate = false;
+          if (
+            col === "B2" &&
+            (parseFloat(InputValue) <= 0.0 || parseFloat(InputValue) > 1.0)
+          )
+            dbUpdate = false;
+          if (col === "n" && parseFloat(InputValue) < 0.0) dbUpdate = false;
+        }
+        if (InputValue === "") {
+          dbUpdate = true;
         }
         break;
       default: // 4 < ~~ < 4 + PnD_size*2
         if (isNaN(InputValue) === false) {
+          // data check
           const MUL_nType = row.Type;
           Object.entries(MULTLIN_nType).forEach(([key, value]) => {
             if (translate(value) === MUL_nType) {
@@ -440,12 +469,142 @@ const MultiDataGrid = () => {
               }
             }
           });
+
+          // check exist
+          const existMsg = translate("existMsg");
+          if (rows[row.id][col] !== InputValue && col.slice(0, 1) === "P") {
+            for (let i = 1; i <= PnD_size; i++) {
+              if (
+                col !== `P${i}` &&
+                parseFloat(row[`P${i}`]) === parseFloat(InputValue)
+              ) {
+                dbUpdate = false;
+                AlertFunc(false, 0, col, existMsg);
+                return dbUpdate;
+              }
+            }
+          }
+        }
+
+        if (InputValue === "") {
+          dbUpdate = true;
         }
         break;
     }
+
     AlertFunc(dbUpdate, row.id, col, InputValue);
     return dbUpdate;
   };
+
+  const pndErrCheck = (
+    PnD_Data: number[][],
+    HISTORY_MODEL: string,
+    MUL_TYPE: string
+  ): boolean => {
+    // zero data check
+    const zeroErrMsg = translate("Force_Disp_Zero_err");
+    let bDispForceZero = PnD_Data.some((PnD) => PnD[0] === 0 && PnD[1] === 0);
+    if (!bDispForceZero) {
+      AlertFunc(false, 0, `NAME`, zeroErrMsg);
+      return false;
+    }
+    let nForcePlus = 0,
+      nForceMinus = 0;
+
+    const positionErrMsg = translate("positionErrMsg");
+    const sameForceErrMsg = translate("sameForceErrMsg");
+    const tooSmallErrMsg = translate("tooSmallErrMsg");
+    let bMinus01 = false,
+      bMinus02 = false;
+    let bPlus01 = false,
+      bPlus02 = false;
+    const bReulst = PnD_Data.every(([disp, force], idx) => {
+      // position check
+      if (disp > 0 && force < 0) {
+        AlertFunc(false, 0, `D${idx + 1}`, positionErrMsg);
+        return false;
+      } else if (disp < 0 && force > 0) {
+        AlertFunc(false, 0, `D${idx + 1}`, positionErrMsg);
+        return false;
+      }
+      // slope check
+      if (force === 0 && disp === 0) return true;
+      if (disp * force <= 1e-8) {
+        AlertFunc(false, 0, `D${idx + 1}`, tooSmallErrMsg);
+        return false;
+      }
+      if (idx > 0) {
+        if (force < PnD_Data[idx - 1][1] && force < 0) {
+          if (idx === 1) bMinus01 = true;
+          else bMinus02 = true;
+        } else if (force < PnD_Data[idx - 1][1] && force > 0) {
+          if (idx === PnD_Data.length - 1) bPlus01 = true;
+          else bPlus02 = true;
+        }
+      }
+      // same force check
+      if (
+        idx > 1 &&
+        idx < PnD_Data.length - 1 &&
+        force === PnD_Data[idx - 1][1]
+      ) {
+        //  minus
+        if (force < 0) {
+          AlertFunc(false, 0, `D${idx + 1}`, sameForceErrMsg);
+          return false;
+        }
+        //  plus
+        else if (force > 0) {
+          AlertFunc(false, 0, `D${idx + 1}`, sameForceErrMsg);
+          return false;
+        }
+      }
+      if (force > 0) nForcePlus++;
+      else if (force < 0) nForceMinus++;
+      return true;
+    });
+    if (!bReulst) return bReulst;
+
+    const modelMatchErrMsg = translate("no_match_pnd");
+    const slopErrMsg = translate("slopErrMsg");
+    if (HISTORY_MODEL === "MLPK" || HISTORY_MODEL === "MLPT") {
+      if (bMinus01 || bMinus02 || bPlus01 || bPlus02) {
+        AlertFunc(false, 0, "HISTORY_MODEL", slopErrMsg);
+        return false;
+      }
+      switch (MUL_TYPE) {
+        case "0":
+          if (nForcePlus !== nForceMinus || nForcePlus < 1 || nForceMinus < 1) {
+            AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+            return false;
+          }
+          break;
+        case "1":
+          if (nForceMinus > 1 || nForcePlus < 1) {
+            AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+            return false;
+          }
+          break;
+        case "2":
+          if (nForceMinus < 1 || nForcePlus > 1) {
+            AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+            return false;
+          }
+          break;
+      }
+    } else if (HISTORY_MODEL === "MLEL" || HISTORY_MODEL === "MLPP") {
+      if (bMinus02 || bPlus02) {
+        AlertFunc(false, 0, "HISTORY_MODEL", slopErrMsg);
+        return false;
+      }
+      if (HISTORY_MODEL === "MLPP" && (nForcePlus < 1 || nForceMinus < 1)) {
+        AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+        return false;
+      }
+    }
+    return true;
+  };
+
   // alert
   useEffect(() => {
     // 5초 후에 Alert를 숨기기
@@ -515,13 +674,8 @@ const MultiDataGrid = () => {
   ) => {
     const rowID = params.id as number;
     const field = params.field;
-    if (field === "plus") {
-      setPnD_size(PnD_size + 1);
-      setbChange(true);
-    } else {
-      setCursur(rowID);
-      setField(field);
-    }
+    setCursur(rowID);
+    setField(field);
   };
 
   const onKeyDown: GridEventListener<"cellKeyDown"> = (
@@ -561,6 +715,7 @@ const MultiDataGrid = () => {
         if (DataValid(newDataList, key, value)) return false; // no err
         else return true; // err
       });
+
       if (bErr) {
         initRows();
       } else {
@@ -580,20 +735,23 @@ const MultiDataGrid = () => {
     const index = columns.findIndex((col) => col.field === field);
     const startColumns = index !== -1 ? columns.slice(index) : [];
 
+    const copyErrMsg = "Paste operation cancelled";
     for (let i = startRowId; i < startRowId + paramsDataCount; i++) {
       if (rows.length === i) break;
       const data = paramsData[i - startRowId];
-
-      let dataObj: { [key: string]: any } = {};
+      let dataObj: { [key: string]: any } = { id: i };
       startColumns.forEach((column: any, idx) => {
-        if (column.field === "plus") return;
-
         const bCheck = DataValid(dataObj, column.field, data[idx]);
+
         if (bCheck) dataObj[column.field] = data[idx];
-        else throw new Error("Paste operation cancelled");
+        else {
+          AlertFunc(false, idx, column.field, copyErrMsg);
+          throw new Error(copyErrMsg);
+        }
       });
 
       let errCol = "";
+
       if (isEmpty(dataObj["MATERIAL_TYPE"])) errCol = "MATERIAL_TYPE";
       else if (isEmpty(dataObj["HISTORY_MODEL"])) errCol = "HISTORY_MODEL";
       else if (isEmpty(dataObj["Type"])) errCol = "Type";
@@ -601,9 +759,8 @@ const MultiDataGrid = () => {
       if (!isEmpty(errCol)) {
         const msg = `no data column [${errCol}]`;
         AlertFunc(false, i, errCol, msg);
-        throw new Error("Paste operation cancelled");
+        throw new Error(copyErrMsg);
       } else {
-        dataObj["id"] = i;
         setRows((preRows) =>
           preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
         );
