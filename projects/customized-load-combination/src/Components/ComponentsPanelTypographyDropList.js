@@ -7,7 +7,7 @@ const ComponentsPanelTypographyDropList = ({
 		['Steel Design', 1],
 		['Concrete Design', 2],
 		['SRC Design', 3],
-		['Composite Steel Girder', 4]
+		['Composite Steel', 4]
 	]),
 	selectedValue, // Accept the selected value from the parent
 	onValueChange  // Accept the handler to pass changes back to the parent
@@ -45,5 +45,48 @@ const ComponentsPanelTypographyDropList = ({
 		</Panel>
 	);
 }
+const ComponentsPanelTypographyDropList_sign = ({
+	title = "",
+	items = new Map([
+		['+', 1],
+		['-', 2],
+		['+,-', 3],
+		['±', 4]
+	]),
+	selectedValue, // Accept the selected value from the parent
+	onValueChange  // Accept the handler to pass changes back to the parent
+}) => {
+	const [values, setValues] = React.useState({
+		selected: selectedValue,
+		items: items
+	});
 
-export default ComponentsPanelTypographyDropList;
+	React.useEffect(() => {
+		setValues({ ...values, selected: selectedValue });
+	}, [selectedValue]); // Update internal state when the selectedValue prop changes
+
+	return (
+		<Panel width={20} height={20}  paddingLeft={0} paddingTop={1} variant='Box'>
+			<Stack 
+				direction="row" 
+				spacing={0} 
+				justifyContent="space-between" 
+				alignItems="center"
+			>
+				<Typography width='220px'>{title}</Typography>
+				<DropList 
+					itemList={values.items} 
+					width="150px" 
+					defaultValue="+"
+					value={values.selected}
+					onChange={(e) => {
+						const newValue = Number(e.target.value);
+						setValues({ ...values, selected: newValue });
+						onValueChange(newValue); // Pass the new value back to the parent
+					}}
+				/>
+			</Stack>
+		</Panel>
+	);
+}
+export { ComponentsPanelTypographyDropList, ComponentsPanelTypographyDropList_sign };
