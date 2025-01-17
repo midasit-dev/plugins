@@ -67,6 +67,62 @@ export const getModelInitGap = (HistoryModelLNG: string) => {
   }
 };
 
+// all history prop name
+type ALL_History_Prop_Name = {
+  KIN: any;
+  ORG: any;
+  PKO: any;
+  CLO: any;
+  DEG: any;
+  TAK: any;
+  TTE: any;
+  TAKS: any;
+  MTK: any;
+  MTT: any;
+  NBI: any;
+  EBI: any;
+  ETR: any;
+  ETE: any;
+  SLBI: any;
+  SLBT: any;
+  SLBC: any;
+  SLTR: any;
+  SLTT: any;
+  SLTC: any;
+  MLEL: any;
+  MLPK: any;
+  MLPT: any;
+  MLPP: any;
+  [key: string]: string; // 모든 문자열 키에 대한 인덱스 시그니처 추가
+};
+
+export const ALL_History_Prop_Name: ALL_History_Prop_Name = {
+  KIN: "KINEMA",
+  ORG: "ORIGIN",
+  PKO: "PEAK",
+  CLO: "CLOUGH",
+  DEG: "DEGRAD",
+  TAK: "TAKEDA",
+  TTE: "TAKEDA",
+  TAKS: "TAKEDA",
+  MTK: "TAKEDA",
+  MTT: "TAKTET",
+  NBI: "NORBIL",
+  EBI: "ELABIL",
+  ETR: "ELATRI",
+  ETE: "ELATET",
+  SLBI: "SLIP",
+  SLBT: "SLIP",
+  SLBC: "SLIP",
+  SLTR: "SLIP",
+  SLTT: "SLIP",
+  SLTC: "SLIP",
+  MLEL: "MULTLIN",
+  MLPK: "MULTLIN",
+  MLPT: "MULTLIN",
+  MLPP: "MULTLIN",
+};
+
 // all history type
 type ALL_Histroy_PND = {
   KIN: any;
@@ -1213,7 +1269,7 @@ const getPointXY = (
             y: 0,
           });
           xyPoint.push({ x: 0, y: 0 });
-          xyPoint.push({ x: x, y: y });
+          if (i === 4) xyPoint.push({ x: x, y: y });
         } else xyPoint.push({ x: x, y: y });
         break;
       case 5: // SLIP Trilinear
@@ -1224,7 +1280,7 @@ const getPointXY = (
             y: 0,
           });
           xyPoint.push({ x: 0, y: 0 });
-          xyPoint.push({ x: x, y: y });
+          if (i === 5) xyPoint.push({ x: x, y: y });
         } else xyPoint.push({ x: x, y: y });
         break;
       default:

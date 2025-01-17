@@ -10,7 +10,7 @@ const GraphBtn = () => {
   const BtnText = translate("GraphBtn");
 
   return (
-    <GuideBox center margin={2}>
+    <GuideBox center width={"100%"} height={"100%"}>
       <Button
         variant="contained"
         sx={BtnStyle}
@@ -29,8 +29,8 @@ const GraphBtn = () => {
 const BtnStyle: any = {
   backgroundColor: "#EEEEEE",
   color: "#1F2937",
-  width: "1vw", // 버튼의 너비
-  height: "80vh", // 버튼의 높이
+  width: "100%", // 버튼의 너비
+  height: "100%", // 버튼의 높이
   borderRadius: "10px", // 버튼의 모서리 둥글기
   display: "flex",
   flexDirection: "column", // 텍스트를 세로로 배치

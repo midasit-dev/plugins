@@ -18,7 +18,6 @@ const LanguageType = () => {
   function onChangeHandler(event: any) {
     setValue(event.target.value);
     items.forEach((value, key) => {
-      console.log(key);
       if (
         value === event.target.value &&
         window.location.pathname !== `/${key}`

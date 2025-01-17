@@ -1,13 +1,12 @@
 import { GuideBox, Grid, Panel } from "@midasit-dev/moaui";
+import ChangeBtnPy from "../Input/Button/ChangeBtnPy";
 
 const Footer = () => {
   return (
-    <GuideBox center padding={1} width={"60vw"}>
-      <GuideBox row width={"100%"}>
-        <Panel height="fit-content" variant="shadow" width="100%" margin={2}>
-          <Grid style={FooterStyle}>Footer</Grid>
-        </Panel>
-      </GuideBox>
+    <GuideBox row width={"100%"} margin={1}>
+      <Panel height="fit-content" variant="shadow" width="100%">
+        <ChangeBtnPy />
+      </Panel>
     </GuideBox>
   );
 };

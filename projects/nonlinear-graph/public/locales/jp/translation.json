@@ -63,5 +63,8 @@
   "Init_Stiff": "初期剛性",
 
   "GraphBtn": "骨格曲線表示",
-  "Graph_err": "テーブルに無効なデータが入力されました"
+  "Graph_err": "テーブルに無効なデータが入力されました",
+  "changeDBBtn": "登録",
+  "cancelBtn": "閉じる",
+  "TableErrState": "グラフを描けないデータが存在します。グラフを確認してください。"
 }

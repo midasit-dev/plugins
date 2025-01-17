@@ -68,8 +68,8 @@ const GraphChart = () => {
   const [errmsg, setyErrmsg] = useState<string>("");
 
   useEffect(() => {
-    console.log("xyPoint", xyPoint);
     // 차트 크기 계산
+
     const [width, height] = xyPoint.reduce(
       (acc: number[], arr: any) => {
         if (arr.length > 0) {
@@ -89,6 +89,7 @@ const GraphChart = () => {
             },
             [0, 0]
           );
+
           acc[0] = Math.max(
             acc[0],
             Math.max(Math.abs(maxXY[0]), Math.abs(minXY[0]))
@@ -103,7 +104,6 @@ const GraphChart = () => {
       [0, 0]
     );
     setScale(Math.max(width, height) + 1);
-
     // 차트 업데이트
     if (chartRef !== undefined) {
       const annotation = {
@@ -118,9 +118,8 @@ const GraphChart = () => {
             enabled: true,
             position: "start" as const,
           },
-          callbacks: function (value: any) {
-            console.log("annotaion function ", value);
-          },
+          // callbacks: function (value: any) {
+          // },
         },
         yLine: {
           type: "line" as const,
@@ -135,18 +134,25 @@ const GraphChart = () => {
           },
         },
       };
-      setTimeout(() => {
-        chartRef.current.options.plugins.annotation.annotations = annotation;
-        chartRef.current.update();
-      }, 500);
+
+      const findZeroX = xyPoint.some((arr: any) =>
+        arr.some((point: any) => point.x === 0)
+      );
+      const findZeroY = xyPoint.some((arr: any) =>
+        arr.some((point: any) => point.y === 0)
+      );
+      if (findZeroX && findZeroY)
+        setTimeout(() => {
+          chartRef.current.options.plugins.annotation.annotations = annotation;
+          chartRef.current.update();
+        }, 500);
     }
   }, [xyPoint]);
 
   useEffect(() => {
     if (filterList === undefined) return;
-    console.log(filterList);
     initChart();
-  }, [filterList]);
+  }, [filterList, CheckBox]);
 
   const initChart = () => {
     initDataList();
@@ -312,11 +318,7 @@ const GraphChart = () => {
     datasets: xyPoint.map((list, idx) => {
       return {
         type: "line" as const,
-        label: `${dataList[idx].NAME} - ${
-          TableType === 3
-            ? translate(MULTLIN_HistoryType[dataList[idx].HISTORY_MODEL])
-            : translate(ALL_HistoryType_LNG[dataList[idx].HISTORY_MODEL])
-        }`,
+        label: `${dataList[idx].NAME}`,
         data: xyPoint[idx],
         borderDash:
           lineStyle[
@@ -391,21 +393,26 @@ const GraphChart = () => {
         intersect: true, // 데이터 포인트와 교차할 때만 표시
         callbacks: {
           title: function (tooltipItems: any) {
-            return `point : ${tooltipItems.map((Item: any) => Item.dataIndex)}`;
             const toolItem = Array.from(
               new Set(tooltipItems.map((Item: any) => Item.dataset.label))
             );
-            return `Name : ${toolItem}`;
+            return `Name : ${toolItem.join(",  ")} `;
           },
           label: function (tooltipItem: any) {
-            if (tooltipItem.raw) {
-              return ` X: ${tooltipItem.raw.x},  Y: ${tooltipItem.raw.y}`;
-            }
+            // if (tooltipItem.raw) {
+            //   return ` X: ${tooltipItem.raw.x},  Y: ${tooltipItem.raw.y}`;
+            // }
             return "";
           },
-          // footer: function () {
-          //   return "Custom Footer"; // 툴팁 하단 커스텀 메시지
-          // },
+          footer: function (tooltipItems: any) {
+            const toolItemX = Array.from(
+              new Set(tooltipItems.map((Item: any) => Item.raw.x))
+            );
+            const toolItemY = Array.from(
+              new Set(tooltipItems.map((Item: any) => Item.raw.y))
+            );
+            return ` X: ${toolItemX},  Y: ${toolItemY}`;
+          },
         },
       },
       annotation: {

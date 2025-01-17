@@ -30,13 +30,7 @@ const opacity = 0.5;
  */
 const App = () => {
   return (
-    <GuideBox
-      center
-      fill={"rgba(240, 240, 240, 0.5)"}
-      width={"90%"}
-      spacing={2}
-      padding={2}
-    >
+    <GuideBox>
       <MainWindow />
     </GuideBox>
   );

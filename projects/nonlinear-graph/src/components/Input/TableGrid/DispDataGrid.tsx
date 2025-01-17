@@ -19,6 +19,7 @@ import {
   filteredTableListState,
   TableChangeState,
   CheckBoxState,
+  HiddenBtnState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -37,6 +38,7 @@ const DispDataGrid = () => {
   const [bChange, setbChange] = useRecoilState(TableChangeState);
   const filterList = useRecoilValue(filteredTableListState);
   const [CheckBox, setCheckBox] = useRecoilState(CheckBoxState);
+  const hidden = useRecoilValue(HiddenBtnState);
 
   const [bError, setbError] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
@@ -536,9 +538,9 @@ const DispDataGrid = () => {
                 parseFloat(rows[row][`Plus_P${i}`]),
               ]);
               continue;
-            } else AlertFunc(false, 0, `Minus_P${i}`, noData);
+            } else AlertFunc(false, -1, `Minus_P${i}`, noData);
           } else if (isEmpty(rows[row][`Minus_P${i}`]) === false)
-            AlertFunc(false, 0, `Plus_P${i}`, noData);
+            AlertFunc(false, -1, `Plus_P${i}`, noData);
           continue;
         } else
           pData.push([
@@ -564,9 +566,9 @@ const DispDataGrid = () => {
                 parseFloat(rows[row][`Plus_D${i}`]),
               ]);
               continue;
-            } else AlertFunc(false, 0, `Minus_D${i}`, noData);
+            } else AlertFunc(false, -1, `Minus_D${i}`, noData);
           } else if (isEmpty(rows[row][`Minus_D${i}`]) === false)
-            AlertFunc(false, 0, `Plus_D${i}`, noData);
+            AlertFunc(false, -1, `Plus_D${i}`, noData);
           continue;
         } else
           dData.push([
@@ -583,7 +585,7 @@ const DispDataGrid = () => {
           pData.length > dData.length
             ? `Plus_D${dData.length + 1}`
             : `Plus_P${pData.length + 1}`;
-        AlertFunc(false, 0, col, noData);
+        AlertFunc(false, -1, col, noData);
         continue;
       }
 
@@ -605,6 +607,12 @@ const DispDataGrid = () => {
         )}`;
         const col = "HISTORY_MODEL";
         AlertFunc(false, row, col, noData);
+        continue;
+      }
+      // PnD err check
+      const [bErr, errCol, errMsg] = pndErrCheck(pData, dData, HISTORY_MODEL);
+      if (!bErr) {
+        AlertFunc(false, row, errCol, errMsg);
         continue;
       }
 
@@ -742,7 +750,7 @@ const DispDataGrid = () => {
       case "g": // a
       case "Plus_gap": // b1
       case "Minus_gap": // b2
-        if (isNaN(InputValue) === false) {
+        if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
           // plus, minus check
           if (col === "Plus_gap" || col === "Minus_gap") {
             const fieldPM = col.split("_")[0];
@@ -768,24 +776,56 @@ const DispDataGrid = () => {
               bAlpa = getModelAlpa(value);
               bGamma = getModelGamma(value);
               bInitGap = getModelInitGap(value);
+
+              if (
+                value !== "SLIP_Compression" &&
+                col === "Plus_gap" &&
+                parseFloat(InputValue) > parseFloat(row["Plus_D1"])
+              )
+                bInitGap = false;
+              if (
+                value !== "SLIP_Tension" &&
+                col === "Minus_gap" &&
+                parseFloat(InputValue) < parseFloat(row["Minus_D1"])
+              )
+                bInitGap = false;
             }
           });
-          if (bBeta && col === "B") dbUpdate = true;
-          if (bAlpa && col === "a") dbUpdate = true;
-          if (bGamma && col === "g") dbUpdate = true;
           if (bInitGap && col === "Plus_gap") dbUpdate = true;
           if (bInitGap && col === "Minus_gap") dbUpdate = true;
+
+          if (
+            col === "B" &&
+            bBeta &&
+            parseFloat(InputValue) >= 0.0 &&
+            parseFloat(InputValue) <= 1.0
+          )
+            dbUpdate = true;
+          if (
+            col === "a" &&
+            bAlpa &&
+            parseFloat(InputValue) >= 0.0 &&
+            parseFloat(InputValue) <= 1.0
+          )
+            dbUpdate = true;
+          if (
+            col === "g" &&
+            bGamma &&
+            parseFloat(InputValue) >= 0.0 &&
+            parseFloat(InputValue) <= 1.0
+          )
+            dbUpdate = true;
         }
         if (InputValue === "") {
           dbUpdate = true;
         }
         break;
       default: // 4 < ~~ < 4 + PnD_size*2
-        if (isNaN(InputValue) === false) {
+        if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
           // plus, minus check
           const fieldPM = col.split("_")[0];
-          if (fieldPM === "Plus" && InputValue < 0) break;
-          if (fieldPM === "Minus" && InputValue > 0) break;
+          if (fieldPM === "Plus" && InputValue <= 0) break;
+          if (fieldPM === "Minus" && InputValue >= 0) break;
 
           if (row["disable"] !== undefined) {
             if (row["disable"] === fieldPM && rows[row.id][col] !== InputValue)
@@ -831,6 +871,75 @@ const DispDataGrid = () => {
     return dbUpdate;
   };
 
+  const pndErrCheck = (
+    pData: number[][],
+    dData: number[][],
+    HISTORY_MODEL: string
+  ): any[] => {
+    const PnD = pData.length;
+    const dTol = 1.0e-9;
+    switch (PnD) {
+      case 4:
+        if (pData[2][0] > pData[3][0]) return [false, "Plus_P3", "P3 > P4"];
+        if (pData[2][1] > pData[3][1]) return [false, "Minus_P3", "P3 > P4"];
+        if (dData[2][0] > dData[3][0]) return [false, "Plus_D3", "D3 > D4"];
+        if (dData[2][1] > dData[3][1]) return [false, "Minus_D3", "D3 > D4"];
+
+        if (
+          dData[2][0] === dData[3][0] &&
+          Math.abs(pData[2][0] - pData[3][0]) > dTol
+        )
+          return [false, "Plus_D4", "D4 > D3 (if P4 < P3)"];
+
+        if (
+          dData[2][1] === dData[3][1] &&
+          Math.abs(pData[2][1] - pData[3][1]) > dTol
+        )
+          return [false, "Minus_D4", "D4 > D3 (if P4 < P3)"];
+
+      case 3:
+        if (pData[1][0] > pData[2][0]) return [false, "Plus_P2", "P2 > P3"];
+        if (pData[1][1] > pData[2][1]) return [false, "Minus_P2", "P2 > P3"];
+        if (dData[1][0] > dData[2][0]) return [false, "Plus_D2", "D2 > D3"];
+        if (dData[1][1] > dData[2][1]) return [false, "Minus_D2", "D2 > D3"];
+
+        if (
+          dData[1][0] === dData[2][0] &&
+          Math.abs(pData[1][0] - pData[2][0]) > dTol
+        )
+          return [false, "Plus_D3", "D3 > D2 (if P3 < P2)"];
+
+        if (
+          dData[1][1] === dData[2][1] &&
+          Math.abs(pData[1][1] - pData[2][1]) > dTol
+        )
+          return [false, "Minus_D3", "D3 > D2 (if P3 < P2)"];
+
+      case 2:
+        if (pData[0][0] > pData[1][0]) return [false, "Plus_P1", "P1 > P2"];
+        if (pData[0][1] > pData[1][1]) return [false, "Minus_P1", "P1 > P2"];
+        if (dData[0][0] > dData[1][0]) return [false, "Plus_D1", "D1 > D2"];
+        if (dData[0][1] > dData[1][1]) return [false, "Minus_D1", "D1 > D2"];
+
+        if (
+          dData[0][0] === dData[1][0] &&
+          Math.abs(pData[0][0] - pData[1][0]) > dTol
+        )
+          return [false, "Plus_D2", "D2 > D1 (if P2 < P1)"];
+
+        if (
+          dData[0][1] === dData[1][1] &&
+          Math.abs(pData[0][1] - pData[1][1]) > dTol
+        )
+          return [false, "Minus_D2", "D2 > D1 (if P2 < P1)"];
+
+        break;
+      default:
+        break;
+    }
+    return [true, "", ""];
+  };
+
   // alert
   useEffect(() => {
     // 5초 후에 Alert를 숨기기
@@ -843,7 +952,7 @@ const DispDataGrid = () => {
 
   const AlertFunc = (
     bSuccess: boolean,
-    rowID: number = 0,
+    rowID: number = -1,
     colFild: string = "",
     msg: string = ""
   ) => {
@@ -852,7 +961,7 @@ const DispDataGrid = () => {
       setbError(false);
       setAlertMsg(succesMsg);
     } else {
-      const rowIdx = rowID === 0 ? cursur : rowID;
+      const rowIdx = rowID === -1 ? cursur : rowID;
       const colIdx = columns.findIndex((col) => col.field === colFild);
       if (colIdx !== -1) {
         const errMsg =
@@ -998,7 +1107,7 @@ const DispDataGrid = () => {
 
   return (
     <GuideBox
-      height={filterList !== undefined ? "50vh" : "10vh"}
+      height={hidden ? "600px" : "400px"}
       width={"100%"}
       loading={filterList === undefined ? true : false}
     >

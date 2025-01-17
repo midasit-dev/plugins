@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { useRecoilState } from "recoil";
-import { HiddenBtnState } from "../../../values/RecoilValue";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { HiddenBtnState, CheckBoxState } from "../../../values/RecoilValue";
 
 interface NewWindowProps {
   children: React.ReactNode;
@@ -11,10 +11,22 @@ const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
   const [newWindow, setNewWindow] = React.useState<Window | null>(null);
   const [hidden, setHidden] = useRecoilState(HiddenBtnState);
+  const checkBoxArr = useRecoilValue(CheckBoxState);
 
   useEffect(() => {
     // 새 창 생성
-    const win = window.open("", "_blank", "width=800,height=600");
+    const minWidth = checkBoxArr.length < 8 ? 800 : checkBoxArr.length * 100;
+    const minHeight = checkBoxArr.length < 8 ? 600 : checkBoxArr.length * 75;
+    const maxWidth = 1600;
+    const maxHeight = 1200;
+
+    const win = window.open(
+      "",
+      "_blank",
+      `width=${checkBoxArr.length > 24 ? maxWidth : minWidth},height=${
+        checkBoxArr.length > 24 ? maxHeight : minHeight
+      }`
+    );
     const div = document.createElement("div");
     const styles = Array.from(
       document.querySelectorAll('style, link[rel="stylesheet"]')

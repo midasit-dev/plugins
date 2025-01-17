@@ -63,5 +63,8 @@
   "Init_Stiff": "Initial Stiff.",
 
   "GraphBtn": "GRAPH",
-  "Graph_err": "Invalid data entered in table."
+  "Graph_err": "Invalid data entered in table.",
+  "changeDBBtn": "Apply",
+  "cancelBtn": "Close",
+  "TableErrState": "Data cannot be drawn exists. Check the Graph"
 }

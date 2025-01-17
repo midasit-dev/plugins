@@ -19,6 +19,7 @@ import {
   filteredTableListState,
   TableChangeState,
   CheckBoxState,
+  HiddenBtnState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -37,6 +38,7 @@ const StiffDataGrid = () => {
   const [bChange, setbChange] = useRecoilState(TableChangeState);
   const filterList = useRecoilValue(filteredTableListState);
   const [CheckBox, setCheckBox] = useRecoilState(CheckBoxState);
+  const hidden = useRecoilValue(HiddenBtnState);
 
   const [bError, setbError] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
@@ -502,9 +504,9 @@ const StiffDataGrid = () => {
                 parseFloat(rows[row][`Plus_P${i}`]),
               ]);
               continue;
-            } else AlertFunc(false, 0, `Minus_P${i}`, noData);
+            } else AlertFunc(false, -1, `Minus_P${i}`, noData);
           } else if (isEmpty(rows[row][`Minus_P${i}`]) === false)
-            AlertFunc(false, 0, `Plus_P${i}`, noData);
+            AlertFunc(false, -1, `Plus_P${i}`, noData);
           continue;
         } else {
           pData.push([
@@ -531,9 +533,9 @@ const StiffDataGrid = () => {
                 parseFloat(rows[row][`Plus_A${i}`]),
               ]);
               continue;
-            } else AlertFunc(false, 0, `Minus_A${i}`, noData);
+            } else AlertFunc(false, -1, `Minus_A${i}`, noData);
           } else if (isEmpty(rows[row][`Minus_A${i}`]) === false)
-            AlertFunc(false, 0, `Plus_A${i}`, noData);
+            AlertFunc(false, -1, `Plus_A${i}`, noData);
           continue;
         } else
           aData.push([
@@ -550,7 +552,7 @@ const StiffDataGrid = () => {
           pData.length > aData.length
             ? `Plus_A${aData.length + 1}`
             : `Plus_P${pData.length + 1}`;
-        AlertFunc(false, 0, col, noData);
+        AlertFunc(false, -1, col, noData);
         continue;
       }
 
@@ -580,6 +582,13 @@ const StiffDataGrid = () => {
           ? 1
           : parseFloat(rows[row].INITSTIFFNESS);
       const InitStiff = defaultStiff;
+
+      // PnD err check
+      const [bErr, errCol, errMsg] = pndErrCheck(pData, aData, HISTORY_MODEL);
+      if (!bErr) {
+        AlertFunc(false, row, errCol, errMsg);
+        continue;
+      }
 
       // b, a, g, Plus_gap, Minus_gap- values
       const bBeta = getModelBeta(HISTORY_MODEL_LNG);
@@ -725,7 +734,7 @@ const StiffDataGrid = () => {
       case "g": // a
       case "Plus_gap": // b1
       case "Minus_gap": // b2
-        if (isNaN(InputValue) === false) {
+        if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
           // plus, minus check
           if (col === "Plus_gap" || col === "Minus_gap") {
             const fieldPM = col.split("_")[0];
@@ -753,21 +762,40 @@ const StiffDataGrid = () => {
               bInitGap = getModelInitGap(value);
             }
           });
-          if (bBeta && col === "B") dbUpdate = true;
-          if (bAlpa && col === "a") dbUpdate = true;
-          if (bGamma && col === "g") dbUpdate = true;
           if (bInitGap && col === "Plus_gap") dbUpdate = true;
           if (bInitGap && col === "Minus_gap") dbUpdate = true;
+
+          if (
+            col === "B" &&
+            bBeta &&
+            parseFloat(InputValue) >= 0.0 &&
+            parseFloat(InputValue) <= 1.0
+          )
+            dbUpdate = true;
+          if (
+            col === "a" &&
+            bAlpa &&
+            parseFloat(InputValue) >= 0.0 &&
+            parseFloat(InputValue) <= 1.0
+          )
+            dbUpdate = true;
+          if (
+            col === "g" &&
+            bGamma &&
+            parseFloat(InputValue) >= 0.0 &&
+            parseFloat(InputValue) <= 1.0
+          )
+            dbUpdate = true;
         }
         if (InputValue === "") {
           dbUpdate = true;
         }
         break;
       default: // 4 < ~~ < 4 + PnD_size*2
-        if (isNaN(InputValue) === false) {
+        if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
           const fieldPM = col.split("_")[0];
-          if (fieldPM === "Plus" && InputValue < 0) break;
-          if (fieldPM === "Minus" && InputValue > 0) break;
+          if (fieldPM === "Plus" && InputValue <= 0) break;
+          if (fieldPM === "Minus" && InputValue >= 0) break;
 
           if (row["disable"] !== undefined) {
             if (row["disable"] === fieldPM && rows[row.id][col] !== InputValue)
@@ -813,6 +841,29 @@ const StiffDataGrid = () => {
     return dbUpdate;
   };
 
+  const pndErrCheck = (
+    pData: number[][],
+    aData: number[][],
+    HISTORY_MODEL: string
+  ): any[] => {
+    const PnD = pData.length;
+    const dTol = 1.0e-9;
+    switch (PnD) {
+      case 3:
+        if (pData[1][0] > pData[2][0]) return [false, "Plus_P2", "P2 > P3"];
+        if (pData[1][1] > pData[2][1]) return [false, "Minus_P2", "P2 > P3"];
+
+      case 2:
+        if (pData[0][0] > pData[1][0]) return [false, "Plus_P1", "P1 > P2"];
+        if (pData[0][1] > pData[1][1]) return [false, "Minus_P1", "P1 > P2"];
+
+        break;
+      default:
+        break;
+    }
+    return [true, "", ""];
+  };
+
   // alert
   useEffect(() => {
     // 5초 후에 Alert를 숨기기
@@ -825,7 +876,7 @@ const StiffDataGrid = () => {
 
   const AlertFunc = (
     bSuccess: boolean,
-    rowID: number = 0,
+    rowID: number = -1,
     colFild: string = "",
     msg: string = ""
   ) => {
@@ -834,7 +885,7 @@ const StiffDataGrid = () => {
       setbError(false);
       setAlertMsg(succesMsg);
     } else {
-      const rowIdx = rowID === 0 ? cursur : rowID;
+      const rowIdx = rowID === -1 ? cursur : rowID;
       const colIdx = columns.findIndex((col) => col.field === colFild);
       if (colIdx !== -1) {
         const errMsg =
@@ -980,7 +1031,7 @@ const StiffDataGrid = () => {
 
   return (
     <GuideBox
-      height={filterList !== undefined ? "50vh" : "10vh"}
+      height={hidden ? "600px" : "400px"}
       width={"100%"}
       loading={filterList === undefined ? true : false}
     >

@@ -34,34 +34,26 @@ const Contents = () => {
   };
 
   return (
-    <GuideBox center width={"100%"} padding={1}>
-      <GuideBox width={"100%"}>
-        <Panel
-          height={"100%"}
-          variant="shadow"
-          width="100%"
-          margin={2}
-          overflow={"scroll"}
-        >
-          <GuideBox horRight>
-            <Typography variant="body1" size="medium" center margin={1}>
-              {`${UnitText} : ${UnitData.FORCE}, ${UnitData.DIST}`}
-            </Typography>
-          </GuideBox>
-          <Grid>
-            <TabGroup onChange={onTabChange} value={1}>
-              <Tab label={translate("TabDisp")} value={1} id="1" />
-              <Tab label={translate("TabStiff")} value={2} id="2" />
-              <Tab label={translate("TabMulti")} value={3} id="3" />
-            </TabGroup>
-          </Grid>
-          <Grid width={"100%"} minHeight={"20vh"}>
-            {TableType === 1 && <DispDataGrid />}
-            {TableType === 2 && <StiffDataGrid />}
-            {TableType === 3 && <MultiDataGrid />}
-          </Grid>
-        </Panel>
-      </GuideBox>
+    <GuideBox center width={"100%"} margin={1}>
+      <Panel height={"100%"} variant="shadow" width="100%" overflow={"scroll"}>
+        <GuideBox horRight>
+          <Typography variant="body1" size="medium" center margin={1}>
+            {`${UnitText} : ${UnitData.FORCE}, ${UnitData.DIST}`}
+          </Typography>
+        </GuideBox>
+        <Grid>
+          <TabGroup onChange={onTabChange} value={1}>
+            <Tab label={translate("TabDisp")} value={1} id="1" />
+            <Tab label={translate("TabStiff")} value={2} id="2" />
+            <Tab label={translate("TabMulti")} value={3} id="3" />
+          </TabGroup>
+        </Grid>
+        <Grid width={"100%"} minHeight={"400px"}>
+          {TableType === 1 && <DispDataGrid />}
+          {TableType === 2 && <StiffDataGrid />}
+          {TableType === 3 && <MultiDataGrid />}
+        </Grid>
+      </Panel>
     </GuideBox>
   );
 };

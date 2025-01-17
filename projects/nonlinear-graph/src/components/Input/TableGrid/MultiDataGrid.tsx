@@ -10,6 +10,7 @@ import {
   filteredTableListState,
   TableChangeState,
   CheckBoxState,
+  HiddenBtnState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -28,6 +29,7 @@ const MultiDataGrid = () => {
   const [bChange, setbChange] = useRecoilState(TableChangeState);
   const filterList = useRecoilValue(filteredTableListState);
   const [CheckBox, setCheckBox] = useRecoilState(CheckBoxState);
+  const hidden = useRecoilValue(HiddenBtnState);
 
   const [bError, setbError] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
@@ -299,9 +301,9 @@ const MultiDataGrid = () => {
         if (isEmpty(rows[row][`P${i}`]) || isEmpty(rows[row][`D${i}`])) {
           const noData = "No Data";
           if (isEmpty(rows[row][`P${i}`]) === false)
-            AlertFunc(false, 0, `D${i}`, noData);
+            AlertFunc(false, -1, `D${i}`, noData);
           else if (isEmpty(rows[row][`D${i}`]) === false)
-            AlertFunc(false, 0, `P${i}`, noData);
+            AlertFunc(false, -1, `P${i}`, noData);
           continue;
         } else
           PnD_Data.push([
@@ -312,7 +314,7 @@ const MultiDataGrid = () => {
       PnD_Data.sort((a, b) => a[0] - b[0]);
 
       // PnD err Check
-      if (!pndErrCheck(PnD_Data, HISTORY_MODEL, MUL_TYPE)) continue;
+      if (!pndErrCheck(PnD_Data, HISTORY_MODEL, MUL_TYPE, row)) continue;
 
       // a1,a2, b1, b2, n - values
       const bMLPT: boolean = HISTORY_MODEL === "MLPT" ? true : false;
@@ -361,7 +363,7 @@ const MultiDataGrid = () => {
           HISTORY_MODEL: idx === row ? HISTORY_MODEL : item.HISTORY_MODEL,
           DATA: {
             ...item.DATA,
-            nType: idx === row ? MUL_TYPE : item.DATA.nType,
+            nType: idx === row ? parseInt(MUL_TYPE) : item.DATA.nType,
             dHysParam_Alpha1:
               idx === row ? dValues.a1 : item.DATA.dHysParam_Alpha1,
             dHysParam_Alpha2:
@@ -404,7 +406,7 @@ const MultiDataGrid = () => {
         });
         break;
       case "B": // B
-        if (isNaN(InputValue) === false) {
+        if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
           const HISTORY_MODEL_B = row.HISTORY_MODEL;
           Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
             if (translate(value) === HISTORY_MODEL_B && key === "MLPT")
@@ -425,7 +427,7 @@ const MultiDataGrid = () => {
       case "B1": // b1
       case "B2": // b2
       case "n": // n
-        if (isNaN(InputValue) === false) {
+        if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
           const HISTORY_MODEL = row.HISTORY_MODEL;
           Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
             if (translate(value) === HISTORY_MODEL && key === "MLPP")
@@ -451,7 +453,7 @@ const MultiDataGrid = () => {
         }
         break;
       default: // 4 < ~~ < 4 + PnD_size*2
-        if (isNaN(InputValue) === false) {
+        if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
           // data check
           const MUL_nType = row.Type;
           Object.entries(MULTLIN_nType).forEach(([key, value]) => {
@@ -479,7 +481,7 @@ const MultiDataGrid = () => {
                 parseFloat(row[`P${i}`]) === parseFloat(InputValue)
               ) {
                 dbUpdate = false;
-                AlertFunc(false, 0, col, existMsg);
+                AlertFunc(false, -1, col, existMsg);
                 return dbUpdate;
               }
             }
@@ -499,13 +501,14 @@ const MultiDataGrid = () => {
   const pndErrCheck = (
     PnD_Data: number[][],
     HISTORY_MODEL: string,
-    MUL_TYPE: string
+    MUL_TYPE: string,
+    rowIndex: number
   ): boolean => {
     // zero data check
     const zeroErrMsg = translate("Force_Disp_Zero_err");
     let bDispForceZero = PnD_Data.some((PnD) => PnD[0] === 0 && PnD[1] === 0);
     if (!bDispForceZero) {
-      AlertFunc(false, 0, `NAME`, zeroErrMsg);
+      AlertFunc(false, -1, `NAME`, zeroErrMsg);
       return false;
     }
     let nForcePlus = 0,
@@ -521,16 +524,16 @@ const MultiDataGrid = () => {
     const bReulst = PnD_Data.every(([disp, force], idx) => {
       // position check
       if (disp > 0 && force < 0) {
-        AlertFunc(false, 0, `D${idx + 1}`, positionErrMsg);
+        AlertFunc(false, rowIndex, `D${idx + 1}`, positionErrMsg);
         return false;
       } else if (disp < 0 && force > 0) {
-        AlertFunc(false, 0, `D${idx + 1}`, positionErrMsg);
+        AlertFunc(false, rowIndex, `D${idx + 1}`, positionErrMsg);
         return false;
       }
       // slope check
       if (force === 0 && disp === 0) return true;
       if (disp * force <= 1e-8) {
-        AlertFunc(false, 0, `D${idx + 1}`, tooSmallErrMsg);
+        AlertFunc(false, rowIndex, `D${idx + 1}`, tooSmallErrMsg);
         return false;
       }
       if (idx > 0) {
@@ -550,12 +553,12 @@ const MultiDataGrid = () => {
       ) {
         //  minus
         if (force < 0) {
-          AlertFunc(false, 0, `D${idx + 1}`, sameForceErrMsg);
+          AlertFunc(false, rowIndex, `D${idx + 1}`, sameForceErrMsg);
           return false;
         }
         //  plus
         else if (force > 0) {
-          AlertFunc(false, 0, `D${idx + 1}`, sameForceErrMsg);
+          AlertFunc(false, rowIndex, `D${idx + 1}`, sameForceErrMsg);
           return false;
         }
       }
@@ -569,36 +572,36 @@ const MultiDataGrid = () => {
     const slopErrMsg = translate("slopErrMsg");
     if (HISTORY_MODEL === "MLPK" || HISTORY_MODEL === "MLPT") {
       if (bMinus01 || bMinus02 || bPlus01 || bPlus02) {
-        AlertFunc(false, 0, "HISTORY_MODEL", slopErrMsg);
+        AlertFunc(false, -1, "HISTORY_MODEL", slopErrMsg);
         return false;
       }
       switch (MUL_TYPE) {
         case "0":
           if (nForcePlus !== nForceMinus || nForcePlus < 1 || nForceMinus < 1) {
-            AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+            AlertFunc(false, rowIndex, "HISTORY_MODEL", modelMatchErrMsg);
             return false;
           }
           break;
         case "1":
           if (nForceMinus > 1 || nForcePlus < 1) {
-            AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+            AlertFunc(false, rowIndex, "HISTORY_MODEL", modelMatchErrMsg);
             return false;
           }
           break;
         case "2":
           if (nForceMinus < 1 || nForcePlus > 1) {
-            AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+            AlertFunc(false, rowIndex, "HISTORY_MODEL", modelMatchErrMsg);
             return false;
           }
           break;
       }
     } else if (HISTORY_MODEL === "MLEL" || HISTORY_MODEL === "MLPP") {
       if (bMinus02 || bPlus02) {
-        AlertFunc(false, 0, "HISTORY_MODEL", slopErrMsg);
+        AlertFunc(false, rowIndex, "HISTORY_MODEL", slopErrMsg);
         return false;
       }
       if (HISTORY_MODEL === "MLPP" && (nForcePlus < 1 || nForceMinus < 1)) {
-        AlertFunc(false, 0, "HISTORY_MODEL", modelMatchErrMsg);
+        AlertFunc(false, rowIndex, "HISTORY_MODEL", modelMatchErrMsg);
         return false;
       }
     }
@@ -617,7 +620,7 @@ const MultiDataGrid = () => {
 
   const AlertFunc = (
     bSuccess: boolean,
-    rowID: number = 0,
+    rowID: number = -1,
     colFild: string = "",
     msg: string = ""
   ) => {
@@ -626,7 +629,7 @@ const MultiDataGrid = () => {
       setbError(false);
       setAlertMsg(succesMsg);
     } else {
-      const rowIdx = rowID === 0 ? cursur : rowID;
+      const rowIdx = rowID === -1 ? cursur : rowID;
       const colIdx = columns.findIndex((col) => col.field === colFild);
       if (colIdx !== -1) {
         const errMsg =
@@ -771,7 +774,7 @@ const MultiDataGrid = () => {
 
   return (
     <GuideBox
-      height={filterList !== undefined ? "50vh" : "10vh"}
+      height={hidden ? "600px" : "400px"}
       width={"100%"}
       loading={filterList === undefined ? true : false}
     >

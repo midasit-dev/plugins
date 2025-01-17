@@ -1,7 +1,9 @@
 import Header from "./Layout/Header";
 import Footer from "./Layout/Footer";
 import Contents from "./Layout/Contents/Contents";
-import { Grid, GuideBox, Stack } from "@midasit-dev/moaui";
+import { Grid, GuideBox } from "@midasit-dev/moaui";
+import { Stack, ListItem } from "@mui/material";
+
 import { useEffect, useState } from "react";
 import { dbRead } from "../utils_pyscript";
 // recoil
@@ -28,18 +30,18 @@ function MainWindow() {
     }
   };
   return (
-    <GuideBox center width={"60vw"} height={"100vh"} padding={2}>
+    <GuideBox width={"1200px"}>
       {UnitData !== undefined && (
-        <Stack width={"100%"} direction="row">
-          <Grid width={"100%"} margin={1}>
+        <Stack direction="row" spacing={3}>
+          <Grid width={"1100px"}>
             {!hidden && <Header />}
             <Contents />
             {!hidden && <Footer />}
           </Grid>
-          <Grid width={"100%"} margin={1}>
+          <Grid width={"50px"} padding={1}>
             <GraphBtn />
           </Grid>
-          <Grid width={hidden ? "100%" : "0px"} margin={1}>
+          <Grid width={hidden ? "100%" : "0px"}>
             {hidden && (
               <NewWindow>
                 <GraphChart />

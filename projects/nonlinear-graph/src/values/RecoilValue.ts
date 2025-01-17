@@ -6,7 +6,7 @@ export const UnitState = atom<any>({
   default: {},
 });
 
-export const GetDBState = atom<object>({
+export const GetDBState = atom<any>({
   key: "GetDBState",
   default: {},
 });

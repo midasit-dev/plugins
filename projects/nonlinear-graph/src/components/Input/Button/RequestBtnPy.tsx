@@ -109,7 +109,7 @@ const findDataFunc = (
   const setData: { [key: string]: any } = {
     KEY: key,
     NAME: rawData.NAME,
-    MATERIAL_TYPE: rawData.MATERIAL_TYPE == "STEEL" ? "S" : "RC",
+    MATERIAL_TYPE: rawData.MATERIAL_TYPE === "STEEL" ? "S" : "RC",
     HISTORY_MODEL: rawData.HYSTERESIS_MODEL[ComponentValue - 1],
   };
   if (NAME === "MULTLIN") {
@@ -165,9 +165,9 @@ const setMULTLINData = (DATA: any, MULT_DATA: []) => {
     dHysParam_Beta1: DATA.dHysParam_Beta1,
     dHysParam_Beta2: DATA.dHysParam_Beta2,
     dHysParam_Eta: DATA.dHysParam_Eta,
-    DEFORMCAPACITY: DATA.DEFORMCAPACITY,
-    dScaleF_Displ: DATA.dScaleF_Displ,
-    dScaleF_Force: DATA.dScaleF_Force,
+    // DEFORMCAPACITY: DATA.DEFORMCAPACITY,
+    // dScaleF_Displ: DATA.dScaleF_Displ,
+    // dScaleF_Force: DATA.dScaleF_Force,
     PnD_Data: multi_data,
   };
 };
