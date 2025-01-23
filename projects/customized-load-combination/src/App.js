@@ -40,9 +40,10 @@ const [values, setValues] = useState({
 });
 let [all_loadCaseNames,setall_loadCaseNames] = useState([]);
 const [exportLoading, setExportLoading] = useState(false);
-  const [importLoading, setImportLoading] = useState(false);
-  const [generateLoading, setGenerateLoading] = useState(false);
+const [importLoading, setImportLoading] = useState(false);
+const [isGenerating, setIsGenerating] = useState(false);
 const { enqueueSnackbar } = useSnackbar();
+
 
   const toggleLoadCaseDropdown = (index) => {
     setLoadCaseDropdownIndex(loadCaseDropdownIndex === index ? -1 : index);
@@ -1182,6 +1183,10 @@ async function generateBasicCombinations(loadCombinations) {
   );  
   let strengthCombinations = findStrengthCombinations(loadCombinations,filteredCombinations);
   strengthCombinations = [...strengthCombinations, ...filteredCombinations];
+const service_combo = strengthCombinations
+.filter(combination => combination.active === 'Service')
+.map(combination => combination.loadCombination);
+  console.log(service_combo); 
   strengthCombinations = strengthCombinations.filter((value, index, self) =>
     index === self.findIndex(t => 
       t.loadCombination === value.loadCombination && 
@@ -1252,13 +1257,14 @@ async function generateBasicCombinations(loadCombinations) {
   for (const strengthCombination of strengthCombinations) {
     combinationCounter =  combinationCounter + allFinalCombinations.length + env_count;
     allFinalCombinations = [];
-    let new_combo = [];
+    
     const comb_name = strengthCombination.loadCombination;
     const type = strengthCombination.type;
     const factorArray = [];
-    let result = [];  
+    
      let joinedCombinations = [];
     for (let factor = 1; factor <= 5; factor++) {
+      let new_combo = []; let result = [];  
       let factorCombinations = [];
       if (strengthCombination.loadCases.length === 0) {
         enqueueSnackbar("Please define Load Case for the selected Combination", {
@@ -1267,6 +1273,17 @@ async function generateBasicCombinations(loadCombinations) {
         });
         return; 
       }
+      const loadCaseNames = new Set();
+      for (const loadCase of strengthCombination.loadCases) {
+        if (loadCaseNames.has(loadCase.loadCaseName)) {
+          enqueueSnackbar("Duplicate Load Cases are not allowed in the same Combination", {
+            variant: "error",
+            anchorOrigin: { vertical: "top", horizontal: "center" },
+          });
+          return; 
+        }
+        loadCaseNames.add(loadCase.loadCaseName);
+    }
     for (const loadCase of strengthCombination.loadCases) {
       if (!loadCase.loadCaseName && strengthCombination.loadCases.length === 1) {
         enqueueSnackbar("Please define Load Case for the selected Combination", {
@@ -1296,29 +1313,32 @@ async function generateBasicCombinations(loadCombinations) {
       const factorObject = factors.find(f => f.factor === factor);
       if (factorObject && factorObject.value !== undefined  && factorObject.value !== "") {
       const loadCaseName = loadCase.loadCaseName.replace(/\s*\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/, '');
-      if (factor === 1) {
+      // if (factor === 1) {
         if (loadNames.includes(loadCaseName)) {
           if (!result[type]) {
               result[type] = [];
           }
-          const factors = [
-              loadCase.factor1 || 0,
-              loadCase.factor2 || 0,
-              loadCase.factor3 || 0,
-              loadCase.factor4 || 0,
-              loadCase.factor5 || 0
-          ];
-          const nDimensionalArray = createNDimensionalArray(1, factors);
-          const uniqueFactors = [...new Set(nDimensionalArray)];
-          console.log("Created N-Dimensional Array:", uniqueFactors);
-          for (let i = 1; i <= 5; i++) {
-            delete loadCase[`factor${i}`];
-        }
+          let factors = Array(5).fill(0);
+for (let i = 0; i < 5; i++) {
+  if (i === factor - 1) {
+    factors[i] = loadCase[`factor${i + 1}`] || 0;
+  } else {
+    factors[i] = 0;
+  }
+}
+const nDimensionalArray = createNDimensionalArray(0, factors);
+// const uniqueFactors = [...new Set(nDimensionalArray)];
+// console.log("Created N-Dimensional Array:", uniqueFactors);
+        // for (let i = 1; i <= 5; i++) {
+        //    delete loadCase[`factor${i}`];
+        //  }
+        if (!loadCase.hasOwnProperty('factor')) {
         loadCase['factor'] = undefined;
-        loadCase.factor = uniqueFactors;
+        }
+        loadCase.factor = nDimensionalArray;
         new_combo.push(loadCase);
       }
-      } 
+      // } 
       if ((!loadNames.includes(loadCaseName))) {
           const sign = loadCase.sign || '+';
           const new_11 = createCombinations(type,loadCase, strengthCombination, loadCombinations, loadNames, [], factorObject.value, factor, sign);
@@ -1336,7 +1356,7 @@ async function generateBasicCombinations(loadCombinations) {
     if (new_combo.length > 0) {
     result[type].push([new_combo]);
     }
-    if (Object.keys(result).length > 0 && factor == 1) {
+    if (Object.keys(result).length > 0) {
       console.log(result);
       const result11 = combineAddEither([result]);
       console.log(result11);
@@ -1370,14 +1390,19 @@ console.log(joinedCombinations);
       }
       for (const subArray of joinedCombinations) {
       if  (subArray.length > 0) {
-      combineArrays(subArray);
+      const filteredSubArray = subArray.filter(arr => arr.length > 0);
+      combineArrays(filteredSubArray);
       allFinalCombinations.push(...joinedComb);
       joinedComb = []
       } 
     }
       allFinalCombinations.forEach((combArray, idx) => {
         const combinationName = `${comb_name}_${idx + 1}`;
-        const active = loadCombinationValues.includes(comb_name) ? "INACTIVE" : "ACTIVE";
+        const active = loadCombinationValues.includes(comb_name) 
+        ? "INACTIVE" 
+        : service_combo.includes(comb_name) 
+          ? "SERVICE"
+          : "ACTIVE";
         let vCOMB = combArray.map((comb) => {
           const cleanedLoadCaseName = comb.loadCaseName.replace(/\s*\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/, '');
           const match = comb.loadCaseName.match(/\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/);
@@ -3153,27 +3178,25 @@ function permutation_sign(result11) {
           }
         } else {
           if (new_temp.length > 0) {
-            for (const newItem of new_temp) {
-              if (positiveArray.length > 0 && negativeArray.length > 0) {
-                if (typeof newItem !== "object") {
-                temp.push([...positiveArray, ...newItem]);
-                temp.push([...negativeArray, ...newItem]);
-                } else {
-                  temp.push([...positiveArray]);
-                  temp.push([...negativeArray]);
-                }
-              } else {
-                temp.push(newItem);
-              }
+            const combinedNewItems = new_temp.flatMap(item => (typeof item === "object" ? [item] : item));
+            if (positiveArray.length > 0 && negativeArray.length > 0) {
+                temp.push([...positiveArray, ...combinedNewItems]);
+                temp.push([...negativeArray, ...combinedNewItems]);
+            } else if (positiveArray.length > 0) {
+                temp.push([...positiveArray, ...combinedNewItems]);
+            } else if (negativeArray.length > 0) {
+                temp.push([...negativeArray, ...combinedNewItems]);
+            } else {
+                temp.push(combinedNewItems);
             }
-          } else {
+        } else {
             if (positiveArray.length > 0) {
-              temp.push([...positiveArray]);
+                temp.push([...positiveArray]);
             }
             if (negativeArray.length > 0) {
-              temp.push([...negativeArray]);
+                temp.push([...negativeArray]);
             }
-          }
+        }
         }
         if (temp.length === 0) {
           innerArr.splice(objIndex, 1); // Remove the empty obj from innerArr
@@ -3388,29 +3411,43 @@ function permutation_sign(result11) {
   console.log({ addObj, eitherArray, envelopeObj,firstKey });
   return { addObj, eitherArray,envelopeObj ,firstKey,secondLastKey};
 }
-  
+useEffect(() => {
+  console.log("Generating Load Combination4", isGenerating);
+}, [isGenerating]);
+
 async function Generate_Load_Combination() {
-  const cleanedLoadNames = all_loadCaseNames.map((name) =>
-    name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS)\)$/, '')
-  );
-  const allIncluded = cleanedLoadNames.every((name) => loadNames.includes(name));
-  if (!allIncluded) {
-    enqueueSnackbar("Load cases are not defined", {
-      variant: "error",
-      anchorOrigin: { vertical: "top", horizontal: "center" },
+  setIsGenerating(true, () => {
+    console.log("Generating Load Combination3", isGenerating);
+  });
+  setIsGenerating((pre)=>true);
+  console.log("Generating Load Combination", isGenerating);
+    const cleanedLoadNames = all_loadCaseNames.map((name) =>
+      name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS)\)$/, '')
+    );
+    const allIncluded = cleanedLoadNames.every((name) => loadNames.includes(name));
+    if (!allIncluded) {
+      enqueueSnackbar("Load cases are not defined", {
+        variant: "error",
+        anchorOrigin: { vertical: "top", horizontal: "center" },
+      });
+      return; 
+    }
+    console.log(loadCombinations);
+    let uniqueFactorData = removeDuplicateFactors(loadCombinations);
+    setLoadCombinations(uniqueFactorData.filter((i)=>(i)));
+    console.log(uniqueFactorData.filter((i)=>(i)));
+    console.log(uniqueFactorData);
+    console.log(loadCombinations);
+    const basicCombinations = generateBasicCombinations(loadCombinations);
+    console.log(basicCombinations);
+    setIsGenerating(false, () => {
+      console.log("Generating Load Combination3", isGenerating);
     });
-    return; 
-  }
-  console.log(loadCombinations);
-  let uniqueFactorData = removeDuplicateFactors(loadCombinations);
-  setLoadCombinations(uniqueFactorData.filter((i)=>(i)));
-  console.log(uniqueFactorData.filter((i)=>(i)))
-  console.log(uniqueFactorData);
-  console.log(loadCombinations);
-  const basicCombinations = generateBasicCombinations(loadCombinations);
-  console.log(basicCombinations);
-  setGenerateLoading(false);
+    setIsGenerating((pre)=>false);
+ 
 }
+
+console.log("Generating Load Combination2", isGenerating);
 const isGeneratingRef = useRef(false);
 async function generateEnvelopeLoadCombination() {
   if (Object.keys(civilCom.Assign).length === 0) {
@@ -3857,7 +3894,14 @@ const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
     }}> 
     <Scrollbars height={360} width={280}>
 
-               {loadCombinations.map((combo, index) => (
+               {loadCombinations.map((combo, index) => {
+                 if (combo.loadCombination && combo.loadCombination !== '---' && !combo.active) {
+                  combo.active = 'Strength';
+              }
+              if (combo.loadCombination && combo.loadCombination !== '---' && !combo.type) {
+                  combo.type = 'Add';
+              }
+              return (
       <div key={index} style={{ display: 'flex', flexDirection: 'row', borderBottom: '1px solid #ccc', cursor: 'pointer', backgroundColor: selectedLoadCombinationIndex === index ? '#f0f0f0' : 'white' }} onClick={() => handleLoadCombinationClick(index)}>
      <div style={{ flex: '0 0 110px', padding: '5px', borderRight: '1px solid #ccc', color: 'black', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
   {/* First div with input or Typography */}
@@ -3990,7 +4034,8 @@ const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
                       )}
                     </div>
                     </div>
-                ))}
+              );
+            })}
               </Scrollbars>
       </div>
       
@@ -4037,90 +4082,90 @@ const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
       borderTop: '2px solid #ccc',
       boxShadow: '0px -4px 5px -4px grey'
     }}>
-           <Scrollbars height={450} width={460}>
+         <Scrollbars height={450} width={460}>
   {selectedLoadCombinationIndex >= 0 &&
-    loadCombinations[selectedLoadCombinationIndex].loadCases.map((loadCase, loadCaseIndex) => (
-      <div key={loadCaseIndex} style={{ display: 'flex', flexDirection: 'row', borderBottom: '1px solid #ccc' }}>
-        <div
-          style={{ flex: '0 0 132px', padding: '5px', borderRight: '1px solid #ccc', color: 'black', position: 'relative' }}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleLoadCaseDropdown(loadCaseIndex);
-          }}
-        >
-          <Typography>{loadCase.loadCaseName}</Typography>
-          {loadCaseDropdownIndex === loadCaseIndex && (
-  <div  style={{ position: 'absolute', backgroundColor: 'white', border: '1px solid #ccc', zIndex: 1, top: '100%', left: 0, right: 0,cursor: 'pointer' }}>
-   <Scrollbars height={150} width="100%"> {/* Applying the Scrollbars component */}
-  {[
-    ...loadNames_key.map((item) => `${item.name}(${item.key})`),
-    ...loadCombinations.slice(0, selectedLoadCombinationIndex).map((combination) => 
-      `${combination.loadCombination}`
-    )
-  ].map((name) => (
-    <div
-    ref={dropdownRef}
-      key={name} 
-      onClick={() => handleLoadCaseOptionSelect(selectedLoadCombinationIndex, loadCaseIndex, name)}
-      style={{
-        padding: '5px',
-        cursor: 'pointer',
-        backgroundColor: name === loadCase.loadCaseName ? '#f0f0f0' : 'white'
-      }}
-    >
-      <Typography>{name}</Typography>
-    </div>
-  ))}
-    </Scrollbars>
-  </div>
-)}
-        </div>
-        <div
-          style={{ flex: '1 1 25px', padding: '5px', borderRight: '1px solid #ccc', color: 'black', position: 'relative' }}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleSignDropdown(loadCaseIndex);
-          }}
-        >
-          <Typography>{loadCase.sign}</Typography>
-          {signDropdownIndex === loadCaseIndex && (
-            <div ref={dropdownRef} style={{ position: 'absolute', backgroundColor: 'white', border: '1px solid #ccc', zIndex: 1, top: '100%', left: 0, right: 0 }}>
-              {['+', '-', '+,-', '±'].map((signOption, signIndex) => (
-                <div
-                  key={signIndex}
-                  onClick={() => handleSignOptionSelect(selectedLoadCombinationIndex, loadCaseIndex, signOption)}
-                  style={{ padding: '5px', cursor: 'pointer', backgroundColor: signOption === loadCase.sign ? '#f0f0f0' : 'white' }}
-                >
-                  <Typography>{signOption}</Typography>
-                </div>
-              ))}
-            </div>
-          )}
-          {/* <ComponentsPanelTypographyDropList_sign
-          selectedValue={selectedDropListValue} 
-          onValueChange={handleSignOptionSelect} 
-        /> */}
-        </div>
-        {['factor1', 'factor2', 'factor3', 'factor4', 'factor5'].map((factorKey, factorIndex) => (
+    loadCombinations[selectedLoadCombinationIndex].loadCases.map((loadCase, loadCaseIndex) => {
+      // Automatically set the sign value to '+' if loadCase.loadCaseName is available
+      if (loadCase.loadCaseName && !loadCase.sign) {
+        loadCase.sign = '+';
+      }
+
+      return (
+        <div key={loadCaseIndex} style={{ display: 'flex', flexDirection: 'row', borderBottom: '1px solid #ccc' }}>
           <div
-            key={factorIndex}
-            style={{ flex: '1 1 30px', padding: '5px', borderRight: '1px solid #ccc', color: 'black', cursor: 'text', fontSize: '12px' }}
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={(e) => handleFactorBlur(selectedLoadCombinationIndex, loadCaseIndex, factorKey, e.currentTarget.textContent)}
+            style={{ flex: '0 0 132px', padding: '5px', borderRight: '1px solid #ccc', color: 'black', position: 'relative' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleLoadCaseDropdown(loadCaseIndex);
+            }}
           >
-            {loadCase[factorKey] !== undefined ? loadCase[factorKey] : " "}
+            <Typography>{loadCase.loadCaseName}</Typography>
+            {loadCaseDropdownIndex === loadCaseIndex && (
+              <div style={{ position: 'absolute', backgroundColor: 'white', border: '1px solid #ccc', zIndex: 1, top: '100%', left: 0, right: 0, cursor: 'pointer' }}>
+                <Scrollbars height={150} width="100%">
+                  {[
+                    ...loadNames_key.map((item) => `${item.name}(${item.key})`),
+                    ...loadCombinations.slice(0, selectedLoadCombinationIndex).map((combination) => 
+                      `${combination.loadCombination}`
+                    )
+                  ].map((name) => (
+                    <div
+                      ref={dropdownRef}
+                      key={name}
+                      onClick={() => handleLoadCaseOptionSelect(selectedLoadCombinationIndex, loadCaseIndex, name)}
+                      style={{
+                        padding: '5px',
+                        cursor: 'pointer',
+                        backgroundColor: name === loadCase.loadCaseName ? '#f0f0f0' : 'white'
+                      }}
+                    >
+                      <Typography>{name}</Typography>
+                    </div>
+                  ))}
+                </Scrollbars>
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-    ))}
-    {/* {selectedLoadCombinationIndex >= 0 && ( */}
-    <div style={{ display: "flex", alignItems: "center" , width: "55%", marginLeft: "110px" }}>
+          <div
+            style={{ flex: '1 1 25px', padding: '5px', borderRight: '1px solid #ccc', color: 'black', position: 'relative' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleSignDropdown(loadCaseIndex);
+            }}
+          >
+            <Typography>{loadCase.sign}</Typography>
+            {signDropdownIndex === loadCaseIndex && (
+              <div ref={dropdownRef} style={{ position: 'absolute', backgroundColor: 'white', border: '1px solid #ccc', zIndex: 1, top: '100%', left: 0, right: 0 }}>
+                {['+', '-', '+,-', '±'].map((signOption, signIndex) => (
+                  <div
+                    key={signIndex}
+                    onClick={() => handleSignOptionSelect(selectedLoadCombinationIndex, loadCaseIndex, signOption)}
+                    style={{ padding: '5px', cursor: 'pointer', backgroundColor: signOption === loadCase.sign ? '#f0f0f0' : 'white' }}
+                  >
+                    <Typography>{signOption}</Typography>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {['factor1', 'factor2', 'factor3', 'factor4', 'factor5'].map((factorKey, factorIndex) => (
+            <div
+              key={factorIndex}
+              style={{ flex: '1 1 30px', padding: '5px', borderRight: '1px solid #ccc', color: 'black', cursor: 'text', fontSize: '12px' }}
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => handleFactorBlur(selectedLoadCombinationIndex, loadCaseIndex, factorKey, e.currentTarget.textContent)}
+            >
+              {loadCase[factorKey] !== undefined ? loadCase[factorKey] : " "}
+            </div>
+          ))}
+        </div>
+      );
+    })}
+  <div style={{ display: "flex", alignItems: "center", width: "55%", marginLeft: "110px" }}>
     {Buttons.NodeButton("contained", "Add Row", handleAddLoadCase)}
-    {/* <Seperator /> */}
     {Buttons.NodeButton("contained", "Delete Row", handleDeleteRow)}
-    </div>
-  {/* )} */}
+  </div>
 </Scrollbars>
         </div>
   </Panel>
@@ -4134,11 +4179,7 @@ const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
   Buttons.SubButton("contained", "Import Load Combination", handleImportClick)
 )}
 
-{generateLoading ? (
-     Buttons.SubButton("contained", "Generating")
-) : (
-  Buttons.SubButton("contained", "Generate Load Combination", Generate_Load_Combination)
-)}
+{Buttons.SubButton("contained", isGenerating ? "Generating..." : "Generate Load Combination", Generate_Load_Combination)}
 
       </div>
       <ExcelReader onImport={importLoadCombinationInput} handleFileChange={handleFileChange} />
