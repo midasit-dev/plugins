@@ -13,7 +13,7 @@ const LanguageType = () => {
     ["en", 1],
     ["jp", 2],
   ]);
-  const [value, setValue] = useState(items.get(nowLang));
+  const [value, setValue] = useState(items.get("en"));
 
   function onChangeHandler(event: any) {
     setValue(event.target.value);

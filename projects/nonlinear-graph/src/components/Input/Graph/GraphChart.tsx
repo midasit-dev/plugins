@@ -69,7 +69,6 @@ const GraphChart = () => {
 
   useEffect(() => {
     // 차트 크기 계산
-
     const [width, height] = xyPoint.reduce(
       (acc: number[], arr: any) => {
         if (arr.length > 0) {
@@ -104,6 +103,7 @@ const GraphChart = () => {
       [0, 0]
     );
     setScale(Math.max(width, height) + 1);
+
     // 차트 업데이트
     if (chartRef !== undefined) {
       const annotation = {
@@ -421,6 +421,7 @@ const GraphChart = () => {
     },
     scales: {
       x: {
+        type: "linear" as const,
         beginAtZero: false,
         min: -scale,
         max: scale,
@@ -433,6 +434,7 @@ const GraphChart = () => {
         },
       },
       y: {
+        type: "linear" as const,
         beginAtZero: false,
         min: -scale,
         max: scale,
@@ -448,34 +450,37 @@ const GraphChart = () => {
   };
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
-      <div
+    <Grid style={{ width: "100%", height: "100%" }}>
+      <Grid
+        container
         style={{
           width: "100%",
           height: "10%",
         }}
       >
-        <Alert
-          style={{
-            width: "100%",
-            height: "100%",
-            transition: "opacity 0.5s ease-out",
-            opacity: errmsg === "" ? 0 : 1,
-          }}
-          severity="error"
-        >
-          {errmsg}
-        </Alert>
-      </div>
-      <div ref={chartContainerRef} style={gridStyle}>
+        {errmsg !== "" && (
+          <Alert
+            style={{
+              width: "100%",
+              height: "100%",
+              transition: "opacity 0.5s ease-out",
+              opacity: errmsg === "" ? 0 : 1,
+            }}
+            severity="error"
+          >
+            {errmsg}
+          </Alert>
+        )}
+      </Grid>
+      <Grid ref={chartContainerRef} style={gridStyle}>
         <Chart
           ref={chartRef}
           type="scatter"
           data={dataSets}
           options={options}
         />
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

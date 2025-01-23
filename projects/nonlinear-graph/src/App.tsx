@@ -30,7 +30,7 @@ const opacity = 0.5;
  */
 const App = () => {
   return (
-    <GuideBox>
+    <GuideBox center margin={2}>
       <MainWindow />
     </GuideBox>
   );
