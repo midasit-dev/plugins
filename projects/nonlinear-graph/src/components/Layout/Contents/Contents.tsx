@@ -48,7 +48,7 @@ const Contents = () => {
             <Tab label={translate("TabMulti")} value={3} id="3" />
           </TabGroup>
         </Grid>
-        <Grid width={"100%"} minHeight={"400px"}>
+        <Grid width={"100%"}>
           {TableType === 1 && <DispDataGrid />}
           {TableType === 2 && <StiffDataGrid />}
           {TableType === 3 && <MultiDataGrid />}

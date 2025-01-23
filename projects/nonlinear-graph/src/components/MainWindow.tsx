@@ -30,10 +30,10 @@ function MainWindow() {
     }
   };
   return (
-    <GuideBox width={"1200px"}>
+    <GuideBox width={"100%"}>
       {UnitData !== undefined && (
         <Stack direction="row" spacing={3}>
-          <Grid width={"1100px"}>
+          <Grid width={"1200px"}>
             {!hidden && <Header />}
             <Contents />
             {!hidden && <Footer />}
@@ -41,15 +41,15 @@ function MainWindow() {
           <Grid width={"50px"} padding={1}>
             <GraphBtn />
           </Grid>
-          <Grid width={hidden ? "100%" : "0px"}>
-            {hidden && (
-              <NewWindow>
-                <GraphChart />
-              </NewWindow>
-            )}
-          </Grid>
         </Stack>
       )}
+      <Grid width={hidden ? "100%" : "0px"}>
+        {hidden && (
+          <NewWindow>
+            <GraphChart />
+          </NewWindow>
+        )}
+      </Grid>
     </GuideBox>
   );
 }

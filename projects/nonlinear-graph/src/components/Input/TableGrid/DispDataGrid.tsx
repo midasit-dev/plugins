@@ -20,6 +20,7 @@ import {
   TableChangeState,
   CheckBoxState,
   HiddenBtnState,
+  LanguageState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -39,6 +40,7 @@ const DispDataGrid = () => {
   const filterList = useRecoilValue(filteredTableListState);
   const [CheckBox, setCheckBox] = useRecoilState(CheckBoxState);
   const hidden = useRecoilValue(HiddenBtnState);
+  const lan = useRecoilValue(LanguageState);
 
   const [bError, setbError] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
@@ -56,7 +58,7 @@ const DispDataGrid = () => {
     initRows();
     initCloumns();
     initGroupColumns();
-  }, [filterList, alertMsg]);
+  }, [filterList, alertMsg, lan]);
 
   const initRows = () => {
     if (filterList !== undefined) {
@@ -1107,7 +1109,7 @@ const DispDataGrid = () => {
 
   return (
     <GuideBox
-      height={hidden ? "600px" : "400px"}
+      height={hidden ? "800px" : "650px"}
       width={"100%"}
       loading={filterList === undefined ? true : false}
     >
@@ -1120,6 +1122,7 @@ const DispDataGrid = () => {
           //   (params) => disableCell(params) // disable settting
           // }
           columnGroupHeaderHeight={56} // header group height
+          rowHeight={30}
           sx={DataGridStyle} // style
           editMode="row" // edit mode
           ignoreValueFormatterDuringExport // copy paste setting
@@ -1130,8 +1133,8 @@ const DispDataGrid = () => {
           onRowSelectionModelChange={(selectedID: any) => {
             setCheckBox(selectedID);
           }} // checkbox 이벤트
-          pagination // page setting
-          autoPageSize // auto page
+          // pagination // page setting
+          // autoPageSize // auto page
           onCellClick={onClickCell} // cell click 이벤트
           onCellKeyDown={(params, event, details) =>
             onKeyDown(params, event, details)

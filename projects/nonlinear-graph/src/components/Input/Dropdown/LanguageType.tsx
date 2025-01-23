@@ -1,36 +1,28 @@
-import {
-  Stack,
-  DropList,
-  Typography,
-  GuideBox,
-  Grid,
-} from "@midasit-dev/moaui";
-import { useState } from "react";
+import { DropList, GuideBox } from "@midasit-dev/moaui";
+import { useTranslation } from "react-i18next";
+import { useRecoilState } from "recoil";
+import { LanguageState } from "../../../values/RecoilValue";
+import { useEffect } from "react";
 
 const LanguageType = () => {
-  const nowLang = window.location.pathname.split("/")[1];
-  const items = new Map<string, number>([
-    ["en", 1],
-    ["jp", 2],
+  const { t: translate, i18n: internationalization } = useTranslation();
+  const items = new Map<string, string>([
+    ["en", "en"],
+    ["jp", "jp"],
   ]);
-  const [value, setValue] = useState(items.get("en"));
+  const [lan, setLan] = useRecoilState(LanguageState);
 
   function onChangeHandler(event: any) {
-    setValue(event.target.value);
-    items.forEach((value, key) => {
-      if (
-        value === event.target.value &&
-        window.location.pathname !== `/${key}`
-      )
-        window.location.pathname = `/${key}`;
-    });
+    const dropLan = items.get(event.target.value);
+    internationalization.changeLanguage(dropLan);
+    setLan(event.target.value);
   }
   return (
     <GuideBox horRight margin={2}>
       <DropList
         itemList={items}
         defaultValue="en"
-        value={value}
+        value={lan}
         onChange={onChangeHandler}
       />
     </GuideBox>

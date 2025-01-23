@@ -6,6 +6,11 @@ export const UnitState = atom<any>({
   default: {},
 });
 
+export const LanguageState = atom<string>({
+  key: "LanguageState",
+  default: "en",
+});
+
 export const GetDBState = atom<any>({
   key: "GetDBState",
   default: {},
