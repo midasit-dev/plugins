@@ -47,10 +47,10 @@ const MultiDataGrid = () => {
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    initRows();
-    initCloumns();
-    initGroupColumns();
-  }, [filterList, PnD_size, alertMsg, lan]);
+    const pndCol = initRows();
+    initCloumns(pndCol);
+    initGroupColumns(pndCol);
+  }, [filterList, alertMsg, lan]);
 
   const initRows = () => {
     if (filterList !== undefined) {
@@ -74,6 +74,8 @@ const MultiDataGrid = () => {
           obj[`D${idx + 1}`] = formatSmallNumber(Ddata);
         });
         obj["pnd"] = value.DATA.PnD_Data.length;
+        obj[`P${obj["pnd"] + 1}`] = "";
+        obj[`D${obj["pnd"] + 1}`] = "";
 
         // b, a1, a2, b1, b2, n
         const bMLPT: boolean = value.HISTORY_MODEL === "MLPT" ? true : false;
@@ -99,11 +101,13 @@ const MultiDataGrid = () => {
         }
         setRows((row) => [...row, obj]);
       });
-      setPnD_size(maxSize + 1);
+      if (PnD_size !== maxSize + 1) setPnD_size(maxSize + 1);
+      return maxSize + 1;
     }
+    return PnD_size;
   };
 
-  const initCloumns = () => {
+  const initCloumns = (pndCol: number) => {
     // colums
     const baseColumns = [
       {
@@ -131,7 +135,7 @@ const MultiDataGrid = () => {
         width: 130,
       },
     ];
-    for (let i = 1; i < PnD_size + 1; i++) {
+    for (let i = 1; i < pndCol + 1; i++) {
       const columnP = {
         field: `P${i}`,
         headerName: `P${i}`,
@@ -212,10 +216,10 @@ const MultiDataGrid = () => {
     setColumns(baseColumns.concat(remainColumns));
   };
 
-  const initGroupColumns = () => {
+  const initGroupColumns = (pndCol: number) => {
     setGroupColumns([]);
     const ForceChildren = [];
-    for (let i = 1; i < PnD_size + 1; i++) {
+    for (let i = 1; i < pndCol + 1; i++) {
       const columnP = {
         field: `P${i}`,
       };
