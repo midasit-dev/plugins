@@ -3430,6 +3430,7 @@ async function Generate_Load_Combination() {
         variant: "error",
         anchorOrigin: { vertical: "top", horizontal: "center" },
       });
+      setIsGenerating(false);
       return; 
     }
     console.log(loadCombinations);
@@ -3513,6 +3514,7 @@ async function generateEnvelopeLoadCombination() {
     });
   } finally {
     isGeneratingRef.current = false; 
+    setIsGenerating(false);
     civilCom.Assign = {};
     civilComEnv.Assign = {};
     civilComEnvValues.Assign = {};
@@ -3663,6 +3665,7 @@ let removeDuplicateFactors = (data) => {
 };
 
 const handleFileChange = (event) => {
+  all_loadCaseNames = [];
   const file = event.target.files[0];
   const reader = new FileReader();
 
