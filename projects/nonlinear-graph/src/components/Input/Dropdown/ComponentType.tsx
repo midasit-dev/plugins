@@ -1,5 +1,5 @@
 import { Stack, DropList, Typography, GuideBox } from "@midasit-dev/moaui";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 import { ElementState, ComponentState } from "../../../values/RecoilValue";

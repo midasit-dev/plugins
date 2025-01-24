@@ -6,15 +6,10 @@ import {
   TabGroup,
   Typography,
 } from "@midasit-dev/moaui";
-import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  ElementState,
-  ComponentState,
-  GetDBState,
   UnitState,
-  TableListState,
   TableTypeState,
   HiddenBtnState,
 } from "../../../values/RecoilValue";

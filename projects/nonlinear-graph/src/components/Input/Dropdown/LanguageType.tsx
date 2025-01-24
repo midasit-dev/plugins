@@ -2,7 +2,6 @@ import { DropList, GuideBox } from "@midasit-dev/moaui";
 import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 import { LanguageState } from "../../../values/RecoilValue";
-import { useEffect } from "react";
 
 const LanguageType = () => {
   const { t: translate, i18n: internationalization } = useTranslation();

@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Chart } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -14,28 +14,24 @@ import {
   Title,
 } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
-import { Alert, Stack } from "@mui/material";
+import { Alert } from "@mui/material";
 import { Grid } from "@midasit-dev/moaui";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   filteredTableListState,
-  TableChangeState,
   TableTypeState,
   CheckBoxState,
   TableErrState,
 } from "../../../values/RecoilValue";
 import { isEmpty } from "lodash";
-import { setDatasets } from "react-chartjs-2/dist/utils";
 import { useTranslation } from "react-i18next";
 import {
-  ALL_HistoryType_LNG,
   eSubType,
   getBinlinearCase,
   getMultiCase,
   getSlipCase,
   getTetralinearCase,
   getTrilinearCase,
-  MULTLIN_HistoryType,
   TableTypeName,
 } from "../../../values/EnumValue";
 

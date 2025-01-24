@@ -97,7 +97,6 @@ const DispDataGrid = () => {
           ["Plus_D4", "Minus_D4"],
         ];
         pDataArr.some(([plusField, minusField], idx) => {
-          // if (maxPnd < idx + 1) return false;
           if (nPnd < idx + 1) {
             obj[plusField] = "";
             obj[minusField] = "";
@@ -120,7 +119,6 @@ const DispDataGrid = () => {
         else obj["disable"] = undefined;
 
         dDataArr.some(([plusField, minusField], idx) => {
-          // if (maxPnd < idx + 1) return false;
           if (nPnd < idx + 1) {
             obj[plusField] = "";
             obj[minusField] = "";
@@ -699,7 +697,6 @@ const DispDataGrid = () => {
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
     let dbUpdate: boolean = false;
     if (InputValue === undefined) dbUpdate = true;
-    // if (InputValue === undefined || InputValue === "") dbUpdate = true;
 
     switch (col) {
       case "id":

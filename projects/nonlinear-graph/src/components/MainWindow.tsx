@@ -2,9 +2,9 @@ import Header from "./Layout/Header";
 import Footer from "./Layout/Footer";
 import Contents from "./Layout/Contents/Contents";
 import { Grid, GuideBox } from "@midasit-dev/moaui";
-import { Stack, ListItem } from "@mui/material";
+import { Stack } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { dbRead } from "../utils_pyscript";
 // recoil
 import { useRecoilState } from "recoil";

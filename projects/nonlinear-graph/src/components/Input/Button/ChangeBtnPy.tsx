@@ -2,19 +2,17 @@ import { GuideBox } from "@midasit-dev/moaui";
 import { Button, Alert } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import {
-  ElementState,
   ComponentState,
   GetDBState,
-  UnitState,
   TableListState,
   TableErrState,
 } from "../../../values/RecoilValue";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isEmpty } from "lodash";
 import { ALL_History_Prop_Name } from "../../../values/EnumValue";
-import { dbUpdate, dbUpdateItem } from "../../../utils_pyscript";
+import { dbUpdateItem } from "../../../utils_pyscript";
 
 const ChangeBtnPy = () => {
   const { t: translate, i18n: internationalization } = useTranslation();
@@ -28,14 +26,11 @@ const ChangeBtnPy = () => {
 
   const TableErrMsg = translate("TableErrState");
   const changeDBBtn = translate("changeDBBtn");
-  const cancelBtn = translate("cancelBtn");
 
   useEffect(() => {
     if (bBtn) {
       if (pyscript && pyscript.interpreter) {
         const bResult = Object.keys(newDB).every(async (key) => {
-          console.log("key !#### : ", key, newDB[key]);
-
           try {
             await dbUpdateItem("IEHP", key, newDB[key]);
           } catch {

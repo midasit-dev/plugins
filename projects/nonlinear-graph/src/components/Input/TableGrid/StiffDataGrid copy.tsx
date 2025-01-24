@@ -95,7 +95,6 @@ const StiffDataGrid = () => {
           ["Plus_A3", "Minus_A3"],
         ];
         pDataArr.some(([plusField, minusField], idx) => {
-          // if (maxPnd < idx + 1) return false;
           if (nPnd < idx + 1) {
             obj[plusField] = "";
             obj[minusField] = "";
@@ -108,7 +107,6 @@ const StiffDataGrid = () => {
           }
         });
         aDataArr.some(([plusField, minusField], idx) => {
-          // if (maxPnd < idx + 1) return false;
           if (nPnd < idx + 1) {
             obj[plusField] = "";
             obj[minusField] = "";
@@ -677,7 +675,6 @@ const StiffDataGrid = () => {
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
     let dbUpdate: boolean = false;
     if (InputValue === undefined) dbUpdate = true;
-    // if (InputValue === undefined || InputValue === "") dbUpdate = true;
 
     switch (col) {
       case "id":

@@ -385,7 +385,6 @@ const MultiDataGrid = () => {
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
     let dbUpdate: boolean = false;
     if (InputValue === undefined) dbUpdate = true;
-    // if (InputValue === undefined || InputValue === "") dbUpdate = true;
 
     switch (col) {
       case "id":

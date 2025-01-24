@@ -1,5 +1,4 @@
 import { atom, selector } from "recoil";
-import { dbRead } from "../utils_pyscript";
 
 export const UnitState = atom<any>({
   key: "UnitState",

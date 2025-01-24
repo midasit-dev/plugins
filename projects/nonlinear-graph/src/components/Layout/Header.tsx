@@ -3,14 +3,8 @@ import ElementType from "../Input/Dropdown/ElementType";
 import ComponentType from "../Input/Dropdown/ComponentType";
 import RequestBtnpy from "../Input/Button/RequestBtnPy";
 import LanguageType from "../Input/Dropdown/LanguageType";
-import PointType from "../Input/Dropdown/PointType";
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { TableTypeState } from "../../values/RecoilValue";
 
 const Header = () => {
-  const [TableType, setTableType] = useRecoilState(TableTypeState);
-
   return (
     <GuideBox center row width={"100%"} margin={1}>
       <Panel height="fit-content" variant="shadow" width="70%" marginRight={1}>
@@ -28,7 +22,6 @@ const Header = () => {
             <LanguageType />
           </Stack>
         </Grid>
-        {/* {TableType === 3 && <PointType />} */}
       </Panel>
     </GuideBox>
   );

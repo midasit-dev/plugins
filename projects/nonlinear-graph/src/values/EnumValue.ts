@@ -455,12 +455,12 @@ const getSlipBinlinear = (
   // Bilinear
   X1p = dA1[0];
   X2p = X1p * 2.0;
-  dP2[0] = X1p * dP1[0] + dP1[0];
+  dP2[0] = dA1[0] * dP1[0] + dP1[0];
 
   Am = (dP1[1] / (dA1[1] * dP1[0])) * X1p;
   X1m = Am * dA1[1];
   X2m = 2.0 * X1m;
-  dP2[1] = X1m * dP1[1] + dP1[1];
+  dP2[1] = dA1[1] * dP1[1] + dP1[1];
   if (Math.abs(dP2[0]) <= 0.0 || Math.abs(dP2[1]) <= 0.0) return [];
 
   dGap_p *= X2p / 5.0;
@@ -682,10 +682,6 @@ export const getSlipCase = (
     dP2[1] = dP2[0];
     dP3[1] = dP3[0];
     dP4[1] = dP4[0];
-    // dD1[1] = dD1[0];
-    // dD2[1] = dD2[0];
-    // dD3[1] = dD3[0];
-    // dD4[1] = dD4[0];
     dA1[1] = dA1[0];
     dA2[1] = dA2[0];
     dA3[1] = dA3[0];
@@ -695,10 +691,6 @@ export const getSlipCase = (
     dP2[0] = dP2[1];
     dP3[0] = dP3[1];
     dP4[0] = dP4[1];
-    // dD1[0] = dD1[1];
-    // dD2[0] = dD2[1];
-    // dD3[0] = dD3[1];
-    // dD4[0] = dD4[1];
     dA1[0] = dA1[1];
     dA2[0] = dA2[1];
     dA3[0] = dA3[1];
@@ -1223,10 +1215,11 @@ const getPointXY = (
   yArr: number[],
   doArr: number[]
 ) => {
-  const scaleFactor = 1e10; // 10^10으로 배율 적용
-  // 정수 변환 함수 (배율 적용 후 반올림)
-  const toScaledInteger = (value: number): number =>
-    Math.round(value * scaleFactor);
+  // const scaleFactor = 1e10; // 10^10으로 배율 적용
+  // // 정수 변환 함수 (배율 적용 후 반올림)
+  // const toScaledInteger = (value: number): number =>
+  //   Math.round(value * scaleFactor);
+
   let xyPoint: any[] = [];
   let bstop = false;
   for (let i = 0; i <= 9; i++) {
