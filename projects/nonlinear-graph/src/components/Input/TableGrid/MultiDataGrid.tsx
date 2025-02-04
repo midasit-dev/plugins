@@ -82,14 +82,14 @@ const MultiDataGrid = () => {
         const bMLPP: boolean = value.HISTORY_MODEL === "MLPP" ? true : false;
         if (bMLPP) {
           obj["disable"] = 3;
-          obj["a1"] = formatSmallNumber(value.DATA.dHysParam_Alpha1);
-          obj["a2"] = formatSmallNumber(value.DATA.dHysParam_Alpha2);
-          obj["B1"] = formatSmallNumber(value.DATA.dHysParam_Beta1);
-          obj["B2"] = formatSmallNumber(value.DATA.dHysParam_Beta2);
-          obj["n"] = formatSmallNumber(value.DATA.dHysParam_Eta);
+          obj["a1"] = value.DATA.dHysParam_Alpha1.toFixed(1);
+          obj["a2"] = value.DATA.dHysParam_Alpha2.toFixed(1);
+          obj["B1"] = value.DATA.dHysParam_Beta1.toFixed(1);
+          obj["B2"] = value.DATA.dHysParam_Beta2.toFixed(1);
+          obj["n"] = value.DATA.dHysParam_Eta.toFixed(1);
         } else if (bMLPT) {
           obj["disable"] = 2;
-          obj["B"] = formatSmallNumber(value.DATA.dHysParam_Beta1);
+          obj["B"] = value.DATA.dHysParam_Beta1.toFixed(1);
         } else {
           obj["disable"] = 1;
           obj["B"] = undefined;
@@ -140,13 +140,13 @@ const MultiDataGrid = () => {
         field: `P${i}`,
         headerName: `P${i}`,
         editable: true,
-        width: 68,
+        width: 90,
       };
       const columnD = {
         field: `D${i}`,
         headerName: `D${i}`,
         editable: true,
-        width: 68,
+        width: 90,
       };
       baseColumns.push(columnP);
       baseColumns.push(columnD);
@@ -837,16 +837,8 @@ const DataGridStyle = {
 
 // 소수점 표기
 function formatSmallNumber(value: number) {
-  const formatter = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 20, // 최대 소수점 자릿수 확장
-  });
-
-  if (Math.abs(value) < 1e-10) {
-    return "0.0"; // 너무 작은 값은 0 처리
-  }
-
-  return formatter.format(value).replace(/,/, "");
+  const formatValue = value.toExponential(4);
+  return formatValue;
 }
 
 export default MultiDataGrid;

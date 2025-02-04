@@ -107,8 +107,6 @@ const ChangeBtnPy = () => {
     if (TableErr) {
     } else {
       await setInitNewDB();
-      console.log(TableErr, "GetDB : ", GetDB);
-      console.log("TableList : ", TableList);
       setbBtn(true);
     }
   }

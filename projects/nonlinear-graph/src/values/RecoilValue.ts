@@ -63,7 +63,7 @@ export const ElementState = atom<number>({
 
 export const ComponentState = atom<number>({
   key: "ComponentValue",
-  default: 1,
+  default: 5,
 });
 
 export const CheckBoxState = atom<number[]>({

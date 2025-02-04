@@ -136,15 +136,15 @@ const DispDataGrid = () => {
         const bBeta = getModelBeta(HistoryModelLNG);
         const bAlpa = getModelAlpa(HistoryModelLNG);
         const bGamma = getModelGamma(HistoryModelLNG);
-        if (bBeta) obj["B"] = formatSmallNumber(value.DATA.BETA);
-        if (bAlpa) obj["a"] = formatSmallNumber(value.DATA.ALPA);
-        if (bGamma) obj["g"] = formatSmallNumber(value.DATA.GAMMA);
+        if (bBeta) obj["B"] = value.DATA.BETA.toFixed(1);
+        if (bAlpa) obj["a"] = value.DATA.ALPA.toFixed(1);
+        if (bGamma) obj["g"] = value.DATA.GAMMA.toFixed(1);
 
         // init gap
         const bInitGap = getModelInitGap(HistoryModelLNG);
         if (bInitGap) {
-          obj["Plus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[0]);
-          obj["Minus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[1] * -1);
+          obj["Plus_gap"] = value.DATA.INIT_GAP[0].toFixed(1);
+          obj["Minus_gap"] = (value.DATA.INIT_GAP[1] * -1).toFixed(1);
         }
         setRows((row) => [...row, obj]);
       });
@@ -185,7 +185,7 @@ const DispDataGrid = () => {
         field: "Plus_P1",
         headerName: "P1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -195,7 +195,7 @@ const DispDataGrid = () => {
         field: "Plus_D1",
         headerName: "D1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -205,7 +205,7 @@ const DispDataGrid = () => {
         field: "Plus_P2",
         headerName: "P2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -215,7 +215,7 @@ const DispDataGrid = () => {
         field: "Plus_D2",
         headerName: "D2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -225,7 +225,7 @@ const DispDataGrid = () => {
         field: "Plus_P3",
         headerName: "P3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -235,7 +235,7 @@ const DispDataGrid = () => {
         field: "Plus_D3",
         headerName: "D3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -245,7 +245,7 @@ const DispDataGrid = () => {
         field: "Plus_P4",
         headerName: "P4",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -255,7 +255,7 @@ const DispDataGrid = () => {
         field: "Plus_D4",
         headerName: "D4",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -268,7 +268,7 @@ const DispDataGrid = () => {
         field: "Minus_P1",
         headerName: "P1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -278,7 +278,7 @@ const DispDataGrid = () => {
         field: "Minus_D1",
         headerName: "D1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -288,7 +288,7 @@ const DispDataGrid = () => {
         field: "Minus_P2",
         headerName: "P2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -298,7 +298,7 @@ const DispDataGrid = () => {
         field: "Minus_D2",
         headerName: "D2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -308,7 +308,7 @@ const DispDataGrid = () => {
         field: "Minus_P3",
         headerName: "P3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -318,7 +318,7 @@ const DispDataGrid = () => {
         field: "Minus_D3",
         headerName: "D3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -328,7 +328,7 @@ const DispDataGrid = () => {
         field: "Minus_P4",
         headerName: "P4",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -338,7 +338,7 @@ const DispDataGrid = () => {
         field: "Minus_D4",
         headerName: "D4",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -764,6 +764,7 @@ const DispDataGrid = () => {
                 break;
             }
           }
+
           let bBeta = false;
           let bAlpa = false;
           let bGamma = false;
@@ -825,7 +826,6 @@ const DispDataGrid = () => {
           const fieldPM = col.split("_")[0];
           if (fieldPM === "Plus" && InputValue <= 0) break;
           if (fieldPM === "Minus" && InputValue >= 0) break;
-
           if (row["disable"] !== undefined) {
             if (row["disable"] === fieldPM && rows[row.id][col] !== InputValue)
               break;
@@ -837,7 +837,6 @@ const DispDataGrid = () => {
             )
               break;
           }
-
           // data check
           const HISTORY_MODEL = row.HISTORY_MODEL;
           Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
@@ -1163,16 +1162,18 @@ const DataGridStyle = {
 };
 
 function formatSmallNumber(value: number) {
-  const formatter = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 20, // 최대 소수점 자릿수 확장
-  });
+  // const formatter = new Intl.NumberFormat("en-US", {
+  //   minimumFractionDigits: 2,
+  //   maximumFractionDigits: 6, // 최대 소수점 자릿수 확장
+  // });
 
-  if (Math.abs(value) < 1e-10) {
-    return "0.0"; // 너무 작은 값은 0 처리
-  }
+  // if (Math.abs(value) < 1e-10) {
+  //   return "0.00"; // 너무 작은 값은 0 처리
+  // }
 
-  return formatter.format(value).replace(/,/, "");
+  // return formatter.format(value).replace(/,/, "");
+  const formatValue = value.toExponential(4);
+  return formatValue;
 }
 
 export default DispDataGrid;

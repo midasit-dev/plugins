@@ -132,22 +132,22 @@ const StiffDataGrid = () => {
         obj["INITSTIFFNESS"] =
           value.DATA.INITSTIFFNESS === 1
             ? "E"
-            : formatSmallNumber(value.DATA.INITSTIFFNESS);
+            : value.DATA.INITSTIFFNESS.toFixed(1);
 
         // b, a, g
         const HistoryModelLNG = ALL_HistoryType_LNG[value.HISTORY_MODEL];
         const bBeta = getModelBeta(HistoryModelLNG);
         const bAlpa = getModelAlpa(HistoryModelLNG);
         const bGamma = getModelGamma(HistoryModelLNG);
-        if (bBeta) obj["B"] = formatSmallNumber(value.DATA.BETA);
-        if (bAlpa) obj["a"] = formatSmallNumber(value.DATA.ALPA);
-        if (bGamma) obj["g"] = formatSmallNumber(value.DATA.GAMMA);
+        if (bBeta) obj["B"] = value.DATA.BETA.toFixed(1);
+        if (bAlpa) obj["a"] = value.DATA.ALPA.toFixed(1);
+        if (bGamma) obj["g"] = value.DATA.GAMMA.toFixed(1);
 
         // init gap
         const bInitGap = getModelInitGap(HistoryModelLNG);
         if (bInitGap) {
-          obj["Plus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[0]);
-          obj["Minus_gap"] = formatSmallNumber(value.DATA.INIT_GAP[1] * -1);
+          obj["Plus_gap"] = value.DATA.INIT_GAP[0].toFixed(1);
+          obj["Minus_gap"] = (value.DATA.INIT_GAP[1] * -1).toFixed(1);
         }
         setRows((row) => [...row, obj]);
       });
@@ -188,7 +188,7 @@ const StiffDataGrid = () => {
         field: "Plus_P1",
         headerName: "P1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -198,7 +198,7 @@ const StiffDataGrid = () => {
         field: "Plus_P2",
         headerName: "P2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -208,7 +208,7 @@ const StiffDataGrid = () => {
         field: "Plus_P3",
         headerName: "P3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -218,7 +218,7 @@ const StiffDataGrid = () => {
         field: "Plus_A1",
         headerName: "α1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -229,7 +229,7 @@ const StiffDataGrid = () => {
         field: "Plus_A2",
         headerName: "α2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -239,7 +239,7 @@ const StiffDataGrid = () => {
         field: "Plus_A3",
         headerName: "α3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -252,7 +252,7 @@ const StiffDataGrid = () => {
         field: "Minus_P1",
         headerName: "P1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -262,7 +262,7 @@ const StiffDataGrid = () => {
         field: "Minus_P2",
         headerName: "P2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -272,7 +272,7 @@ const StiffDataGrid = () => {
         field: "Minus_P3",
         headerName: "P3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -282,7 +282,7 @@ const StiffDataGrid = () => {
         field: "Minus_A1",
         headerName: "α1",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -293,7 +293,7 @@ const StiffDataGrid = () => {
         field: "Minus_A2",
         headerName: "α2",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -304,7 +304,7 @@ const StiffDataGrid = () => {
         field: "Minus_A3",
         headerName: "α3",
         editable: true,
-        width: 68,
+        width: 90,
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -1087,16 +1087,8 @@ const DataGridStyle = {
 };
 
 function formatSmallNumber(value: number) {
-  const formatter = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 20, // 최대 소수점 자릿수 확장
-  });
-
-  if (Math.abs(value) < 1e-10) {
-    return "0.0"; // 너무 작은 값은 0 처리
-  }
-
-  return formatter.format(value).replace(/,/, "");
+  const formatValue = value.toExponential(4);
+  return formatValue;
 }
 
 export default StiffDataGrid;
