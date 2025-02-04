@@ -4,6 +4,7 @@
   "BeamColumn": "Beam and Column",
   "GenericLink": "Generic Link",
 
+  "request_noData": "- No have data.",
   "componentType": "Component",
   "requestBtn": "Import of Hinge",
   "pointType": "Num. of point",
@@ -66,5 +67,7 @@
   "Graph_err": "Invalid data entered in table.",
   "changeDBBtn": "Apply",
   "cancelBtn": "Close",
-  "TableErrState": "Data cannot be drawn exists. Check the Graph."
+  "TableErrState": "Data cannot be drawn exists. Check the Graph.",
+
+  "GraphTitle": "Skeleton Graph"
 }

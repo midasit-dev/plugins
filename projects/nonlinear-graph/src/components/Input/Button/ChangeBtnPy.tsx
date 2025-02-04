@@ -159,7 +159,7 @@ const setMULTLINData = (
       ),
       MULT_DATA: changeData.DATA.PnD_Data.map((pnd: any) => {
         if (changeData.DATA.PnD_Data.lengh === 1) return { DISP: 0, FORCE: 0 };
-        else return { DISP: pnd[0], FORCE: pnd[1] };
+        else return { DISP: pnd[1], FORCE: pnd[0] };
       }),
       ALL_PROP: GetDB[key].ALL_PROP.map((prop: any, index: number) => {
         return index === ComponentValue - 1

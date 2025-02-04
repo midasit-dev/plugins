@@ -12,6 +12,7 @@ import {
   CheckBoxState,
   HiddenBtnState,
   LanguageState,
+  RequestBtnState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -25,6 +26,7 @@ import { Alert } from "@mui/material";
 import { DataGridPremium, GridColDef } from "@mui/x-data-grid-premium";
 
 const MultiDataGrid = () => {
+  const RequestBtn = useRecoilValue(RequestBtnState);
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
@@ -141,12 +143,14 @@ const MultiDataGrid = () => {
         headerName: `P${i}`,
         editable: true,
         width: 90,
+        align: "right",
       };
       const columnD = {
         field: `D${i}`,
         headerName: `D${i}`,
         editable: true,
         width: 90,
+        align: "right",
       };
       baseColumns.push(columnP);
       baseColumns.push(columnD);
@@ -157,6 +161,7 @@ const MultiDataGrid = () => {
         headerName: "β",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -167,6 +172,7 @@ const MultiDataGrid = () => {
         headerName: "α1",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -177,6 +183,7 @@ const MultiDataGrid = () => {
         headerName: "α2",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -187,6 +194,7 @@ const MultiDataGrid = () => {
         headerName: "β1",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -197,6 +205,7 @@ const MultiDataGrid = () => {
         headerName: "β2",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -207,6 +216,7 @@ const MultiDataGrid = () => {
         headerName: "η",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -817,6 +827,19 @@ const MultiDataGrid = () => {
             toolbar: alertToolbar, // toolbar
           }}
         />
+      )}
+      {filterList === undefined && RequestBtn && (
+        <Grid width={"100%"}>
+          <Alert
+            style={{
+              transition: "opacity 0.5s ease-out",
+              opacity: 1,
+            }}
+            severity="error"
+          >
+            {translate("TabMulti") + translate("request_noData")}
+          </Alert>
+        </Grid>
       )}
     </GuideBox>
   );

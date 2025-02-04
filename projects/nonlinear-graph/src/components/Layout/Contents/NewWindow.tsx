@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { HiddenBtnState, CheckBoxState } from "../../../values/RecoilValue";
+import { useTranslation } from "react-i18next";
 
 interface NewWindowProps {
   children: React.ReactNode;
 }
 
 const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
+  const { t: translate, i18n: internationalization } = useTranslation();
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
   const [newWindow, setNewWindow] = React.useState<Window | null>(null);
   const [hidden, setHidden] = useRecoilState(HiddenBtnState);
@@ -17,8 +19,8 @@ const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
     // 새 창 생성
     const minWidth = checkBoxArr.length < 8 ? 800 : checkBoxArr.length * 100;
     const minHeight = checkBoxArr.length < 8 ? 600 : checkBoxArr.length * 75;
-    const maxWidth = 1600;
-    const maxHeight = 1200;
+    const maxWidth = 1400;
+    const maxHeight = 1000;
 
     const win = window.open(
       "",
@@ -35,6 +37,7 @@ const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
       win?.document.head.appendChild(style.cloneNode(true));
     });
     if (win) {
+      win.document.title = translate("GraphTitle");
       win.document.body.appendChild(div);
       setContainer(div);
       setNewWindow(win);

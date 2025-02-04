@@ -1,10 +1,44 @@
-import { GuideBox, Grid, Panel, Stack } from "@midasit-dev/moaui";
+import { GuideBox, Grid, Panel, Stack, Typography } from "@midasit-dev/moaui";
 import ElementType from "../Input/Dropdown/ElementType";
 import ComponentType from "../Input/Dropdown/ComponentType";
 import RequestBtnpy from "../Input/Button/RequestBtnPy";
 import LanguageType from "../Input/Dropdown/LanguageType";
+import { useRecoilValue } from "recoil";
+import { UnitState } from "../../values/RecoilValue";
+import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
 
 const Header = () => {
+  const UnitData = useRecoilValue(UnitState);
+  const [unit, setUnit] = useState({ FORCE: "", DIST: "" });
+  const { t: translate, i18n: internationalization } = useTranslation();
+  const UnitText = translate("unit");
+
+  useEffect(() => {
+    if (UnitData !== undefined) {
+      const force: { [key: string]: any } = {
+        N: "N",
+        KN: "kN",
+        KGF: "kgf",
+        TONF: "tonf",
+        LBF: "lbf",
+        KIPS: "kips",
+      };
+      const length: { [key: string]: any } = {
+        M: "m",
+        CM: "cm",
+        MM: "mm",
+        FT: "ft",
+        in: "IN",
+      };
+      const setData = {
+        FORCE: force[UnitData.FORCE],
+        DIST: length[UnitData.DIST],
+      };
+      setUnit(setData);
+    }
+  }, [UnitData]);
+
   return (
     <GuideBox center row width={"100%"} margin={1}>
       <Panel height="fit-content" variant="shadow" width="70%" marginRight={1}>
@@ -12,13 +46,16 @@ const Header = () => {
           <Stack direction="row" spacing={5}>
             <ElementType />
             <ComponentType />
+            <RequestBtnpy />
           </Stack>
         </Grid>
       </Panel>
       <Panel height="fit-content" variant="shadow" width="30%" marginLeft={1}>
         <Grid style={container}>
           <Stack direction={"row"} spacing={5}>
-            <RequestBtnpy />
+            <Typography variant="body1" size="medium" center margin={1}>
+              {`${UnitText} : ${unit.FORCE}, ${unit.DIST}`}
+            </Typography>
             <LanguageType />
           </Stack>
         </Grid>

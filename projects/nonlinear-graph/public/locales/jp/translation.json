@@ -4,6 +4,7 @@
   "BeamColumn": "梁-柱",
   "GenericLink": "汎用リンク",
 
+  "request_noData": "ー データがありません。",
   "componentType": " ヒンジ成分",
   "requestBtn": "非線形特性の表示",
   "pointType": "折れ点の数",
@@ -66,5 +67,7 @@
   "Graph_err": "テーブルに無効なデータが入力されました",
   "changeDBBtn": "CIVILに書き込む",
   "cancelBtn": "閉じる",
-  "TableErrState": "グラフを描けないデータが存在します。グラフを確認してください。"
+  "TableErrState": "グラフを描けないデータが存在します。グラフを確認してください。",
+
+  "GraphTitle": "骨格曲線グラフ"
 }

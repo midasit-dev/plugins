@@ -21,6 +21,7 @@ import {
   CheckBoxState,
   HiddenBtnState,
   LanguageState,
+  RequestBtnState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -34,6 +35,7 @@ import { Alert } from "@mui/material";
 import { DataGridPremium, GridColDef } from "@mui/x-data-grid-premium";
 
 const DispDataGrid = () => {
+  const RequestBtn = useRecoilValue(RequestBtnState);
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
@@ -186,6 +188,7 @@ const DispDataGrid = () => {
         headerName: "P1",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -196,6 +199,7 @@ const DispDataGrid = () => {
         headerName: "D1",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -206,6 +210,7 @@ const DispDataGrid = () => {
         headerName: "P2",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -216,6 +221,7 @@ const DispDataGrid = () => {
         headerName: "D2",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -226,6 +232,7 @@ const DispDataGrid = () => {
         headerName: "P3",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -236,6 +243,7 @@ const DispDataGrid = () => {
         headerName: "D3",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -246,6 +254,7 @@ const DispDataGrid = () => {
         headerName: "P4",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -256,6 +265,7 @@ const DispDataGrid = () => {
         headerName: "D4",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -269,6 +279,8 @@ const DispDataGrid = () => {
         headerName: "P1",
         editable: true,
         width: 90,
+        align: "right",
+
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -279,6 +291,7 @@ const DispDataGrid = () => {
         headerName: "D1",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -289,6 +302,7 @@ const DispDataGrid = () => {
         headerName: "P2",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -299,6 +313,7 @@ const DispDataGrid = () => {
         headerName: "D2",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -309,6 +324,7 @@ const DispDataGrid = () => {
         headerName: "P3",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -319,6 +335,7 @@ const DispDataGrid = () => {
         headerName: "D3",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -329,6 +346,7 @@ const DispDataGrid = () => {
         headerName: "P4",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -339,6 +357,7 @@ const DispDataGrid = () => {
         headerName: "D4",
         editable: true,
         width: 90,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -352,6 +371,7 @@ const DispDataGrid = () => {
         headerName: "β",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -362,6 +382,7 @@ const DispDataGrid = () => {
         headerName: "α",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -372,6 +393,7 @@ const DispDataGrid = () => {
         headerName: "λ",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -382,6 +404,7 @@ const DispDataGrid = () => {
         headerName: "(+)",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -392,6 +415,7 @@ const DispDataGrid = () => {
         headerName: "(-)",
         editable: true,
         width: 68,
+        align: "right",
         cellClassName: (params: any) => {
           const bDisable = disableCell(params);
           return bDisable ? "enable-cell" : "disable-cell";
@@ -1143,6 +1167,19 @@ const DispDataGrid = () => {
             toolbar: alertToolbar, // toolbar
           }}
         />
+      )}
+      {filterList === undefined && RequestBtn && (
+        <Grid width={"100%"}>
+          <Alert
+            style={{
+              transition: "opacity 0.5s ease-out",
+              opacity: 1,
+            }}
+            severity="error"
+          >
+            {translate("TabDisp") + translate("request_noData")}
+          </Alert>
+        </Grid>
       )}
     </GuideBox>
   );

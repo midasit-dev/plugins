@@ -104,12 +104,13 @@ const GraphChart = () => {
 
     // scale set
     const Xrange = [
-      100, 50, 10, 5, 2.5, 1, 0.5, 0.25, 0.1, 0.05, 0.01, 0.005, 0.001, 0.0005,
-      0.0001, 0.00005, 0.00001,
+      100, 50, 10, 5, 2.5, 1, 0.75, 0.5, 0.25, 0.1, 0.075, 0.05, 0.025, 0.01,
+      0.0075, 0.005, 0.0025, 0.001, 0.00075, 0.0005, 0.00025, 0.0001, 0.000075,
+      0.00005, 0.000025, 0.00001,
     ].filter((value) => value > width);
     const Yrange = [
       10000000, 5000000, 1000000, 500000, 250000, 100000, 50000, 25000, 10000,
-      5000, 1000, 500, 250, 100, 50, 10, 5, 2.5, 1,
+      7500, 5000, 2500, 1000, 750, 500, 250, 100, 75, 50, 10, 5, 2.5, 1,
     ].filter((value) => value > height);
     if (isEmpty(Xrange)) {
       setScaleX(0.001);
@@ -564,7 +565,8 @@ const GraphChart = () => {
     if (PnD.length === 0) return [];
 
     const xyPoint = PnD.map((value: number[]) => {
-      return { x: value[0], y: value[1] };
+      console.log(value);
+      return { x: value[1], y: value[0] };
     });
     return xyPoint;
   };

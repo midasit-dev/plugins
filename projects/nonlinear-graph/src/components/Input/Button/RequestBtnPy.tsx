@@ -8,14 +8,17 @@ import {
   GetDBState,
   UnitState,
   TableListState,
+  RequestBtnState,
 } from "../../../values/RecoilValue";
 import { isEmpty } from "lodash";
 import { ALL_Histroy_PND } from "../../../values/EnumValue";
+import { useEffect } from "react";
 
 const RequestBtnPy = () => {
   const ElementValue = useRecoilValue(ElementState);
   const ComponentValue = useRecoilValue(ComponentState);
   const [GetDB, setGetDB] = useRecoilState(GetDBState);
+  const [RequestBtn, setRequestBtn] = useRecoilState(RequestBtnState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [UnitData, setUnitData] = useRecoilState(UnitState);
 
@@ -26,6 +29,7 @@ const RequestBtnPy = () => {
     if (pyscript && pyscript.interpreter) {
       Get_UNIT();
       Get_IEHP();
+      setRequestBtn(true);
     }
   };
 
@@ -141,7 +145,7 @@ const setMULTLINData = (DATA: any, MULT_DATA: []) => {
   let multi_data: any[][];
   if (MULT_DATA !== undefined) {
     multi_data = MULT_DATA.map((value: any) => {
-      return [value.DISP, value.FORCE];
+      return [value.FORCE, value.DISP];
     });
   } else multi_data = [[0.0, 0.0]];
 
@@ -240,4 +244,5 @@ const setOtherAllData = (
         : ALL_Histroy_PND[HISTORY_MODEL] - 1,
   };
 };
+
 export default RequestBtnPy;

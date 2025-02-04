@@ -51,6 +51,11 @@ export const filteredTableListState = selector({
   },
 });
 
+export const RequestBtnState = atom<boolean>({
+  key: "RequestBtnState",
+  default: false,
+});
+
 export const TableChangeState = atom<boolean>({
   key: "tableChangeState",
   default: false,

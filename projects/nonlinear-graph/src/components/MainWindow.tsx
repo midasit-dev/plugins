@@ -29,6 +29,7 @@ function MainWindow() {
       console.error("Failed to load UNIT data", error);
     }
   };
+
   return (
     <GuideBox width={"100%"}>
       {UnitData !== undefined && (

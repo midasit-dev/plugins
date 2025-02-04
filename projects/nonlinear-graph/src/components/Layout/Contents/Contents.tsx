@@ -17,11 +17,9 @@ import MultiDataGrid from "../../Input/TableGrid/MultiDataGrid";
 import DispDataGrid from "../../Input/TableGrid/DispDataGrid";
 import StiffDataGrid from "../../Input/TableGrid/StiffDataGrid copy";
 const Contents = () => {
-  const UnitData = useRecoilValue(UnitState);
   const [TableType, setTableType] = useRecoilState(TableTypeState);
   const [hidden, setHidden] = useRecoilState(HiddenBtnState);
   const { t: translate, i18n: internationalization } = useTranslation();
-  const UnitText = translate("unit");
 
   const onTabChange = (event: any) => {
     setTableType(parseInt(event.target.id));
@@ -31,11 +29,6 @@ const Contents = () => {
   return (
     <GuideBox center width={"100%"} margin={1}>
       <Panel height={"100%"} variant="shadow" width="100%" overflow={"scroll"}>
-        <GuideBox horRight>
-          <Typography variant="body1" size="medium" center margin={1}>
-            {`${UnitText} : ${UnitData.FORCE}, ${UnitData.DIST}`}
-          </Typography>
-        </GuideBox>
         <Grid>
           <TabGroup onChange={onTabChange} value={1}>
             <Tab label={translate("TabDisp")} value={1} id="1" />
