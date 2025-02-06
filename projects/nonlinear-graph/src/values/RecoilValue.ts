@@ -10,11 +10,6 @@ export const LanguageState = atom<string>({
   default: "en",
 });
 
-export const GetDBState = atom<any>({
-  key: "GetDBState",
-  default: {},
-});
-
 export const TableTypeState = atom<number>({
   key: "TableTypeState",
   default: 1,

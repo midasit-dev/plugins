@@ -1304,7 +1304,7 @@ const setEndPoint = (
 
   let dSlope, dXtmp, dYtmp;
   if (xa0 > -2.0 && ya0 > -2.0) {
-    if (xa0 == xa1) return [xArr, yArr];
+    if (xa0 === xa1) return [xArr, yArr];
     dSlope = (ya1 - ya0) / (xa1 - xa0);
     dYtmp = dSlope * (-2.0 - xa0) + ya0; // (-2.0, dYtmp)
     dXtmp = (-2.0 - ya0) / dSlope + xa0; // (dXtmp, -2.0)
@@ -1316,7 +1316,7 @@ const setEndPoint = (
       ya0 = -2.0;
     }
   } else if (xb1 < 2.0 && yb1 < 2.0) {
-    if (xb0 == xb1) return [xArr, yArr];
+    if (xb0 === xb1) return [xArr, yArr];
     dSlope = (yb1 - yb0) / (xb1 - xb0);
     dYtmp = dSlope * (2.0 - xb0) + yb0; // (2.0, dYtmp)
     dXtmp = (2.0 - yb0) / dSlope + xb0; // (dXtmp, 2.0)

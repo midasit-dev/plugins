@@ -565,7 +565,6 @@ const GraphChart = () => {
     if (PnD.length === 0) return [];
 
     const xyPoint = PnD.map((value: number[]) => {
-      console.log(value);
       return { x: value[1], y: value[0] };
     });
     return xyPoint;
