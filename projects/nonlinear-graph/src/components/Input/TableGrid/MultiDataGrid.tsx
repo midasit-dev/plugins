@@ -49,15 +49,27 @@ const MultiDataGrid = () => {
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    const pndCol = initRows();
-    initCloumns(pndCol);
-    initGroupColumns(pndCol);
+    const pndSize = initRows();
+    setTimeout(async () => {
+      await initCloumns(pndSize);
+      await initGroupColumns(pndSize);
+    }, 500);
   }, [filterList, alertMsg, lan]);
 
+  const AddBlankRow = () => {
+    const len = filterList === undefined ? 0 : filterList.length;
+    const obj: { [key: string]: any } = {};
+    columns.forEach((col: any) => {
+      obj[col.field] = "";
+    });
+    obj["id"] = len;
+    setRows((row) => [...row, obj]);
+  };
+
   const initRows = () => {
+    setRows([]);
+    let maxSize = 0;
     if (filterList !== undefined) {
-      let maxSize = 0;
-      setRows([]);
       filterList.forEach((value: any, idx: any) => {
         const obj: { [key: string]: any } = {
           id: idx,
@@ -94,22 +106,23 @@ const MultiDataGrid = () => {
           obj["B"] = value.DATA.dHysParam_Beta1.toFixed(1);
         } else {
           obj["disable"] = 1;
-          obj["B"] = undefined;
-          obj["a1"] = undefined;
-          obj["a2"] = undefined;
-          obj["B1"] = undefined;
-          obj["B2"] = undefined;
-          obj["n"] = undefined;
+          // obj["B"] = undefined;
+          // obj["a1"] = undefined;
+          // obj["a2"] = undefined;
+          // obj["B1"] = undefined;
+          // obj["B2"] = undefined;
+          // obj["n"] = undefined;
         }
         setRows((row) => [...row, obj]);
       });
-      if (PnD_size !== maxSize + 1) setPnD_size(maxSize + 1);
-      return maxSize + 1;
     }
-    return PnD_size;
+    if (PnD_size !== maxSize + 1) setPnD_size(maxSize + 1);
+    AddBlankRow();
+    return filterList !== undefined ? maxSize + 1 : PnD_size;
   };
 
-  const initCloumns = (pndCol: number) => {
+  const initCloumns = (pndSize: number) => {
+    setColumns([]);
     // colums
     const baseColumns = [
       {
@@ -137,7 +150,7 @@ const MultiDataGrid = () => {
         width: 130,
       },
     ];
-    for (let i = 1; i < pndCol + 1; i++) {
+    for (let i = 1; i < pndSize + 1; i++) {
       const columnP = {
         field: `P${i}`,
         headerName: `P${i}`,
@@ -226,10 +239,10 @@ const MultiDataGrid = () => {
     setColumns(baseColumns.concat(remainColumns));
   };
 
-  const initGroupColumns = (pndCol: number) => {
+  const initGroupColumns = (pndSize: number) => {
     setGroupColumns([]);
     const ForceChildren = [];
-    for (let i = 1; i < pndCol + 1; i++) {
+    for (let i = 1; i < pndSize + 1; i++) {
       const columnP = {
         field: `P${i}`,
       };
@@ -259,7 +272,6 @@ const MultiDataGrid = () => {
         ],
       },
     ];
-
     setGroupColumns(groupColumn);
   };
 
@@ -310,6 +322,7 @@ const MultiDataGrid = () => {
           MUL_TYPE = key;
         }
       });
+      if (NAME === "" || MATERIAL_TYPE === "") continue;
 
       // PnD_Size
       const PnD_Data = [];
@@ -369,31 +382,107 @@ const MultiDataGrid = () => {
     newPnDData: Array<Array<number>>,
     dValues: any
   ) => {
-    if (TableList !== undefined) {
-      setTableList((preTable: any) => ({
-        ...preTable,
-        [TableType]: preTable[TableType].map((item: any, idx: number) => ({
-          ...item,
-          NAME: idx === row ? NAME : item.NAME,
-          MATERIAL_TYPE: idx === row ? MATERIAL_TYPE : item.MATERIAL_TYPE,
-          HISTORY_MODEL: idx === row ? HISTORY_MODEL : item.HISTORY_MODEL,
-          DATA: {
-            ...item.DATA,
-            nType: idx === row ? parseInt(MUL_TYPE) : item.DATA.nType,
-            dHysParam_Alpha1:
-              idx === row ? dValues.a1 : item.DATA.dHysParam_Alpha1,
-            dHysParam_Alpha2:
-              idx === row ? dValues.a2 : item.DATA.dHysParam_Alpha2,
-            dHysParam_Beta1:
-              idx === row ? dValues.B1 : item.DATA.dHysParam_Beta1,
-            dHysParam_Beta2:
-              idx === row ? dValues.B2 : item.DATA.dHysParam_Beta2,
-            dHysParam_Eta: idx === row ? dValues.n : item.DATA.dHysParam_Eta,
-            PnD_Data: idx === row ? newPnDData : item.DATA.PnD_Data,
-          },
-        })),
-      }));
+    if (filterList === undefined || row > filterList.length - 1) {
+      // add
+      addTable(
+        NAME,
+        MATERIAL_TYPE,
+        HISTORY_MODEL,
+        MUL_TYPE,
+        newPnDData,
+        dValues
+      );
+    } else {
+      // modify
+      modifyTable(
+        row,
+        NAME,
+        MATERIAL_TYPE,
+        HISTORY_MODEL,
+        MUL_TYPE,
+        newPnDData,
+        dValues
+      );
     }
+  };
+
+  const addTable = (
+    NAME: string,
+    MATERIAL_TYPE: string,
+    HISTORY_MODEL: string,
+    MUL_TYPE: string,
+    newPnDData: Array<Array<number>>,
+    dValues: any
+  ) => {
+    setTableList((preTable: any) => ({
+      ...preTable,
+      [TableType]: preTable[TableType]
+        ? [
+            ...preTable[TableType],
+            {
+              NAME: NAME,
+              MATERIAL_TYPE: MATERIAL_TYPE,
+              HISTORY_MODEL: HISTORY_MODEL,
+              DATA: {
+                nType: parseInt(MUL_TYPE),
+                dHysParam_Alpha1: dValues.a1,
+                dHysParam_Alpha2: dValues.a2,
+                dHysParam_Beta1: dValues.B1,
+                dHysParam_Beta2: dValues.B2,
+                dHysParam_Eta: dValues.n,
+                PnD_Data: newPnDData,
+              },
+            },
+          ]
+        : [
+            {
+              NAME: NAME,
+              MATERIAL_TYPE: MATERIAL_TYPE,
+              HISTORY_MODEL: HISTORY_MODEL,
+              DATA: {
+                nType: parseInt(MUL_TYPE),
+                dHysParam_Alpha1: dValues.a1,
+                dHysParam_Alpha2: dValues.a2,
+                dHysParam_Beta1: dValues.B1,
+                dHysParam_Beta2: dValues.B2,
+                dHysParam_Eta: dValues.n,
+                PnD_Data: newPnDData,
+              },
+            },
+          ],
+    }));
+  };
+
+  const modifyTable = (
+    row: number,
+    NAME: string,
+    MATERIAL_TYPE: string,
+    HISTORY_MODEL: string,
+    MUL_TYPE: string,
+    newPnDData: Array<Array<number>>,
+    dValues: any
+  ) => {
+    setTableList((preTable: any) => ({
+      ...preTable,
+      [TableType]: preTable[TableType].map((item: any, idx: number) => ({
+        ...item,
+        NAME: idx === row ? NAME : item.NAME,
+        MATERIAL_TYPE: idx === row ? MATERIAL_TYPE : item.MATERIAL_TYPE,
+        HISTORY_MODEL: idx === row ? HISTORY_MODEL : item.HISTORY_MODEL,
+        DATA: {
+          ...item.DATA,
+          nType: idx === row ? parseInt(MUL_TYPE) : item.DATA.nType,
+          dHysParam_Alpha1:
+            idx === row ? dValues.a1 : item.DATA.dHysParam_Alpha1,
+          dHysParam_Alpha2:
+            idx === row ? dValues.a2 : item.DATA.dHysParam_Alpha2,
+          dHysParam_Beta1: idx === row ? dValues.B1 : item.DATA.dHysParam_Beta1,
+          dHysParam_Beta2: idx === row ? dValues.B2 : item.DATA.dHysParam_Beta2,
+          dHysParam_Eta: idx === row ? dValues.n : item.DATA.dHysParam_Eta,
+          PnD_Data: idx === row ? newPnDData : item.DATA.PnD_Data,
+        },
+      })),
+    }));
   };
 
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
@@ -416,8 +505,21 @@ const MultiDataGrid = () => {
         });
         break;
       case "Type": // MUL_nType
+        const HISTORY_MODEL = row.HISTORY_MODEL;
+        let onlyBoth = false;
+        Object.entries(MULTLIN_HistoryType).forEach(([key, value]) => {
+          if (
+            translate(value) === HISTORY_MODEL &&
+            (key === "MLEL" || key === "MLPP")
+          )
+            onlyBoth = true;
+        });
+
         Object.entries(MULTLIN_nType).forEach(([key, value]) => {
-          if (translate(value) === InputValue) dbUpdate = true;
+          if (translate(value) === InputValue) {
+            if (onlyBoth && key === "0") dbUpdate = true;
+            if (!onlyBoth) dbUpdate = true;
+          }
         });
         break;
       case "B": // B
@@ -475,10 +577,10 @@ const MultiDataGrid = () => {
             if (translate(value) === MUL_nType) {
               switch (key) {
                 case "1":
-                  if (InputValue >= 0) dbUpdate = true;
+                  if (parseFloat(InputValue) >= 0) dbUpdate = true;
                   break;
                 case "2":
-                  if (InputValue <= 0) dbUpdate = true;
+                  if (parseFloat(InputValue) <= 0) dbUpdate = true;
                   break;
                 default:
                   dbUpdate = true;
@@ -489,7 +591,11 @@ const MultiDataGrid = () => {
 
           // check exist
           const existMsg = translate("existMsg");
-          if (rows[row.id][col] !== InputValue && col.slice(0, 1) === "P") {
+          if (
+            rows.length > row.id &&
+            rows[row.id][col] !== InputValue &&
+            col.slice(0, 1) === "P"
+          ) {
             for (let i = 1; i <= PnD_size; i++) {
               if (
                 col !== `P${i}` &&
@@ -502,7 +608,6 @@ const MultiDataGrid = () => {
             }
           }
         }
-
         if (InputValue === "") {
           dbUpdate = true;
         }
@@ -684,6 +789,11 @@ const MultiDataGrid = () => {
     );
   };
 
+  const checkboxSet = (selectedID: number[]) => {
+    const checkBox = selectedID.filter((id) => !isEmpty(rows[id].NAME));
+    setCheckBox(checkBox);
+  };
+
   // event func
   const onClickCell: GridEventListener<"cellClick"> = (
     params,
@@ -748,19 +858,27 @@ const MultiDataGrid = () => {
   const onClipboardPaste = async (params: { data: string[][] }) => {
     const startRowId: number = cursur;
     const paramsData = params.data;
-    const paramsDataCount: number = params.data.length;
+    let paramsDataCount: number = params.data.length;
     // start Columns
     const index = columns.findIndex((col) => col.field === field);
     const startColumns = index !== -1 ? columns.slice(index) : [];
+    let rowLength = rows.length;
+    if (rowLength < startRowId + paramsDataCount) {
+      const count = startRowId + paramsDataCount - rowLength;
+      for (let i = 0; i < count; i++) AddBlankRow();
+      paramsDataCount += count;
+      rowLength += count;
+    }
 
     const copyErrMsg = "Paste operation cancelled";
     for (let i = startRowId; i < startRowId + paramsDataCount; i++) {
-      if (rows.length === i) break;
-      const data = paramsData[i - startRowId];
+      let data = paramsData[i - startRowId];
+      if (data.length < startColumns.length)
+        data = data.concat(Array(startColumns.length - data.length).fill(""));
+
       let dataObj: { [key: string]: any } = { id: i };
       startColumns.forEach((column: any, idx) => {
         const bCheck = DataValid(dataObj, column.field, data[idx]);
-
         if (bCheck) dataObj[column.field] = data[idx];
         else {
           AlertFunc(false, idx, column.field, copyErrMsg);
@@ -769,7 +887,6 @@ const MultiDataGrid = () => {
       });
 
       let errCol = "";
-
       if (isEmpty(dataObj["MATERIAL_TYPE"])) errCol = "MATERIAL_TYPE";
       else if (isEmpty(dataObj["HISTORY_MODEL"])) errCol = "HISTORY_MODEL";
       else if (isEmpty(dataObj["Type"])) errCol = "Type";
@@ -779,9 +896,11 @@ const MultiDataGrid = () => {
         AlertFunc(false, i, errCol, msg);
         throw new Error(copyErrMsg);
       } else {
-        setRows((preRows) =>
-          preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
-        );
+        if (rows.length - 2 < i) setRows((preRows) => [...preRows, dataObj]);
+        else
+          setRows((preRows) =>
+            preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
+          );
         setbChange(true);
       }
     }
@@ -791,43 +910,8 @@ const MultiDataGrid = () => {
     <GuideBox
       height={hidden ? "800px" : "650px"}
       width={"100%"}
-      loading={filterList === undefined ? true : false}
+      // loading={filterList === undefined ? true : false}
     >
-      {filterList !== undefined && (
-        <DataGridPremium
-          rows={rows} // rows
-          columns={columns} // columns
-          columnGroupingModel={groupColumns} // header group text
-          // isCellEditable={
-          //   (params) => disableCell(params) // disable settting
-          // }
-          columnGroupHeaderHeight={56} // header group height
-          rowHeight={30}
-          sx={DataGridStyle} // style
-          editMode="row" // edit mode
-          ignoreValueFormatterDuringExport // copy paste setting
-          disableRowSelectionOnClick // click no row
-          cellSelection // cell focus
-          checkboxSelection // checkbox setting
-          rowSelectionModel={CheckBox} // checkbox value
-          onRowSelectionModelChange={(selectedID: any) => {
-            setCheckBox(selectedID);
-          }} // checkbox 이벤트
-          // pagination // page setting
-          // autoPageSize // auto page
-          onCellClick={onClickCell} // cell click 이벤트
-          onCellKeyDown={(params, event, details) =>
-            onKeyDown(params, event, details)
-          } // enter 이벤트
-          onRowModesModelChange={(rowModesModel, details) =>
-            onRowChange(rowModesModel, details)
-          } // blur 이벤트
-          onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
-          slots={{
-            toolbar: alertToolbar, // toolbar
-          }}
-        />
-      )}
       {filterList === undefined && RequestBtn && (
         <Grid width={"100%"}>
           <Alert
@@ -841,6 +925,39 @@ const MultiDataGrid = () => {
           </Alert>
         </Grid>
       )}
+      <DataGridPremium
+        rows={rows} // rows
+        columns={columns} // columns
+        columnGroupingModel={groupColumns} // header group text
+        // isCellEditable={
+        //   (params) => disableCell(params) // disable settting
+        // }
+        columnGroupHeaderHeight={56} // header group height
+        rowHeight={30}
+        sx={DataGridStyle} // style
+        editMode="row" // edit mode
+        ignoreValueFormatterDuringExport // copy paste setting
+        disableRowSelectionOnClick // click no row
+        cellSelection // cell focus
+        checkboxSelection // checkbox setting
+        rowSelectionModel={CheckBox} // checkbox value
+        onRowSelectionModelChange={(selectedID: any) => {
+          checkboxSet(selectedID);
+        }} // checkbox 이벤트
+        // pagination // page setting
+        // autoPageSize // auto page
+        onCellClick={onClickCell} // cell click 이벤트
+        onCellKeyDown={(params, event, details) =>
+          onKeyDown(params, event, details)
+        } // enter 이벤트
+        onRowModesModelChange={(rowModesModel, details) =>
+          onRowChange(rowModesModel, details)
+        } // blur 이벤트
+        onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
+        slots={{
+          toolbar: alertToolbar, // toolbar
+        }}
+      />
     </GuideBox>
   );
 };

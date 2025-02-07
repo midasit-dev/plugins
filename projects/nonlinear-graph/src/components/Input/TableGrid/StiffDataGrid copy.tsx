@@ -62,9 +62,19 @@ const StiffDataGrid = () => {
     initGroupColumns();
   }, [filterList, alertMsg, lan]);
 
+  const AddBlankRow = () => {
+    const len = filterList === undefined ? 0 : filterList.length;
+    const obj: { [key: string]: any } = {};
+    columns.forEach((col: any) => {
+      obj[col.field] = "";
+    });
+    obj["id"] = len;
+    setRows((row) => [...row, obj]);
+  };
+
   const initRows = () => {
+    setRows([]);
     if (filterList !== undefined) {
-      setRows([]);
       filterList.forEach((value: any, idx: any) => {
         const HISTORY_MODEL = ALL_HistoryType_LNG[value.HISTORY_MODEL];
 
@@ -158,6 +168,7 @@ const StiffDataGrid = () => {
         setRows((row) => [...row, obj]);
       });
     }
+    AddBlankRow();
   };
 
   const initCloumns = () => {
@@ -512,6 +523,7 @@ const StiffDataGrid = () => {
       Object.entries(SYMMETRIC).forEach(([key, value]) => {
         if (translate(value) === rows[row].SYMMETRIC) symmetric = parseInt(key);
       });
+      if (NAME === "" || MATERIAL_TYPE === "") continue;
 
       // p_data
       const pData = [];
@@ -667,33 +679,126 @@ const StiffDataGrid = () => {
     aData: Array<Array<number>>,
     dValues: any
   ) => {
-    if (TableList !== undefined) {
-      setTableList((preTable: any) => ({
-        ...preTable,
-        [TableType]: preTable[TableType].map((item: any, idx: number) => ({
-          ...item,
-          NAME: idx === row ? NAME : item.NAME,
-          MATERIAL_TYPE: idx === row ? MATERIAL_TYPE : item.MATERIAL_TYPE,
-          HISTORY_MODEL: idx === row ? HISTORY_MODEL : item.HISTORY_MODEL,
-          DATA: {
-            ...item.DATA,
-            SYMMETRIC: idx === row ? SYMMETRIC : item.DATA.SYMMETRIC,
-            INITSTIFFNESS:
-              idx === row ? dValues.INITSTIFFNESS : item.DATA.INITSTIFFNESS,
-            BETA: idx === row ? dValues.B : item.DATA.BETA,
-            ALPA: idx === row ? dValues.a : item.DATA.ALPA,
-            GAMMA: idx === row ? dValues.g : item.DATA.GAMMA,
-            INIT_GAP:
-              idx === row
-                ? [dValues.Plus_gap, dValues.Minus_gap]
-                : item.DATA.INIT_GAP,
-            P_DATA: idx === row ? pData : item.DATA.P_DATA,
-            A_DATA: idx === row ? aData : item.DATA.A_DATA,
-            PND: idx === row ? pData.length : item.DATA.PND,
-          },
-        })),
-      }));
+    if (
+      isEmpty(NAME) ||
+      isEmpty(MATERIAL_TYPE) ||
+      isEmpty(HISTORY_MODEL) ||
+      pData.length === 0 ||
+      aData.length === 0
+    )
+      return;
+    if (filterList === undefined || row > filterList.length - 1) {
+      // add
+      addTable(
+        NAME,
+        MATERIAL_TYPE,
+        HISTORY_MODEL,
+        SYMMETRIC,
+        pData,
+        aData,
+        dValues
+      );
+    } else {
+      // modify
+      modifyTable(
+        row,
+        NAME,
+        MATERIAL_TYPE,
+        HISTORY_MODEL,
+        SYMMETRIC,
+        pData,
+        aData,
+        dValues
+      );
     }
+  };
+  const addTable = (
+    NAME: string,
+    MATERIAL_TYPE: string,
+    HISTORY_MODEL: string,
+    SYMMETRIC: number,
+    pData: Array<Array<number>>,
+    aData: Array<Array<number>>,
+    dValues: any
+  ) => {
+    setTableList((preTable: any) => ({
+      ...preTable,
+      [TableType]: preTable[TableType]
+        ? [
+            ...preTable[TableType],
+            {
+              NAME: NAME,
+              MATERIAL_TYPE: MATERIAL_TYPE,
+              HISTORY_MODEL: HISTORY_MODEL,
+              DATA: {
+                SYMMETRIC: SYMMETRIC,
+                INITSTIFFNESS: dValues.INITSTIFFNESS,
+                BETA: dValues.B,
+                ALPA: dValues.a,
+                GAMMA: dValues.g,
+                INIT_GAP: [dValues.Plus_gap, dValues.Minus_gap],
+                P_DATA: pData,
+                A_DATA: aData,
+                PND: pData.length,
+              },
+            },
+          ]
+        : [
+            {
+              NAME: NAME,
+              MATERIAL_TYPE: MATERIAL_TYPE,
+              HISTORY_MODEL: HISTORY_MODEL,
+              DATA: {
+                SYMMETRIC: SYMMETRIC,
+                INITSTIFFNESS: dValues.INITSTIFFNESS,
+                BETA: dValues.B,
+                ALPA: dValues.a,
+                GAMMA: dValues.g,
+                INIT_GAP: [dValues.Plus_gap, dValues.Minus_gap],
+                P_DATA: pData,
+                A_DATA: aData,
+                PND: pData.length,
+              },
+            },
+          ],
+    }));
+  };
+
+  const modifyTable = (
+    row: number,
+    NAME: string,
+    MATERIAL_TYPE: string,
+    HISTORY_MODEL: string,
+    SYMMETRIC: number,
+    pData: Array<Array<number>>,
+    aData: Array<Array<number>>,
+    dValues: any
+  ) => {
+    setTableList((preTable: any) => ({
+      ...preTable,
+      [TableType]: preTable[TableType].map((item: any, idx: number) => ({
+        ...item,
+        NAME: idx === row ? NAME : item.NAME,
+        MATERIAL_TYPE: idx === row ? MATERIAL_TYPE : item.MATERIAL_TYPE,
+        HISTORY_MODEL: idx === row ? HISTORY_MODEL : item.HISTORY_MODEL,
+        DATA: {
+          ...item.DATA,
+          SYMMETRIC: idx === row ? SYMMETRIC : item.DATA.SYMMETRIC,
+          INITSTIFFNESS:
+            idx === row ? dValues.INITSTIFFNESS : item.DATA.INITSTIFFNESS,
+          BETA: idx === row ? dValues.B : item.DATA.BETA,
+          ALPA: idx === row ? dValues.a : item.DATA.ALPA,
+          GAMMA: idx === row ? dValues.g : item.DATA.GAMMA,
+          INIT_GAP:
+            idx === row
+              ? [dValues.Plus_gap, dValues.Minus_gap]
+              : item.DATA.INIT_GAP,
+          P_DATA: idx === row ? pData : item.DATA.P_DATA,
+          A_DATA: idx === row ? aData : item.DATA.A_DATA,
+          PND: idx === row ? pData.length : item.DATA.PND,
+        },
+      })),
+    }));
   };
 
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
@@ -948,6 +1053,11 @@ const StiffDataGrid = () => {
     );
   };
 
+  const checkboxSet = (selectedID: number[]) => {
+    const checkBox = selectedID.filter((id) => !isEmpty(rows[id].NAME));
+    setCheckBox(checkBox);
+  };
+
   // event func
   const onClickCell: GridEventListener<"cellClick"> = (
     params,
@@ -956,7 +1066,6 @@ const StiffDataGrid = () => {
   ) => {
     const rowID = params.id as number;
     const field = params.field;
-
     setCursur(rowID);
     setField(field);
   };
@@ -998,6 +1107,7 @@ const StiffDataGrid = () => {
         if (DataValid(newDataList, key, value)) return false; // no err
         else return true; // err
       });
+
       if (bErr) {
         initRows();
       } else {
@@ -1012,14 +1122,20 @@ const StiffDataGrid = () => {
   const onClipboardPaste = async (params: { data: string[][] }) => {
     const startRowId: number = cursur;
     const paramsData = params.data;
-    const paramsDataCount: number = params.data.length;
+    let paramsDataCount: number = params.data.length;
     // start Columns
     const index = columns.findIndex((col) => col.field === field);
     const startColumns = index !== -1 ? columns.slice(index) : [];
+    let rowLength = rows.length;
+    if (rowLength < startRowId + paramsDataCount) {
+      const count = startRowId + paramsDataCount - rowLength;
+      for (let i = 0; i < count; i++) AddBlankRow();
+      paramsDataCount += count;
+      rowLength += count;
+    }
 
     const copyErrMsg = "Paste operation cancelled";
     for (let i = startRowId; i < startRowId + paramsDataCount; i++) {
-      if (rows.length === i) break;
       let data = paramsData[i - startRowId];
       if (data.length < startColumns.length)
         data = data.concat(Array(startColumns.length - data.length).fill(""));
@@ -1044,9 +1160,11 @@ const StiffDataGrid = () => {
         AlertFunc(false, i, errCol, msg);
         throw new Error(copyErrMsg);
       } else {
-        setRows((preRows) =>
-          preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
-        );
+        if (rows.length - 2 < i) setRows((preRows) => [...preRows, dataObj]);
+        else
+          setRows((preRows) =>
+            preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
+          );
         setbChange(true);
       }
     }
@@ -1056,43 +1174,8 @@ const StiffDataGrid = () => {
     <GuideBox
       height={hidden ? "800px" : "650px"}
       width={"100%"}
-      loading={filterList === undefined ? true : false}
+      // loading={filterList === undefined ? true : false}
     >
-      {filterList !== undefined && (
-        <DataGridPremium
-          rows={rows} // rows
-          columns={columns} // columns
-          columnGroupingModel={groupColumns} // header group text
-          // isCellEditable={
-          //   (params) => disableCell(params) // disable settting
-          // }
-          columnGroupHeaderHeight={56} // header group height
-          rowHeight={30}
-          sx={DataGridStyle} // style
-          editMode="row" // edit mode
-          ignoreValueFormatterDuringExport // copy paste setting
-          disableRowSelectionOnClick // click no row
-          cellSelection // cell focus
-          checkboxSelection // checkbox setting
-          rowSelectionModel={CheckBox} // checkbox value
-          onRowSelectionModelChange={(selectedID: any) => {
-            setCheckBox(selectedID);
-          }} // checkbox 이벤트
-          // pagination // page setting
-          // autoPageSize // auto page
-          onCellClick={onClickCell} // cell click 이벤트
-          onCellKeyDown={(params, event, details) =>
-            onKeyDown(params, event, details)
-          } // enter 이벤트
-          onRowModesModelChange={(rowModesModel, details) =>
-            onRowChange(rowModesModel, details)
-          } // blur 이벤트
-          onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
-          slots={{
-            toolbar: alertToolbar, // toolbar
-          }}
-        />
-      )}
       {filterList === undefined && RequestBtn && (
         <Grid width={"100%"}>
           <Alert
@@ -1106,6 +1189,39 @@ const StiffDataGrid = () => {
           </Alert>
         </Grid>
       )}
+      <DataGridPremium
+        rows={rows} // rows
+        columns={columns} // columns
+        columnGroupingModel={groupColumns} // header group text
+        // isCellEditable={
+        //   (params) => disableCell(params) // disable settting
+        // }
+        columnGroupHeaderHeight={56} // header group height
+        rowHeight={30}
+        sx={DataGridStyle} // style
+        editMode="row" // edit mode
+        ignoreValueFormatterDuringExport // copy paste setting
+        disableRowSelectionOnClick // click no row
+        cellSelection // cell focus
+        checkboxSelection // checkbox setting
+        rowSelectionModel={CheckBox} // checkbox value
+        onRowSelectionModelChange={(selectedID: any) => {
+          checkboxSet(selectedID);
+        }} // checkbox 이벤트
+        // pagination // page setting
+        // autoPageSize // auto page
+        onCellClick={onClickCell} // cell click 이벤트
+        onCellKeyDown={(params, event, details) =>
+          onKeyDown(params, event, details)
+        } // enter 이벤트
+        onRowModesModelChange={(rowModesModel, details) =>
+          onRowChange(rowModesModel, details)
+        } // blur 이벤트
+        onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
+        slots={{
+          toolbar: alertToolbar, // toolbar
+        }}
+      />
     </GuideBox>
   );
 };
@@ -1124,7 +1240,7 @@ const DataGridStyle = {
 };
 
 function formatSmallNumber(value: number, bAlpa: boolean) {
-  const formatValue = bAlpa ? value.toExponential(2) : value.toExponential(4);
+  const formatValue = bAlpa ? value.toString() : value.toExponential(4);
   return formatValue;
 }
 

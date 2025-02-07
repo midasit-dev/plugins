@@ -390,29 +390,51 @@ const eMultiSubType = {
 // Graph data
 const initValue = (DATA: any, HistoryModel: string) => {
   const dP1: number[] =
-    DATA.P_DATA.length > 0 ? [...DATA.P_DATA[0]] : [NaN, NaN];
+    DATA.P_DATA !== undefined && DATA.P_DATA.length > 0
+      ? [...DATA.P_DATA[0]]
+      : [NaN, NaN];
   const dP2: number[] =
-    DATA.P_DATA.length > 1 ? [...DATA.P_DATA[1]] : [NaN, NaN];
+    DATA.P_DATA !== undefined && DATA.P_DATA.length > 1
+      ? [...DATA.P_DATA[1]]
+      : [NaN, NaN];
   const dP3: number[] =
-    DATA.P_DATA.length > 2 ? [...DATA.P_DATA[2]] : [NaN, NaN];
+    DATA.P_DATA !== undefined && DATA.P_DATA.length > 2
+      ? [...DATA.P_DATA[2]]
+      : [NaN, NaN];
   const dP4: number[] =
-    DATA.P_DATA.length > 3 ? [...DATA.P_DATA[3]] : [NaN, NaN];
+    DATA.P_DATA !== undefined && DATA.P_DATA.length > 3
+      ? [...DATA.P_DATA[3]]
+      : [NaN, NaN];
 
   const dD1: number[] =
-    DATA.D_DATA.length > 0 ? [...DATA.D_DATA[0]] : [NaN, NaN];
+    DATA.D_DATA !== undefined && DATA.D_DATA.length > 0
+      ? [...DATA.D_DATA[0]]
+      : [NaN, NaN];
   const dD2: number[] =
-    DATA.D_DATA.length > 1 ? [...DATA.D_DATA[1]] : [NaN, NaN];
+    DATA.D_DATA !== undefined && DATA.D_DATA.length > 1
+      ? [...DATA.D_DATA[1]]
+      : [NaN, NaN];
   const dD3: number[] =
-    DATA.D_DATA.length > 2 ? [...DATA.D_DATA[2]] : [NaN, NaN];
+    DATA.D_DATA !== undefined && DATA.D_DATA.length > 2
+      ? [...DATA.D_DATA[2]]
+      : [NaN, NaN];
   const dD4: number[] =
-    DATA.D_DATA.length > 3 ? [...DATA.D_DATA[3]] : [NaN, NaN];
+    DATA.D_DATA !== undefined && DATA.D_DATA.length > 3
+      ? [...DATA.D_DATA[3]]
+      : [NaN, NaN];
 
   const dA1: number[] =
-    DATA.A_DATA.length > 0 ? [...DATA.A_DATA[0]] : [NaN, NaN];
+    DATA.A_DATA !== undefined && DATA.A_DATA.length > 0
+      ? [...DATA.A_DATA[0]]
+      : [NaN, NaN];
   const dA2: number[] =
-    DATA.A_DATA.length > 1 ? [...DATA.A_DATA[1]] : [NaN, NaN];
+    DATA.A_DATA !== undefined && DATA.A_DATA.length > 1
+      ? [...DATA.A_DATA[1]]
+      : [NaN, NaN];
   const dA3: number[] =
-    DATA.A_DATA.length > 2 ? [...DATA.A_DATA[2]] : [NaN, NaN];
+    DATA.A_DATA !== undefined && DATA.A_DATA.length > 2
+      ? [...DATA.A_DATA[2]]
+      : [NaN, NaN];
 
   const dGap: number[] = [0, 0];
   dGap[0] = HistoryModel !== "SLBC" ? DATA.INIT_GAP?.[0] : 0.0;

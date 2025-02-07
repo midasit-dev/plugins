@@ -364,7 +364,7 @@ const GraphChart = () => {
     const xyPoint = [];
     let plusGap = 0.0;
     let mlusGap = 0.0;
-    if (DATA.INIT_GAP[0] !== undefined && DATA.INIT_GAP[1] !== undefined) {
+    if (!isEmpty(DATA.INIT_GAP[0]) && !isEmpty(DATA.INIT_GAP[1])) {
       plusGap = DATA.INIT_GAP[0];
       mlusGap = DATA.INIT_GAP[1] * -1;
     }
@@ -448,11 +448,10 @@ const GraphChart = () => {
       yPoint.push(DATA.P_DATA[i]);
     }
     yPoint.push(nextY);
-
     const xyPoint = [];
     let plusGap = 0.0;
     let mlusGap = 0.0;
-    if (DATA.INIT_GAP[0] !== undefined && DATA.INIT_GAP[1] !== undefined) {
+    if (!isEmpty(DATA.INIT_GAP[0]) && !isEmpty(DATA.INIT_GAP[1])) {
       plusGap = DATA.INIT_GAP[0];
       mlusGap = DATA.INIT_GAP[1] * -1;
     }

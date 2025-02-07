@@ -40,7 +40,7 @@ const RequestBtnPy = () => {
   const Get_IEHP = async () => {
     try {
       const tableData = getIEHP(ElementValue, ComponentValue - 1);
-      if (!isEmpty(tableData)) setTableList(tableData);
+      setTableList(tableData);
     } catch (error) {
       console.error("Failed to load IEHP data", error);
     }

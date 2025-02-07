@@ -10,7 +10,8 @@ import {
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { dbUpdateItem, updateIEHP } from "../../../utils_pyscript";
+import { updateIEHP } from "../../../utils_pyscript";
+import { isEmpty } from "lodash";
 
 const ChangeBtnPy = () => {
   const { t: translate, i18n: internationalization } = useTranslation();
@@ -25,7 +26,8 @@ const ChangeBtnPy = () => {
 
   useEffect(() => {
     if (bBtn) {
-      updateIEHP(ElementValue, ComponentValue - 1, TableList);
+      if (!isEmpty(TableList))
+        updateIEHP(ElementValue, ComponentValue - 1, TableList);
     }
     setbBtn(false);
   }, [bBtn]);
