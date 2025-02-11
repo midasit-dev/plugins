@@ -804,4 +804,4 @@ class GeometryCalculation:
         else:
             for i in range(len(yc)-1) :
                 sum += (yc[i] * zc[i+1] + 2 * yc[i] * zc[i] + 2 * yc[i+1] * zc[i+1] + yc[i+1] * zc[i]) * (yc[i] * zc[i+1] - yc[i+1] * zc[i])
-            return sum/24
+            return sum/24 

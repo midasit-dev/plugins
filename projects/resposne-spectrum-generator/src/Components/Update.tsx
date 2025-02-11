@@ -12,7 +12,7 @@ import {
   VarReturnPeriodFactor,
   VarSiteSubSoilClass,
 	VarValids,
-} from "./variables";
+} from "./variables";  
 import {
   GuideBox,
   Button,
