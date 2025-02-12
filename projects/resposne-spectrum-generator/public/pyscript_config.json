@@ -1,7 +1,6 @@
 {
 	"packages": [
-		"numpy",
-		"requests"
+		"numpy"
 	],
 	"fetch": [
 		{

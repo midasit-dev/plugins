@@ -209,29 +209,3 @@ export function spfcUpdate4NZS1170_5_2004(
     return JSON.parse(result);
   });
 }
-
-export function iterativeResponseSpectrum(
-	Structural_group_name: string,
-	Boundary_group_name: string,
-	load_case_name: string,
-	threshold_percentage: number = 0.01
-  ) {
-	return checkPyScriptReady(() => {
-	  const py_iterative_response_spectrum_func = pyscript.interpreter.globals.get(
-		"iterative_response_spectrum"
-	  );
-	  const g_mapi_key = VerifyUtil.getMapiKey();
-	  const g_base_port = VerifyUtil.getBasePort();
-
-	  const result = py_iterative_response_spectrum_func(
-		Structural_group_name,
-		Boundary_group_name,
-		load_case_name,
-		threshold_percentage,
-		g_mapi_key,
-        g_base_port
-	  );
-	  
-	  return JSON.parse(result);
-	});
-  }

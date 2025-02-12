@@ -10,7 +10,7 @@ export const VarValids = atom({
 		VarSiteSubSoilClass: (value: any) => true,
 		VarReturnPeriodFactor: (value: any) => isLargerThanZero(value),
 		VarHazardFactor: (value: any) => isLargerThanZero(value),
-		VarDistanceFromNearestMajorFault: (value: any) => isLargerThanZero(value),   
+		VarDistanceFromNearestMajorFault: (value: any) => isLargerThanZero(value),
 		VarDesignDuctilityFactor: (value: any) => isLargerThanZero(value),
 		VarMaximumPeriod: (value: any) => isLargerThanZero(value),
 	},

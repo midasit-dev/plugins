@@ -3787,19 +3787,9 @@ const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
      setLoadCombinations(updatedLoadCombinations);
   };
   const handleDelete = (index) => {
-    try {
-      if (!loadCombinations || loadCombinations.length === 0 || loadCombinations[index].loadCombination === "") {
-        throw new Error("No load combinations available to delete.");
-      }
-      const updatedLoadCombinations = loadCombinations.filter((_, i) => i !== index); // Remove the item at the given index
-      if(updatedLoadCombinations.length !== 0) {
-      setLoadCombinations(updatedLoadCombinations); // Update the state with the new array
-      }
-    } catch (error) {
-      console.error("Error deleting load combination:", error.message);
-    }
+    const updatedLoadCombinations = loadCombinations.filter((_, i) => i !== index); // Remove the item at the given index
+    setLoadCombinations(updatedLoadCombinations); // Update the state with the new array
   };
-  
   
   React.useEffect(() => {
     if (
