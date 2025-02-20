@@ -1311,7 +1311,7 @@ const service_combo = strengthCombinations
       }
       console.log(factors);
       const factorObject = factors.find(f => f.factor === factor);
-      if (factorObject && factorObject.value !== undefined  && factorObject.value !== "") {
+      if (factorObject && factorObject.value !== undefined  && factorObject.value !== "" && loadCase.loadCaseName !== undefined) {
       const loadCaseName = loadCase.loadCaseName.replace(/\s*\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/, '');
       // if (factor === 1) {
         if (loadNames.includes(loadCaseName)) {
@@ -3422,7 +3422,7 @@ async function Generate_Load_Combination() {
   setIsGenerating((pre)=>true);
   console.log("Generating Load Combination", isGenerating);
     const cleanedLoadNames = all_loadCaseNames.map((name) =>
-      name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS)\)$/, '')
+      name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS|SM)\)$/, '')
     );
     const allIncluded = cleanedLoadNames.every((name) => loadNames.includes(name));
     if (!allIncluded) {
@@ -3726,7 +3726,7 @@ const handleFileChange = (event) => {
     });
     console.log("Stored Load Case Names:", all_loadCaseNames);
     all_loadCaseNames = all_loadCaseNames.map((name) =>
-      name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS)\)$/, '')
+      name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS|SM)\)$/, '')
     );
     all_loadCaseNames = all_loadCaseNames.filter(name => !loadcombinationName.includes(name));
     console.log("Updated Load Case Names:", all_loadCaseNames);
@@ -3787,9 +3787,19 @@ const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
      setLoadCombinations(updatedLoadCombinations);
   };
   const handleDelete = (index) => {
-    const updatedLoadCombinations = loadCombinations.filter((_, i) => i !== index); // Remove the item at the given index
-    setLoadCombinations(updatedLoadCombinations); // Update the state with the new array
+    try {
+      if (!loadCombinations || loadCombinations.length === 0 || loadCombinations[index].loadCombination === "") {
+        throw new Error("No load combinations available to delete.");
+      }
+      const updatedLoadCombinations = loadCombinations.filter((_, i) => i !== index); // Remove the item at the given index
+      if(updatedLoadCombinations.length !== 0) {
+      setLoadCombinations(updatedLoadCombinations); // Update the state with the new array
+      }
+    } catch (error) {
+      console.error("Error deleting load combination:", error.message);
+    }
   };
+  
   
   React.useEffect(() => {
     if (
