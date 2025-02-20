@@ -195,65 +195,68 @@ class IEHP :
       'PND': dataType if tableType == 1 else dataType - 1
     }
 
-  def UpdateIEHP(self, ElementValue, Component, obj):
-    global originIEHP
-    originArr = list(originIEHP.keys())
-    changeObj = json.loads(obj)
+  def DoRequest(self, ElementValue, Component, obj):
+    tableObj = json.loads(obj)
+    IEHPkeys = list(originIEHP.keys()) if originIEHP else [] 
+    delKey = []
+    updateKeyData = []
+    addKeyData = []
 
-    if originIEHP:
-      bAddKey = False
-      for key in originArr :
-        [selectData, addData] = self.FindTableList(key, changeObj, bAddKey)
-        if addData.get("value") : bAddKey = True
-        if selectData.get("value"):
-          # Exist update..
-            originIEHP[selectData.get("targetKey")] = self.UpdateData(ElementValue, Component, selectData.get("tableType"), selectData.get("value"))
+    tableKeys = []
+    if tableObj.get("1"):
+      list(map(lambda x : tableKeys.append((x.get("KEY"), x, "1")), tableObj.get("1")))
+    if tableObj.get("2"):
+      list(map(lambda x : tableKeys.append((x.get("KEY"), x, "2")), tableObj.get("2")))
+    if tableObj.get("3"):
+      list(map(lambda x : tableKeys.append((x.get("KEY"), x, "3")), tableObj.get("3")))
 
-        if bAddKey and addData.get("value"):
-          # Exist add..
-          nNextNum = int(originArr[-1]) + 1 if originArr else 1
-          for idx, (tableType, value) in enumerate(zip(addData.get("tableType"), addData.get("value"))):
-            originIEHP[f"{nNextNum + idx}"] = self.UpdateData(ElementValue, Component, tableType, value)
+    if not originIEHP and not tableKeys : return {"result" : "error"}
 
-    else :
-      # Default add
-      self.addIEHP(ElementValue, Component, obj)
+    nextKey = int(IEHPkeys[-1])+1 if IEHPkeys else 1
+    for chKey, data, tableType in tableKeys:
+      if chKey in IEHPkeys:
+        updateKeyData.append({ "Key" :str(chKey), "Data" : data, "Type" : tableType})
+        IEHPkeys.remove(chKey)
+      if chKey == None :
+        addKeyData.append({ "Key" :str(nextKey), "Data" : data, "Type" : tableType})
+        nextKey+=1
+    delKey = IEHPkeys.copy()
+
+    if delKey:
+      self.DeleteIEHP(delKey)
+    if updateKeyData:
+      self.UpdateIEHP(ElementValue, Component, updateKeyData)
+    if addKeyData:
+      self.AddIEHP(ElementValue, Component, addKeyData)
     
-    for key in originIEHP.keys() :
-        py_db_update_item(self.name, key, json.dumps(originIEHP.get(key)))
+    return json.dumps({"result":"success"})
 
-    return json.dumps(originIEHP)
+  def DeleteIEHP(self, delKey):
+    for key in delKey:
+      py_db_delete("IEHP", key)
+
+  def UpdateIEHP(self, ElementValue, Component, updateKeyData):
+    updateIEHP = {}
+    if originIEHP:
+      for update in updateKeyData:
+        key = update.get("Key")
+        data = update.get("Data")
+        type = update.get("Type")
+        updateIEHP[key] = self.UpdateData(ElementValue, Component, type, data)
+    
+    for key in updateIEHP.keys() :
+        py_db_update_item(self.name, key, json.dumps(updateIEHP.get(key)))
   
-  def addIEHP(self, ElementValue, Component, obj):
-    addObj = json.loads(obj)
-    addData = []
-    nkey= 1
-    for tableType in addObj.keys():
-      for data in addObj[tableType] :
-        addData.append({"targetKey": nkey, "tableType":tableType, "value":data})
-        nkey +=1
+  def AddIEHP(self, ElementValue, Component, addKeyData):
+    addIEHP = {}
+    for add in addKeyData:
+      key = add.get("Key")
+      data = add.get("Data")
+      type = add.get("Type")
+      addIEHP[key] = self.UpdateData(ElementValue, Component, type, data)
 
-    for add in addData:
-      originIEHP[add.get("targetKey")] = self.UpdateData(ElementValue, Component, add.get("tableType"), add.get("value"))
-
-  def FindTableList(self, key, obj, bAddKey) ->bool:  
-    resultValue = {}
-    addValue = {"tableType":[], "value":[]}
-    for tableType in obj.keys():
-      for data in obj[tableType] :
-        targetKey = data.get("KEY")
-        if not bAddKey and targetKey not in list(originIEHP.keys()) :
-          addValue["tableType"].append(tableType)
-          addValue["value"].append(data)
-          continue
-        
-        if targetKey == key: 
-          resultValue["targetKey"] = targetKey
-          resultValue["tableType"] = tableType
-          resultValue["value"] = data
-
-
-    return [resultValue, addValue]
+    for key in addIEHP.keys() :
+      py_db_create_item(self.name, key, json.dumps(addIEHP.get(key)))
 
   def UpdateData(self,ElementValue, Component, tableType, value):
     global TEMPLATE
@@ -361,7 +364,7 @@ class IEHP :
 
       return setData
 
-DEFAULT_DEFORM= [[ 0.5, 1,2, 4,8],[ 0.5,1, 2,4,8]]
+DEFAULT_DEFORM= [[ 0.5, 1, 2, 4, 8],[ 0.5, 1, 2, 4, 8]]
 
 TEMPLATE =  {
   "DESC": "",

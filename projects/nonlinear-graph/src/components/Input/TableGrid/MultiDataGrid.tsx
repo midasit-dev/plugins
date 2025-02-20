@@ -13,6 +13,7 @@ import {
   HiddenBtnState,
   LanguageState,
   RequestBtnState,
+  PointState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -27,6 +28,7 @@ import { DataGridPremium, GridColDef } from "@mui/x-data-grid-premium";
 
 const MultiDataGrid = () => {
   const RequestBtn = useRecoilValue(RequestBtnState);
+  const PointValue = useRecoilValue(PointState);
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
@@ -37,7 +39,7 @@ const MultiDataGrid = () => {
 
   const [bError, setbError] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
-  const [PnD_size, setPnD_size] = useState(1);
+  // const [PnD_size, setPnD_size] = useState(1);
   const [cursur, setCursur] = useState<number>(0);
   const [field, setField] = useState<string>("");
   const [bEnter, setbEnter] = useState(false);
@@ -49,12 +51,10 @@ const MultiDataGrid = () => {
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    const pndSize = initRows();
-    setTimeout(async () => {
-      await initCloumns(pndSize);
-      await initGroupColumns(pndSize);
-    }, 500);
-  }, [filterList, alertMsg, lan]);
+    initRows();
+    initCloumns();
+    initGroupColumns();
+  }, [filterList, PointValue, alertMsg, lan]);
 
   const AddBlankRow = () => {
     const len = filterList === undefined ? 0 : filterList.length;
@@ -68,7 +68,6 @@ const MultiDataGrid = () => {
 
   const initRows = () => {
     setRows([]);
-    let maxSize = 0;
     if (filterList !== undefined) {
       filterList.forEach((value: any, idx: any) => {
         const obj: { [key: string]: any } = {
@@ -80,16 +79,17 @@ const MultiDataGrid = () => {
         };
 
         // PnD data init
-        maxSize = Math.max(maxSize, value.DATA.PnD_Data.length);
-        value.DATA.PnD_Data.forEach((PnD: any, idx: number) => {
-          const Pdata = PnD[0];
-          const Ddata = PnD[1];
-          obj[`P${idx + 1}`] = formatSmallNumber(Pdata);
-          obj[`D${idx + 1}`] = formatSmallNumber(Ddata);
-        });
         obj["pnd"] = value.DATA.PnD_Data.length;
-        obj[`P${obj["pnd"] + 1}`] = "";
-        obj[`D${obj["pnd"] + 1}`] = "";
+        for (let i = 1; i < PointValue + 1; i++) {
+          if (obj["pnd"] < i) {
+            obj[`P${i}`] = "";
+            obj[`D${i}`] = "";
+          } else {
+            const PnD = value.DATA.PnD_Data[i - 1];
+            obj[`P${i}`] = formatSmallNumber(PnD[0]);
+            obj[`D${i}`] = formatSmallNumber(PnD[1]);
+          }
+        }
 
         // b, a1, a2, b1, b2, n
         const bMLPT: boolean = value.HISTORY_MODEL === "MLPT" ? true : false;
@@ -106,22 +106,20 @@ const MultiDataGrid = () => {
           obj["B"] = value.DATA.dHysParam_Beta1.toFixed(1);
         } else {
           obj["disable"] = 1;
-          // obj["B"] = undefined;
-          // obj["a1"] = undefined;
-          // obj["a2"] = undefined;
-          // obj["B1"] = undefined;
-          // obj["B2"] = undefined;
-          // obj["n"] = undefined;
+          obj["B"] = undefined;
+          obj["a1"] = undefined;
+          obj["a2"] = undefined;
+          obj["B1"] = undefined;
+          obj["B2"] = undefined;
+          obj["n"] = undefined;
         }
         setRows((row) => [...row, obj]);
       });
     }
-    if (PnD_size !== maxSize + 1) setPnD_size(maxSize + 1);
     AddBlankRow();
-    return filterList !== undefined ? maxSize + 1 : PnD_size;
   };
 
-  const initCloumns = (pndSize: number) => {
+  const initCloumns = () => {
     setColumns([]);
     // colums
     const baseColumns = [
@@ -150,7 +148,7 @@ const MultiDataGrid = () => {
         width: 130,
       },
     ];
-    for (let i = 1; i < pndSize + 1; i++) {
+    for (let i = 1; i < PointValue + 1; i++) {
       const columnP = {
         field: `P${i}`,
         headerName: `P${i}`,
@@ -239,10 +237,10 @@ const MultiDataGrid = () => {
     setColumns(baseColumns.concat(remainColumns));
   };
 
-  const initGroupColumns = (pndSize: number) => {
+  const initGroupColumns = () => {
     setGroupColumns([]);
     const ForceChildren = [];
-    for (let i = 1; i < pndSize + 1; i++) {
+    for (let i = 1; i < PointValue + 1; i++) {
       const columnP = {
         field: `P${i}`,
       };
@@ -322,11 +320,17 @@ const MultiDataGrid = () => {
           MUL_TYPE = key;
         }
       });
-      if (NAME === "" || MATERIAL_TYPE === "") continue;
+      if (
+        NAME === "" ||
+        NAME === undefined ||
+        MATERIAL_TYPE === "" ||
+        MATERIAL_TYPE === undefined
+      )
+        continue;
 
       // PnD_Size
       const PnD_Data = [];
-      for (let i = 1; i < PnD_size + 1; i++) {
+      for (let i = 1; i < PointValue + 1; i++) {
         if (isEmpty(rows[row][`P${i}`]) || isEmpty(rows[row][`D${i}`])) {
           const noData = "No Data";
           if (isEmpty(rows[row][`P${i}`]) === false)
@@ -340,8 +344,7 @@ const MultiDataGrid = () => {
             parseFloat(rows[row][`D${i}`]),
           ]);
       }
-      PnD_Data.sort((a, b) => a[0] - b[0]);
-
+      PnD_Data.sort((a, b) => a[1] - b[1]);
       // PnD err Check
       if (!pndErrCheck(PnD_Data, HISTORY_MODEL, MUL_TYPE, row)) continue;
 
@@ -493,8 +496,10 @@ const MultiDataGrid = () => {
       case "id":
       case "disable":
       case "pnd":
-      case "NAME": // name
         dbUpdate = true;
+        break;
+      case "NAME": // name
+        if (!isEmpty(InputValue)) dbUpdate = true;
         break;
       case "MATERIAL_TYPE": // material
         if (InputValue === "RC" || InputValue === "S") dbUpdate = true;
@@ -594,12 +599,12 @@ const MultiDataGrid = () => {
           if (
             rows.length > row.id &&
             rows[row.id][col] !== InputValue &&
-            col.slice(0, 1) === "P"
+            col.slice(0, 1) === "D"
           ) {
-            for (let i = 1; i <= PnD_size; i++) {
+            for (let i = 1; i <= PointValue; i++) {
               if (
-                col !== `P${i}` &&
-                parseFloat(row[`P${i}`]) === parseFloat(InputValue)
+                col !== `D${i}` &&
+                parseFloat(row[`D${i}`]) === parseFloat(InputValue)
               ) {
                 dbUpdate = false;
                 AlertFunc(false, -1, col, existMsg);
@@ -628,7 +633,7 @@ const MultiDataGrid = () => {
     const zeroErrMsg = translate("Force_Disp_Zero_err");
     let bDispForceZero = PnD_Data.some((PnD) => PnD[0] === 0 && PnD[1] === 0);
     if (!bDispForceZero) {
-      AlertFunc(false, -1, `NAME`, zeroErrMsg);
+      AlertFunc(false, rowIndex, `NAME`, zeroErrMsg);
       return false;
     }
     let nForcePlus = 0,
@@ -826,6 +831,20 @@ const MultiDataGrid = () => {
     if (event.key === "Enter") {
       setbEnter(true);
     }
+    if (event.keyCode === 46) {
+      // del button
+      if (isEmpty(CheckBox)) return;
+      let existedList: any[] = [];
+      for (let i = 0; i < filterList.length; i++) {
+        if (CheckBox.includes(i)) continue;
+        existedList.push(filterList[i]);
+      }
+      setTableList((preTable: any) => ({
+        ...preTable,
+        [TableType]: existedList,
+      }));
+      setCheckBox([]);
+    }
   };
 
   const onRowChange = (
@@ -865,7 +884,7 @@ const MultiDataGrid = () => {
     let rowLength = rows.length;
     if (rowLength < startRowId + paramsDataCount) {
       const count = startRowId + paramsDataCount - rowLength;
-      for (let i = 0; i < count; i++) AddBlankRow();
+      // for (let i = 0; i < count; i++) AddBlankRow();
       paramsDataCount += count;
       rowLength += count;
     }
@@ -896,7 +915,7 @@ const MultiDataGrid = () => {
         AlertFunc(false, i, errCol, msg);
         throw new Error(copyErrMsg);
       } else {
-        if (rows.length - 2 < i) setRows((preRows) => [...preRows, dataObj]);
+        if (rows.length - 1 < i) setRows((preRows) => [...preRows, dataObj]);
         else
           setRows((preRows) =>
             preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
@@ -910,7 +929,7 @@ const MultiDataGrid = () => {
     <GuideBox
       height={hidden ? "800px" : "650px"}
       width={"100%"}
-      // loading={filterList === undefined ? true : false}
+      loading={RequestBtn ? false : true}
     >
       {filterList === undefined && RequestBtn && (
         <Grid width={"100%"}>
@@ -925,39 +944,42 @@ const MultiDataGrid = () => {
           </Alert>
         </Grid>
       )}
-      <DataGridPremium
-        rows={rows} // rows
-        columns={columns} // columns
-        columnGroupingModel={groupColumns} // header group text
-        // isCellEditable={
-        //   (params) => disableCell(params) // disable settting
-        // }
-        columnGroupHeaderHeight={56} // header group height
-        rowHeight={30}
-        sx={DataGridStyle} // style
-        editMode="row" // edit mode
-        ignoreValueFormatterDuringExport // copy paste setting
-        disableRowSelectionOnClick // click no row
-        cellSelection // cell focus
-        checkboxSelection // checkbox setting
-        rowSelectionModel={CheckBox} // checkbox value
-        onRowSelectionModelChange={(selectedID: any) => {
-          checkboxSet(selectedID);
-        }} // checkbox 이벤트
-        // pagination // page setting
-        // autoPageSize // auto page
-        onCellClick={onClickCell} // cell click 이벤트
-        onCellKeyDown={(params, event, details) =>
-          onKeyDown(params, event, details)
-        } // enter 이벤트
-        onRowModesModelChange={(rowModesModel, details) =>
-          onRowChange(rowModesModel, details)
-        } // blur 이벤트
-        onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
-        slots={{
-          toolbar: alertToolbar, // toolbar
-        }}
-      />
+      {RequestBtn && (
+        <DataGridPremium
+          rows={rows} // rows
+          columns={columns} // columns
+          columnGroupingModel={groupColumns} // header group text
+          // isCellEditable={
+          //   (params) => disableCell(params) // disable settting
+          // }
+          columnGroupHeaderHeight={56} // header group height
+          rowHeight={30}
+          sx={DataGridStyle} // style
+          editMode="row" // edit mode
+          ignoreValueFormatterDuringExport // copy paste setting
+          disableRowSelectionOnClick // click no row
+          cellSelection // cell focus
+          checkboxSelection // checkbox setting
+          rowSelectionModel={CheckBox} // checkbox value
+          onRowSelectionModelChange={(selectedID: any) => {
+            checkboxSet(selectedID);
+          }} // checkbox 이벤트
+          // pagination // page setting
+          // autoPageSize // auto page
+          onCellClick={onClickCell} // cell click 이벤트
+          onCellKeyDown={(params, event, details) =>
+            onKeyDown(params, event, details)
+          } // enter 이벤트
+          onRowModesModelChange={(rowModesModel, details) =>
+            onRowChange(rowModesModel, details)
+          } // blur 이벤트
+          onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
+          slots={{
+            toolbar: alertToolbar, // toolbar
+          }}
+          disableColumnSorting // disable sort
+        />
+      )}
     </GuideBox>
   );
 };

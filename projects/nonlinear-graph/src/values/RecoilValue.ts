@@ -17,7 +17,7 @@ export const TableTypeState = atom<number>({
 
 export const PointState = atom<number>({
   key: "PointState",
-  default: 1,
+  default: 2,
 });
 
 export const TableListState = atom<any>({

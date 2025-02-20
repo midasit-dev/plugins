@@ -9,7 +9,6 @@ import {
   TableListState,
   RequestBtnState,
 } from "../../../values/RecoilValue";
-import { isEmpty } from "lodash";
 
 const RequestBtnPy = () => {
   const ElementValue = useRecoilValue(ElementState);

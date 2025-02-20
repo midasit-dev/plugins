@@ -5,20 +5,20 @@ import { useRecoilState } from "recoil";
 import { ElementState, ComponentState } from "../../../values/RecoilValue";
 
 const BeamCoulmItems = new Map<string, number>([
-  ["My", 5],
-  ["Mz", 6],
   ["Fx", 1],
   ["Fy", 2],
   ["Fz", 3],
+  ["My", 5],
+  ["Mz", 6],
 ]);
 const TrussItems = new Map<string, number>([["Fx", 1]]);
 const GenericLinkItems = new Map<string, number>([
-  ["My", 5],
-  ["Mz", 6],
   ["Fx", 1],
   ["Fy", 2],
   ["Fz", 3],
   ["Mx", 4],
+  ["My", 5],
+  ["Mz", 6],
 ]);
 
 const ComponentType = () => {

@@ -1,6 +1,6 @@
 import { GuideBox } from "@midasit-dev/moaui";
 import { Button, Alert } from "@mui/material";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   ElementState,
   ComponentState,
@@ -10,15 +10,15 @@ import {
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { updateIEHP } from "../../../utils_pyscript";
+import { DoRequest, getIEHP } from "../../../utils_pyscript";
 import { isEmpty } from "lodash";
 
 const ChangeBtnPy = () => {
   const { t: translate, i18n: internationalization } = useTranslation();
   const ElementValue = useRecoilValue(ElementState);
   const ComponentValue = useRecoilValue(ComponentState);
-  const TableList = useRecoilValue(TableListState);
   const TableErr = useRecoilValue(TableErrState);
+  const [TableList, setTableList] = useRecoilState(TableListState);
   const [bBtn, setbBtn] = useState(false);
 
   const TableErrMsg = translate("TableErrState");
@@ -26,11 +26,28 @@ const ChangeBtnPy = () => {
 
   useEffect(() => {
     if (bBtn) {
-      if (!isEmpty(TableList))
-        updateIEHP(ElementValue, ComponentValue - 1, TableList);
+      if (!isEmpty(TableList)) {
+        request();
+      }
     }
     setbBtn(false);
   }, [bBtn]);
+
+  const request = async () => {
+    try {
+      const result = await DoRequest(
+        ElementValue,
+        ComponentValue - 1,
+        TableList
+      );
+      if (result["result"] !== "success") throw Error("request error");
+      // update table
+      const tableData = getIEHP(ElementValue, ComponentValue - 1);
+      setTableList(tableData);
+    } catch (err) {
+      console.error("Failed to chage IEHP data", err);
+    }
+  };
 
   // event
   async function onClickChange() {

@@ -17,7 +17,8 @@ const ElementType = () => {
 
   function onChangeHandler(event: any) {
     setElementValue(event.target.value);
-    setComponentValue(1);
+    if (event.target.value === 2) setComponentValue(1);
+    else setComponentValue(5);
   }
   return (
     <GuideBox center>

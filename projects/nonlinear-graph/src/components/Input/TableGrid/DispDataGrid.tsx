@@ -557,7 +557,13 @@ const DispDataGrid = () => {
       Object.entries(SYMMETRIC).forEach(([key, value]) => {
         if (translate(value) === rows[row].SYMMETRIC) symmetric = parseInt(key);
       });
-      if (NAME === "" || MATERIAL_TYPE === "") continue;
+      if (
+        NAME === "" ||
+        NAME === undefined ||
+        MATERIAL_TYPE === "" ||
+        MATERIAL_TYPE === undefined
+      )
+        continue;
 
       // p_data
       const pData = [];
@@ -832,11 +838,13 @@ const DispDataGrid = () => {
 
     switch (col) {
       case "id":
-      case "NAME": // name
       case "pnd":
       case "disable":
       case "SYMMETRIC_DISABLE":
         dbUpdate = true;
+        break;
+      case "NAME": // name
+        if (!isEmpty(InputValue)) dbUpdate = true;
         break;
       case "MATERIAL_TYPE": // material
         if (InputValue === "RC" || InputValue === "S") dbUpdate = true;
@@ -1168,6 +1176,21 @@ const DispDataGrid = () => {
     if (event.key === "Enter") {
       setbEnter(true);
     }
+    if (event.keyCode === 46) {
+      // del button
+      if (isEmpty(CheckBox)) return;
+      let existedList: any[] = [];
+      for (let i = 0; i < filterList.length; i++) {
+        if (CheckBox.includes(i)) continue;
+        existedList.push(filterList[i]);
+      }
+
+      setTableList((preTable: any) => ({
+        ...preTable,
+        [TableType]: existedList,
+      }));
+      setCheckBox([]);
+    }
   };
 
   const onRowChange = (
@@ -1207,7 +1230,7 @@ const DispDataGrid = () => {
     let rowLength = rows.length;
     if (rowLength < startRowId + paramsDataCount) {
       const count = startRowId + paramsDataCount - rowLength;
-      for (let i = 0; i < count; i++) AddBlankRow();
+      // for (let i = 0; i < count; i++) AddBlankRow();
       paramsDataCount += count;
       rowLength += count;
     }
@@ -1239,7 +1262,7 @@ const DispDataGrid = () => {
         AlertFunc(false, i, errCol, msg);
         throw new Error(copyErrMsg);
       } else {
-        if (rows.length - 2 < i) setRows((preRows) => [...preRows, dataObj]);
+        if (rows.length - 1 < i) setRows((preRows) => [...preRows, dataObj]);
         else
           setRows((preRows) =>
             preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
@@ -1253,7 +1276,7 @@ const DispDataGrid = () => {
     <GuideBox
       height={hidden ? "800px" : "650px"}
       width={"100%"}
-      //loading={filterList === undefined ? true : false}
+      loading={RequestBtn ? false : true}
     >
       {filterList === undefined && RequestBtn && (
         <Grid width={"100%"}>
@@ -1268,39 +1291,42 @@ const DispDataGrid = () => {
           </Alert>
         </Grid>
       )}
-      <DataGridPremium
-        rows={rows} // rows
-        columns={columns} // columns
-        columnGroupingModel={groupColumns} // header group text
-        // isCellEditable={
-        //   (params) => disableCell(params) // disable settting
-        // }
-        columnGroupHeaderHeight={56} // header group height
-        rowHeight={30}
-        sx={DataGridStyle} // style
-        editMode="row" // edit mode
-        ignoreValueFormatterDuringExport // copy paste setting
-        disableRowSelectionOnClick // click no row
-        cellSelection // cell focus
-        checkboxSelection // checkbox setting
-        rowSelectionModel={CheckBox} // checkbox value
-        onRowSelectionModelChange={(selectedID: any) => {
-          checkboxSet(selectedID);
-        }} // checkbox 이벤트
-        // pagination // page setting
-        // autoPageSize // auto page
-        onCellClick={onClickCell} // cell click 이벤트
-        onCellKeyDown={(params, event, details) =>
-          onKeyDown(params, event, details)
-        } // enter 이벤트
-        onRowModesModelChange={(rowModesModel, details) =>
-          onRowChange(rowModesModel, details)
-        } // blur 이벤트
-        onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
-        slots={{
-          toolbar: alertToolbar, // toolbar
-        }}
-      />
+      {RequestBtn && (
+        <DataGridPremium
+          rows={rows} // rows
+          columns={columns} // columns
+          columnGroupingModel={groupColumns} // header group text
+          // isCellEditable={
+          //   (params) => disableCell(params) // disable settting
+          // }
+          columnGroupHeaderHeight={56} // header group height
+          rowHeight={30}
+          sx={DataGridStyle} // style
+          editMode="row" // edit mode
+          ignoreValueFormatterDuringExport // copy paste setting
+          disableRowSelectionOnClick // click no row
+          cellSelection // cell focus
+          checkboxSelection // checkbox setting
+          rowSelectionModel={CheckBox} // checkbox value
+          onRowSelectionModelChange={(selectedID: any) => {
+            checkboxSet(selectedID);
+          }} // checkbox 이벤트
+          // pagination // page setting
+          // autoPageSize // auto page
+          onCellClick={onClickCell} // cell click 이벤트
+          onCellKeyDown={(params, event, details) =>
+            onKeyDown(params, event, details)
+          } // enter 이벤트
+          onRowModesModelChange={(rowModesModel, details) =>
+            onRowChange(rowModesModel, details)
+          } // blur 이벤트
+          onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
+          slots={{
+            toolbar: alertToolbar, // toolbar
+          }}
+          disableColumnSorting // disable sort
+        />
+      )}
     </GuideBox>
   );
 };

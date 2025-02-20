@@ -163,7 +163,9 @@ export function dbDelete(itemName: string, item_id: string | number) {
     return JSON.parse(result);
   });
 }
-
+/////////////////////////////////////////////
+//////IEHP///////////////////////////////////
+/////////////////////////////////////////////
 export function getIEHP(ElementValue: number, ComponentValue: number) {
   return checkPyScriptReady(() => {
     const IEHP = pyscript.interpreter.globals.get("IEHP");
@@ -172,22 +174,14 @@ export function getIEHP(ElementValue: number, ComponentValue: number) {
   });
 }
 
-export function getIEHPnextKey() {
-  return checkPyScriptReady(() => {
-    const IEHP = pyscript.interpreter.globals.get("IEHP");
-    const result = IEHP("IEHP").getDataIEHP();
-    return JSON.parse(result);
-  });
-}
-
-export function updateIEHP(
+export function DoRequest(
   ElementValue: number,
   Component: number,
   obj: object
 ) {
   return checkPyScriptReady(() => {
     const IEHP = pyscript.interpreter.globals.get("IEHP");
-    const result = IEHP("IEHP").UpdateIEHP(
+    const result = IEHP("IEHP").DoRequest(
       ElementValue,
       Component,
       JSON.stringify(obj)

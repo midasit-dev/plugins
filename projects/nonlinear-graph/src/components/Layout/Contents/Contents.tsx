@@ -2,6 +2,7 @@ import {
   Grid,
   GuideBox,
   Panel,
+  Stack,
   Tab,
   TabGroup,
   Typography,
@@ -16,6 +17,7 @@ import {
 import MultiDataGrid from "../../Input/TableGrid/MultiDataGrid";
 import DispDataGrid from "../../Input/TableGrid/DispDataGrid";
 import StiffDataGrid from "../../Input/TableGrid/StiffDataGrid copy";
+import PointType from "../../Input/Dropdown/PointType";
 const Contents = () => {
   const [TableType, setTableType] = useRecoilState(TableTypeState);
   const [hidden, setHidden] = useRecoilState(HiddenBtnState);
@@ -29,13 +31,14 @@ const Contents = () => {
   return (
     <GuideBox center width={"100%"} margin={1}>
       <Panel height={"100%"} variant="shadow" width="100%" overflow={"scroll"}>
-        <Grid>
+        <Stack direction="row" justifyContent={"space-between"}>
           <TabGroup onChange={onTabChange} value={1}>
             <Tab label={translate("TabDisp")} value={1} id="1" />
             <Tab label={translate("TabStiff")} value={2} id="2" />
             <Tab label={translate("TabMulti")} value={3} id="3" />
           </TabGroup>
-        </Grid>
+          <Grid>{TableType === 3 && <PointType />}</Grid>
+        </Stack>
         <Grid width={"100%"}>
           {TableType === 1 && <DispDataGrid />}
           {TableType === 2 && <StiffDataGrid />}
