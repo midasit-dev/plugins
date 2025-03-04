@@ -1,3 +1,5 @@
+https://hubs.ly/Q037JtPb0
+
 # Customized Load Combination
 
 This plugin streamlines the process of creating and managing load combinations for structural design in **midas Civil NX**.
@@ -44,9 +46,14 @@ It provides options for defining load cases, factors, and settings required for 
 - **Generate Load Cases and Combinations**: Use the plugin to import, modify, or export load cases and combinations as needed.
 - **Export or Import Configurations**: Save or load wizard files for efficient management across projects.
 
-<!-- ![](https://hubs.ly/Q02hxwP10) -->
+### version 1.2.0
+
+- Added a tutorial video to guide users through the plugin's functionalities and usage.
 
 ### version 1.1.0
+
 - Fixed an issue related to settlement loadcase matching and fixed empty loadcases
+
 ### version 1.0.0
+
 - initial release.
