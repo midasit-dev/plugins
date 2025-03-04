@@ -1,4 +1,4 @@
-https://hubs.ly/Q037JtPb0
+![](https://hubs.ly/Q037JtPb0)
 
 # Customized Load Combination
 
