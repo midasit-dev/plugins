@@ -7,7 +7,7 @@ It provides options for defining load cases, factors, and settings required for 
 
 ## Details
 
-### version 1.0.0
+### version 1.2.0
 
 ## Functionality
 
