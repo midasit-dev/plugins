@@ -5,12 +5,15 @@ import { DropList, GuideBox, Typography } from "@midasit-dev/moaui";
 const UnitList = ({ onUnitChange }) => {
   const [forceType, setForceType] = React.useState(3);
   const [lengthType, setLengthType] = React.useState(2);
+  // 2025-03-10 Jay 추가 작업
+  // 요청사항 -> KIPS를 추가
   const forceTypeOptions = [
     { value: 0, label: "KGF" },
     { value: 1, label: "TONF" },
     { value: 2, label: "N" },
     { value: 3, label: "KN" },
     { value: 4, label: "LBF" },
+    { value: 5, label: "KIPS" },
   ];
   const lengthTypeOptions = [
     { value: 0, label: "MM" },
@@ -23,13 +26,19 @@ const UnitList = ({ onUnitChange }) => {
   const handleForceTypeChange = (e) => {
     const newForceType = e.target.value;
     setForceType(newForceType);
-    onUnitChange("unit", { force: forceTypeOptions[newForceType].label, dist: lengthTypeOptions[lengthType].label });
+    onUnitChange("unit", {
+      force: forceTypeOptions[newForceType].label,
+      dist: lengthTypeOptions[lengthType].label,
+    });
   };
 
   const handleLengthTypeChange = (e) => {
     const newLengthType = e.target.value;
     setLengthType(newLengthType);
-    onUnitChange("unit", { force: forceTypeOptions[forceType].label, dist: lengthTypeOptions[newLengthType].label });
+    onUnitChange("unit", {
+      force: forceTypeOptions[forceType].label,
+      dist: lengthTypeOptions[newLengthType].label,
+    });
   };
 
   return (
@@ -67,6 +76,6 @@ const UnitList = ({ onUnitChange }) => {
       </GuideBox>
     </GuideBox>
   );
-}
+};
 
 export default UnitList;
