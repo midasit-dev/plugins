@@ -16,9 +16,9 @@ export const selLoadCaseNameSelector = selector<string>({
 });
 
 export enum SimplifiedCategoryEnum {
-  TABLE_3_6 = "Table 3.6",
-  TABLE_3_7 = "Table 3.7",
   TABLE_3_8 = "Table 3.8",
+  TABLE_3_7 = "Table 3.7",
+  TABLE_3_6 = "Table 3.6",
 }
 
 export enum SimplifiedLocationEnum {
@@ -33,6 +33,7 @@ export type VelocityPressureCaseProcedureSimplified = {
   location?: SimplifiedLocationEnum;
   period?: number;
   degree?: "1" | "2" | "3" | "4";
+  reducedBy20?: boolean;
 };
 
 export enum FullVelocityEnum {
@@ -72,6 +73,14 @@ export type VelocityPressureCaseProcedureFull = {
   };
   kpc?: number;
 };
+
+// export type VelocityPressureCaseType = {
+//   name: string;
+//   value: number;
+//   procedureIndex: 1 | 2; // 1: simplified, 2: full
+//   procedureSimplified?: VelocityPressureCaseProcedureSimplified;
+//   procedureFull?: VelocityPressureCaseProcedureFull;
+// };
 
 export type VelocityPressureCaseType = {
   name: string;
@@ -331,12 +340,33 @@ export const selVelocityPressureCaseSelector =
   });
 
 // 기본 값
+// export const tempProcedureValueDefalutForAdd: VelocityPressureCaseType = {
+//   name: "new name",
+//   value: 3.865,
+//   procedureIndex: 1,
+//   procedureSimplified: {
+//     category: SimplifiedCategoryEnum.TABLE_3_6,
+//     location: SimplifiedLocationEnum.WAGLAN_ISLAND,
+//     period: 120,
+//     degree: "1",
+//   },
+//   procedureFull: {
+//     velocity: FullVelocityEnum.PEAK_VELOCITY,
+//     refZ: 50,
+//     horLoadLength: 600,
+//     degree: "1",
+//     cozValue: 1.0,
+//     kpc: 1.22,
+//   },
+// };
+
+// 기본 값 - 테이블 3.8 로 설정
 export const tempProcedureValueDefalutForAdd: VelocityPressureCaseType = {
   name: "new name",
-  value: 3.865,
+  value: 2.5,
   procedureIndex: 1,
   procedureSimplified: {
-    category: SimplifiedCategoryEnum.TABLE_3_6,
+    category: SimplifiedCategoryEnum.TABLE_3_8,
     location: SimplifiedLocationEnum.WAGLAN_ISLAND,
     period: 120,
     degree: "1",

@@ -18,6 +18,7 @@ import { SimplifiedCategoryEnum } from "../../../../../../../../../../defines/ap
 import CalculateButton from "./CalculateButton";
 import QpValue from "./QpValue";
 import InfoWrapper from "../../../../../../../../../common/InfoWrapper";
+import { useEffect } from "react";
 
 const CategoryOptions = memo(
   ({ category }: { category: TypeSimplified["category"] | undefined }) => (
@@ -38,6 +39,16 @@ const items: [string, string][] = [
 export default function Simplified() {
   const { tempValue, setTempValueCallback, asSimplified } = useTemporaryValue();
   const currentTable = asSimplified(tempValue)?.category;
+
+  useEffect(() => {
+    if (!tempValue) {
+      setTempValueCallback({
+        procedureSimplified: {
+          category: SimplifiedCategoryEnum.TABLE_3_8,
+        },
+      });
+    }
+  }, [tempValue, setTempValueCallback]);
 
   return (
     <GuideBox width="100%" spacing={2}>
@@ -105,7 +116,7 @@ export default function Simplified() {
                 });
               }}
               value={asSimplified(tempValue)?.category}
-              defaultValue={SimplifiedCategoryEnum.TABLE_3_6}
+              defaultValue={SimplifiedCategoryEnum.TABLE_3_8}
               placeholder="Select ..."
             />
           </GuideBox>

@@ -50,6 +50,9 @@ export default function useTemporaryValue() {
               ...(simplified.degree !== undefined
                 ? { degree: simplified.degree }
                 : {}),
+              ...(simplified.reducedBy20 !== undefined
+                ? { reducedBy20: simplified.reducedBy20 }
+                : {}),
             } as TypeSimplified,
           } as TypeRoot;
         }

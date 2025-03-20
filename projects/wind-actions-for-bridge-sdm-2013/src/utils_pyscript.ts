@@ -27,13 +27,20 @@ export function simplified_calculate_qp(
   category: string,
   location: string,
   return_period: number | undefined,
-  degree: string | undefined
+  degree: string | undefined,
+  apply_reduction: boolean
 ) {
   return checkPyScriptReady(() => {
     const py_qp_func = pyscript.interpreter.globals.get(
       "simplified_calculate_qp"
     );
-    const result = py_qp_func(category, location, return_period, degree);
+    const result = py_qp_func(
+      category,
+      location,
+      return_period,
+      degree,
+      apply_reduction
+    );
     return result as number;
   });
 }
