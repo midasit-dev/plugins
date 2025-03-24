@@ -180,7 +180,7 @@ const HelpManual = (type: any, open: any, setOpen: any) => {
                   type: "multiple",
                   title: "SDMHR 2013 rev 5",
                   content: [
-                    <div style={{ width: "500px", height: "300px" }}>
+                    <div style={{ width: "450px", height: "300px" }}>
                       <TabGroup
                         // orientation="vertical"
                         value={tabValueUni}
@@ -313,7 +313,7 @@ const HelpManual = (type: any, open: any, setOpen: any) => {
                   type: "multiple",
                   title: "SDMHR 2013 rev 5",
                   content: [
-                    <div style={{ width: "480px", height: "600px" }}>
+                    <div style={{ width: "450px", height: "600px" }}>
                       <TabGroup
                         // orientation="vertical"
                         value={tabValueDiff}
