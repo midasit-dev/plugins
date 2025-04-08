@@ -150,7 +150,10 @@ def create_group_pile(
     node_info = civil.db_read_item("NODE", select_node)
     
     if "error" in skew_info:
-      return json.dumps(skew_info)
+    #   return json.dumps(skew_info)
+    # 위 로직 수정 25.04.08 선택한 노드에 스큐 정보가 없을 경우에는 에러가 아니고, None으로 처리
+    # 그래야 아래 연결되는 nomarlz_vector_skew_info 로직이 제대로 동작
+        skew_info = None
     if "error" in node_info:
       return json.dumps(node_info)
 
