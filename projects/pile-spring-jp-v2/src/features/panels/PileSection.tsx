@@ -1,39 +1,20 @@
 // features/pile-section/components/PileSectionGrid.tsx
-import React from "react";
+import React, { useState } from "react";
 import { GridColDef, GridColumnGroupingModel } from "@mui/x-data-grid";
-import { Checkbox } from "@mui/material";
 import { useRecoilState } from "recoil";
 import { pileSectionState } from "../../states";
 import { PileTypeItems } from "../../constants";
-import { GuideBox, Typography, DropList } from "@midasit-dev/moaui";
-import {
-  CustomDataGrid,
-  CustomNumberField,
-  CustomCheckBox,
-} from "../../components";
-
-interface PileSectionRow {
-  id: number;
-  checked: boolean;
-  name: string;
-  pileType: string;
-  length: number;
-  startPoint: number;
-  endPoint: number;
-  concrete_diameter: number;
-  concrete_thickness: number;
-  concrete_modulus: number;
-  steel_diameter: number;
-  steel_thickness: number;
-  steel_modulus: number;
-  steel_cor_thickness: number;
-}
+import { GuideBox, DropList, TabGroup, Tab } from "@midasit-dev/moaui";
+import { CustomDataGrid, CustomCheckBox } from "../../components";
 
 const PileSectionGrid = () => {
   const [rows, setRows] = useRecoilState(pileSectionState);
+  const [tabValue, setTabValue] = useState("concrete");
 
-  const columns: GridColDef[] = [
+  const baseColumns: GridColDef[] = [
     // 1. 체크박스 열
+    // 1행은 무조건 체크상태이며 사용자 입력불가
+    // 2~4행은 순서대로 체크박스 표시 가능 (2,3,4행 체크 상태에서 2행을 해제하면 3,4 행도 해제)
     {
       field: "checked",
       headerName: "",
@@ -44,14 +25,12 @@ const PileSectionGrid = () => {
           onChange={(e) => {
             const newChecked = e.target.checked;
             if (newChecked) {
-              // 모든 행 체크 (첫 번째 행 제외)
               setRows(
                 rows.map((row) =>
                   row.id === 1 ? row : { ...row, checked: true }
                 )
               );
             } else {
-              // 모든 행 체크 해제 (첫 번째 행 제외)
               setRows(
                 rows.map((row) =>
                   row.id === 1 ? row : { ...row, checked: false }
@@ -75,6 +54,7 @@ const PileSectionGrid = () => {
       ),
     },
     // 2. 말뚝 이름 열
+    // 정보창
     {
       field: "name",
       headerName: "말뚝",
@@ -84,6 +64,7 @@ const PileSectionGrid = () => {
       cellClassName: () => "cell-highlight",
     },
     // 3. 말뚝 종류 선택 열
+    // 말뚝의 종류를 선택, 선택한 말뚝의 종류에 따라 콘크리트 그룹과 철근 그룹의 컬럼이 변경됨
     {
       field: "pileType",
       headerName: "말뚝 종류",
@@ -99,6 +80,7 @@ const PileSectionGrid = () => {
       ),
     },
     // 4. 시점 열
+    // 말뚝의 시점을 입력
     {
       field: "startPoint",
       headerName: "시점",
@@ -129,7 +111,10 @@ const PileSectionGrid = () => {
         error: params.props.value <= 0 || !params.row.checked,
       }),
     },
-    // 6-8. 콘크리트 그룹
+  ];
+
+  // 6-8. 콘크리트 그룹
+  const concreteColumns: GridColDef[] = [
     {
       field: "concrete_diameter",
       headerName: "직경(mm)",
@@ -194,7 +179,19 @@ const PileSectionGrid = () => {
         error: params.props.value <= 0,
       }),
     },
-    // // 9-12. 철근 그룹
+    {
+      field: "dummy",
+      headerName: "",
+      type: "number",
+      width: 80,
+      editable: false,
+      sortable: false,
+      cellClassName: () => "cell-highlight",
+    },
+  ];
+  //
+  /// 9-12. 철근 그룹
+  const steelColumns: GridColDef[] = [
     {
       field: "steel_diameter",
       headerName: "직경(mm)",
@@ -269,7 +266,11 @@ const PileSectionGrid = () => {
     },
   ];
 
-  // 컬럼 그룹 모
+  // 현재 활성화된 그룹에 따라 보여줄 컬럼 결정
+  const columns = [
+    ...baseColumns,
+    ...(tabValue === "concrete" ? concreteColumns : steelColumns),
+  ];
 
   const handleCheckChange = (id: number, checked: boolean) => {
     if (id === 1) return; // 첫 번째 행은 변경 불가
@@ -309,6 +310,47 @@ const PileSectionGrid = () => {
   };
 
   const handleProcessRowUpdate = (newRow: any) => {
+    // // 변경된 필드가 정확히 length인 경우에만 시점/종점 재계산
+    // console.log(prevRows);
+    // console.log(newRow);
+    // console.log(prevRows.length);
+    // console.log(newRow.length);
+    // // Object.keys(newRow).length === 14 &&
+    // if (prevRows.length !== newRow.length) {
+    //   console.log("length 변경");
+    //   let currentStartPoint = 0;
+    //   const finalRows = rows.map((row) => {
+    //     const length =
+    //       row.id === newRow.id ? Number(newRow.length) : row.length;
+    //     const result = {
+    //       ...row,
+    //       length,
+    //       startPoint: currentStartPoint,
+    //       endPoint: currentStartPoint + length,
+    //     };
+    //     currentStartPoint = result.endPoint;
+    //     return result;
+    //   });
+
+    //   setRows(finalRows);
+    //   return {
+    //     ...newRow,
+    //     startPoint: currentStartPoint - newRow.length,
+    //     endPoint: currentStartPoint,
+    //   };
+    // } else {
+    // let currentStartPoint = 0;
+    // const finalRows = rows.map((row) => {
+    //   const length = row.id === newRow.id ? Number(newRow.length) : row.length;
+    //   const result = {
+    //     ...row,
+    //     length,
+    //     startPoint: currentStartPoint,
+    //     endPoint: currentStartPoint + length,
+    //   };
+    //   currentStartPoint = result.endPoint;
+    // });
+
     setRows((prevRows) =>
       prevRows.map((row) =>
         row.id === newRow.id ? { ...row, ...newRow } : row
@@ -325,7 +367,17 @@ const PileSectionGrid = () => {
         { field: "concrete_diameter" },
         { field: "concrete_thickness" },
         { field: "concrete_modulus" },
+        { field: "dummy" },
       ],
+      renderHeaderGroup: (params) => (
+        <TabGroup
+          value={tabValue}
+          onChange={(e, newValue: string) => setTabValue(newValue)}
+        >
+          <Tab value="concrete" label="Concrete" />
+          <Tab value="steel" label="Steel" />
+        </TabGroup>
+      ),
     },
     {
       groupId: "steel",
@@ -336,6 +388,15 @@ const PileSectionGrid = () => {
         { field: "steel_modulus" },
         { field: "steel_cor_thickness" },
       ],
+      renderHeaderGroup: (params) => (
+        <TabGroup
+          value={tabValue}
+          onChange={(e, newValue: string) => setTabValue(newValue)}
+        >
+          <Tab value="concrete" label="Concrete" />
+          <Tab value="steel" label="Steel" />
+        </TabGroup>
+      ),
     },
   ];
 
@@ -371,13 +432,16 @@ const PileSectionGrid = () => {
   };
 
   return (
-    <GuideBox height={170}>
+    <GuideBox height={190}>
       <CustomDataGrid
+        height={190}
+        width={"100%"}
         rows={rows}
         columns={columns}
         processRowUpdate={handleProcessRowUpdate}
         columnGroupingModel={columnGroupingModel}
         columnGroupHeaderHeight={36}
+        disableColumnResize={true}
         isCellEditable={(params: any) => {
           return isFieldEditable(params.field, params.row.pileType);
         }}

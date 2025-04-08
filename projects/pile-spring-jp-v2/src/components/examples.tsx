@@ -1,70 +1,38 @@
-import * as React from "react";
+import React from "react";
 import {
   DataGrid,
   GridColDef,
+  GridRowsProp,
   GridColumnGroupingModel,
 } from "@mui/x-data-grid";
+import { Button } from "@mui/material";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 90 },
   {
-    field: "firstName",
-    headerName: "First name",
-    width: 150,
+    field: "groupHeader",
+    headerName: "Group Header",
+    colSpan: 2, // 두 컬럼을 그룹화
+    renderHeader: (params) => (
+      <Button onClick={() => alert("Group header clicked!")}>
+        {params.colDef.headerName}
+      </Button>
+    ),
   },
-  {
-    field: "lastName",
-    headerName: "Last name",
-    width: 150,
-  },
-  {
-    field: "age",
-    headerName: "Age",
-    type: "number",
-    width: 110,
-  },
+  { field: "col1", headerName: "Column 1", width: 150 },
+  { field: "col2", headerName: "Column 2", width: 150 },
 ];
 
-const rows = [
-  { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+const rows: GridRowsProp = [
+  { id: 1, col1: "Data 1", col2: "Data 2" },
+  { id: 2, col1: "Data 3", col2: "Data 4" },
 ];
 
-const columnGroupingModel: GridColumnGroupingModel = [
-  {
-    groupId: "Internal",
-    description: "",
-    children: [{ field: "id" }],
-  },
-  {
-    groupId: "Basic info",
-    children: [
-      {
-        groupId: "Full name",
-        children: [{ field: "lastName" }, { field: "firstName" }],
-      },
-      { field: "age" },
-    ],
-  },
-];
-
-export default function BasicGroupingDemo() {
+const MyDataGrid: React.FC = () => {
   return (
     <div style={{ height: 400, width: "100%" }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        checkboxSelection
-        disableRowSelectionOnClick
-        columnGroupingModel={columnGroupingModel}
-      />
+      <DataGrid rows={rows} columns={columns} />
     </div>
   );
-}
+};
+
+export default MyDataGrid;

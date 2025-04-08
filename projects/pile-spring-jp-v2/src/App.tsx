@@ -101,7 +101,6 @@ const App = () => {
       <PileInitSet />
       <PileSection />
       <Button onClick={() => console.log(pileSection)}>click</Button>
-
       {/* <CustomDropList
         label="커스텀 드롭리스트"
         width={300}
