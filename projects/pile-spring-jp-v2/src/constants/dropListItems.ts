@@ -62,3 +62,21 @@ export const PileRefPointTranItems = () => {
     [t("Ref_Point_Bottom"), "Ref_Point_Bottom"],
   ]);
 };
+
+export const PileLocRefXItems = () => {
+  const { t } = useTranslation();
+
+  return new Map<string, string | number>([
+    [t("Ref_Point_Right"), "Ref_Point_Right"],
+    [t("Ref_Point_Left"), "Ref_Point_Left"],
+  ]);
+};
+
+export const PileLocRefYItems = () => {
+  const { t } = useTranslation();
+
+  return new Map<string, string | number>([
+    [t("Ref_Point_Top"), "Ref_Point_Top"],
+    [t("Ref_Point_Bottom"), "Ref_Point_Bottom"],
+  ]);
+};

@@ -36,7 +36,8 @@ const PileInitSet = () => {
             width={totalWidth}
             numberFieldWidth={fieldWidth}
             value={values.PileLength.toString()}
-            onChange={handlers.handleLengthChange}
+            // onChange={handlers.handleLengthChange}
+            disabled={true}
           />
           <CustomDropList
             label={t("Head_Condition")}

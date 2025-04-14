@@ -20,7 +20,12 @@ import {
   CustomDataGrid,
   CustomDataGridGrouping,
 } from "./components";
-import { BasicDim, PileInitSet, PileSection } from "./features/panels";
+import {
+  BasicDim,
+  PileInitSet,
+  PileSection,
+  PileLocation,
+} from "./features/panels";
 import { Button } from "@mui/material";
 import { pileSectionState } from "./states";
 import { useRecoilValue } from "recoil";
@@ -100,6 +105,8 @@ const App = () => {
       <BasicDim />
       <PileInitSet />
       <PileSection />
+      <PileLocation />
+      {/* <PileLocation /> */}
       <Button onClick={() => console.log(pileSection)}>click</Button>
       {/* <CustomDropList
         label="커스텀 드롭리스트"

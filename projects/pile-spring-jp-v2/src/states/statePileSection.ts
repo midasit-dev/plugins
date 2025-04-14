@@ -1,116 +1,89 @@
 import { atom } from "recoil";
 
-export const varPileType = atom({
-  key: "varPileType",
-  default: ["Cast_In_Situ", "Cast_In_Situ", "Cast_In_Situ", "Cast_In_Situ"],
-});
+// 인터페이스 정의
+export interface PileRowData {
+  id: number;
+  checked: boolean;
+  name: string;
+  pileType: string;
+  length: string;
+  // startPoint: number;
+  // endPoint: number;
+  concrete_diameter: string;
+  concrete_thickness: string;
+  concrete_modulus: string;
+  steel_diameter: string;
+  steel_thickness: string;
+  steel_modulus: string;
+  steel_cor_thickness: string;
+}
 
-export const varPileLength = atom({
-  key: "varPileLength",
-  default: [10, 10, 10, 10],
-});
-
-export const Concrete_Diameter = atom({
-  key: "Concrete_Diameter",
-  default: [0, 0, 0, 0],
-});
-
-export const Concrete_Thickness = atom({
-  key: "Concrete_Thickness",
-  default: [0, 0, 0, 0],
-});
-
-export const Concrete_Modulus = atom({
-  key: "Concrete_Modulus",
-  default: [0, 0, 0, 0],
-});
-
-export const Steel_Diameter = atom({
-  key: "SteelCase_Diameter",
-  default: [0, 0, 0, 0],
-});
-
-export const Steel_Thickness = atom({
-  key: "SteelCase_Thickness",
-  default: [0, 0, 0, 0],
-});
-
-export const Steel_Modulus = atom({
-  key: "SteelCase_Modulus",
-  default: [0, 0, 0, 0],
-});
-
-export const Steel_Cor_Thickness = atom({
-  key: "Steel_Cor_Thickness",
-  default: [0, 0, 0, 0],
-});
-
-export const pileSectionState = atom({
+export const pileSectionState = atom<PileRowData[]>({
   key: "pileSectionState",
   default: [
     {
       id: 1,
       checked: true,
-      name: "기본",
+      name: "Pile_Category_Basic",
       pileType: "Cast_In_Situ",
-      length: 6.0,
-      startPoint: 0,
-      endPoint: 6.0,
-      concrete_diameter: 6.0,
-      concrete_thickness: 6.0,
-      concrete_modulus: 6.0,
-      steel_diameter: 6.0,
-      steel_thickness: 6.0,
-      steel_modulus: 6.0,
-      steel_cor_thickness: 6.0,
+      length: "10.0",
+      // startPoint: 0,
+      // endPoint: 6.0,
+      concrete_diameter: "",
+      concrete_thickness: "",
+      concrete_modulus: "",
+      steel_diameter: "",
+      steel_thickness: "",
+      steel_modulus: "",
+      steel_cor_thickness: "",
     },
     {
       id: 2,
-      checked: true,
-      name: "하부 #1",
+      checked: false,
+      name: "Pile_Category_Sub1",
       pileType: "Cast_In_Situ",
-      length: 6.0,
-      startPoint: 6.0,
-      endPoint: 12.0,
-      concrete_diameter: 6.0,
-      concrete_thickness: 6.0,
-      concrete_modulus: 6.0,
-      steel_diameter: 6.0,
-      steel_thickness: 6.0,
-      steel_modulus: 6.0,
-      steel_cor_thickness: 6.0,
+      length: "10.0",
+      // startPoint: 6.0,
+      // endPoint: 12.0,
+      concrete_diameter: "",
+      concrete_thickness: "",
+      concrete_modulus: "",
+      steel_diameter: "",
+      steel_thickness: "",
+      steel_modulus: "",
+      steel_cor_thickness: "",
     },
     {
       id: 3,
-      checked: true,
-      name: "하부 #2",
+      checked: false,
+      name: "Pile_Category_Sub2",
       pileType: "Cast_In_Situ",
-      length: 6.0,
-      startPoint: 12.0,
-      endPoint: 18.0,
-      concrete_diameter: 6.0,
-      concrete_thickness: 6.0,
-      concrete_modulus: 6.0,
-      steel_diameter: 6.0,
-      steel_thickness: 6.0,
-      steel_modulus: 6.0,
-      steel_cor_thickness: 6.0,
+      length: "10.0",
+      // startPoint: 12.0,
+      // endPoint: 18.0,
+      concrete_diameter: "",
+      concrete_thickness: "",
+      concrete_modulus: "",
+      steel_diameter: "",
+      steel_thickness: "",
+      steel_modulus: "",
+      steel_cor_thickness: "",
     },
     {
       id: 4,
-      checked: true,
-      name: "하부 #3",
+      checked: false,
+      name: "Pile_Category_Sub3",
       pileType: "Cast_In_Situ",
-      length: 6.0,
-      startPoint: 18.0,
-      endPoint: 24.0,
-      concrete_diameter: 6.0,
-      concrete_thickness: 6.0,
-      concrete_modulus: 6.0,
-      steel_diameter: 6.0,
-      steel_thickness: 6.0,
-      steel_modulus: 6.0,
-      steel_cor_thickness: 6.0,
+      length: "10.0",
+      // startPoint: 18.0,
+      // endPoint: 24.0,
+      concrete_diameter: "",
+      concrete_thickness: "",
+      concrete_modulus: "",
+      steel_diameter: "",
+      steel_thickness: "",
+      steel_modulus: "",
+      steel_cor_thickness: "",
     },
   ],
 });

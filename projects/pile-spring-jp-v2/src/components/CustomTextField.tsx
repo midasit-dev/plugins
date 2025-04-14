@@ -1,5 +1,6 @@
 import React from "react";
-import { GuideBox, Typography, TextField } from "@midasit-dev/moaui";
+import { GuideBox, Typography } from "@midasit-dev/moaui";
+import { TextField } from "@mui/material";
 
 interface CustomTextFieldProps {
   width?: number | string;
@@ -16,7 +17,7 @@ interface CustomTextFieldProps {
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
   width = "100%",
   height = "auto",
-  textFieldWidth = 120,
+  textFieldWidth = "100%",
   label = "",
   variant = "body1",
   value = "",
@@ -32,8 +33,19 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
-        height="100%"
-        width={textFieldWidth}
+        sx={{
+          height: "100%",
+          width: textFieldWidth,
+          "& .MuiInputBase-input": {
+            padding: 0,
+            fontFamily: "Pretendard",
+            fontSize: "12px",
+          },
+          "& .MuiInputBase-root": {
+            height: "28px",
+            padding: "0.375rem 0.375rem 0.375rem 0.625rem",
+          },
+        }}
       />
     </GuideBox>
   );

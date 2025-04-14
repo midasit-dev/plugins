@@ -1,4 +1,7 @@
 import { atom } from "recoil";
+import i18n from "../i18n"; // 번역 설정 파일 import
+
+const t = (key: string) => i18n.t(key);
 
 export const PileName = atom({
   key: "PileName",
@@ -22,7 +25,7 @@ export const ConstructionMethod = atom({
 
 export const HeadCondition = atom({
   key: "HeadCondition",
-  default: "Head_Condition_Fixed",
+  default: t("Head_Condition_Fixed"),
 });
 
 export const BottomCondition = atom({

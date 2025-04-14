@@ -38,17 +38,26 @@
   "Comp_Pile_Length": "杭の位置(m)",
   "Comp_Guide_Words": "*杭頭からの相対距離",
 
+  "Pile_Category": "杭",
+  "Pile_Category_Basic": "基本",
+  "Pile_Category_Sub1": "下部 #1",
+  "Pile_Category_Sub2": "下部 #2",
+  "Pile_Category_Sub3": "下部 #3",
+
   "Basic_Concrete": "コンクリート",
   "Basic_Concrete_Diamter": "直径(mm)",
   "Basic_Concrete_Thickness": "厚さ(mm)",
   "Basic_Concrete_Modulus_Case1": "弾性係数(N/mm²)",
   "Basic_Concrete_Modulus_Case2": "変形係数(N/mm²)",
+
   "Basic_Cocncrete_Title_Case1": "コンクリート",
   "Basic_Concrete_Title_Case2": "鋼管ソイルセメント",
+  "Basic_Concrete_Total_Title": "コンクリート/鋼管ソイルセメント",
+
   "Basic_Steel_Title_Case1": "鉄筋",
   "Basic_Steel_Title_Case2": "鋼管",
   "Basic_Steel_Title_Case3": "PC鋼材",
-
+  "Basic_Steel_Total_Title": "鉄筋/鋼管/PC鋼材",
   "Basic_Steel_Diamter_Case1": "断面積(mm²)",
   "Basic_Steel_Diamter_Case2": "直径(mm)",
   "Basic_Steel_Cor_Case1": "配置半径(mm)",
@@ -73,10 +82,11 @@
   "Composite_Steel_Thickness": "厚さ(mm)",
   "Composite_Steel_Modulus": "弾性係数(N/mm²)",
 
+  "Pile_Location_Title": "杭の位置",
   "Pile_Ref_Point": "参照基準",
-  "Pile_Loc": "位置",
-  "Pile_Space": "間隔",
-  "Pile_Angle": "角度",
+  "Pile_Loc": "位置(m)",
+  "Pile_Space": "間隔(m)",
+  "Pile_Angle": "角度(°)",
   "Pile_X_Dir": "載荷方向",
   "Pile_Y_Dir": "載荷直角方向",
   "Pile_Z_Dir": "垂直方向",

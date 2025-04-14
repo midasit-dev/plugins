@@ -38,6 +38,12 @@
   "Comp_Pile_Length": "말뚝 위치(m)",
   "Comp_Guide_Words": "*말뚝머리부터 상대거리",
 
+  "Pile_Category": "말뚝",
+  "Pile_Category_Basic": "기본",
+  "Pile_Category_Sub1": "하부 #1",
+  "Pile_Category_Sub2": "하부 #2",
+  "Pile_Category_Sub3": "하부 #3",
+
   "Basic_Concrete": "콘크리트",
   "Basic_Concrete_Diamter": "직경 (mm)",
   "Basic_Concrete_Thickness": "두께 (mm)",
@@ -46,10 +52,12 @@
 
   "Basic_Cocncrete_Title_Case1": "콘크리트",
   "Basic_Concrete_Title_Case2": "소일시멘트",
+  "Basic_Concrete_Total_Title": "콘크리트/소일시멘트",
 
   "Basic_Steel_Title_Case1": "철근",
   "Basic_Steel_Title_Case2": "강관",
   "Basic_Steel_Title_Case3": "PC 강재",
+  "Basic_Steel_Total_Title": "철근/강관/PC 강재",
   "Basic_Steel_Diamter_Case1": "단면적 (mm²)",
   "Basic_Steel_Diamter_Case2": "직경 (mm)",
   "Basic_Steel_Cor_Case1": "배치반경 (mm)",
@@ -76,10 +84,11 @@
   "Composite_Steel_Thickness": "두께 (mm)",
   "Composite_Steel_Modulus": "탄성계수 (N/mm²)",
 
+  "Pile_Location_Title": "말뚝 위치",
   "Pile_Ref_Point": "참조기준",
-  "Pile_Loc": "위치",
-  "Pile_Space": "간격",
-  "Pile_Angle": "각도",
+  "Pile_Loc": "위치(m)",
+  "Pile_Space": "간격(m)",
+  "Pile_Angle": "각도(°)",
   "Pile_X_Dir": "재하방향",
   "Pile_Y_Dir": "재하직각방향",
   "Pile_Z_Dir": "수직방향",

@@ -1,4 +1,4 @@
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   PileName,
   PileLength,
@@ -6,7 +6,9 @@ import {
   TopLevel,
   ConstructionMethod,
   BottomCondition,
+  pileSectionState,
 } from "../states";
+import { useEffect } from "react";
 
 export const usePileInitSet = () => {
   // Recoil states
@@ -17,15 +19,16 @@ export const usePileInitSet = () => {
   const [constructionValue, setConstructionValue] =
     useRecoilState(ConstructionMethod);
   const [bottomValue, setBottomValue] = useRecoilState(BottomCondition);
+  const pileSection = useRecoilValue(pileSectionState);
 
   // Event handlers
   const handleNameChange = (e: any) => {
     setNameValue(e.target.value);
   };
 
-  const handleLengthChange = (e: any) => {
-    setLengthValue(e.target.value);
-  };
+  // const handleLengthChange = (e: any) => {
+  //   setLengthValue(e.target.value);
+  // };
 
   const handleHeadConditionChange = (e: any) => {
     setHeadValue(e.target.value);
@@ -43,6 +46,14 @@ export const usePileInitSet = () => {
     setBottomValue(e.target.value);
   };
 
+  useEffect(() => {
+    // checked 가 true인 Pile Length의 모든 합을 setLengthValue에 저장
+    const totalLength = pileSection
+      .filter((pile) => pile.checked)
+      .reduce((acc, curr) => acc + parseFloat(curr.length), 0);
+    setLengthValue(totalLength);
+  }, [pileSection, setLengthValue]);
+
   return {
     values: {
       PileName: nameValue,
@@ -54,7 +65,7 @@ export const usePileInitSet = () => {
     },
     handlers: {
       handleNameChange,
-      handleLengthChange,
+      // handleLengthChange,
       handleHeadConditionChange,
       handleTopLevelChange,
       handleConstructionMethodChange,

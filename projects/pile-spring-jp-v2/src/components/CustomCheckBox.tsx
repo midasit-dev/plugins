@@ -2,8 +2,6 @@ import React from "react";
 import { Checkbox, CheckboxProps, styled } from "@mui/material";
 
 const StyledCheckbox = styled(Checkbox)(({ theme }) => ({
-  // MOAUI의 체크박스로는 DATA GRID 에 적용을 못하겠음.
-  // 따라서 직접 스타일링 했음.
   "& .MuiSvgIcon-root": {
     width: 16,
     height: 16,
