@@ -6,3 +6,4 @@ export { default as CustomCheckBox } from "./CustomCheckBox";
 export { default as CustomDataGridGrouping } from "./examples";
 export { default as CustomTable } from "./CustomTable";
 export { CustomTableCell } from "./CustomTable";
+export { TabGroup, Tab } from "./CustomTab";

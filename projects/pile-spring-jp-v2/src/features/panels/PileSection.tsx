@@ -12,7 +12,7 @@ const PileSectionTable = () => {
   const { t } = useTranslation();
 
   return (
-    <Box>
+    <GuideBox width="100%" height="100%">
       <CustomTable
         headers={getHeaders()}
         rows={rows}
@@ -26,10 +26,9 @@ const PileSectionTable = () => {
           setTabValue(newValue);
           setEditingRow(null);
         }}
-        tableContainerProps={{ component: Paper, sx: { mt: 2 } }}
         headerStartIndex={4}
       />
-    </Box>
+    </GuideBox>
   );
 };
 

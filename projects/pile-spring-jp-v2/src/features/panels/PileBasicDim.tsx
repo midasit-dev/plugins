@@ -1,20 +1,20 @@
 import React from "react";
 import { GuideBox, Panel } from "@midasit-dev/moaui";
 import { CustomNumberField } from "../../components";
-import { useBasicDim } from "../../hooks";
+import { usePileBasicDim } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
-const BasicDim = () => {
+const PileBasicDim = () => {
   const { t } = useTranslation();
-  const { values, handleChange } = useBasicDim();
+  const { values, handleChange } = usePileBasicDim();
 
   return (
     <Panel width="100%">
       <GuideBox row verCenter horSpaceBetween>
         <CustomNumberField
           label={t("Xdir_Dim")}
-          width={180}
-          numberFieldWidth={100}
+          width={170}
+          numberFieldWidth={80}
           value={values.foundationWidth.toString()}
           onChange={handleChange("foundationWidth")}
           numberOptions={{
@@ -26,8 +26,8 @@ const BasicDim = () => {
         />
         <CustomNumberField
           label={t("Ydir_Dim")}
-          width={180}
-          numberFieldWidth={100}
+          width={170}
+          numberFieldWidth={80}
           value={values.sideLength.toString()}
           onChange={handleChange("sideLength")}
           numberOptions={{
@@ -39,15 +39,15 @@ const BasicDim = () => {
         />
         <CustomNumberField
           label={t("X_Force_Point")}
-          width={260}
-          numberFieldWidth={100}
+          width={230}
+          numberFieldWidth={80}
           value={values.forcePointX.toString()}
           onChange={handleChange("forcePointX")}
         />
         <CustomNumberField
           label={t("Y_Force_Point")}
-          width={260}
-          numberFieldWidth={100}
+          width={230}
+          numberFieldWidth={80}
           value={values.forcePointY.toString()}
           onChange={handleChange("forcePointY")}
         />
@@ -56,4 +56,4 @@ const BasicDim = () => {
   );
 };
 
-export default BasicDim;
+export default PileBasicDim;

@@ -1,71 +1,51 @@
 import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  PileName,
-  PileLength,
-  HeadCondition,
-  TopLevel,
-  ConstructionMethod,
-  BottomCondition,
-  pileSectionState,
-} from "../states";
+import { pileSectionState, pileInitSetState } from "../states";
 import { useEffect } from "react";
 
 export const usePileInitSet = () => {
-  // Recoil states
-  const [nameValue, setNameValue] = useRecoilState(PileName);
-  const [lengthValue, setLengthValue] = useRecoilState(PileLength);
-  const [headValue, setHeadValue] = useRecoilState(HeadCondition);
-  const [topLevelValue, setTopLevelValue] = useRecoilState(TopLevel);
-  const [constructionValue, setConstructionValue] =
-    useRecoilState(ConstructionMethod);
-  const [bottomValue, setBottomValue] = useRecoilState(BottomCondition);
+  const [pileInitSet, setPileInitSet] = useRecoilState(pileInitSetState);
   const pileSection = useRecoilValue(pileSectionState);
 
   // Event handlers
   const handleNameChange = (e: any) => {
-    setNameValue(e.target.value);
+    setPileInitSet({ ...pileInitSet, pileName: e.target.value });
   };
 
-  // const handleLengthChange = (e: any) => {
-  //   setLengthValue(e.target.value);
-  // };
-
   const handleHeadConditionChange = (e: any) => {
-    setHeadValue(e.target.value);
+    setPileInitSet({ ...pileInitSet, headCondition: e.target.value });
   };
 
   const handleTopLevelChange = (e: any) => {
-    setTopLevelValue(e.target.value);
+    setPileInitSet({ ...pileInitSet, topLevel: e.target.value });
   };
 
   const handleConstructionMethodChange = (e: any) => {
-    setConstructionValue(e.target.value);
+    setPileInitSet({ ...pileInitSet, constructionMethod: e.target.value });
   };
 
   const handleBottomConditionChange = (e: any) => {
-    setBottomValue(e.target.value);
+    setPileInitSet({ ...pileInitSet, bottomCondition: e.target.value });
   };
 
+  // checked 가 true인 Pile Length의 모든 합을 setLengthValue에 저장
   useEffect(() => {
-    // checked 가 true인 Pile Length의 모든 합을 setLengthValue에 저장
     const totalLength = pileSection
       .filter((pile) => pile.checked)
       .reduce((acc, curr) => acc + parseFloat(curr.length), 0);
-    setLengthValue(totalLength);
-  }, [pileSection, setLengthValue]);
+    setPileInitSet({ ...pileInitSet, pileLength: totalLength });
+  }, [pileSection]);
 
   return {
     values: {
-      PileName: nameValue,
-      PileLength: lengthValue,
-      HeadCondition: headValue,
-      TopLevel: topLevelValue,
-      ConstructionMethod: constructionValue,
-      BottomCondition: bottomValue,
+      PileName: pileInitSet.pileName,
+      PileLength: pileInitSet.pileLength,
+      HeadCondition: pileInitSet.headCondition,
+      TopLevel: pileInitSet.topLevel,
+      ConstructionMethod: pileInitSet.constructionMethod,
+      BottomCondition: pileInitSet.bottomCondition,
     },
     handlers: {
       handleNameChange,
-      // handleLengthChange,
       handleHeadConditionChange,
       handleTopLevelChange,
       handleConstructionMethodChange,

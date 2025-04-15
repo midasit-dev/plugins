@@ -6,7 +6,7 @@ import {
   Force_Point_Y,
 } from "../states";
 
-export const useBasicDim = () => {
+export const usePileBasicDim = () => {
   const [foundationWidth, setFoundationWidth] = useRecoilState(FoundationWidth);
   const [sideLength, setSideLength] = useRecoilState(SideLength);
   const [forcePointX, setForcePointX] = useRecoilState(Force_Point_X);

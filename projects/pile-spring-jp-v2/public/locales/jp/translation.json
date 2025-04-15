@@ -106,6 +106,8 @@
   "Reinforced_Inner_Title": "充填部",
   "Reinforced_Thickness": "厚さ(mm)",
   "Reinforced_Modulus": "弾性係数(N/mm²)",
+  "Reinforced_Start": "補強始端(m)",
+  "Reinforced_End": "補強終端(m)",
 
   "Pile_View_Title": "杭の配置図",
   "Plan_View": "平面図",
@@ -135,6 +137,7 @@
 
   "Reinforced_Method_Outer": "被覆",
   "Reinforced_Method_Inner_Outer": "被覆+充填",
+  "Reinforced_Method_Inner": "+充填",
 
   "Soil_Info": "地盤情報",
   "Soil_Setting": "地層設定",

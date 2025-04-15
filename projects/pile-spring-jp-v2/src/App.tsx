@@ -21,13 +21,21 @@ import {
   CustomDataGridGrouping,
 } from "./components";
 import {
-  BasicDim,
+  PileBasicDim,
   PileInitSet,
   PileSection,
   PileLocation,
+  PileReinforced,
+  PileData,
 } from "./features/panels";
+import { PileMain, Main } from "./features/frames";
+import { PileActions } from "./features/actions";
 import { Button } from "@mui/material";
-import { pileSectionState } from "./states";
+import {
+  pileSectionState,
+  pileLocationState,
+  pileReinforcedState,
+} from "./states";
 import { useRecoilValue } from "recoil";
 
 const opacity = 0.5;
@@ -93,6 +101,17 @@ const App = () => {
   // };
 
   const pileSection = useRecoilValue(pileSectionState);
+  const pileLocation = useRecoilValue(pileLocationState);
+  const pileReinforced = useRecoilValue(pileReinforcedState);
+
+  function handleClick() {
+    console.log("================PileSection=================");
+    console.log(pileSection);
+    console.log("================PileLocation=================");
+    console.log(pileLocation);
+    console.log("================PileReinforced=================");
+    console.log(pileReinforced);
+  }
 
   return (
     <GuideBox
@@ -102,12 +121,7 @@ const App = () => {
       padding={2}
       border={"1px solid black"}
     >
-      <BasicDim />
-      <PileInitSet />
-      <PileSection />
-      <PileLocation />
-      {/* <PileLocation /> */}
-      <Button onClick={() => console.log(pileSection)}>click</Button>
+      <Main />
       {/* <CustomDropList
         label="커스텀 드롭리스트"
         width={300}

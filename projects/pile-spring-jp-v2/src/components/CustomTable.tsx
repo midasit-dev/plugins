@@ -10,7 +10,7 @@ import {
   styled,
   Box,
 } from "@mui/material";
-import { TabGroup, Tab } from "@midasit-dev/moaui";
+import { TabGroup, Tab } from "./CustomTab";
 
 interface CustomTableProps {
   headers: ReactNode[];
@@ -32,6 +32,9 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   "& .MuiTableCell-root": {
     padding: "0px",
   },
+  "& .MuiTableCell-sizeSmall": {
+    padding: "0px",
+  },
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -43,6 +46,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: "center",
   height: "28px",
   verticalAlign: "middle",
+  width: "100%",
 }));
 
 const StyledHeaderCell = styled(TableCell)(({ theme }) => ({
@@ -78,9 +82,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
   currentTab,
   onTabChange,
   showTabs = true,
-  tableContainerProps,
   tableProps,
   headerStartIndex = 0,
+  tableContainerProps,
 }) => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     onTabChange && onTabChange(newValue);

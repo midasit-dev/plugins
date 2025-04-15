@@ -25,11 +25,13 @@ export const usePileLocation = () => {
     );
   };
 
+  const inputWidth = 100;
+  // 테이블 렌더링 함수
   const renderRow = (row: PileLocationRowData) => {
     return (
       <>
         <CustomTableCell width={100}>{t(row.loc_title)}</CustomTableCell>
-        <CustomTableCell width={80}>
+        <CustomTableCell width={inputWidth}>
           <CustomDropList
             value={row.ref_point}
             onChange={(e) => handleChange(row.id, "ref_point", e.target.value)}
@@ -38,34 +40,34 @@ export const usePileLocation = () => {
                 ? Array.from(PileLocRefXItems())
                 : Array.from(PileLocRefYItems())
             }
-            width={80}
-            droplistWidth={80}
+            width={inputWidth}
+            droplistWidth={inputWidth}
           />
         </CustomTableCell>
-        <CustomTableCell width={80}>
+        <CustomTableCell width={inputWidth}>
           <CustomNumberField
             value={row.loc}
             onChange={(e) => handleChange(row.id, "loc", e.target.value)}
-            width={80}
-            numberFieldWidth={80}
+            width={inputWidth}
+            numberFieldWidth={inputWidth}
             placeholder="0"
           />
         </CustomTableCell>
-        <CustomTableCell width={80}>
+        <CustomTableCell width={inputWidth}>
           <CustomTextField
             value={row.space}
             onChange={(e) => handleChange(row.id, "space", e.target.value)}
-            width={80}
-            textFieldWidth={80}
+            width={inputWidth}
+            textFieldWidth={inputWidth}
             placeholder="3@2.0, 1.0"
           />
         </CustomTableCell>
-        <CustomTableCell width={80}>
+        <CustomTableCell width={inputWidth}>
           <CustomTextField
             value={row.angle}
             onChange={(e) => handleChange(row.id, "angle", e.target.value)}
-            width={80}
-            textFieldWidth={80}
+            width={inputWidth}
+            textFieldWidth={inputWidth}
             placeholder="4@0.0, 1.0"
           />
         </CustomTableCell>

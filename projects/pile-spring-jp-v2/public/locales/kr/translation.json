@@ -108,6 +108,8 @@
   "Reinforced_Inner_Title": "충진부",
   "Reinforced_Thickness": "두께 (mm)",
   "Reinforced_Modulus": "탄성계수 (N/mm²)",
+  "Reinforced_Start": "보강 시점 (m)",
+  "Reinforced_End": "보강 종점 (m)",
 
   "Pile_View_Title": "말뚝 배치도",
   "Plan_View": "평면도",
@@ -137,6 +139,7 @@
 
   "Reinforced_Method_Outer": "피복",
   "Reinforced_Method_Inner_Outer": "피복+충진",
+  "Reinforced_Method_Inner": "+충진",
 
   "Soil_Info": "지반 정보",
   "Soil_Setting": "지층 설정",
