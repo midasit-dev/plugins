@@ -1,5 +1,4 @@
 import { useRecoilState, useRecoilValue } from "recoil";
-import { useTranslation } from "react-i18next";
 import {
   pileDataListState,
   pileReinforcedState,
@@ -7,22 +6,23 @@ import {
   pileLocationState,
   selectedPileDataIdState,
   pileSectionState,
-  PileDataSummary,
   PileDataItem,
+  pileSummaryListState,
 } from "../states";
 
 export const usePileData = () => {
-  const { t } = useTranslation();
-
   // 저장 데이터
   const [pileDataList, setPileDataList] = useRecoilState(pileDataListState);
   const [selectedId, setSelectedId] = useRecoilState(selectedPileDataIdState);
+  // 요약 목록을 셀렉터로 가져오기
+  const summaryList = useRecoilValue(pileSummaryListState);
 
   // 패널 데이터
-  const initSetData = useRecoilValue(pileInitSetState);
-  const locationData = useRecoilValue(pileLocationState);
-  const reinforcedData = useRecoilValue(pileReinforcedState);
-  const sectionData = useRecoilValue(pileSectionState);
+  const [initSetData, setInitSetData] = useRecoilState(pileInitSetState);
+  const [locationData, setLocationData] = useRecoilState(pileLocationState);
+  const [reinforcedData, setReinforcedData] =
+    useRecoilState(pileReinforcedState);
+  const [sectionData, setSectionData] = useRecoilState(pileSectionState);
 
   // 선택된 데이터 아이템
   const selectedItem =
@@ -30,36 +30,44 @@ export const usePileData = () => {
       ? pileDataList.find((item) => item.id === selectedId)
       : null;
 
-  // 데이터 유효성 검토
+  /**
+   * 데이터 항목 선택 함수
+   * @param {number} id 선택할 항목의 ID
+   * @returns {boolean} 선택 성공 여부
+   */
+  const selectItem = (id: number): boolean => {
+    const item = pileDataList.find((item) => item.id === id);
+    if (!item) return false;
+
+    setSelectedId(id);
+    return true;
+  };
+
+  /**
+   * 선택 해제 함수
+   */
+  const deselectItem = () => {
+    setSelectedId(null);
+  };
+
+  // 데이터 유효성 검토 함수
   const validateData = () => {
     // 추후 추가
     return { valid: true, message: "" };
   };
 
-  // 데이터 그리드에 표시할 요약 정보
-  const getSummaryList = (): PileDataSummary[] => {
-    return pileDataList.map((item) => ({
-      id: item.id,
-      pileName: item.pileName,
-      pileType: item.sectionData[0].pileType,
-      constructionMethod: initSetData.constructionMethod,
-      pileNumber: "4",
-    }));
-  };
-
-  // ID 생성
+  // 새 ID 생성 함수
   const generateNewID = (): number => {
     return pileDataList.length > 0
       ? Math.max(...pileDataList.map((item) => item.id)) + 1
       : 1;
   };
 
-  // 새 데이터 추가
+  // 새 데이터 추가 함수
   const saveData = () => {
     const validation = validateData();
     if (!validation.valid) {
-      console.log(validation.message);
-      return;
+      return null;
     }
 
     const newID = generateNewID();
@@ -76,22 +84,24 @@ export const usePileData = () => {
     return newID;
   };
 
-  // 데이터 수정
-  const updateData = (id: number, name?: string) => {
-    if (id === null) return;
+  // 데이터 수정 함수
+  const updateData = (id: number) => {
+    if (id === null) return false;
 
     const validation = validateData();
     if (!validation.valid) {
-      console.log(validation.message);
-      return;
+      return false;
     }
+
+    const itemExists = pileDataList.some((item) => item.id === id);
+    if (!itemExists) return false;
 
     setPileDataList((prev) =>
       prev.map((item) =>
         item.id === id
           ? {
               ...item,
-              pileName: name || item.pileName,
+              pileName: initSetData.pileName,
               initSetData,
               locationData,
               reinforcedData,
@@ -100,10 +110,24 @@ export const usePileData = () => {
           : item
       )
     );
+
+    return true;
   };
 
-  // 데이터 삭제
+  // 데이터 삭제 함수
   const deleteData = (id: number) => {
+    const itemExists = pileDataList.some((item) => item.id === id);
+    if (!itemExists) return false;
+
+    // 현재 선택된 ID 저장
+    const currentSelectedId = selectedId;
+
+    // 선택된 항목 처리
+    if (currentSelectedId === id) {
+      // 삭제되는 항목이 선택됐다면 선택 해제
+      deselectItem();
+    }
+
     setPileDataList((prev) => {
       // 항목 삭제
       const filteredList = prev.filter((item) => item.id !== id);
@@ -114,40 +138,55 @@ export const usePileData = () => {
         id: index + 1,
       }));
 
+      // 선택된 항목이 없거나 삭제되는 항목이 아니라면
+      if (currentSelectedId !== null && currentSelectedId !== id) {
+        // 삭제된 항목 이후에 있던 항목이 선택되어 있었다면 ID 조정
+        if (currentSelectedId > id) {
+          // 비동기적으로 selectedId 업데이트
+          setTimeout(() => setSelectedId(currentSelectedId - 1), 0);
+        } else if (currentSelectedId < id) {
+          // ID 변경 없이 그대로 유지 (항목 자체는 안 바뀜)
+          // 대신 reorderedList에서 ID가 바뀌었으니 다시 조회 필요할 수 있음
+        }
+      }
+
       return reorderedList;
     });
 
-    // 선택된 항목 처리
-    if (selectedId !== null) {
-      if (selectedId === id) {
-        // 선택된 항목이 삭제되었을 경우 선택 해제
-        setSelectedId(null);
-      } else if (selectedId > id) {
-        // 선택된 항목의 ID가 삭제된 항목보다 크면 ID 1 감소
-        setSelectedId(selectedId - 1);
-      }
-      // selectedId < id인 경우는 영향 없음
+    return true;
+  };
+
+  // 데이터 불러오기 함수 (패널 업데이트)
+  const loadData = (id: number): boolean => {
+    const item = pileDataList.find((item) => item.id === id);
+    if (!item) {
+      return false;
     }
+
+    // 선택된 ID 설정
+    selectItem(id);
+
+    // 각 패널 상태 업데이트
+    setInitSetData(item.initSetData);
+    setLocationData(item.locationData);
+    setReinforcedData(item.reinforcedData);
+    setSectionData(item.sectionData);
+
+    return true;
   };
 
-  //데이터 불러오기 (패널 업데이트)
-  const loadData = (id: number) => {
-    const selectedItem = pileDataList.find((item) => item.id === id);
-    if (!selectedItem) return;
-
-    setSelectedId(id);
-  };
-
+  // 훅에서 반환하는 값들
   return {
     pileDataList,
     selectedId,
     selectedItem,
-    summaryList: getSummaryList(),
+    summaryList,
     saveData,
     updateData,
     deleteData,
     loadData,
-    setSelectedId,
+    selectItem,
+    deselectItem,
     validateData,
   };
 };

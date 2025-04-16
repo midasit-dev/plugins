@@ -99,6 +99,7 @@
   "Pile_Table_Type": "杭の種類",
   "Pile_Table_ConstructionMethod": "施工方法",
   "Pile_Table_PileNum": "杭の本数",
+  "Pile_Table_Actions": "削除",
 
   "Reinforced_Method": "補強方法",
   "Reinforced_Loc": "補強位置(m)",

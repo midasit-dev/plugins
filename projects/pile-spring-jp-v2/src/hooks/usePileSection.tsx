@@ -94,16 +94,16 @@ export const usePileSectionTable = () => {
           />
         </CustomTableCell>
         <CustomTableCell width={80}>{t(row.name)}</CustomTableCell>
-        <CustomTableCell width={120}>
+        <CustomTableCell width={140}>
           <CustomDropList
             value={row.pileType}
             onChange={(e) => handleChange(row.id, "pileType", e.target.value)}
             itemList={Array.from(PileTypeItems())}
-            width={120}
-            droplistWidth={120}
+            width={140}
+            droplistWidth={140}
           />
         </CustomTableCell>
-        {getNumberCell(row, "length", 80)}
+        {getNumberCell(row, "length", 120)}
       </>
     );
 

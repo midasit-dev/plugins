@@ -40,10 +40,7 @@ const PileMain = () => {
             >
               <TabGroup value={tabValue} onChange={handleTabChange}>
                 <Tab label={t("Section_Setting")} value={1} />
-                <Tab
-                  label={t("Initial_Setting") + " & " + t("Pile_Arrangement")}
-                  value={2}
-                />
+                <Tab label={t("Initial_Setting")} value={2} />
               </TabGroup>
               {tabValue === 1 && <PileSection />}
               {tabValue === 2 && (
@@ -79,8 +76,10 @@ const PileMain = () => {
           </GuideBox>
         </Panel>
       </GuideBox>
-
-      <PileData />
+      <GuideBox width="100%" column spacing={1}>
+        <Typography variant="body2">{t("Pile_Arrangement_Table")}</Typography>
+        <PileData />
+      </GuideBox>
     </GuideBox>
   );
 };

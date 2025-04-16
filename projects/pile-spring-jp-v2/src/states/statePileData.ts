@@ -1,8 +1,11 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 import { PileInitSetData } from "./statePileInitSet";
 import { PileLocationRowData } from "./statePileLocation";
 import { PileReinforcedRowData } from "./statePileReinforced";
 import { PileRowData } from "./statePileSection";
+import { pileInitSetState } from "./statePileInitSet";
+import { pileSectionState } from "./statePileSection";
+import { useTranslation } from "react-i18next";
 
 // 모든 데이터를 포함하는 통합 인터페이스
 export interface PileDataItem {
@@ -35,4 +38,22 @@ export const selectedPileDataIdState = atom<number | null>({
 export const pileDataListState = atom<PileDataItem[]>({
   key: "pileDataListState",
   default: [],
+});
+
+// 데이터 요약 목록을 생성하는 selector
+export const pileSummaryListState = selector<PileDataSummary[]>({
+  key: "pileSummaryListState",
+  get: ({ get }) => {
+    const pileDataList = get(pileDataListState);
+    const initSetData = get(pileInitSetState);
+    const sectionData = get(pileSectionState);
+
+    return pileDataList.map((item) => ({
+      id: item.id,
+      pileName: initSetData.pileName,
+      pileType: sectionData[0].pileType,
+      constructionMethod: initSetData.constructionMethod,
+      pileNumber: "4",
+    }));
+  },
 });
