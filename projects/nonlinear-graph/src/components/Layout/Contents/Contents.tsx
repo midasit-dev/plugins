@@ -35,14 +35,14 @@ const Contents = () => {
           <TabGroup onChange={onTabChange} value={1}>
             <Tab label={translate("TabDisp")} value={1} id="1" />
             <Tab label={translate("TabStiff")} value={2} id="2" />
-            <Tab label={translate("TabMulti")} value={3} id="3" />
+            {/* <Tab label={translate("TabMulti")} value={3} id="3" /> */}
           </TabGroup>
           <Grid>{TableType === 3 && <PointType />}</Grid>
         </Stack>
         <Grid width={"100%"}>
           {TableType === 1 && <DispDataGrid />}
           {TableType === 2 && <StiffDataGrid />}
-          {TableType === 3 && <MultiDataGrid />}
+          {/* {TableType === 3 && <MultiDataGrid />} */}
         </Grid>
       </Panel>
     </GuideBox>
