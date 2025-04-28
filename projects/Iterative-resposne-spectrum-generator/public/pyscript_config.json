@@ -1,0 +1,13 @@
+{
+	"packages": [
+		"numpy",
+		"requests"
+	],
+	"fetch": [
+		{
+			"files": [
+				"./pyscript_engineers_web.py"
+			]
+		}
+	]
+}

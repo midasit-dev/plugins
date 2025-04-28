@@ -20,3 +20,7 @@
 ### version 1.2.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
+
+### version 1.3.0
+
+- Hotfixes (Fix behavior for nodes lacking skew data)
