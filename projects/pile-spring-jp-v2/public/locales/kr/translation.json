@@ -101,9 +101,22 @@
   "Pile_Table_ConstructionMethod": "시공 방법",
   "Pile_Table_PileNum": "말뚝 개수",
   "Pile_Table_Actions": "삭제",
+  
+  "Dialog_Title_Delete": "삭제 확인",
+  "Dialog_Content_Delete": "삭제하시겠습니까?",
+  "Dialog_Button_Cancel": "취소",
+  "Dialog_Button_Delete": "삭제",
 
 
 
+
+
+
+
+
+
+
+  
 
 
   "Pile_Z_Dir": "수직방향",

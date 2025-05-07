@@ -1,4 +1,102 @@
 {
+  "A":"UI 말뚝정보 - 기초제원",
+  "Footing_Dimension": "基礎の諸元",
+  "Xdir_Dim": "載荷幅(m)",
+  "Ydir_Dim": "横長(m)",
+  "X_Force_Point": "載荷点(橋軸方向, m)",
+  "Y_Force_Point": "載荷点(橋軸直角方向, m)",
+
+  "B":"UI/말뚝정보/말뚝설정",
+  "Pile_Setting": "杭の設定",
+
+  "B_1": "UI/말뚝정보/말뚝설정/단면설정",
+  "Section_Setting": "断面の設定",
+
+  "Pile_Name": "杭の名称",
+  "Pile_Type": "杭の種類",
+  "Pile_Length": "杭長(m)",
+
+  "Basic_Concrete_Total_Title": "コンクリート/鋼管ソイルセメント",
+  "Basic_Steel_Total_Title": "鉄筋/鋼管/PC鋼材",
+  
+  "Basic_Concrete_Diamter": "直径(mm)",
+  "Basic_Concrete_Thickness": "厚さ(mm)",
+  "Basic_Concrete_Modulus_Case1": "弾性係数(N/mm²)",
+  "Basic_Concrete_Modulus_Case2": "変形係数(N/mm²)",
+
+  "Basic_Steel_Diamter_Case1": "断面積(mm²)",
+  "Basic_Steel_Diamter_Case2": "直径(mm)",
+  "Basic_Steel_Cor_Case1": "配置半径(mm)",
+  "Basic_Steel_Cor_Case2": "腐食代(mm)",
+  "Basic_Steel_Thickness": "厚さ(mm)",
+  "Basic_Steel_Modulus": "弾性係数(N/mm²)",
+
+  "Pile_Category_Basic": "基本",
+  "Pile_Category_Sub1": "下部 #1",
+  "Pile_Category_Sub2": "下部 #2",
+  "Pile_Category_Sub3": "下部 #3",
+  
+  "Cast_In_Situ": "場所打ち杭",
+  "PHC_Pile": "PHC杭",
+  "SC_Pile": "SC杭",
+  "Steel_Pile": "鋼管杭",
+  "Soil_Cement_Pile": "鋼管ソイルセメント杭",
+
+  "B_2": "UI/말뚝정보/말뚝설정/기본설정",
+  "Initial_Setting": "基本設定",
+
+  "Top_Level": "底面の標高(m)",
+  "Head_Condition": "杭頭結合条件",
+  "Construction_Method": "施工方法",
+  "Bottom_Condition": "杭先端条件",
+
+  "Head_Condition_Fixed": "剛結",
+  "Head_Condition_Hinge": "ヒンジ",
+
+  "CM_DropHammer": "打込み杭(打撃工法)",
+  "CM_VibroHammer": "打込み杭(バイブロハンマ工法)",
+  "CM_InSitu": "場所打ち杭",
+  "CM_Boring": "中堀り杭",
+  "CM_Preboring": "プレボーリング杭",
+  "CM_SoilCement": "鋼管ソイルセメント杭",
+  "CM_Rotate": "回転杭",
+
+  "Bottom_Condition_Free": "自由",
+  "Bottom_Condition_Hinge": "ヒンジ",
+  "Bottom_Condition_Fixed": "固定",
+
+  "Pile_Arrangement": "杭の配置",
+  "Pile_Location_Title": "杭の位置",
+  "Pile_Ref_Point": "参照基準",
+  "Pile_Loc": "位置(m)",
+  "Pile_Space": "間隔(m)",
+  "Pile_Angle": "角度(°)",
+
+  "Pile_X_Dir": "載荷方向",
+  "Pile_Y_Dir": "載荷直角方向",
+
+  "Ref_Point_Right": "右側",
+  "Ref_Point_Left": "左側",
+  "Ref_Point_Top": "上端",
+  "Ref_Point_Bottom": "下端",
+
+  "Reinforced_Section_Title": "補強断面",
+  "Reinforced_Method": "補強方法",
+  "Reinforced_Start": "補強始端(m)",
+  "Reinforced_End": "補強終端(m)",
+  "Reinforced_Thickness": "厚さ(mm)",
+  "Reinforced_Modulus": "弾性係数(N/mm²)",
+  "Reinforced_Method_Outer": "被覆",
+  "Reinforced_Method_Inner": "+充填",
+
+  "B_3": "UI/말뚝정보/말뚝설정/버튼액션",
+  "Pile_Add_Button": "追加",
+  "Pile_Modify_Button": "修正",
+
+  "C": "UI/말뚝정보/배치정보",
+  "Pile_Arrangement_Table": "配置情報",
+
+
   "TabName_Pile": "杭情報",
   "TabName_Soil": "地盤情報",
   "TabName_Import": "読み込み",
@@ -10,60 +108,65 @@
 
   "Project_Name": "プロジェクト名",
   "Pile_Info": "杭の情報",
-  "Footing_Dimension": "基礎の諸元",
-  "Xdir_Dim": "載荷幅(m)",
-  "Ydir_Dim": "横長(m)",
-  "Top_Level": "底面の標高(m)",
-  "X_Force_Point": "載荷点(橋軸方向, m)",
-  "Y_Force_Point": "載荷点(橋軸直角方向, m)",
-  "Pile_Setting": "杭の設定",
-  "Initial_Setting": "基本設定",
+  
+  "Pile_Table_Name": "名称",
+  "Pile_Table_Type": "杭の種類",
+  "Pile_Table_ConstructionMethod": "施工方法",
+  "Pile_Table_PileNum": "杭の本数",
+  "Pile_Table_Actions": "削除", 
+
+  "Dialog_Title_Delete": "削除確認",
+  "Dialog_Content_Delete": "削除しますか？",
+  "Dialog_Button_Cancel": "キャンセル",
+  "Dialog_Button_Delete": "削除",
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   "Composite_Setting": "下部杭の設定",
-  "Section_Setting": "断面の設定",
-  "Pile_Arrangement": "杭の配置",
+  
+  
   "Pile_View": "杭の配置図",
-  "Pile_Add_Button": "追加",
-  "Pile_Modify_Button": "修正",
   "Pile_Delete_Button": "削除",
-  "Pile_Arrangement_Table": "配置情報",
+  
 
-  "Pile_Name": "杭の名称",
-  "Pile_Length": "杭長(m)",
-  "Pile_Type": "杭の種類",
-  "Construction_Method": "施工方法",
-  "Head_Condition": "杭頭結合条件",
-  "Bottom_Condition": "杭先端条件",
-
+  
+  
   "Comp_Pile_Type": "杭の種類",
   "Comp_Pile_Length": "杭の位置(m)",
   "Comp_Guide_Words": "*杭頭からの相対距離",
 
   "Pile_Category": "杭",
-  "Pile_Category_Basic": "基本",
-  "Pile_Category_Sub1": "下部 #1",
-  "Pile_Category_Sub2": "下部 #2",
-  "Pile_Category_Sub3": "下部 #3",
+
 
   "Basic_Concrete": "コンクリート",
-  "Basic_Concrete_Diamter": "直径(mm)",
-  "Basic_Concrete_Thickness": "厚さ(mm)",
-  "Basic_Concrete_Modulus_Case1": "弾性係数(N/mm²)",
-  "Basic_Concrete_Modulus_Case2": "変形係数(N/mm²)",
+
 
   "Basic_Cocncrete_Title_Case1": "コンクリート",
   "Basic_Concrete_Title_Case2": "鋼管ソイルセメント",
-  "Basic_Concrete_Total_Title": "コンクリート/鋼管ソイルセメント",
+  
 
   "Basic_Steel_Title_Case1": "鉄筋",
   "Basic_Steel_Title_Case2": "鋼管",
   "Basic_Steel_Title_Case3": "PC鋼材",
-  "Basic_Steel_Total_Title": "鉄筋/鋼管/PC鋼材",
-  "Basic_Steel_Diamter_Case1": "断面積(mm²)",
-  "Basic_Steel_Diamter_Case2": "直径(mm)",
-  "Basic_Steel_Cor_Case1": "配置半径(mm)",
-  "Basic_Steel_Cor_Case2": "腐食代(mm)",
-  "Basic_Steel_Thickness": "厚さ(mm)",
-  "Basic_Steel_Modulus": "弾性係数(N/mm²)",
+  
+
 
   "Composite_Concrete": "コンクリート",
   "Composite_Concrete_Diamter": "直径(mm)",
@@ -82,63 +185,37 @@
   "Composite_Steel_Thickness": "厚さ(mm)",
   "Composite_Steel_Modulus": "弾性係数(N/mm²)",
 
-  "Pile_Location_Title": "杭の位置",
-  "Pile_Ref_Point": "参照基準",
-  "Pile_Loc": "位置(m)",
-  "Pile_Space": "間隔(m)",
-  "Pile_Angle": "角度(°)",
-  "Pile_X_Dir": "載荷方向",
-  "Pile_Y_Dir": "載荷直角方向",
+
+
   "Pile_Z_Dir": "垂直方向",
 
   "Basic_Section_Title": "基本杭の断面",
   "Composite_Section_Title": "下部杭の断面",
-  "Reinforced_Section_Title": "補強断面",
+  
 
-  "Pile_Table_Name": "名称",
-  "Pile_Table_Type": "杭の種類",
-  "Pile_Table_ConstructionMethod": "施工方法",
-  "Pile_Table_PileNum": "杭の本数",
-  "Pile_Table_Actions": "削除",
 
-  "Reinforced_Method": "補強方法",
-  "Reinforced_Loc": "補強位置(m)",
-  "Reinforced_Outer_Title": "被覆部",
-  "Reinforced_Inner_Title": "充填部",
-  "Reinforced_Thickness": "厚さ(mm)",
-  "Reinforced_Modulus": "弾性係数(N/mm²)",
-  "Reinforced_Start": "補強始端(m)",
-  "Reinforced_End": "補強終端(m)",
+
+
 
   "Pile_View_Title": "杭の配置図",
   "Plan_View": "平面図",
   "Front_View": "正面図",
   "Side_View": "側面図",
 
-  "Cast_In_Situ": "場所打ち杭",
-  "PHC_Pile": "PHC杭",
-  "SC_Pile": "SC杭",
-  "Steel_Pile": "鋼管杭",
-  "Soil_Cement_Pile": "鋼管ソイルセメント杭",
 
-  "Head_Condition_Fixed": "剛結",
-  "Head_Condition_Hinge": "ヒンジ",
 
-  "CM_DropHammer": "打込み杭(打撃工法)",
-  "CM_VibroHammer": "打込み杭(バイブロハンマ工法)",
-  "CM_InSitu": "場所打ち杭",
-  "CM_Boring": "中堀り杭",
-  "CM_Preboring": "プレボーリング杭",
-  "CM_SoilCement": "鋼管ソイルセメント杭",
-  "CM_Rotate": "回転杭",
+  "Reinforced_Loc": "補強位置(m)",
+  "Reinforced_Outer_Title": "被覆部",
+  "Reinforced_Inner_Title": "充填部",
 
-  "Bottom_Condition_Free": "自由",
-  "Bottom_Condition_Hinge": "ヒンジ",
-  "Bottom_Condition_Fixed": "固定",
 
-  "Reinforced_Method_Outer": "被覆",
+
+
+
+
+  
   "Reinforced_Method_Inner_Outer": "被覆+充填",
-  "Reinforced_Method_Inner": "+充填",
+  
 
   "Soil_Info": "地盤情報",
   "Soil_Setting": "地層設定",
@@ -226,10 +303,7 @@
   "Fail_Calculation_Sheet_Download": "計算書の書き出し失敗",
   "Success_Calculation_Sheet_Download": "計算書の書き出し成功",
 
-  "Ref_Point_Right": "右側",
-  "Ref_Point_Left": "左側",
-  "Ref_Point_Top": "上端",
-  "Ref_Point_Bottom": "下端",
+
 
   "SoilData_Error": "지반 정보를 확인해주세요.",
 

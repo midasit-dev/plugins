@@ -6,17 +6,14 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { usePileData, useNotification } from "../../hooks";
 import {
-  Button,
   Paper,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { CustomDataGrid } from "../../components";
-import { GuideBox } from "@midasit-dev/moaui";
+import { GuideBox, Button } from "@midasit-dev/moaui";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -146,13 +143,24 @@ const PileData = () => {
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "300px",
+          },
+        }}
       >
-        <DialogTitle>{"Confirm_Delete"}</DialogTitle>
-        <DialogContent>{"Delete_Confirmation_Message"}</DialogContent>
+        <DialogTitle sx={{ fontSize: "16px" }}>
+          {t("Dialog_Title_Delete")}
+        </DialogTitle>
+        <DialogContent sx={{ fontSize: "14px" }}>
+          {t("Dialog_Content_Delete")}
+        </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>{"Cancel"}</Button>
-          <Button color="error" onClick={confirmDelete}>
-            {"Delete"}
+          <Button onClick={() => setDeleteDialogOpen(false)}>
+            {t("Dialog_Button_Cancel")}
+          </Button>
+          <Button color="negative" onClick={confirmDelete}>
+            {t("Dialog_Button_Delete")}
           </Button>
         </DialogActions>
       </Dialog>
