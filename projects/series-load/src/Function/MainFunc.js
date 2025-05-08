@@ -31,6 +31,24 @@ async function AxleLoads(
   impLoadChk,
   cntLoadChk
 ) {
+  distLoads = Number(distLoads);
+  distLenFor = Number(distLenFor);
+  distLenBak = Number(distLenBak);
+  imptFac = Number(imptFac);
+  maxSpeed = Number(maxSpeed);
+  grvAccel = Number(grvAccel);
+  centFac = Number(centFac);
+  startPt = Number(startPt);
+  endPt = Number(endPt);
+  nbCases = Number(nbCases);
+  distSeries = Number(distSeries);
+  firLoadPos = Number(firLoadPos);
+  horEccen = Number(horEccen);
+  verEccen = Number(verEccen);
+  orgPtStrPt = Number(orgPtStrPt);
+  strPtDist1 = Number(strPtDist1);
+  strPtDist2 = Number(strPtDist2);
+
   let resultAPI = [];
   //Element and Node List
   let res_unit = await Common.midasAPI("PUT", "/db/unit", {
@@ -50,7 +68,6 @@ async function AxleLoads(
   } else {
     resultAPI.push(["unit", false]);
   }
-
   let elemParsing = Common.NEParser(elemList);
   let elemSplit = elemParsing.split(",").map(Number);
   let elemRes = await Common.midasAPI("GET", "/db/elem");
@@ -134,7 +151,6 @@ async function AxleLoads(
   let TempDist;
   let BmldInputP = Array.matrix(nbCases, nAxle, 8);
   let BmldInputW = Array.matrix(nbCases, 10);
-
   //Create Input Data for Concentrate Loads
   for (let i = 0; i < nbCases; i++) {
     LoadCaseName[i] = lcName + "_#" + (i + 1);

@@ -20,6 +20,10 @@
 
 ## Release Notes
 
+- **v1.2.0**
+  - Added LM 71 to preset loads
+  - Enhanced the help modal
+  - Bug fixed
 - **v1.1.0**
   - bugs have been fixed to ensure the model file functions correctly.
   - even when there are no static loads, load combinations and beam loads.
