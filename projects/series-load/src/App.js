@@ -49,6 +49,7 @@ const preSetList = {
   30: "KL-510LNE",
   40: "HL-93TRK",
   50: "Load_Model_1",
+  60: "LM-71",
 };
 
 const preSetValue = {
@@ -122,6 +123,21 @@ const preSetValue = {
     centrf: [9.807, 1.333],
     eccentric: 1.8,
     point: [1, 0, 0],
+    option: [true, false, true, false],
+  },
+  60: {
+    name: "LM-71",
+    axle: [
+      { id: 1, index: 1, loads: 250.0, dist: 1.6 },
+      { id: 2, index: 2, loads: 250.0, dist: 1.6 },
+      { id: 3, index: 3, loads: 250.0, dist: 1.6 },
+      { id: 4, index: 4, loads: 250.0, dist: 0 },
+    ],
+    distributed: [80.0, 100, 100],
+    impact: 0,
+    centrf: [9.807, 1.333],
+    eccentric: 1.8,
+    point: [0, 0.8, 5.6],
     option: [true, false, true, false],
   },
 };
@@ -456,262 +472,280 @@ function App() {
   return (
     <div className="App">
       {/* {openFormDlg && <FormDialog />} */}
-			{ openFormDlg && <VerifyDialog /> }
+      {openFormDlg && <VerifyDialog />}
       {
-				<>
-					<MoaGuideBox row spacing={2} padding={2}>
-						<MoaPanel variant="shadow2">
-							<MoaStack width={width / 2} height={height}>
-								{StyledTypo("Vertical loads")}
-								<div style={{ height: "10px" }} />
-								{DataGridAxle(axleLoads, setAxleLoads)}
-								<hr className="horLine" />
-								{StyledTypo("Distributed loads")}
-								{TextInput.BasicInputField(
-									"Distributed loads",
-									"\\(\\omega=\\)",
-									unit_loads,
-									distLoads,
-									setDistLoads
-								)}
-								{TextInput.BasicInputField(
-									"Length of forward loads",
-									"\\( L_1= \\)",
-									unit_meter,
-									distLenFor,
-									setDistLenFor
-								)}
-								{TextInput.BasicInputField(
-									"Length of backward loads",
-									"\\( L_2= \\)",
-									unit_meter,
-									distLenBak,
-									setDistLenBak
-								)}
-								<hr className="horLine" />
-								{StyledTypo("Impact loads for Vertical Loads")}
-								{TextInput.BasicInputField(
-									"Impact factor",
-									"\\(I_m=\\)",
-									unit_percn,
-									imptFac,
-									setImptFac
-								)}
-								<hr className="horLine" />
-								{StyledTypo("Centrifugal loads")}
-								{TextInput.BasicInputField(
-									"Maximum speed",
-									"\\(V=\\)",
-									unit_speed,
-									maxSpeed,
-									setMaxSpeed
-								)}
-								{TextInput.BasicInputField(
-									"Gravity acceleration",
-									"\\(g= \\)",
-									unit_accel,
-									grvAccel,
-									setGrvAccel
-								)}
-								{TextInput.BasicInputField(
-									"Factors",
-									"\\(f= \\)",
-									"",
-									centFac,
-									setCentFac
-								)}
-								<hr className="horLine" />
-								{RadioButtonSpline(radioOp, setRadioOp)}
-								<MoaStack
-									spacing={2}
-									direction="row"
-									alignItems="center"
-									justifyContent="center"
-									marginTop={1}
-								>
-									{TextInput.SubInputField(
-										"Start Point",
-										startPt,
-										setStartPt,
-										disText
-									)}
-									{TextInput.SubInputField("End Point", endPt, setEndPt, disText)}
-								</MoaStack>
-							</MoaStack>
-						</MoaPanel>
-						<MoaPanel variant="shadow2">
-							<MoaStack width={width / 2} height={height}>
-								{StyledTypo("Common Setting")}
-								<div style={{ height: "10px" }} />
-								{SelectVariants(
-									"Load Pre-set",
-									preSetList,
-									preListNb,
-									setPreListNb,
-									160
-								)}
-								{TextInput.SubInputFieldWide("Load Case Name", lcName, setLcName)}
-								<hr className="horLine" />
-								{TextInput.BasicInputField(
-									"Number of Cases",
-									"\\(n=\\)",
-									"",
-									nbCases,
-									setNbCases
-								)}
-								{TextInput.BasicInputField(
-									"Distance of Series loads",
-									"\\(d=\\)",
-									unit_meter,
-									distSeries,
-									setDistSeries
-								)}
-								<hr className="horLine" />
-								<MoaStack direction="row" justifyContent="space-between">
-									{StyledTypo("Load Points Setting")}
-									<IconButton
-										aria-label="Delete"
-										color="primary"
-										onClick={modalHelpOpen}
-									>
-										<HelpOutlineIcon />
-									</IconButton>
-								</MoaStack>
-								{TextInput.BasicInputField(
-									"1st load position",
-									"\\(d_0=\\)",
-									unit_meter,
-									firLoadPos,
-									setFirLoadPos
-								)}
-								{TextInput.BasicInputField(
-									"Horizontal eccentric",
-									"\\(e_h=\\)",
-									unit_meter,
-									horEccen,
-									setHorEccen
-								)}
-								{TextInput.BasicInputField(
-									"Vertical eccentric",
-									"\\(e_v=\\)",
-									unit_meter,
-									verEccen,
-									setVerEccen
-								)}
-								<hr className="horLine" />
-								{TextInput.BasicInputField(
-									"Origin point to Start point",
-									"\\(x_s=\\)",
-									unit_meter,
-									orgPtStrPt,
-									setOrgPtStrPt
-								)}
-								{TextInput.BasicInputField(
-									"Start Point to Dist. Loads",
-									"\\(x_{\\omega1}=\\)",
-									unit_meter,
-									strPtDist1,
-									setStrPtDist1
-								)}
-								{TextInput.BasicInputField(
-									"Start Point to Dist. Loads",
-									"\\(x_{\\omega2}=\\)",
-									unit_meter,
-									strPtDist2,
-									setstrPtDist2
-								)}
-								<hr className="horLine" />
-								{StyledTypo("Control Panel")}
-								{TextInput.BasicInputFieldHidden(
-									"Elem. Length",
-									"",
-									unit_meter,
-									elemLen,
-									setElemLen
-								)}
-								{TextInput.BasicInputFieldHidden(
-									"Load Length",
-									"",
-									unit_meter,
-									totLen,
-									setTotLen
-								)}
-								<MoaStack marginX={2}>
-									<MoaStack direction="column">
-										{CheckboxOption(
-											"Create Static Load Cases",
-											loadCaseChk,
-											setLoadCaseChk
-										)}
-										{CheckboxOption(
-											"With Enveloped Load Combinations",
-											envLcomChk,
-											setEnvLcomChk
-										)}
-									</MoaStack>
-									<MoaStack direction="row">
-										<MoaStack direction="column">
-											{CheckboxOption("Axle Loads", axeLoadChk, setAxeLoadChk)}
-											{CheckboxOption(
-												"Distributed loads",
-												dstLoadChk,
-												setDstLoadChk
-											)}
-										</MoaStack>
-										<MoaStack direction="column">
-											{CheckboxOption("Impact Loads", impLoadChk, setImpLoadChk)}
-											{CheckboxOption(
-												"Centrifugal Loads",
-												cntLoadChk,
-												setCntLoadChk
-											)}
-										</MoaStack>
-									</MoaStack>
-									<MoaStack
-										spacing={1}
-										direction="row"
-										alignItems="center"
-										justifyContent="center"
-										marginTop={1}
-									>
-										{Buttons.WideButtonSubColor(
-											"contained",
-											"SHOW SERIES LOADS",
-											ClickShowLoads
-										)}
-										{Buttons.WideButtonColor(
-											"negative",
-											"contained",
-											"APPLY SERIES LOADS",
-											async () => {
-												const data = await Common.midasAPI("GET", "/view/select");
-												const arrElem = data["SELECT"]["ELEM_LIST"];
-												if (arrElem.length === 0) {
-													enqueueMessage(
-														enqueueSnackbar,
-														"No elements are selected",
-														"error"
-													);
-													return;
-												}
-												enqueueMessage(
-													enqueueSnackbar,
-													`Getting Selected Elements is successfully (Count: ${arrElem.length})`,
-													"success"
-												);
-												arrElem.sort((n1, n2) => {
-													return n1 - n2;
-												});
-												await ApplySeriesLoads(arrElem.toString());
-												// ImportModalOpen();
-											}
-										)}
-									</MoaStack>
-								</MoaStack>
-							</MoaStack>
-						</MoaPanel>
-					</MoaGuideBox>
-				</>
+        <>
+          <MoaGuideBox row spacing={2} padding={2}>
+            <MoaPanel variant="shadow2">
+              <MoaStack width={width / 2} height={height}>
+                {StyledTypo("Vertical loads")}
+                <div style={{ height: "10px" }} />
+                {DataGridAxle(axleLoads, setAxleLoads)}
+                <hr className="horLine" />
+                {StyledTypo("Distributed loads")}
+                {TextInput.BasicInputField(
+                  "Distributed loads",
+                  "\\(\\omega=\\)",
+                  unit_loads,
+                  distLoads,
+                  setDistLoads
+                )}
+                {TextInput.BasicInputField(
+                  "Length of forward loads",
+                  "\\( L_1= \\)",
+                  unit_meter,
+                  distLenFor,
+                  setDistLenFor
+                )}
+                {TextInput.BasicInputField(
+                  "Length of backward loads",
+                  "\\( L_2= \\)",
+                  unit_meter,
+                  distLenBak,
+                  setDistLenBak
+                )}
+                <hr className="horLine" />
+                {StyledTypo("Impact loads for Vertical Loads")}
+                {TextInput.BasicInputField(
+                  "Impact factor",
+                  "\\(I_m=\\)",
+                  unit_percn,
+                  imptFac,
+                  setImptFac
+                )}
+                <hr className="horLine" />
+                {StyledTypo("Centrifugal loads")}
+                {TextInput.BasicInputField(
+                  "Maximum speed",
+                  "\\(V=\\)",
+                  unit_speed,
+                  maxSpeed,
+                  setMaxSpeed
+                )}
+                {TextInput.BasicInputField(
+                  "Gravity acceleration",
+                  "\\(g= \\)",
+                  unit_accel,
+                  grvAccel,
+                  setGrvAccel
+                )}
+                {TextInput.BasicInputField(
+                  "Factors",
+                  "\\(f= \\)",
+                  "",
+                  centFac,
+                  setCentFac
+                )}
+                <hr className="horLine" />
+                {RadioButtonSpline(radioOp, setRadioOp)}
+                <MoaStack
+                  spacing={2}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="center"
+                  marginTop={1}
+                >
+                  {TextInput.SubInputField(
+                    "Start Point",
+                    startPt,
+                    setStartPt,
+                    disText
+                  )}
+                  {TextInput.SubInputField(
+                    "End Point",
+                    endPt,
+                    setEndPt,
+                    disText
+                  )}
+                </MoaStack>
+              </MoaStack>
+            </MoaPanel>
+            <MoaPanel variant="shadow2">
+              <MoaStack width={width / 2} height={height}>
+                {StyledTypo("Common Setting")}
+                <div style={{ height: "10px" }} />
+                {SelectVariants(
+                  "Load Pre-set",
+                  preSetList,
+                  preListNb,
+                  setPreListNb,
+                  160
+                )}
+                {TextInput.SubInputFieldWide(
+                  "Load Case Name",
+                  lcName,
+                  setLcName
+                )}
+                <hr className="horLine" />
+                {TextInput.BasicInputField(
+                  "Number of Cases",
+                  "\\(n=\\)",
+                  "",
+                  nbCases,
+                  setNbCases
+                )}
+                {TextInput.BasicInputField(
+                  "Distance of Series loads",
+                  "\\(d=\\)",
+                  unit_meter,
+                  distSeries,
+                  setDistSeries
+                )}
+                <hr className="horLine" />
+                <MoaStack direction="row" justifyContent="space-between">
+                  {StyledTypo("Load Points Setting")}
+                  <IconButton
+                    aria-label="Delete"
+                    color="primary"
+                    onClick={modalHelpOpen}
+                  >
+                    <HelpOutlineIcon />
+                  </IconButton>
+                </MoaStack>
+                {TextInput.BasicInputField(
+                  "1st load position",
+                  "\\(d_0=\\)",
+                  unit_meter,
+                  firLoadPos,
+                  setFirLoadPos,
+                  "number",
+                  true
+                )}
+                {TextInput.BasicInputField(
+                  "Horizontal eccentric",
+                  "\\(e_h=\\)",
+                  unit_meter,
+                  horEccen,
+                  setHorEccen
+                )}
+                {TextInput.BasicInputField(
+                  "Vertical eccentric",
+                  "\\(e_v=\\)",
+                  unit_meter,
+                  verEccen,
+                  setVerEccen
+                )}
+                <hr className="horLine" />
+                {TextInput.BasicInputField(
+                  "Origin point to Start point",
+                  "\\(x_s=\\)",
+                  unit_meter,
+                  orgPtStrPt,
+                  setOrgPtStrPt
+                )}
+                {TextInput.BasicInputField(
+                  "Start Point to Dist. Loads",
+                  "\\(x_{\\omega1}=\\)",
+                  unit_meter,
+                  strPtDist1,
+                  setStrPtDist1
+                )}
+                {TextInput.BasicInputField(
+                  "Start Point to Dist. Loads",
+                  "\\(x_{\\omega2}=\\)",
+                  unit_meter,
+                  strPtDist2,
+                  setstrPtDist2
+                )}
+                <hr className="horLine" />
+                {StyledTypo("Control Panel")}
+                {TextInput.BasicInputFieldHidden(
+                  "Elem. Length",
+                  "",
+                  unit_meter,
+                  elemLen,
+                  setElemLen
+                )}
+                {TextInput.BasicInputFieldHidden(
+                  "Load Length",
+                  "",
+                  unit_meter,
+                  totLen,
+                  setTotLen
+                )}
+                <MoaStack marginX={2}>
+                  <MoaStack direction="column">
+                    {CheckboxOption(
+                      "Create Static Load Cases",
+                      loadCaseChk,
+                      setLoadCaseChk
+                    )}
+                    {CheckboxOption(
+                      "With Enveloped Load Combinations",
+                      envLcomChk,
+                      setEnvLcomChk
+                    )}
+                  </MoaStack>
+                  <MoaStack direction="row">
+                    <MoaStack direction="column">
+                      {CheckboxOption("Axle Loads", axeLoadChk, setAxeLoadChk)}
+                      {CheckboxOption(
+                        "Distributed loads",
+                        dstLoadChk,
+                        setDstLoadChk
+                      )}
+                    </MoaStack>
+                    <MoaStack direction="column">
+                      {CheckboxOption(
+                        "Impact Loads",
+                        impLoadChk,
+                        setImpLoadChk
+                      )}
+                      {CheckboxOption(
+                        "Centrifugal Loads",
+                        cntLoadChk,
+                        setCntLoadChk
+                      )}
+                    </MoaStack>
+                  </MoaStack>
+                  <MoaStack
+                    spacing={1}
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="center"
+                    marginTop={1}
+                  >
+                    {Buttons.WideButtonSubColor(
+                      "contained",
+                      "SHOW SERIES LOADS",
+                      ClickShowLoads
+                    )}
+                    {Buttons.WideButtonColor(
+                      "negative",
+                      "contained",
+                      "APPLY SERIES LOADS",
+                      async () => {
+                        const data = await Common.midasAPI(
+                          "GET",
+                          "/view/select"
+                        );
+                        const arrElem = data["SELECT"]["ELEM_LIST"];
+                        if (arrElem.length === 0) {
+                          enqueueMessage(
+                            enqueueSnackbar,
+                            "No elements are selected",
+                            "error"
+                          );
+                          return;
+                        }
+                        enqueueMessage(
+                          enqueueSnackbar,
+                          `Getting Selected Elements is successfully (Count: ${arrElem.length})`,
+                          "success"
+                        );
+                        arrElem.sort((n1, n2) => {
+                          return n1 - n2;
+                        });
+                        await ApplySeriesLoads(arrElem.toString());
+                        // ImportModalOpen();
+                      }
+                    )}
+                  </MoaStack>
+                </MoaStack>
+              </MoaStack>
+            </MoaPanel>
+          </MoaGuideBox>
+        </>
       }
       {Modals.HelpModal(openHelpModal, modalHelpClose)}
       {/* {Modals.ElemImportModal(
