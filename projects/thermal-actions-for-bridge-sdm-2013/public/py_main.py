@@ -93,6 +93,7 @@ def adjustment_temperature_for_surfacing(
         2.1 adj_option = True 이면,
             데크 표면 두께에 따라 보간하여 조정 값을 반환한다.
             보간은 Unsurfaced Trafficked or Waterproofed를 0mm으로 보고, 40mm, 100mm, 200mm에 대해 보간한다.
+            *Note에 (1) Surfacing depths include waterproofing으로 참조로 0mm == waterproofing이라고 가정한다.
 
         2.2 adj_option = False 이면,
             입력된 데크 표면 두께보다 큰 두께에 대한 조정 값을 반환한다.
@@ -229,14 +230,17 @@ def adjustment_temperature_for_surfacing(
         # 상부 형식에 따른 데이터 추출하고 두께에 따라 정렬한다.
         adj_type = adj_thickness[super_type]
         sorted_keys = sorted(adj_type.keys())
-    
+
         # 입력 두께가 범위 밖인 경우, 최소/최대 경계값 반환
         if deck_surf_thick <= sorted_keys[0]:
-            # 입력값을  0보다 크게 받으므로 실제로 일어나는 일은 없음
+            # 0mm 보다 작거나 같다.
             adj_temp = adj_type[sorted_keys[0]]
         elif deck_surf_thick >= sorted_keys[-1]:
+            # 200mm 보다 크거나 작다.
             adj_temp = adj_type[sorted_keys[-1]]        
         else:
+            # 0~200 사이일 경우
+            # 선형 보간
             if adj_option:
                 for i in range(len(sorted_keys)-1):
                     lower_key = sorted_keys[i]
@@ -251,10 +255,12 @@ def adjustment_temperature_for_surfacing(
                         Tadj_max = (1-ratio) * adj_type[lower_key]["Tadj_max"] + ratio * adj_type[upper_key]["Tadj_max"]
                         
                         adj_temp = { "Tadj_min": Tadj_min, "Tadj_max": Tadj_max }
+            # 천장법
             else:
                 for key in sorted_keys:
-                    if key > deck_surf_thick:
+                    if key >= deck_surf_thick:
                         adj_temp = adj_type[key]
+                        break
 
     return adj_temp
 
@@ -394,9 +400,54 @@ def create_etmp_json(
     # 온도하중이 들어가 있는 요소가 있는지 확인하자.
     res_etmp = civil.db_read("ETMP")
     
-    # 온도하중이 없다면, 선택된 요소에 온도하중을 ID를 1과 2로 주면 된다.
+    # 25-03-20 홍콩 교통부 요청 - 덮어 씌우는 동작이 됐으면 좋겠다.
+    # 이번에 다시 확인해 본 결과 PUT동작으로 정상동작이 되는 것을 확인.
+    # 처음부터 잘못 파악한 원인
+    # 예를 들어 ELEMENT, LCNAME이 일치한다. 여기는 ID=1이다.
+    # 이 곳에 PUT으로 같은 ELEMENT, LCNAME, ID=2로 요청하면, ID=1이 ID=2가 되면서 더해지는 동작을 한다.
+    # 따라서, ELEMENT, LCNAME이 일치하면, ID=1로 요청해야 한다. 내가 잘못 만들었음
+    #
+    # 로직은 다음과 같이 다시 짠다.
+    # 선택한 요소를 DO LOOP를 돌린다.
+    # 선택한 요소는 온도하중을 가지고 있나?
+    # 아니오 -> ID=1로 요청 (res_etmp 의 데이터가 없다)
+    # 예 -> LCNAME이 일치하는가? (res_etmp 의 데이터가 있다.)
+    # 아니오 -> MAX ID + 1
+    # 예 -> ID 그대로 가져오기
+
+    # 파일의 데이터 상태와 선택된 요소를 비교해서 어떤 동작을 할지 결정하자.
+    case = 0
     if "error" in res_etmp:
-        json_etmp = {}
+        # 파일에 온도하중이 존재하지 않을 때,
+        case = 1
+        print("해석파일 내에 온도하중 없음")
+    else:
+        exist_keys_set = set(res_etmp.keys())
+        select_keys_set = set(elem_list)
+
+        print("exist_keys", res_etmp.keys())
+        print("select_keys", elem_list)
+
+        if select_keys_set.issubset(exist_keys_set):
+            # 선택한 요소가 모두 온도하중을 가지고 있을 때,
+            case = 2
+            print("선택한 요소 모두 온도하중 있음")
+        elif exist_keys_set.isdisjoint(select_keys_set):
+            # 선택한 요소 모두 온도하중이 없을 때,
+            case = 3
+            print("선택한 요소 모두 온도하중 없음")
+        else:
+            # 선택한 요소 중 일부만 온도하중을 가지고 있을 때,
+            case = 4
+            print("선택한 요소 일부 온도하중 있음")
+
+    # Request를 보낼 객체
+    json_etmp = {}
+    middle_result_print = []
+
+    # 경우에 따른 json_etmp 생성
+    if case == 1 or case == 3:
+        # 1 또는 3은 선택한 요소가 온도하중이 없으므로 각각 ID 1, 2로 온도하중을 부여
         for elem_id in elem_list:
             json_etmp[elem_id] = {
                 "ITEMS":[
@@ -412,38 +463,92 @@ def create_etmp_json(
                     }
                 ]
             }
-    # 온도하중이 있다면, 선택된 요소와의 교집합이 있는지 확인하고,
-    # 교집합이 없다면 선택된 요소에 온도하중을 ID 1,2 로 해서 주면 된다.
-    # 교집합이 있다면, 선택된 요소가 가지고 있는 최대 ID 번호를 확인하고, 그 다음 ID로 온도하중을 주면 된다.
-    else:
-        # 온도하중이 들어가있는 요소 리스트 생성
-        etmp_list = res_etmp.keys()
+        print("1 또는 3 번 케이스, 모두 ID:1, ID:2로 온도하중 부여")
+    elif case == 2 or case == 4:
+        # 선택한 요소 모두 또는 일부 온도하중이 있으므로, 선택된 로드케이스가 일치하는지 안하는지 일단 판단해야함.
+        # 일치하면 ID를 그대로 가져오고, 일치하지 않으면 MAX ID + 1로 가져온다.
+        for elem_id in elem_list:
+            # 선택한 요소가 온도하중을 가지고 있을 때,
+            if elem_id in res_etmp:
+                items = res_etmp[elem_id]["ITEMS"]
+                print("items", items)
+                target_id_max = next((item["ID"] for item in items if item["LCNAME"]==lcname_to_apply[0]), None)
+                print("target_id_max", target_id_max)
+                target_id_min = next((item["ID"] for item in items if item["LCNAME"]==lcname_to_apply[1]), None)
+                print("target_id_min", target_id_min)
+                max_id = max(map(lambda x: x["ID"], res_etmp[elem_id]["ITEMS"]))
+                print("max_id", max_id)
+                # 하중케이스가 max는 일치하지 않고, min은 일치할 때
+                if target_id_max is None and target_id_min is not None:
+                    json_etmp[elem_id] = {
+                        "ITEMS": [
+                            {
+                                "ID": max_id + 1,
+                                "LCNAME": lcname_to_apply[0],
+                                "TEMP": max_temp
+                            },
+                            {
+                                "ID": target_id_min,
+                                "LCNAME": lcname_to_apply[1],
+                                "TEMP": min_temp
+                            }
+                        ]
+                    }
+                    middle_result_print.append([elem_id, max_id + 1, target_id_min, "max is not match, min is match"])
+                # 하중케이스가 max는 일치하고, min은 일치하지 않을 때
+                elif target_id_max is not None and target_id_min is None:
+                    json_etmp[elem_id] = {
+                        "ITEMS": [
+                            {
+                                "ID": target_id_max,
+                                "LCNAME": lcname_to_apply[0],
+                                "TEMP": max_temp
+                            },
+                            {
+                                "ID": max_id + 1,
+                                "LCNAME": lcname_to_apply[1],
+                                "TEMP": min_temp
+                            }
+                        ]
+                    }
+                    middle_result_print.append([elem_id, target_id_max, max_id + 1, "max is match, min is not match"])
+                # 하중케이스가  max, min 둘 다 일치하지 않을 때
+                elif target_id_max is None and target_id_min is None:
+                    json_etmp[elem_id] = {
+                        "ITEMS": [
+                            {
+                                "ID": max_id + 1,
+                                "LCNAME": lcname_to_apply[0],
+                                "TEMP": max_temp
+                            },
+                            {
+                                "ID": max_id + 2,
+                                "LCNAME": lcname_to_apply[1],
+                                "TEMP": min_temp
+                            }
+                        ]
+                    }
+                    middle_result_print.append([elem_id, max_id + 1, max_id + 2, "max is not match, min is not match"])
+                # 하중케이스가  max, min 둘 다 일치할 때
+                elif target_id_max is not None and target_id_min is not None:
+                    json_etmp[elem_id] = {
+                        "ITEMS": [
+                            {
+                                "ID": target_id_max,
+                                "LCNAME": lcname_to_apply[0],
+                                "TEMP": max_temp
+                            },
+                            {
+                                "ID": target_id_min,
+                                "LCNAME": lcname_to_apply[1],
+                                "TEMP": min_temp
+                            }
+                        ]
+                    }
+                    middle_result_print.append([elem_id, target_id_max, target_id_min, "max is match, min is match"])
 
-        # 온도하중이 들어가 있는 요소와 선택한 요소의 교집합을 구하자.
-        common_elem = list(set(etmp_list) & set(elem_list))
-        
-        # 중복되는 요소에 온도하중이 들어가 있는 LCNAME 리스트 생성
-        lcnames_list = [[item["LCNAME"] for item in res_etmp[elem_id]["ITEMS"]] for elem_id in common_elem]
-        
-        # 같은 요소에 같은 하중 케이스로 온도하중을 PUT으로 입력하면 값을 더해주는 동작이 되므로!
-        # 같은 요소와 같은 하중 케이스를 가지고 있으면 에러 메시지를 반환하자.
-        error_elem = []
-        for index, lcnames in enumerate(lcnames_list):
-            if any(item in lcname_to_apply for item in lcnames):
-                error_elem.append(common_elem[index])
-        
-        if len(error_elem) > 0:
-            message = {
-                "error": {
-                    "message": "The selected element and load case already have a temperature load applied."
-                }
-            }
-            return message
-        
-        # 교집합이 없다면, 선택된 요소에 온도하중을 ID:1로 해서 주면 된다.
-        json_etmp = {}
-        if len(common_elem) == 0:
-            for elem_id in elem_list:
+            # 선택한 요소가 온도하중을 가지고 있지 않을 때,
+            else:
                 json_etmp[elem_id] = {
                     "ITEMS":[
                         {
@@ -458,40 +563,130 @@ def create_etmp_json(
                         }
                     ]
                 }
-        else:
-        # 교집합이 있다면, 선택된 요소가 가지고 있는 최대 ID 번호를 확인하고, 그 다음 ID로 온도하중을 주면 된다.
-            for elem_id in elem_list:
-                if elem_id in common_elem:
-                    max_id = max(map(lambda x: x["ID"], res_etmp[elem_id]["ITEMS"]))
-                    json_etmp[elem_id] = {
-                        "ITEMS":[
-                            {
-                                "ID": max_id + 1,
-                                "LCNAME": lcname_to_apply[0],
-                                "TEMP": max_temp
-                            },
-                            {
-                                "ID": max_id + 2,
-                                "LCNAME": lcname_to_apply[1],
-                                "TEMP": min_temp
-                            }
-                        ]
-                    }
-                else:
-                    json_etmp[elem_id] = {
-                        "ITEMS":[
-                            {
-                                "ID": 1,
-                                "LCNAME": lcname_to_apply[0],
-                                "TEMP": max_temp
-                            },
-                            {
-                                "ID": 2,
-                                "LCNAME": lcname_to_apply[1],
-                                "TEMP": min_temp
-                            }
-                        ]
-                    }
+                middle_result_print.append([elem_id, 1, 2, "no load case"])
+        print("2 또는 4 번 케이스, ID 부여")
+        print("elem_id, max_id, min_id")
+        print(middle_result_print)
+
+    # # 온도하중이 없다면, 선택된 요소에 온도하중을 ID를 1과 2로 주면 된다.
+    # if "error" in res_etmp:
+    #     json_etmp = {}
+    #     for elem_id in elem_list:
+    #         json_etmp[elem_id] = {
+    #             "ITEMS":[
+    #                 {
+    #                     "ID": 1,
+    #                     "LCNAME": lcname_to_apply[0],
+    #                     "TEMP": max_temp
+    #                 },
+    #                 {
+    #                     "ID": 2,
+    #                     "LCNAME": lcname_to_apply[1],
+    #                     "TEMP": min_temp
+    #                 }
+    #             ]
+    #         }
+    # # 온도하중이 있다면, 선택된 요소와의 교집합이 있는지 확인하고,
+    # # 교집합이 없다면 선택된 요소에 온도하중을 ID 1,2 로 해서 주면 된다.
+    # # 교집합이 있다면, 선택된 요소가 가지고 있는 최대 ID 번호를 확인하고, 그 다음 ID로 온도하중을 주면 된다.
+    # else:
+    #     # 온도하중이 들어가있는 요소 리스트 생성
+    #     etmp_list = res_etmp.keys()
+
+    #     # 온도하중이 들어가 있는 요소와 선택한 요소의 교집합을 구하자.
+    #     common_elem = list(set(etmp_list) & set(elem_list))
+        
+    #     # 중복되는 요소에 온도하중이 들어가 있는 LCNAME 리스트 생성
+    #     lcnames_list = [[item["LCNAME"] for item in res_etmp[elem_id]["ITEMS"]] for elem_id in common_elem]
+        
+    #     # 같은 요소에 같은 하중 케이스로 온도하중을 PUT으로 입력하면 값을 더해주는 동작이 되므로!
+    #     # 같은 요소와 같은 하중 케이스를 가지고 있으면 에러 메시지를 반환하자.
+    #     error_elem = []
+    #     for index, lcnames in enumerate(lcnames_list):
+    #         if any(item in lcname_to_apply for item in lcnames):
+    #             error_elem.append(common_elem[index])
+        
+    #     if len(error_elem) > 0:
+    #         print(error_elem)
+    #         print(res_etmp)
+    #         for elem_id in elem_list:
+    #             items = res_etmp["ETMP"]["1"]["ITEMS"]
+    #             target_id_max = next((item["ID"] for item in items if item["LCNAME"]==lcname_to_apply[0]), None)
+    #             target_id_min = next((item["ID"] for item in items if item["LCNAME"]==lcname_to_apply[1]), None)
+    #             json_etmp[elem_id] = {
+    #                 "ITEMS": [
+    #                     {
+    #                         "ID": target_id_max,
+    #                         "LCNAME": lcname_to_apply[0],
+    #                         "TEMP": max_temp
+    #                     },
+    #                     {
+    #                         "ID": target_id_min,
+    #                         "LCNAME": lcname_to_apply[1],
+    #                         "TEMP": min_temp
+    #                     }
+    #                 ]
+    #             }
+
+    #         message = {
+    #             "error": {
+    #                 "message": "The selected element and load case already have a temperature load applied."
+    #             }
+    #         }
+    #         return message
+        
+    #     # 교집합이 없다면, 선택된 요소에 온도하중을 ID:1로 해서 주면 된다.
+    #     json_etmp = {}
+    #     if len(common_elem) == 0:
+    #         for elem_id in elem_list:
+    #             json_etmp[elem_id] = {
+    #                 "ITEMS":[
+    #                     {
+    #                         "ID": 1,
+    #                         "LCNAME": lcname_to_apply[0],
+    #                         "TEMP": max_temp
+    #                     },
+    #                     {
+    #                         "ID": 2,
+    #                         "LCNAME": lcname_to_apply[1],
+    #                         "TEMP": min_temp
+    #                     }
+    #                 ]
+    #             }
+    #     else:
+    #     # 교집합이 있다면, 선택된 요소가 가지고 있는 최대 ID 번호를 확인하고, 그 다음 ID로 온도하중을 주면 된다.
+    #         for elem_id in elem_list:
+    #             if elem_id in common_elem:
+    #                 max_id = max(map(lambda x: x["ID"], res_etmp[elem_id]["ITEMS"]))
+    #                 json_etmp[elem_id] = {
+    #                     "ITEMS":[
+    #                         {
+    #                             "ID": max_id + 1,
+    #                             "LCNAME": lcname_to_apply[0],
+    #                             "TEMP": max_temp
+    #                         },
+    #                         {
+    #                             "ID": max_id + 2,
+    #                             "LCNAME": lcname_to_apply[1],
+    #                             "TEMP": min_temp
+    #                         }
+    #                     ]
+    #                 }
+    #             else:
+    #                 json_etmp[elem_id] = {
+    #                     "ITEMS":[
+    #                         {
+    #                             "ID": 1,
+    #                             "LCNAME": lcname_to_apply[0],
+    #                             "TEMP": max_temp
+    #                         },
+    #                         {
+    #                             "ID": 2,
+    #                             "LCNAME": lcname_to_apply[1],
+    #                             "TEMP": min_temp
+    #                         }
+    #                     ]
+    #                 }
 
     # 온도하중을 적용하자!
     res_etmp = civil.db_update("ETMP", json_etmp)

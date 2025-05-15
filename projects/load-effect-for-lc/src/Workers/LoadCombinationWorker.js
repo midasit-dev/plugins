@@ -2,7 +2,7 @@ import { loadData, hasError, isDemo } from "../utils";
 import { DBVARIANT } from "./dictionary";
 
 export const DataLoader = async ({user}) => {
-	const DBNAME = DBVARIANT.LOAD_COMBINATION;
+	const REQUEST_DBNAME = DBVARIANT.LOAD_COMBINATION;
     const rawData = isDemo()
 			? {
 					"LCOM-GEN": {
@@ -46,12 +46,13 @@ export const DataLoader = async ({user}) => {
 						},
 					},
 			  }
-			: await loadData(DBVARIANT.PATH + DBNAME);
+			: await loadData(DBVARIANT.PATH + REQUEST_DBNAME);
     if (hasError(rawData)) return [];
-    if (rawData[DBNAME] === undefined) return [];
+
+    if (!(rawData?.[REQUEST_DBNAME] || rawData?.["LCOM"])) return [];
     
     let registeredItems = [];
-    const dbData = rawData[DBNAME];
+    const dbData = rawData?.[REQUEST_DBNAME] || rawData?.["LCOM"];
 
     for (const value in dbData) {
 		const targetData = dbData[value];
@@ -68,7 +69,7 @@ export const DataLoader = async ({user}) => {
 DataLoader.defaultProps = {user: []};
 
 export const DataRawLoader = async ({user}) => {
-	const DBNAME = DBVARIANT.LOAD_COMBINATION;
+	const REQUEST_DBNAME = DBVARIANT.LOAD_COMBINATION;
     const rawData = isDemo()
 			? {
 					'LCOM-GEN': {
@@ -112,12 +113,13 @@ export const DataRawLoader = async ({user}) => {
 						},
 					},
 			  }
-			: await loadData(DBVARIANT.PATH + DBNAME);
+			: await loadData(`${DBVARIANT.PATH}${REQUEST_DBNAME}`);
     if (hasError(rawData)) return [];
-    if (rawData[DBNAME] === undefined) return [];
+
+    if (!(rawData?.[REQUEST_DBNAME] || rawData?.["LCOM"])) return [];
     
     let registeredItems = [];
-    const dbData = rawData[DBNAME];
+    const dbData = rawData?.[REQUEST_DBNAME] || rawData?.["LCOM"];
 
     for (const value in dbData) {
         const targetData = dbData[value];
