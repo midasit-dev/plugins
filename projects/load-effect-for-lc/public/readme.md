@@ -5,7 +5,7 @@
 
 ## Details
 
-### version 1.3.0
+### version 1.2.1
 
 - Added exception handling for CS(Construction Stage) Load
 
