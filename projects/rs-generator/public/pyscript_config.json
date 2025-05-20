@@ -1,0 +1,15 @@
+{
+  "packages": ["numpy", "pandas"],
+  "fetch": [
+    {
+      "files": [
+        "./pyscript_engineers_web.py",
+        "./code_NZS1170_5_2004.py",
+        "./code_SBC3012018.py",
+        "./code_AS1170_4_2024.py",
+        "./code_NF1998_1_2008.py",
+        "./code_UNE1998_1_2011.py"
+      ]
+    }
+  ]
+}
