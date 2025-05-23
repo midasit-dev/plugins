@@ -205,8 +205,15 @@ function App() {
           );
         }
         for (const forceData of filteredForces) {
-          let selectedForceValue =
-            forceData[selectedForceIndex] * vcombObj.FACTOR;
+          let selectedForceValue;
+
+          // Check if forceData length is greater than 10
+          if (forceData.length > 10) {
+            selectedForceValue = (forceData[selectedForceIndex + 2]) * vcombObj.FACTOR;
+          } else {
+            selectedForceValue = forceData[selectedForceIndex] * vcombObj.FACTOR;
+          }
+        
           if (name === "max") {
             // Update maxForceValue and maxCorrespondingFactor if necessary
             if (selectedForceValue >= maxForceValue) {
@@ -545,6 +552,8 @@ function App() {
         COMPONENTS: [
           "Elem",
           "Load",
+          "Stage",
+          "Step",
           "Part",
           "Axial",
           "Shear-y",
@@ -552,6 +561,9 @@ function App() {
           "Torsion",
           "Moment-y",
           "Moment-z",
+          "Bi-Moment",
+          "T-Moment",
+          "W-Moment"
         ],
         NODE_ELEMS: {
           KEYS: [1],
@@ -569,7 +581,8 @@ function App() {
         ],
         PARTS: [`Part ${selectedPart}`],
         OPT_CS: true,
-        STAGE_STEP: [],
+        "STAGE_STEP": [
+      ]
       },
     };
     const stct = await midasAPI("GET", "/db/stct");
@@ -883,7 +896,7 @@ function App() {
 
         if (selectedRange.includes(name)) {
           console.log(`Processing ${name} load combinations`);
-          cs_forces.Argument.STAGE_STEP = `Min/Max:${name}`;
+          // cs_forces.Argument.STAGE_STEP = `Min/Max:${name}`;
           console.log(cs_forces);
           let iterationOffset = 0 + a;
 
@@ -931,6 +944,26 @@ function App() {
               );
               return null;
             }
+            function filterBeamForceData(data) {
+              // Group arrays by their 3rd element
+              const groupedData = data.reduce((acc, item) => {
+                const key = item[2]; // 3rd element
+                if (!acc[key]) {
+                  acc[key] = [];
+                }
+                acc[key].push(item);
+                return acc;
+              }, {});
+            
+              const filteredData = Object.values(groupedData).flatMap((group) => {
+                const count = group.length;
+                return count >= 3 ? [group[count - 3]] : []; // Keep only the 3rd-to-last element if it exists
+              });
+              return filteredData;
+            }
+            const filteredData = filterBeamForceData(cstr_forces.BeamForce.DATA);
+            console.log("filteredData", filteredData);
+            
             console.log(cstr_forces);
             let forces;
             if (cstr_forces.message !== "") {
@@ -939,7 +972,7 @@ function App() {
               BeamForce: {
                 ...static_forces.BeamForce,
                 DATA: static_forces.BeamForce.DATA.concat(
-                  cstr_forces.BeamForce.DATA
+                  filteredData
                 ),
               },
             }; 
