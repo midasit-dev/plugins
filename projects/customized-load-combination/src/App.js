@@ -552,6 +552,9 @@ else if (dimension > 2) {
             } else {
                currentFactorValue = eitherLoadCase[`factor${factorIndex}`];
             }
+            if (currentFactorValue === undefined && eitherLoadCase[`factor${factorIndex}`] !== undefined) {
+              currentFactorValue = eitherLoadCase[`factor${factorIndex}`];
+            };
             if (currentFactorValue === undefined) return;
             const newSign = multiplySigns(sign, eitherLoadCase.sign || '+');
             const eitherLoadCaseName = eitherLoadCase.loadCaseName.replace(/\s*\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/, '');
@@ -638,6 +641,9 @@ else if (dimension > 2) {
             } else {
                currentFactorValue = addLoadCase[`factor${factorIndex}`];
             }
+            if (currentFactorValue === undefined && addLoadCase[`factor${factorIndex}`] !== undefined) {
+              currentFactorValue = addLoadCase[`factor${factorIndex}`];
+            };
             if (currentFactorValue === undefined) return;
             const newSign = multiplySigns(sign, addLoadCase.sign || '+');
             const addLoadCaseName = addLoadCase.loadCaseName.replace(/\s*\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/, '');
@@ -717,6 +723,9 @@ if (typeof factorKey === "number") {
              } else {
                 currentFactorValue = envelopeLoadCase[`factor${factorIndex}`];
              }
+             if (currentFactorValue === undefined && envelopeLoadCase[`factor${factorIndex}`] !== undefined) {
+              currentFactorValue = envelopeLoadCase[`factor${factorIndex}`];
+            };
              if (currentFactorValue === undefined) return;
             const newSign = multiplySigns(sign, envelopeLoadCase.sign || '+');
             if (loadNames.includes(envelopeLoadCase.loadCaseName.replace(/\s*\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/, ''))) {
@@ -957,9 +966,9 @@ function combineAddEither(inputObj) {
         console.log("lastvalue", lastvalue);
         secondLastKey = keyStack.length > 1 ? keyStack[keyStack.length - 2] : null;
   
-        if (parentKey === "Either" || (parentKey === "Add" && firstKey === "Either") && temp.length > 0) {
+        if (parentKey === "Either" || (parentKey === "Add" && firstKey === "Either" && secondLastKey !== "Either") && temp.length > 0) {
           eitherArray.push(temp);
-        } else if (parentKey === "Add" && (!firstKey || firstKey === "Add" || firstKey === "Envelope") && temp.length > 0) {
+        } else if (parentKey === "Add" && (!firstKey || firstKey === "Add" || firstKey === "Envelope" || secondLastKey === "Either") && temp.length > 0) {
           addObj.push(temp);
         } else if (parentKey === "Envelope" || (parentKey === "Add" && firstKey === "Envelope") && temp.length > 0) {
           envelopeObj.push(temp);   
@@ -1286,7 +1295,7 @@ const service_combo = strengthCombinations
     }
     for (const loadCase of strengthCombination.loadCases) {
       if (!loadCase.loadCaseName && strengthCombination.loadCases.length === 1) {
-        enqueueSnackbar("Please define Load Case for the selected Combination", {
+        enqueueSnackbar("Please define Load Case for the selected Combination", {  
           variant: "error",
           anchorOrigin: { vertical: "top", horizontal: "center" },
         });
@@ -1392,7 +1401,12 @@ console.log(joinedCombinations);
       if  (subArray.length > 0) {
       const filteredSubArray = subArray.filter(arr => arr.length > 0);
       combineArrays(filteredSubArray);
-      allFinalCombinations.push(...joinedComb);
+       for (const comb of joinedComb) {
+      // Check for deep equality using JSON.stringify
+      if (!allFinalCombinations.some(existing => JSON.stringify(existing) === JSON.stringify(comb))) {
+        allFinalCombinations.push(comb);
+      }
+    }
       joinedComb = []
       } 
     }
@@ -1434,7 +1448,11 @@ console.log(joinedCombinations);
       const concatenatedArray = joinedCombinations.flat();
       console.log(concatenatedArray);
       concatenatedArray.forEach((combArray) => {
-        combArray.forEach(subArray => allFinalCombinations.push(subArray));
+       combArray.forEach(subArray => {
+    if (!allFinalCombinations.some(existing => JSON.stringify(existing) === JSON.stringify(subArray))) {
+      allFinalCombinations.push(subArray);
+    }
+  });
       });
       if (type === "Envelope") {
         const manipulatedCombinations = [];
@@ -1480,6 +1498,11 @@ console.log(joinedCombinations);
       allFinalCombinations.forEach((combArray, idx) => {
         combinationCounter++;
         const combinationName = `${comb_name}_${idx + 1}`; 
+        const active = loadCombinationValues.includes(comb_name) 
+        ? "INACTIVE" 
+        : service_combo.includes(comb_name) 
+          ? "SERVICE"
+          : "ACTIVE";
         let vCOMB = combArray.map((comb) => {
           const cleanedLoadCaseName = comb.loadCaseName.replace(/\s*\((CB|ST|CS|CBC|MV|SM|RS|CBR|CBSC|CBS)\)$/, '');
           // Extract the value inside the parentheses if present
@@ -1500,7 +1523,7 @@ console.log(joinedCombinations);
         if (type === "Envelope") {
         backupCivilComev.Assign[`${idx + 1 + combinationCounter + initial_lc}`] = {
           "NAME": combinationName,
-          "ACTIVE": "ACTIVE",
+          "ACTIVE": active,
           "bCB": false,
           "iTYPE": 0,
           "vCOMB": vCOMB
@@ -1508,7 +1531,7 @@ console.log(joinedCombinations);
     } else{
         backupCivilCom.Assign[`${idx + 1 + combinationCounter + initial_lc}`] = {
           "NAME": combinationName,
-          "ACTIVE": "ACTIVE",
+          "ACTIVE": active,
           "bCB": false,
           "iTYPE": 0,
           "vCOMB": vCOMB
@@ -1523,6 +1546,11 @@ console.log(joinedCombinations);
       env_count = env_count + 1;
       console.log("Generating envelope load combinations...");
       const combinationName = `${comb_name}_Env`;
+      const active = loadCombinationValues.includes(comb_name) 
+        ? "INACTIVE" 
+        : service_combo.includes(comb_name) 
+          ? "SERVICE"
+          : "ACTIVE";
       let allVCombEntries = [];
       for (const key in backupCivilCom.Assign) {
         // allVCombEntries = []
@@ -1557,7 +1585,7 @@ console.log(joinedCombinations);
       }
       backupCivilCom_env.Assign[`${last_value + 1}`] = {
         "NAME": combinationName,
-        "ACTIVE": "STRENGTH",
+        "ACTIVE": active,
         "bCB": false,
         "iTYPE": 0,
         "vCOMB": allVCombEntries
@@ -1768,7 +1796,7 @@ function join_factor(finalCombinations_sign) {
           itemArray.forEach(subArray => {
             Object.keys(subArray).forEach(key => {
               // Check if the key is a number
-              if (!isNaN(parseInt(key, 10))) {
+              if (!isNaN(Number(key))) {
                 // If key is a number, go deeper into its nested key-value pairs
                 const nestedObj = subArray[key];
                 Object.keys(nestedObj).forEach(nestedKey => {
@@ -2601,111 +2629,210 @@ let joinArrays = (arrays, index, currentCombination) => {
 if (allComb.length > 0) {
   joinArrays(allComb, 0, []);
 }
-        finalCombinations.forEach(combination => {
-          factorCombinations.forEach(factorCombination => {
-            const combinedResult = [];
-            if (Array.isArray(combination)) {
-              combination.forEach(item => {
-                Object.keys(item).forEach(key => {
-                  if (!isNaN(parseInt(key, 10))) {
-                    const nestedObj = item[key];
-                    Object.keys(nestedObj).forEach(nestedKey => {
-                      const nestedValue = nestedObj[nestedKey];
-                      const loadCaseName = nestedValue.loadCaseName;
-                      const sign = nestedValue.sign;
-                      const factor = nestedValue.factor;
-                      let factorValue;
-                      if (factor !== undefined && factor !== "") {
-                        factorValue = getSingleFactor(factor, factorIndex, i);
-                      }
-                      if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
-                        combinedResult.push({ loadCaseName, sign, factor: factorValue });
-                      }
-                    });
-                  } else {
-                    const value = item[key];
-                    const loadCaseName = value.loadCaseName;
-                    const sign = value.sign;
-                    let factor;
-                  if (value.factor !== undefined && value.factor !== null && value.factor !== 0) {
-                    factor = value.factor;
-                  }
-                    let factorValue;
-                    if (factor !== undefined && factor !== "") {
-                      factorValue = getSingleFactor(factor, factorIndex, i);
-                    }
-                    if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
-                      combinedResult.push({ loadCaseName, sign, factor: factorValue });
-                    }
-                  }
-                });
-              });
-            } else if (typeof combination === "object" && combination !== null) {
-              Object.keys(combination).forEach(key => {
-                if (!isNaN(parseInt(key, 10))) {
-                  const nestedObj = combination[key];
-                  Object.keys(nestedObj).forEach(nestedKey => {
-                    const nestedValue = nestedObj[nestedKey];
-                    const loadCaseName = nestedValue.loadCaseName;
-                    const sign = nestedValue.sign;
-                    let factor;
-                  if (nestedValue.factor !== undefined && nestedValue.factor !== null && nestedValue.factor !== 0) {
-                    factor = nestedValue.factor;
-                  }
-                    let factorValue;
-                    if (factor !== undefined && factor !== "") {
-                      factorValue = getSingleFactor(factor, factorIndex, i);
-                    }
-                    if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
-                      combinedResult.push({ loadCaseName, sign, factor: factorValue });
-                    }
-                  });
-                } else {
-                  const value = combination[key];
-                  const loadCaseName = value.loadCaseName;
-                  const sign = value.sign;
-                  let factor;
-                  if (value.factor !== undefined && value.factor !== null && value.factor !== 0) {
-                    factor = value.factor;
-                  }
-                  let factorValue;
-                  if (factor !== undefined && factor !== "") {
-                    factorValue = getSingleFactor(factor, factorIndex, i);
-                  }
-                  if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
-                    combinedResult.push({ loadCaseName, sign, factor: factorValue });
-                  }
-                }
-              });
-            }
-                if (combinedResult.length > 0) {
-                  if (factorCombination.combinations) {
-                    const extractedCombinations = factorCombination.combinations;
-                    extractedCombinations.forEach(innerArray => {
-                      const tempCombinedResult = [...combinedResult, ...innerArray];
-                      allCombinations.push(tempCombinedResult);
-                    });
-                  } else {
-                    const tempCombinedResult = [...combinedResult, ...factorCombination];
-                    allCombinations.push(tempCombinedResult);
-                   
-                  }
-                } else {
-                  if (factorCombination.combinations) {
-                    const extractedCombinations = factorCombination.combinations;
-                    extractedCombinations.forEach(innerArray => {
-                      const tempCombinedResult = [...innerArray];
-                      allCombinations.push(tempCombinedResult);
-                    });
-                  } else {
-                    const tempCombinedResult = [...factorCombination];
-                    allCombinations.push(tempCombinedResult);
-                   
-                  }
-                }
+      finalCombinations.forEach(combination => {
+  // If factorCombinations is empty, only push combinedResult if it exists, then skip the rest
+  if (!factorCombinations || factorCombinations.length === 0) {
+    const combinedResult = [];
+    // Extraction logic for combinedResult
+    if (Array.isArray(combination)) {
+      combination.forEach(item => {
+        Object.keys(item).forEach(key => {
+          if (!isNaN(Number(key, 10))) {
+            const nestedObj = item[key];
+            Object.keys(nestedObj).forEach(nestedKey => {
+              const nestedValue = nestedObj[nestedKey];
+              const loadCaseName = nestedValue.loadCaseName;
+              const sign = nestedValue.sign;
+              const factor = nestedValue.factor;
+              let factorValue;
+              if (factor !== undefined && factor !== "") {
+                factorValue = getSingleFactor(factor, factorIndex, i);
+              }
+              if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+                combinedResult.push({ loadCaseName, sign, factor: factorValue });
+              }
             });
+          } else {
+            const value = item[key];
+            const loadCaseName = value.loadCaseName;
+            const sign = value.sign;
+            let factor;
+            if (value.factor !== undefined && value.factor !== null && value.factor !== 0) {
+              factor = value.factor;
+            }
+            let factorValue;
+            if (factor !== undefined && factor !== "") {
+              factorValue = getSingleFactor(factor, factorIndex, i);
+            }
+            if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+              combinedResult.push({ loadCaseName, sign, factor: factorValue });
+            }
+          }
+        });
+      });
+    } else if (typeof combination === "object" && combination !== null) {
+      Object.keys(combination).forEach(key => {
+        if (!isNaN(Number(key, 10))) {
+          const nestedObj = combination[key];
+          Object.keys(nestedObj).forEach(nestedKey => {
+            const nestedValue = nestedObj[nestedKey];
+            const loadCaseName = nestedValue.loadCaseName;
+            const sign = nestedValue.sign;
+            let factor;
+            if (nestedValue.factor !== undefined && nestedValue.factor !== null && nestedValue.factor !== 0) {
+              factor = nestedValue.factor;
+            }
+            let factorValue;
+            if (factor !== undefined && factor !== "") {
+              factorValue = getSingleFactor(factor, factorIndex, i);
+            }
+            if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+              combinedResult.push({ loadCaseName, sign, factor: factorValue });
+            }
           });
-        
+        } else {
+          const value = combination[key];
+          const loadCaseName = value.loadCaseName;
+          const sign = value.sign;
+          let factor;
+          if (value.factor !== undefined && value.factor !== null && value.factor !== 0) {
+            factor = value.factor;
+          }
+          let factorValue;
+          if (factor !== undefined && factor !== "") {
+            factorValue = getSingleFactor(factor, factorIndex, i);
+          }
+          if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+            combinedResult.push({ loadCaseName, sign, factor: factorValue });
+          }
+        }
+      });
+    }
+    if (combinedResult.length > 0) {
+      allCombinations.push([...combinedResult]);
+    }
+    return; // Skip the rest of the loop for this combination
+  }
+
+  // Only run this part if factorCombinations is not empty
+  factorCombinations.forEach(factorCombination => {
+    const combinedResult = [];
+    // ...existing extraction logic for combinedResult...
+
+    if (Array.isArray(combination)) {
+      combination.forEach(item => {
+        Object.keys(item).forEach(key => {
+          if (!isNaN(Number(key, 10))) {
+            const nestedObj = item[key];
+            Object.keys(nestedObj).forEach(nestedKey => {
+              const nestedValue = nestedObj[nestedKey];
+              const loadCaseName = nestedValue.loadCaseName;
+              const sign = nestedValue.sign;
+              const factor = nestedValue.factor;
+              let factorValue;
+              if (factor !== undefined && factor !== "") {
+                factorValue = getSingleFactor(factor, factorIndex, i);
+              }
+              if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+                combinedResult.push({ loadCaseName, sign, factor: factorValue });
+              }
+            });
+          } else {
+            const value = item[key];
+            const loadCaseName = value.loadCaseName;
+            const sign = value.sign;
+            let factor;
+            if (value.factor !== undefined && value.factor !== null && value.factor !== 0) {
+              factor = value.factor;
+            }
+            let factorValue;
+            if (factor !== undefined && factor !== "") {
+              factorValue = getSingleFactor(factor, factorIndex, i);
+            }
+            if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+              combinedResult.push({ loadCaseName, sign, factor: factorValue });
+            }
+          }
+        });
+      });
+    } else if (typeof combination === "object" && combination !== null) {
+      Object.keys(combination).forEach(key => {
+        if (!isNaN(Number(key, 10))) {
+          const nestedObj = combination[key];
+          Object.keys(nestedObj).forEach(nestedKey => {
+            const nestedValue = nestedObj[nestedKey];
+            const loadCaseName = nestedValue.loadCaseName;
+            const sign = nestedValue.sign;
+            let factor;
+            if (nestedValue.factor !== undefined && nestedValue.factor !== null && nestedValue.factor !== 0) {
+              factor = nestedValue.factor;
+            }
+            let factorValue;
+            if (factor !== undefined && factor !== "") {
+              factorValue = getSingleFactor(factor, factorIndex, i);
+            }
+            if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+              combinedResult.push({ loadCaseName, sign, factor: factorValue });
+            }
+          });
+        } else {
+          const value = combination[key];
+          const loadCaseName = value.loadCaseName;
+          const sign = value.sign;
+          let factor;
+          if (value.factor !== undefined && value.factor !== null && value.factor !== 0) {
+            factor = value.factor;
+          }
+          let factorValue;
+          if (factor !== undefined && factor !== "") {
+            factorValue = getSingleFactor(factor, factorIndex, i);
+          }
+          if (factorValue !== undefined && factorValue !== null && factorValue !== 0 && factor !== "") {
+            combinedResult.push({ loadCaseName, sign, factor: factorValue });
+          }
+        }
+      });
+    }
+
+    if (combinedResult.length > 0) {
+      if (firstKey === "Either") {
+        if (factorCombination.combinations) {
+          const extractedCombinations = factorCombination.combinations;
+          extractedCombinations.forEach(innerArray => {
+            allCombinations.push([ ...combinedResult ]);
+            allCombinations.push([ ...innerArray ]);
+          });
+        } else {
+          const tempCombinedResult = [...combinedResult]; 
+          allCombinations.push(tempCombinedResult);
+          allCombinations.push([ ...factorCombination ]);
+        }
+      } else {
+        if (factorCombination.combinations) {
+          const extractedCombinations = factorCombination.combinations;
+          extractedCombinations.forEach(innerArray => {
+            const tempCombinedResult = [...combinedResult, ...innerArray];
+            allCombinations.push(tempCombinedResult);
+          });
+        } else {
+          const tempCombinedResult = [...combinedResult, ...factorCombination];
+          allCombinations.push(tempCombinedResult);
+        }
+      }
+    } else {
+      if (factorCombination.combinations) {
+        const extractedCombinations = factorCombination.combinations;
+        extractedCombinations.forEach(innerArray => {
+          const tempCombinedResult = [...innerArray];
+          allCombinations.push(tempCombinedResult);
+        });
+      } else {
+        const tempCombinedResult = [...factorCombination];
+        allCombinations.push(tempCombinedResult);
+      }
+    }
+  });
+});
           const nonEmptyFactorCombinations = factorCombinations.filter(factor => factor.length > 0);
           if (add.length === 0 && nonEmptyFactorCombinations.length > 0) {
             allCombinations.push(...factorCombinations);
@@ -2924,7 +3051,7 @@ for (let factorIndex = 0; factorIndex < 5; factorIndex++) {
     function processItem(item) {
       let addmultiResult = [];
       Object.keys(item).forEach(key => {
-        if (!isNaN(parseInt(key, 10))) {
+        if (!isNaN(Number(key, 10))) {
           const nestedObj = item[key];
           Object.keys(nestedObj).forEach(nestedKey => {
             const nestedValue = nestedObj[nestedKey];
@@ -3422,7 +3549,7 @@ async function Generate_Load_Combination() {
   setIsGenerating((pre)=>true);
   console.log("Generating Load Combination", isGenerating);
     const cleanedLoadNames = all_loadCaseNames.map((name) =>
-      name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS|SM)\)$/, '')
+      name.replace(/\s*\((CB|ST|CS|CBC|MV|RS|CBR|CBSC|CBS|SM|CO)\)$/, '')
     );
     const allIncluded = cleanedLoadNames.every((name) => loadNames.includes(name));
     if (!allIncluded) {
@@ -3434,11 +3561,11 @@ async function Generate_Load_Combination() {
       return; 
     }
     console.log(loadCombinations);
-    let uniqueFactorData = removeDuplicateFactors(loadCombinations);
-    setLoadCombinations(uniqueFactorData.filter((i)=>(i)));
-    console.log(uniqueFactorData.filter((i)=>(i)));
-    console.log(uniqueFactorData);
-    console.log(loadCombinations);
+    // let uniqueFactorData = removeDuplicateFactors(loadCombinations);
+    // setLoadCombinations(uniqueFactorData.filter((i)=>(i)));
+    // console.log(uniqueFactorData.filter((i)=>(i)));
+    // console.log(uniqueFactorData);
+    // console.log(loadCombinations);
     const basicCombinations = generateBasicCombinations(loadCombinations);
     console.log(basicCombinations);
     setIsGenerating(false, () => {
@@ -4168,6 +4295,87 @@ const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
               contentEditable
               suppressContentEditableWarning
               onBlur={(e) => handleFactorBlur(selectedLoadCombinationIndex, loadCaseIndex, factorKey, e.currentTarget.textContent)}
+              onKeyDown={(e) => {
+      if (e.key === 'Enter') {
+    e.preventDefault();
+    const current = e.currentTarget;
+    const parent = current.parentElement;
+    const nextRow = parent.nextSibling;
+    if (nextRow) {
+      // Find all editable cells in the next row
+      const editables = nextRow.querySelectorAll('[contenteditable="true"]');
+      // Find the index of the current cell in its row
+      const cells = Array.from(parent.children).filter(
+        el => el.getAttribute('contenteditable') === 'true'
+      );
+      const currentIndex = cells.indexOf(current);
+      // Focus the cell at the same index in the next row, if it exists
+      if (editables[currentIndex]) {
+        editables[currentIndex].focus();
+      }
+    }
+  }
+   // PageDown: move to same column, next row
+  if (e.key === 'PageDown') {
+    e.preventDefault();
+    const current = e.currentTarget;
+    const parent = current.parentElement;
+    const nextRow = parent.nextSibling;
+    if (nextRow) {
+      const editables = nextRow.querySelectorAll('[contenteditable="true"]');
+      const cells = Array.from(parent.children).filter(
+        el => el.getAttribute('contenteditable') === 'true'
+      );
+      const currentIndex = cells.indexOf(current);
+      if (editables[currentIndex]) {
+        editables[currentIndex].focus();
+      }
+    }
+  }
+  // PageUp: move to same column, previous row
+  if (e.key === 'PageUp') {
+    e.preventDefault();
+    const current = e.currentTarget;
+    const parent = current.parentElement;
+    const prevRow = parent.previousSibling;
+    if (prevRow) {
+      const editables = prevRow.querySelectorAll('[contenteditable="true"]');
+      const cells = Array.from(parent.children).filter(
+        el => el.getAttribute('contenteditable') === 'true'
+      );
+      const currentIndex = cells.indexOf(current);
+      if (editables[currentIndex]) {
+        editables[currentIndex].focus();
+      }
+    }
+  }
+  // PageRight: move to next cell in the same row
+  if (e.key === 'PageRight') {
+    e.preventDefault();
+    const current = e.currentTarget;
+    const parent = current.parentElement;
+    const cells = Array.from(parent.children).filter(
+      el => el.getAttribute('contenteditable') === 'true'
+    );
+    const currentIndex = cells.indexOf(current);
+    if (cells[currentIndex + 1]) {
+      cells[currentIndex + 1].focus();
+    }
+  }
+  // PageLeft: move to previous cell in the same row
+  if (e.key === 'PageLeft') {
+    e.preventDefault();
+    const current = e.currentTarget;
+    const parent = current.parentElement;
+    const cells = Array.from(parent.children).filter(
+      el => el.getAttribute('contenteditable') === 'true'
+    );
+    const currentIndex = cells.indexOf(current);
+    if (cells[currentIndex - 1]) {
+      cells[currentIndex - 1].focus();
+    }
+  }
+    }}
             >
               {loadCase[factorKey] !== undefined ? loadCase[factorKey] : " "}
             </div>
