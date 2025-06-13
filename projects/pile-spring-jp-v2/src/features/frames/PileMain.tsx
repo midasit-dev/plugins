@@ -7,14 +7,22 @@ import {
   PileReinforced,
   PileSection,
 } from "../panels";
-import { PileActions } from "../actions";
-import { GuideBox, Typography, Panel } from "@midasit-dev/moaui";
+import { PileActions, ImportJsonButton } from "../actions";
+import { GuideBox, Typography, Panel, Button } from "@midasit-dev/moaui";
 import { useTranslation } from "react-i18next";
 import { TabGroup, Tab } from "../../components";
+
+import { useRecoilValue } from "recoil";
+import { pileDataListState } from "../../states/statePileData";
 
 const PileMain = () => {
   const [tabValue, setTabValue] = useState<number>(1);
   const { t } = useTranslation();
+  const pileDataList = useRecoilValue(pileDataListState);
+
+  const clickbutton = () => {
+    console.log(pileDataList);
+  };
 
   const handleTabChange = (event: React.SyntheticEvent, value: number) => {
     setTabValue(value);
@@ -39,11 +47,10 @@ const PileMain = () => {
               spacing={1}
             >
               <TabGroup value={tabValue} onChange={handleTabChange}>
-                <Tab label={t("Section_Setting")} value={1} />
-                <Tab label={t("Initial_Setting")} value={2} />
+                <Tab label={t("Initial_Setting")} value={1} />
+                <Tab label={t("Section_Setting")} value={2} />
               </TabGroup>
-              {tabValue === 1 && <PileSection />}
-              {tabValue === 2 && (
+              {tabValue === 1 && (
                 <GuideBox width="100%" row spacing={3}>
                   <GuideBox column spacing={1}>
                     <Typography variant="body2">
@@ -69,6 +76,7 @@ const PileMain = () => {
                   </GuideBox>
                 </GuideBox>
               )}
+              {tabValue === 2 && <PileSection />}
             </GuideBox>
             <GuideBox width="100%" row horRight>
               <PileActions />
@@ -79,6 +87,10 @@ const PileMain = () => {
       <GuideBox width="100%" column spacing={1}>
         <Typography variant="body2">{t("Pile_Arrangement_Table")}</Typography>
         <PileData />
+      </GuideBox>
+      <GuideBox width="100%" row spacing={1}>
+        <ImportJsonButton />
+        <Button onClick={clickbutton}>Click</Button>
       </GuideBox>
     </GuideBox>
   );

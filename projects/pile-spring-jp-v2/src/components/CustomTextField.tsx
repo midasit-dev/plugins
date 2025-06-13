@@ -12,6 +12,8 @@ interface CustomTextFieldProps {
   onChange?: (e: any) => void;
   placeholder?: string;
   disabled?: boolean;
+  hideBorder?: boolean;
+  textAlign?: "left" | "center" | "right";
 }
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -24,6 +26,8 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   onChange,
   placeholder = "",
   disabled = false,
+  hideBorder = false,
+  textAlign = "left",
 }) => {
   return (
     <GuideBox width={width} height={height} row verCenter horSpaceBetween>
@@ -40,10 +44,22 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
             padding: 0,
             fontFamily: "Pretendard",
             fontSize: "12px",
+            textAlign: textAlign,
           },
           "& .MuiInputBase-root": {
             height: "28px",
             padding: "0.375rem 0.375rem 0.375rem 0.625rem",
+            ...(hideBorder && {
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                border: "1px solid rgba(0, 0, 0, 0.23)",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "2px solid #1976d2",
+              },
+            }),
           },
         }}
       />

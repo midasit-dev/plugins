@@ -4,3 +4,6 @@ export { default as PileSection } from "./PileSection";
 export { default as PileLocation } from "./PileLocation";
 export { default as PileReinforced } from "./PileReinforced";
 export { default as PileData } from "./PileData";
+export { default as SoilBasic } from "./SoilBasic";
+export { default as SoilResistance } from "./SoilResistance";
+export { default as SoilTable } from "./SoilTable";

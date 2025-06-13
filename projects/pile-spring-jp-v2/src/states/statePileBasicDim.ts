@@ -1,21 +1,18 @@
 import { atom } from "recoil";
 
-export const FoundationWidth = atom({
-  key: "FoundationWidth",
-  default: 10,
-});
+export interface PileBasicDimensions {
+  foundationWidth: number;
+  sideLength: number;
+  forcePointX: number;
+  forcePointY: number;
+}
 
-export const SideLength = atom({
-  key: "SideLength",
-  default: 10,
-});
-
-export const Force_Point_X = atom({
-  key: "Force_Point_X",
-  default: 0,
-});
-
-export const Force_Point_Y = atom({
-  key: "Force_Point_Y",
-  default: 0,
+export const pileBasicDimensions = atom<PileBasicDimensions>({
+  key: "pileBasicDimensions",
+  default: {
+    foundationWidth: 10,
+    sideLength: 10,
+    forcePointX: 0,
+    forcePointY: 0,
+  },
 });

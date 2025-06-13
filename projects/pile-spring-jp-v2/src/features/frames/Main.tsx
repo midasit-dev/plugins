@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { GuideBox } from "@midasit-dev/moaui";
 import PileMain from "./PileMain";
+import SoilMain from "./SoilMain";
 import { TabGroup, Tab } from "../../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,6 +29,7 @@ const Main = () => {
       </TabGroup>
       {/* {tabValue === 1 && <MomorizedPileMain />} */}
       {tabValue === 1 && <PileMain />}
+      {tabValue === 2 && <SoilMain />}
     </GuideBox>
   );
 };

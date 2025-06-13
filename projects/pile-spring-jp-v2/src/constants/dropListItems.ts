@@ -80,3 +80,22 @@ export const PileLocRefYItems = () => {
     [t("Ref_Point_Bottom"), "Ref_Point_Bottom"],
   ]);
 };
+
+export const SoilResistanceMethodItems = () => {
+  const { t } = useTranslation();
+
+  return new Map<string, string | number>([
+    [t("Calculate_by_N"), "Calculate_by_N"],
+    [t("Calculate_by_C"), "Calculate_by_C"],
+  ]);
+};
+
+export const SoilLayerTypeItems = () => {
+  const { t } = useTranslation();
+
+  return new Map<string, string | number>([
+    [t("SoilType_Clay"), "SoilType_Clay"],
+    [t("SoilType_Sand"), "SoilType_Sand"],
+    [t("SoilType_Sandstone"), "SoilType_Sandstone"],
+  ]);
+};

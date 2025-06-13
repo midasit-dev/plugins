@@ -45,15 +45,13 @@ export const pileSummaryListState = selector<PileDataSummary[]>({
   key: "pileSummaryListState",
   get: ({ get }) => {
     const pileDataList = get(pileDataListState);
-    const initSetData = get(pileInitSetState);
-    const sectionData = get(pileSectionState);
 
     return pileDataList.map((item) => ({
       id: item.id,
-      pileName: initSetData.pileName,
-      pileType: sectionData[0].pileType,
-      constructionMethod: initSetData.constructionMethod,
-      pileNumber: "4",
+      pileName: item.initSetData.pileName, // 각 아이템의 고유한 데이터 사용
+      pileType: item.sectionData[0].pileType, // 각 아이템의 고유한 데이터 사용
+      constructionMethod: item.initSetData.constructionMethod, // 각 아이템의 고유한 데이터 사용
+      pileNumber: "4", // 이 부분도 item의 데이터에서 계산하거나 가져와야 함
     }));
   },
 });

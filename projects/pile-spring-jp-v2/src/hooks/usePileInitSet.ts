@@ -31,7 +31,7 @@ export const usePileInitSet = () => {
   useEffect(() => {
     const totalLength = pileSection
       .filter((pile) => pile.checked)
-      .reduce((acc, curr) => acc + parseFloat(curr.length), 0);
+      .reduce((acc, curr) => acc + curr.length, 0);
     setPileInitSet({ ...pileInitSet, pileLength: totalLength });
   }, [pileSection]);
 

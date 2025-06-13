@@ -4,10 +4,10 @@ export interface PileReinforcedRowData {
   id: number;
   checked: boolean;
   reinforced_method: string;
-  reinforced_start: string;
-  reinforced_end: string;
-  reinforced_thickness: string;
-  reinforced_modulus: string;
+  reinforced_start: number;
+  reinforced_end: number;
+  reinforced_thickness: number;
+  reinforced_modulus: number;
 }
 
 export const pileReinforcedState = atom<PileReinforcedRowData[]>({
@@ -15,21 +15,21 @@ export const pileReinforcedState = atom<PileReinforcedRowData[]>({
   default: [
     {
       id: 1,
-      checked: true,
+      checked: false,
       reinforced_method: "Reinforced_Method_Outer",
-      reinforced_start: "0",
-      reinforced_end: "0",
-      reinforced_thickness: "",
-      reinforced_modulus: "",
+      reinforced_start: 0,
+      reinforced_end: 0,
+      reinforced_thickness: 0,
+      reinforced_modulus: 0,
     },
     {
       id: 2,
       checked: false,
       reinforced_method: "Reinforced_Method_Inner",
-      reinforced_start: "0",
-      reinforced_end: "0",
-      reinforced_thickness: "",
-      reinforced_modulus: "",
+      reinforced_start: 0,
+      reinforced_end: 0,
+      reinforced_thickness: 0,
+      reinforced_modulus: 0,
     },
   ],
 });

@@ -7,7 +7,12 @@ const PileReinforced = () => {
   const { rows, renderRow, getHeaders } = usePileReinforced();
 
   return (
-    <CustomTable rows={rows} renderRow={renderRow} headers={getHeaders()} />
+    <CustomTable
+      totalWidth={550}
+      rows={rows}
+      renderRow={renderRow}
+      headers={getHeaders()}
+    />
   );
 };
 

@@ -107,14 +107,46 @@
   "Dialog_Button_Cancel": "취소",
   "Dialog_Button_Delete": "삭제",
 
+  "D": "UI/지반정보",
+  "Soil_Top_Level": "설계 지반면 표고(m)",
+  "Vsi_Title": "Vsi 옵션",
+  
+  "Vsi_AutoCal": "Vsi의 자동 계산(도시V)",
+  "Reduce_KH": "수평지반 반력계수 kH의 저감",
+  "Liquifaction_Title": "액상화 층에 대한 저감(DE)",
+  "SlopeEffect_Title": "사면효과에 의한 저감",
+  "GroupEffect_Title": "군말뚝 효과에 의한 저감",
 
+  "Soil_Info": "지반 정보",
+  "Soil_Setting": "지층 설정",
+  "Soil_Table": "지층 테이블",
 
+  "Soil_Table_No": "층 No",
+  "Soil_Table_Type": "층 종류",
+  "Soil_Table_Level": "층 상면 표고(m)",
+  "Soil_Table_Depth": "층 두께(m)",
+  "Soil_Table_AvgN": "평균 N값",
+  "Soil_Table_AE0_Normal": "αE₀(상시)",
+  "Soil_Table_AE0_Seismic": "αE₀(지진시)",
+  "Soil_Table_Length": "전면길이",
+  "Soil_Table_Actions": "수정/삭제",
 
+  "SoilType_Clay": "점성토",
+  "SoilType_Sand": "사질토",
+  "SoilType_Sandstone": "사력토",
 
-
-
-
-
+  "E": "UI/저항강도",
+  
+  "Calculate_by_N": "N값으로 산정",
+  "Calculate_by_C": "점착력 c값으로 산정",
+  
+  "Soil_Resistance": "저항강도 계산",
+  "Soil_Resistance_Axial": "말뚝 축방향 저항 특성",
+  "Soil_Resistance_Method": "점성토의 최대 주면 마찰력도 산출 방법",
+  "Soil_Resistance_Tip_Capacity": "말뚝 선단의 단위 면적당 극한 지지력도 (kN/m²)",
+  "Soil_Resistance_lateral": "말뚝 축직각방향 저항 특성",
+  "Soil_Resistance_Slope_Angle": "지표면과 수평면이 이루는 각 (deg)",
+  "Soil_Resistance_Surface_Load": "지표면 재하하중 (kN/m²)",
 
   
 
@@ -209,30 +241,7 @@
   "Reinforced_Method_Inner_Outer": "피복+충진",
 
 
-  "Soil_Info": "지반 정보",
-  "Soil_Setting": "지층 설정",
-  "Soil_Table": "지층 테이블",
 
-  "Soil_Top_Level": "설계 지반면 표고(m)",
-
-  "Vsi_AutoCal": "Vsi의 자동 계산(도시V)",
-  "Reduce_KH": "수평지반 반력계수 kH의 저감",
-  "Liquifaction_Title": "액상화 층에 대한 저감(DE)",
-  "SlopeEffect_Title": "사면효과에 의한 저감",
-  "GroupEffect_Title": "군말뚝 효과에 의한 저감",
-
-  "Soil_Table_No": "층 No",
-  "Soil_Table_Type": "층 종류",
-  "Soil_Table_Level": "층 상면 표고(m)",
-  "Soil_Table_Depth": "층 두께(m)",
-  "Soil_Table_AvgN": "평균 N값",
-  "Soil_Table_AE0_Normal": "αE₀(상시)",
-  "Soil_Table_AE0_Seismic": "αE₀(지진시)",
-  "Soil_Table_Length": "전면길이",
-
-  "SoilType_Clay": "점성토",
-  "SoilType_Sand": "사질토",
-  "SoilType_Sandstone": "사력토",
 
   "Error_PileName": "말뚝 이름을 입력해주세요.",
   "Error_PileLength": "말뚝 길이는 0이상의 정수이어야 합니다.",

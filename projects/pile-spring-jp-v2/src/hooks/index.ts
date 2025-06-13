@@ -5,3 +5,5 @@ export * from "./usePileReinforced";
 export * from "./usePileLocation";
 export * from "./usePileData";
 export * from "./useNotification";
+export * from "./useSoilBasic";
+export * from "./useSoilResistance";

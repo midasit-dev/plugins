@@ -121,11 +121,46 @@
   "Dialog_Button_Delete": "削除",
   
   
+  "D": "UI/지반정보",
+  "Soil_Info": "地盤情報",
+  "Soil_Setting": "地層設定",
+  "Soil_Table": "地層レイヤー",
 
+  "Soil_Top_Level": "設計地盤面の標高(m)",
+  "Vsi_Title": "Vsi オプション",
+  
+  "Vsi_AutoCal": "Vsiの自動計算(道示V)",
+  "Reduce_KH": "水平方向地盤反力係数kHの低減",
+  "Liquifaction_Title": "液状化層の低減(DE)",
+  "SlopeEffect_Title": "斜面効果による低減",
+  "GroupEffect_Title": "群杭効果による低減",
 
+  "Soil_Table_No": "層No",
+  "Soil_Table_Type": "層種類",
+  "Soil_Table_Level": "層上面標高(m)",
+  "Soil_Table_Depth": "層厚(m)",
+  "Soil_Table_AvgN": "平均N値",
+  "Soil_Table_AE0_Normal": "αE₀(常時)",
+  "Soil_Table_AE0_Seismic": "αE₀(地震時)",
+  "Soil_Table_Length": "前面長さ",
+  "Soil_Table_Actions": "修正/削除",
 
+  "SoilType_Clay": "粘性土",
+  "SoilType_Sand": "砂質土",
+  "SoilType_Sandstone": "砂礫土",
 
-
+  "E": "UI/지반정보",
+  
+  "Calculate_by_N": "N値で計算",
+  "Calculate_by_C": "粘着力c値で計算",
+  
+  "Soil_Resistance": "地盤抵抗強度計算",
+  "Soil_Resistance_Axial": "杭軸方向地盤抵抗特性",
+  "Soil_Resistance_Method": "粘性土の最大主面摩擦抵抗度の算出方法",
+  "Soil_Resistance_Tip_Capacity": "杭先端の単位面積当たりの極限支持力 (kN/m²)",
+  "Soil_Resistance_lateral": "杭軸直角方向地盤抵抗特性",
+  "Soil_Resistance_Slope_Angle": "地盤面と水平面とのなす角 (deg)",
+  "Soil_Resistance_Surface_Load": "地盤面載荷荷重 (kN/m²)",
 
 
 
@@ -217,30 +252,8 @@
   "Reinforced_Method_Inner_Outer": "被覆+充填",
   
 
-  "Soil_Info": "地盤情報",
-  "Soil_Setting": "地層設定",
-  "Soil_Table": "地層レイヤー",
 
-  "Soil_Top_Level": "設計地盤面の標高(m)",
 
-  "Vsi_AutoCal": "Vsiの自動計算(道示V)",
-  "Reduce_KH": "水平方向地盤反力係数kHの低減",
-  "Liquifaction_Title": "液状化層の低減(DE)",
-  "SlopeEffect_Title": "斜面効果による低減",
-  "GroupEffect_Title": "群杭効果による低減",
-
-  "Soil_Table_No": "層No",
-  "Soil_Table_Type": "層種類",
-  "Soil_Table_Level": "層上面標高(m)",
-  "Soil_Table_Depth": "層厚(m)",
-  "Soil_Table_AvgN": "平均N値",
-  "Soil_Table_AE0_Normal": "αE₀(常時)",
-  "Soil_Table_AE0_Seismic": "αE₀(地震時)",
-  "Soil_Table_Length": "前面長さ",
-
-  "SoilType_Clay": "粘性土",
-  "SoilType_Sand": "砂質土",
-  "SoilType_Sandstone": "砂礫土",
 
   "Error_PileName": "杭の名称を入力してください。",
   "Error_PileLength": "杭長は0以上の実数でなければなりません。",

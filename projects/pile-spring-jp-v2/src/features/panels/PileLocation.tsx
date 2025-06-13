@@ -7,7 +7,12 @@ const PileLocation = () => {
   const { rows, renderRow, getHeaders } = usePileLocation();
 
   return (
-    <CustomTable rows={rows} renderRow={renderRow} headers={getHeaders()} />
+    <CustomTable
+      totalWidth={550}
+      rows={rows}
+      renderRow={renderRow}
+      headers={getHeaders()}
+    />
   );
 };
 
