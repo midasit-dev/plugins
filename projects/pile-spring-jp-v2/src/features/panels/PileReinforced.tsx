@@ -1,14 +1,12 @@
-import React from "react";
 import { CustomTable } from "../../components";
 import { usePileReinforced } from "../../hooks/usePileReinforced";
-import { GuideBox } from "@midasit-dev/moaui";
 
 const PileReinforced = () => {
   const { rows, renderRow, getHeaders } = usePileReinforced();
 
   return (
     <CustomTable
-      totalWidth={550}
+      totalWidth={540}
       rows={rows}
       renderRow={renderRow}
       headers={getHeaders()}

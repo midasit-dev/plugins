@@ -1,10 +1,11 @@
-import { PileDataItem } from "../../states/statePileData";
-import { PileInitSetData } from "../../states/statePileInitSet";
-import { PileLocationRowData } from "../../states/statePileLocation";
-import { PileReinforcedRowData } from "../../states/statePileReinforced";
-import { PileRowData } from "../../states/statePileSection";
-import { PileBasicDimensions } from "../../states/statePileBasicDim";
-import { parseSpaceInput, formatSpaceDisplay } from "./spacingConverter";
+import {
+  PileDataItem,
+  PileReinforcedRowData,
+  PileRowData,
+  PileBasicDimensions,
+  defaultPileSectionData,
+} from "../../states";
+import { parseSpaceInput } from "./spacingConverter";
 
 interface LegacyPileData {
   pileName: string;
@@ -42,8 +43,8 @@ interface LegacyPileData {
   majorStartPoint: string | number;
   minorStartPoint: string | number;
   majorSpace: string;
-  majorDegree: string | number;
-  minorDegree: string | number;
+  majorDegree: string;
+  minorDegree: string;
   PileNums: number;
 }
 
@@ -66,7 +67,7 @@ interface LegacyJsonData {
   language: string;
 }
 
-// Section 데이터는 기존과 구조가 많이 달라져서 별도로 처리
+// Section 데이터 처리
 const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
   const sections: PileRowData[] = [];
 
@@ -100,28 +101,36 @@ const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
         steel_thickness: Number(pile.compSteelThickness),
         steel_modulus: Number(pile.compSteelModulus),
         steel_cor_thickness: Number(pile.compSteelCorThickness),
-      }
+      },
+      defaultPileSectionData[2],
+      defaultPileSectionData[3]
     );
   } else {
-    sections.push({
-      id: 1,
-      checked: true,
-      name: "Pile_Category_Basic",
-      pileType: pile.pileType,
-      length: Number(pile.pileLength),
-      concrete_diameter: Number(pile.concreteDiameter),
-      concrete_thickness: Number(pile.concreteThickness),
-      concrete_modulus: Number(pile.concreteModulus),
-      steel_diameter: Number(pile.steelDiameter),
-      steel_thickness: Number(pile.steelThickness),
-      steel_modulus: Number(pile.steelModulus),
-      steel_cor_thickness: Number(pile.steelCorThickness),
-    });
+    sections.push(
+      {
+        id: 1,
+        checked: true,
+        name: "Pile_Category_Basic",
+        pileType: pile.pileType,
+        length: Number(pile.pileLength),
+        concrete_diameter: Number(pile.concreteDiameter),
+        concrete_thickness: Number(pile.concreteThickness),
+        concrete_modulus: Number(pile.concreteModulus),
+        steel_diameter: Number(pile.steelDiameter),
+        steel_thickness: Number(pile.steelThickness),
+        steel_modulus: Number(pile.steelModulus),
+        steel_cor_thickness: Number(pile.steelCorThickness),
+      },
+      defaultPileSectionData[1],
+      defaultPileSectionData[2],
+      defaultPileSectionData[3]
+    );
   }
 
   return sections;
 };
 
+// Reinforced 데이터 처리
 const convertLegacyReinforcedData = (
   pile: LegacyPileData
 ): PileReinforcedRowData[] => {
@@ -181,43 +190,74 @@ const convertLegacyReinforcedData = (
   return reinforcedData;
 };
 
-export const convertLegacyToCurrent = (
+// pileData 전체 데이터 변환
+const convertPileLegacyToCurrent = (
   legacyData: LegacyJsonData
 ): { pileData: PileDataItem[]; basicDimensions: PileBasicDimensions } => {
-  const pileData = legacyData.piletableData.map((pile, index) => ({
-    id: index + 1,
-    pileName: pile.pileName,
-    initSetData: {
+  const pileData = legacyData.piletableData.map((pile, index) => {
+    // space와 angle 데이터 처리
+    const majorSpace = parseSpaceInput(pile.majorSpace);
+    const majorDegree = parseSpaceInput(pile.majorDegree);
+    const minorDegree = parseSpaceInput(pile.minorDegree);
+
+    // angle 배열 길이 조정
+    const adjustAngleArray = (spaceArray: number[], angleArray: number[]) => {
+      const targetLength = spaceArray.length + 1;
+
+      if (
+        angleArray.length === 0 ||
+        (angleArray.length === 1 && angleArray[0] === 0)
+      ) {
+        return Array(targetLength).fill(0);
+      }
+
+      if (angleArray.length < targetLength) {
+        return [
+          ...angleArray,
+          ...Array(targetLength - angleArray.length).fill(0),
+        ];
+      } else if (angleArray.length > targetLength) {
+        return angleArray.slice(0, targetLength);
+      }
+      return angleArray;
+    };
+
+    return {
+      id: index + 1,
       pileName: pile.pileName,
-      pileLength: Number(pile.pileLength),
-      topLevel: Number(legacyData.topLevel),
-      constructionMethod: pile.constructionMethod,
-      headCondition: pile.headCondition,
-      bottomCondition: pile.bottomCondition,
-    },
-    locationData: [
-      {
-        id: 1,
-        loc_title: "Pile_X_Dir",
-        ref_point:
-          pile.majorRefValue === 1 ? "Ref_Point_Left" : "Ref_Point_Right",
-        loc: Number(pile.majorStartPoint),
-        space: parseSpaceInput(pile.majorSpace),
-        angle: Number(pile.majorDegree),
+      pileNumber: pile.PileNums,
+      initSetData: {
+        pileName: pile.pileName,
+        pileLength: Number(pile.pileLength),
+        topLevel: Number(legacyData.topLevel),
+        constructionMethod: pile.constructionMethod,
+        headCondition: pile.headCondition,
+        bottomCondition: pile.bottomCondition,
       },
-      {
-        id: 2,
-        loc_title: "Pile_Y_Dir",
-        ref_point:
-          pile.minorRefValue === 1 ? "Ref_Point_Bottom" : "Ref_Point_Top",
-        loc: Number(pile.minorStartPoint),
-        space: parseSpaceInput(pile.majorSpace),
-        angle: Number(pile.minorDegree),
-      },
-    ],
-    reinforcedData: convertLegacyReinforcedData(pile),
-    sectionData: convertLegacySectionData(pile),
-  }));
+      locationData: [
+        {
+          id: 1,
+          loc_title: "Pile_X_Dir",
+          ref_point:
+            pile.majorRefValue === 1 ? "Ref_Point_Left" : "Ref_Point_Right",
+          loc: Number(pile.majorStartPoint),
+          space: majorSpace,
+          angle: adjustAngleArray(majorSpace, majorDegree),
+        },
+        {
+          id: 2,
+          loc_title: "Pile_Y_Dir",
+          ref_point:
+            pile.minorRefValue === 1 ? "Ref_Point_Bottom" : "Ref_Point_Top",
+          loc: Number(pile.minorStartPoint),
+          space: [],
+          angle: adjustAngleArray(majorSpace, minorDegree),
+        },
+      ],
+      reinforcedData: convertLegacyReinforcedData(pile),
+      sectionData: convertLegacySectionData(pile),
+    };
+  });
 
   const basicDimensions = {
     foundationWidth: Number(legacyData.foundationWidth),
@@ -230,7 +270,7 @@ export const convertLegacyToCurrent = (
 };
 
 // 데이터 유효성 검사 함수
-export const validateLegacyData = (data: any): boolean => {
+const validateLegacyData = (data: any): boolean => {
   if (!data.piletableData || !Array.isArray(data.piletableData)) {
     return false;
   }
@@ -280,3 +320,5 @@ export const validateLegacyData = (data: any): boolean => {
     requiredFields.every((field) => field in pile)
   );
 };
+
+export { convertPileLegacyToCurrent, validateLegacyData };

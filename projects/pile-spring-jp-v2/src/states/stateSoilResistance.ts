@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-interface SoilResistance {
+export interface SoilResistance {
   useResistance: boolean;
   clayFrictionMethod: string;
   tipCapacity: number;

@@ -52,62 +52,64 @@ export const usePileReinforced = () => {
     });
   };
 
+  // 테이블 너비 설정
+  const fieldWidths: Partial<Record<keyof PileReinforcedRowData, number>> = {
+    reinforced_method: 90,
+    reinforced_start: 100,
+    reinforced_end: 100,
+    reinforced_thickness: 100,
+    reinforced_modulus: 100,
+  };
+
+  // 숫자 필드 렌더링 함수
+  const getNumberField = (
+    row: PileReinforcedRowData,
+    field: keyof PileReinforcedRowData,
+    disabled = false,
+    overrideValue?: string
+  ) => (
+    <CustomNumberField
+      value={overrideValue ?? String(row[field] ?? "")}
+      onChange={(e) => handleChange(row.id, field, e.target.value)}
+      width={fieldWidths[field]}
+      numberFieldWidth={fieldWidths[field]}
+      placeholder="number.."
+      hideBorder
+      textAlign="center"
+      disabled={disabled}
+    />
+  );
+
   const renderRow = (row: PileReinforcedRowData): ReactNode[] => [
     <CustomCheckBox
       checked={row.checked}
       onChange={(e) => handleChange(row.id, "checked", e.target.checked)}
     />,
     t(row.reinforced_method),
-    <CustomNumberField
-      value={
-        row.id === 2
-          ? rows.find((r) => r.id === 1)?.reinforced_start.toString() || ""
-          : row.reinforced_start.toString()
-      }
-      onChange={(e) => handleChange(row.id, "reinforced_start", e.target.value)}
-      width={100}
-      numberFieldWidth={100}
-      placeholder="number.."
-      disabled={row.id === 2}
-      hideBorder
-      textAlign="center"
-    />,
-    <CustomNumberField
-      value={
-        row.id === 2
-          ? rows.find((r) => r.id === 1)?.reinforced_end.toString() || ""
-          : row.reinforced_end.toString()
-      }
-      onChange={(e) => handleChange(row.id, "reinforced_end", e.target.value)}
-      width={100}
-      numberFieldWidth={100}
-      placeholder="number.."
-      disabled={row.id === 2}
-      hideBorder
-      textAlign="center"
-    />,
-    <CustomNumberField
-      value={row.reinforced_thickness.toString()}
-      onChange={(e) =>
-        handleChange(row.id, "reinforced_thickness", e.target.value)
-      }
-      width={100}
-      numberFieldWidth={100}
-      placeholder="number.."
-      hideBorder
-      textAlign="center"
-    />,
-    <CustomNumberField
-      value={row.reinforced_modulus.toString()}
-      onChange={(e) =>
-        handleChange(row.id, "reinforced_modulus", e.target.value)
-      }
-      width={100}
-      numberFieldWidth={100}
-      placeholder="number.."
-      hideBorder
-      textAlign="center"
-    />,
+    getNumberField(
+      row,
+      "reinforced_start",
+      row.id === 2,
+      rows.find((r) => r.id === 1)?.reinforced_start.toString() || ""
+    ),
+    getNumberField(
+      row,
+      "reinforced_end",
+      row.id === 2,
+      rows.find((r) => r.id === 1)?.reinforced_end.toString() || ""
+    ),
+    getNumberField(
+      row,
+      "reinforced_thickness",
+      false,
+      rows.find((r) => r.id === 1)?.reinforced_thickness.toString() || ""
+    ),
+    getNumberField(
+      row,
+      "reinforced_modulus",
+      false,
+      rows.find((r) => r.id === 1)?.reinforced_modulus.toString() || ""
+    ),
   ];
 
   const getHeaders = () => {
@@ -126,11 +128,14 @@ export const usePileReinforced = () => {
           />
         ),
       },
-      { label: t("Reinforced_Method"), width: 100 },
-      { label: t("Reinforced_Start"), width: 100 },
-      { label: t("Reinforced_End"), width: 100 },
-      { label: t("Reinforced_Thickness"), width: 100 },
-      { label: t("Reinforced_Modulus"), width: 100 },
+      { label: t("Reinforced_Method"), width: fieldWidths.reinforced_method },
+      { label: t("Reinforced_Start"), width: fieldWidths.reinforced_start },
+      { label: t("Reinforced_End"), width: fieldWidths.reinforced_end },
+      {
+        label: t("Reinforced_Thickness"),
+        width: fieldWidths.reinforced_thickness,
+      },
+      { label: t("Reinforced_Modulus"), width: fieldWidths.reinforced_modulus },
     ];
   };
 

@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-interface SoilBasic {
+export interface SoilBasic {
   groundLevel: number;
   waterLevel: number;
   calVsiState: boolean;

@@ -148,13 +148,6 @@
   "Soil_Resistance_Slope_Angle": "지표면과 수평면이 이루는 각 (deg)",
   "Soil_Resistance_Surface_Load": "지표면 재하하중 (kN/m²)",
 
-  
-
-
-  "Pile_Z_Dir": "수직방향",
-  
-
-
   "TabName_Pile": "말뚝 정보",
   "TabName_Soil": "지반 정보",
   "TabName_Import": "IMPORT",
@@ -164,9 +157,10 @@
   "Export_CalSheet_Button": "계산서출력",
   "Import_General_Spring_Button": "Import General Spring",
 
+
   "Project_Name": "프로젝트명",
   "Pile_Info": "말뚝 정보",
-  
+  "Pile_Z_Dir": "수직방향",  
   
   
   "Composite_Setting": "하부 말뚝 설정",

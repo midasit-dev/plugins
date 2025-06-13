@@ -20,7 +20,26 @@ export interface SoilTableRowData {
   legnth: number;
 }
 
-export const soilTableState = atom<SoilTableRowData[]>({
+export const defaultRowData: SoilTableRowData = {
+  id: 1,
+  layerNo: 1,
+  layerType: "SoilType_Clay",
+  layerDepth: 0,
+  depth: 10,
+  avgNvalue: 10,
+  c: 0,
+  pi: 0,
+  gamma: 18,
+  aE0: 14000,
+  aE0_Seis: 28000,
+  vd: 0.5,
+  Vsi: 0,
+  ED: 0,
+  DE: 1,
+  legnth: 1,
+};
+
+export const soilTableData = atom<SoilTableRowData[]>({
   key: "soilTableState",
   default: [],
 });

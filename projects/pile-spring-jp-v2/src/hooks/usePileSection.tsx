@@ -46,11 +46,25 @@ export const usePileSectionTable = () => {
     return !noEdit[field]?.includes(type);
   };
 
+  // 테이블 너비 설정
+  const fieldWidths: Partial<Record<keyof PileRowData, number>> = {
+    name: 120,
+    pileType: 140,
+    length: 130,
+    concrete_diameter: 130,
+    concrete_thickness: 130,
+    concrete_modulus: 140,
+    steel_diameter: 100,
+    steel_thickness: 100,
+    steel_modulus: 100,
+    steel_cor_thickness: 100,
+  };
+
   // 테이블 렌더링 로직
   const getNumberCell = (
     row: PileRowData,
     field: keyof PileRowData,
-    width = 100
+    width = fieldWidths[field] || 100
   ) => (
     <CustomNumberField
       value={String(row[field])}
@@ -99,22 +113,38 @@ export const usePileSectionTable = () => {
         hideBorder
         textAlign="center"
       />,
-      getNumberCell(row, "length", 120),
+      getNumberCell(row, "length", fieldWidths.length),
     ];
 
     // 탭에 따른 추가 셀 (콘크리트 / 강재)
     const tabSpecificCells =
       tabValue === "concrete"
         ? [
-            getNumberCell(row, "concrete_diameter", 130),
-            getNumberCell(row, "concrete_thickness", 130),
-            getNumberCell(row, "concrete_modulus", 140),
+            getNumberCell(
+              row,
+              "concrete_diameter",
+              fieldWidths.concrete_diameter
+            ),
+            getNumberCell(
+              row,
+              "concrete_thickness",
+              fieldWidths.concrete_thickness
+            ),
+            getNumberCell(
+              row,
+              "concrete_modulus",
+              fieldWidths.concrete_modulus
+            ),
           ]
         : [
-            getNumberCell(row, "steel_diameter", 100),
-            getNumberCell(row, "steel_thickness", 100),
-            getNumberCell(row, "steel_modulus", 100),
-            getNumberCell(row, "steel_cor_thickness", 100),
+            getNumberCell(row, "steel_diameter", fieldWidths.steel_diameter),
+            getNumberCell(row, "steel_thickness", fieldWidths.steel_thickness),
+            getNumberCell(row, "steel_modulus", fieldWidths.steel_modulus),
+            getNumberCell(
+              row,
+              "steel_cor_thickness",
+              fieldWidths.steel_cor_thickness
+            ),
           ];
 
     return [...commonCells, ...tabSpecificCells];
@@ -122,6 +152,7 @@ export const usePileSectionTable = () => {
 
   // 테이블 헤더 렌더링 함수
   const getHeaders = () => {
+    // 기본 헤더
     const baseHeaders = [
       {
         label: (
@@ -141,9 +172,9 @@ export const usePileSectionTable = () => {
         ),
         width: 50,
       },
-      { label: t("Pile_Name"), width: 130 },
-      { label: t("Pile_Type"), width: 140 },
-      { label: t("Pile_Length"), width: 120 },
+      { label: t("Pile_Name"), width: fieldWidths.name },
+      { label: t("Pile_Type"), width: fieldWidths.pileType },
+      { label: t("Pile_Length"), width: fieldWidths.length },
     ];
 
     // 수정 중인 행의 PileType 가져오기
@@ -170,9 +201,9 @@ export const usePileSectionTable = () => {
 
       return [
         ...baseHeaders,
-        { label: diameterText, width: 130 },
-        { label: thicknessText, width: 130 },
-        { label: modulusText, width: 140 },
+        { label: diameterText, width: fieldWidths.concrete_diameter },
+        { label: thicknessText, width: fieldWidths.concrete_thickness },
+        { label: modulusText, width: fieldWidths.concrete_modulus },
       ];
     } else {
       // 강재 탭
@@ -194,10 +225,10 @@ export const usePileSectionTable = () => {
 
       return [
         ...baseHeaders,
-        { label: diameterText, width: 100 },
-        { label: thicknessText, width: 100 },
-        { label: t("Basic_Steel_Modulus"), width: 100 },
-        { label: corThicknessText, width: 100 },
+        { label: diameterText, width: fieldWidths.steel_diameter },
+        { label: thicknessText, width: fieldWidths.steel_thickness },
+        { label: t("Basic_Steel_Modulus"), width: fieldWidths.steel_modulus },
+        { label: corThicknessText, width: fieldWidths.steel_cor_thickness },
       ];
     }
   };

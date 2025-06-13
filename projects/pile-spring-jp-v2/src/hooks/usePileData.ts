@@ -8,6 +8,10 @@ import {
   pileSectionState,
   PileDataItem,
   pileSummaryListState,
+  defaultPileInitSetData,
+  defaultPileLocationData,
+  defaultPileReinforcedData,
+  defaultPileSectionData,
 } from "../states";
 
 export const usePileData = () => {
@@ -48,6 +52,11 @@ export const usePileData = () => {
    */
   const deselectItem = () => {
     setSelectedId(null);
+    // 기본 데이터로 초기화
+    setInitSetData(defaultPileInitSetData);
+    setLocationData(defaultPileLocationData);
+    setReinforcedData(defaultPileReinforcedData);
+    setSectionData(defaultPileSectionData);
   };
 
   // 데이터 유효성 검토 함수
@@ -74,6 +83,7 @@ export const usePileData = () => {
     const newItem: PileDataItem = {
       id: newID,
       pileName: initSetData.pileName,
+      pileNumber: locationData[0].space.length + 1,
       initSetData,
       locationData,
       reinforcedData,
@@ -102,6 +112,7 @@ export const usePileData = () => {
           ? {
               ...item,
               pileName: initSetData.pileName,
+              pileNumber: locationData[0].space.length + 1,
               initSetData,
               locationData,
               reinforcedData,

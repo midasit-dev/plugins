@@ -1,30 +1,50 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { Button } from "@midasit-dev/moaui";
 import { useSetRecoilState } from "recoil";
-import { pileDataListState } from "../../states/statePileData";
-import { pileSectionState } from "../../states/statePileSection";
-import { pileInitSetState } from "../../states/statePileInitSet";
-import { pileLocationState } from "../../states/statePileLocation";
-import { pileReinforcedState } from "../../states/statePileReinforced";
-import { pileBasicDimensions } from "../../states/statePileBasicDim";
 import {
-  convertLegacyToCurrent,
+  pileDataListState,
+  pileBasicDimensions,
+  soilBasicData,
+  soilTableData,
+  projectData,
+  defaultPileInitSetData,
+  defaultPileLocationData,
+  defaultPileReinforcedData,
+  defaultPileSectionData,
+  pileInitSetState,
+  pileLocationState,
+  pileReinforcedState,
+  pileSectionState,
+} from "../../states";
+import {
+  convertPileLegacyToCurrent,
   validateLegacyData,
-} from "../utils/pileDataConverter";
+  convertSoilBasicLegacyToCurrent,
+  convertSoilTableLegacyToCurrent,
+} from "../utils";
+import { useTranslation } from "react-i18next";
+import { usePileData } from "../../hooks";
 
 interface ImportJsonButtonProps {
   onFileSelect?: (file: File) => void;
 }
 
-export const ImportJsonButton: React.FC<ImportJsonButtonProps> = ({
+export const DataImport: React.FC<ImportJsonButtonProps> = ({
   onFileSelect,
 }) => {
+  const { t } = useTranslation();
+  const { deselectItem } = usePileData();
+
   const setPileDataList = useSetRecoilState(pileDataListState);
-  const setPileSection = useSetRecoilState(pileSectionState);
-  const setPileInitSet = useSetRecoilState(pileInitSetState);
-  const setPileLocation = useSetRecoilState(pileLocationState);
-  const setPileReinforced = useSetRecoilState(pileReinforcedState);
   const setPileBasicDimensions = useSetRecoilState(pileBasicDimensions);
+  const setSoilBasicData = useSetRecoilState(soilBasicData);
+  const setSoilTableData = useSetRecoilState(soilTableData);
+  const setProjectData = useSetRecoilState(projectData);
+
+  const setInitSetData = useSetRecoilState(pileInitSetState);
+  const setLocationData = useSetRecoilState(pileLocationState);
+  const setReinforcedData = useSetRecoilState(pileReinforcedState);
+  const setSectionData = useSetRecoilState(pileSectionState);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -39,17 +59,23 @@ export const ImportJsonButton: React.FC<ImportJsonButtonProps> = ({
             throw new Error("유효하지 않은 데이터 형식입니다.");
           }
           // 데이터 변환
-          const { pileData, basicDimensions } = convertLegacyToCurrent(data);
+          const { pileData, basicDimensions } =
+            convertPileLegacyToCurrent(data);
+          // 입력창 초기화
+          setInitSetData(defaultPileInitSetData);
+          setLocationData(defaultPileLocationData);
+          setReinforcedData(defaultPileReinforcedData);
+          setSectionData(defaultPileSectionData);
+
           // Recoil state 업데이트
           setPileDataList(pileData);
           setPileBasicDimensions(basicDimensions);
-          // 첫 번째 말뚝 데이터를 각각의 state에 설정
-          if (pileData.length > 0) {
-            setPileSection(pileData[0].sectionData);
-            setPileInitSet(pileData[0].initSetData);
-            setPileLocation(pileData[0].locationData);
-            setPileReinforced(pileData[0].reinforcedData);
-          }
+          setSoilBasicData(convertSoilBasicLegacyToCurrent(data));
+          setSoilTableData(convertSoilTableLegacyToCurrent(data.soilData));
+          setProjectData({ projectName: data.projectName });
+
+          // 데이터 임포트 성공 시 선택된 행 해제
+          deselectItem();
         } catch (error) {
           console.error("JSON 파일 처리 중 오류 발생:", error);
           // TODO: 사용자에게 에러 메시지 표시
@@ -68,13 +94,17 @@ export const ImportJsonButton: React.FC<ImportJsonButtonProps> = ({
         id="json-file-input"
         onChange={handleFileChange}
       />
-      <label htmlFor="json-file-input">
-        <Button variant="contained" component="span" color="primary">
-          JSON 파일 불러오기
-        </Button>
-      </label>
+      <Button
+        variant="contained"
+        color="normal"
+        onClick={() => {
+          document.getElementById("json-file-input")?.click();
+        }}
+      >
+        {t("Upload_Data_Button")}
+      </Button>
     </div>
   );
 };
 
-export default ImportJsonButton;
+export default DataImport;

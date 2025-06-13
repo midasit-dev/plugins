@@ -23,7 +23,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
  */
 const PileData = () => {
   const { t } = useTranslation();
-  const { summaryList, selectedId, loadData, deleteData } = usePileData();
+  const { summaryList, selectedId, loadData, deleteData, deselectItem } =
+    usePileData();
   const { showNotification } = useNotification();
 
   // 삭제 확인 다이얼로그 상태
@@ -34,18 +35,25 @@ const PileData = () => {
    * 행 선택 처리 함수
    */
   const handleRowClick = (id: number) => {
+    // 이미 선택된 행을 다시 클릭한 경우 선택 해제
+    if (selectedId === id) {
+      deselectItem();
+      console.log("[PileData] 데이터 선택이 해제되었습니다.");
+      return;
+    }
+
     const item = summaryList.find((item) => item.id === id);
     if (!item) {
-      showNotification("Data_Not_Found", "error");
+      console.error("[PileData] 데이터를 찾을 수 없습니다.");
       return;
     }
 
     const success = loadData(id);
 
     if (success) {
-      showNotification("Data_Loaded_Successfully", "success");
+      console.log("[PileData] 데이터가 성공적으로 로드되었습니다.");
     } else {
-      showNotification("Data_Load_Failed", "error");
+      console.error("[PileData] 데이터 로드에 실패했습니다.");
     }
   };
 
@@ -91,14 +99,14 @@ const PileData = () => {
       field: "pileType",
       headerName: t("Pile_Table_Type"),
       sortable: false,
-      width: 80,
+      width: 100,
       renderCell: (params: any) => t(params.value),
     },
     {
       field: "constructionMethod",
       headerName: t("Pile_Table_ConstructionMethod"),
       sortable: false,
-      width: 100,
+      width: 120,
       renderCell: (params: any) => t(params.value),
     },
     {
@@ -110,7 +118,7 @@ const PileData = () => {
     {
       field: "actions",
       headerName: t("Pile_Table_Actions"),
-      width: 40,
+      flex: 1,
       sortable: false,
       renderCell: (params: any) => (
         <IconButton
@@ -119,7 +127,7 @@ const PileData = () => {
             handleDeleteClick(params.row.id);
           }}
         >
-          <DeleteIcon />
+          <DeleteIcon sx={{ fontSize: 16 }} />
         </IconButton>
       ),
     },
@@ -127,15 +135,16 @@ const PileData = () => {
 
   return (
     <GuideBox>
-      <Paper elevation={2} sx={{ width: "100%", height: "260px" }}>
+      <Paper elevation={2} sx={{ width: "100%", height: "244px" }}>
         <CustomDataGrid
           rows={summaryList}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5, 10, 20]}
           onRowClick={(params: any) => handleRowClick(params.row.id)}
-          selectedRowId={selectedId}
+          selectedRowId={selectedId || undefined}
           disableColumnResize
+          disableHoverStyle={!selectedId}
         />
       </Paper>
 

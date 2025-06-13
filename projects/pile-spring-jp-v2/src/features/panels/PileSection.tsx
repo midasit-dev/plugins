@@ -1,9 +1,8 @@
 // PileSectionTable.tsx
 import React from "react";
-import { Paper, Box } from "@mui/material";
 import { CustomTable } from "../../components";
 import { usePileSectionTable } from "../../hooks";
-import { GuideBox, Panel } from "@midasit-dev/moaui";
+import { GuideBox } from "@midasit-dev/moaui";
 import { useTranslation } from "react-i18next";
 
 const PileSectionTable = () => {

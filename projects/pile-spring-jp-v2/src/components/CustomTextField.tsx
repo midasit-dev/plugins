@@ -10,6 +10,7 @@ interface CustomTextFieldProps {
   variant?: "body1" | "body2" | "body3" | "h1";
   value?: string;
   onChange?: (e: any) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   disabled?: boolean;
   hideBorder?: boolean;
@@ -24,6 +25,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   variant = "body1",
   value = "",
   onChange,
+  onBlur,
   placeholder = "",
   disabled = false,
   hideBorder = false,
@@ -35,6 +37,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
       <TextField
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         placeholder={placeholder}
         disabled={disabled}
         sx={{

@@ -6,3 +6,5 @@ export * from "./statePileReinforced";
 export * from "./statePileData";
 export * from "./stateSoilBasic";
 export * from "./stateSoilResistance";
+export * from "./stateSoilTable";
+export * from "./stateCommon";

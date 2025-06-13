@@ -1,6 +1,5 @@
-import React from "react";
 import { GuideBox, Panel, Typography, Check } from "@midasit-dev/moaui";
-import { CustomNumberField, CustomCheckBox } from "../../components";
+import { CustomNumberField } from "../../components";
 import { useSoilBasic } from "../../hooks";
 import { useTranslation } from "react-i18next";
 

@@ -1,14 +1,12 @@
-import React from "react";
 import { CustomTable } from "../../components";
 import { usePileLocation } from "../../hooks/usePileLocation";
-import { GuideBox } from "@midasit-dev/moaui";
 
 const PileLocation = () => {
   const { rows, renderRow, getHeaders } = usePileLocation();
 
   return (
     <CustomTable
-      totalWidth={550}
+      totalWidth={540}
       rows={rows}
       renderRow={renderRow}
       headers={getHeaders()}

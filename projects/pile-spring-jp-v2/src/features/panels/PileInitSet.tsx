@@ -34,14 +34,14 @@ const PileInitSet = () => {
           label={t("Pile_Name")}
           width={totalWidth}
           textFieldWidth={fieldWidth}
-          value={values.PileName}
+          value={values.pileName}
           onChange={handlers.handleNameChange}
         />
         <CustomNumberField
           label={t("Pile_Length")}
           width={totalWidth}
           numberFieldWidth={fieldWidth}
-          value={values.PileLength.toString()}
+          value={values.pileLength.toString()}
           // onChange={handlers.handleLengthChange}
           disabled={true}
         />
@@ -49,7 +49,7 @@ const PileInitSet = () => {
           label={t("Top_Level")}
           width={totalWidth}
           numberFieldWidth={fieldWidth}
-          value={values.TopLevel.toString()}
+          value={values.topLevel.toString()}
           onChange={handlers.handleTopLevelChange}
         />
         <CustomDropList
@@ -57,7 +57,7 @@ const PileInitSet = () => {
           width={totalWidth}
           droplistWidth={fieldWidth}
           itemList={HeadConditionItems()}
-          value={values.HeadCondition}
+          value={values.headCondition}
           onChange={handlers.handleHeadConditionChange}
         />
         <CustomDropList
@@ -65,7 +65,7 @@ const PileInitSet = () => {
           width={totalWidth}
           droplistWidth={fieldWidth}
           itemList={ConstructionMethodItems()}
-          value={values.ConstructionMethod}
+          value={values.constructionMethod}
           onChange={handlers.handleConstructionMethodChange}
         />
         <CustomDropList
@@ -73,7 +73,7 @@ const PileInitSet = () => {
           width={totalWidth}
           droplistWidth={fieldWidth}
           itemList={BottomConditionItems()}
-          value={values.BottomCondition}
+          value={values.bottomCondition}
           onChange={handlers.handleBottomConditionChange}
         />
       </GuideBox>

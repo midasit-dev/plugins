@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { soilBasicData } from "../states";
+import { soilBasicData, SoilBasic } from "../states";
 
 export const useSoilBasic = () => {
   const [soilBasic, setSoilBasic] = useRecoilState(soilBasicData);
@@ -8,7 +8,7 @@ export const useSoilBasic = () => {
     const value = e.target.value;
     setSoilBasic((prev) => ({
       ...prev,
-      [fieldName]: value,
+      [fieldName]: typeof prev[fieldName] === "number" ? Number(value) : value,
     }));
   };
 

@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 export interface PileDataItem {
   id: number;
   pileName: string;
+  pileNumber: number; // 말뚝 개수를 숫자로 저장
 
   // 각 패널의 데이터
   initSetData: PileInitSetData;
@@ -25,7 +26,7 @@ export interface PileDataSummary {
   pileName: string;
   pileType: string;
   constructionMethod: string;
-  pileNumber: string;
+  pileNumber: number;
 }
 
 // 선택된 아이템 ID를 관리하는 atom
@@ -51,7 +52,7 @@ export const pileSummaryListState = selector<PileDataSummary[]>({
       pileName: item.initSetData.pileName, // 각 아이템의 고유한 데이터 사용
       pileType: item.sectionData[0].pileType, // 각 아이템의 고유한 데이터 사용
       constructionMethod: item.initSetData.constructionMethod, // 각 아이템의 고유한 데이터 사용
-      pileNumber: "4", // 이 부분도 item의 데이터에서 계산하거나 가져와야 함
+      pileNumber: item.pileNumber, // 저장된 pileNumber 사용
     }));
   },
 });

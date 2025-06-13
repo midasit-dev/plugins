@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { useRecoilState } from "recoil";
 import { pileLocationState, PileLocationRowData } from "../states";
 import { PileLocRefXItems, PileLocRefYItems } from "../constants";
@@ -11,6 +11,9 @@ import {
 
 export const usePileLocation = () => {
   const [rows, setRows] = useRecoilState(pileLocationState);
+  const [editingValues, setEditingValues] = useState<
+    Record<number, { space?: string; angle?: string }>
+  >({});
 
   const { t } = useTranslation();
 
@@ -23,16 +26,23 @@ export const usePileLocation = () => {
 
     for (const part of parts) {
       const trimmed = part.trim();
+      if (!trimmed) continue; // 빈 문자열 건너뛰기
+
       if (trimmed.includes("@")) {
         const [count, value] = trimmed.split("@");
         const repeatCount = parseInt(count);
         const numValue = parseFloat(value);
 
-        for (let i = 0; i < repeatCount; i++) {
-          result.push(numValue);
+        if (!isNaN(repeatCount) && !isNaN(numValue)) {
+          for (let i = 0; i < repeatCount; i++) {
+            result.push(numValue);
+          }
         }
       } else {
-        result.push(parseFloat(trimmed));
+        const numValue = parseFloat(trimmed);
+        if (!isNaN(numValue)) {
+          result.push(numValue);
+        }
       }
     }
 
@@ -73,20 +83,141 @@ export const usePileLocation = () => {
     field: keyof PileLocationRowData,
     value: string | boolean
   ) => {
-    setRows((prev) =>
-      prev.map((row) => {
-        if (row.id === id) {
-          if (field === "space") {
-            return { ...row, [field]: parseSpaceInput(value as string) };
+    if (field === "space" || field === "angle") {
+      setEditingValues((prev) => ({
+        ...prev,
+        [id]: { ...prev[id], [field]: value as string },
+      }));
+    } else {
+      setRows((prev) =>
+        prev.map((row) => {
+          if (row.id === id) {
+            return { ...row, [field]: value };
           }
-          return { ...row, [field]: value };
-        }
-        return row;
-      })
-    );
+          return row;
+        })
+      );
+    }
   };
 
-  const inputWidth = 100;
+  const handleBlur = (
+    id: number,
+    field: keyof PileLocationRowData,
+    value: string
+  ) => {
+    if (field === "space" || field === "angle") {
+      setRows((prev) => {
+        const newRows = prev.map((row) => {
+          if (row.id === id) {
+            if (field === "space") {
+              const spaceArray = parseSpaceInput(value);
+              // space가 변경되면 angle도 업데이트
+              const angleArray =
+                row.angle.length === 0 ||
+                (row.angle.length === 1 && row.angle[0] === 0)
+                  ? Array(spaceArray.length + 1).fill(0)
+                  : row.angle;
+
+              // angle 배열의 길이 조정
+              let adjustedAngleArray: number[];
+              const targetLength = spaceArray.length + 1;
+
+              if (angleArray.length < targetLength) {
+                // 길이가 짧으면 나머지를 0으로 채움
+                adjustedAngleArray = [
+                  ...angleArray,
+                  ...Array(targetLength - angleArray.length).fill(0),
+                ];
+              } else if (angleArray.length > targetLength) {
+                // 길이가 길면 잘라냄
+                adjustedAngleArray = angleArray.slice(0, targetLength);
+              } else {
+                adjustedAngleArray = angleArray;
+              }
+
+              return { ...row, space: spaceArray, angle: adjustedAngleArray };
+            } else if (field === "angle") {
+              const angleArray = parseSpaceInput(value);
+              // 첫 번째 행의 space 길이를 기준으로 함
+              const firstRowSpaceLength = prev[0].space.length;
+              const targetLength = firstRowSpaceLength + 1;
+
+              // angle이 비어있거나 0이면 첫 번째 행의 space 길이 + 1만큼 0으로 채움
+              if (
+                angleArray.length === 0 ||
+                (angleArray.length === 1 && angleArray[0] === 0)
+              ) {
+                return { ...row, angle: Array(targetLength).fill(0) };
+              }
+
+              // angle 배열의 길이 조정
+              let adjustedAngleArray: number[];
+
+              if (angleArray.length < targetLength) {
+                // 길이가 짧으면 나머지를 0으로 채움
+                adjustedAngleArray = [
+                  ...angleArray,
+                  ...Array(targetLength - angleArray.length).fill(0),
+                ];
+              } else if (angleArray.length > targetLength) {
+                // 길이가 길면 잘라냄
+                adjustedAngleArray = angleArray.slice(0, targetLength);
+              } else {
+                adjustedAngleArray = angleArray;
+              }
+
+              return { ...row, angle: adjustedAngleArray };
+            }
+          }
+          return row;
+        });
+
+        // 첫 번째 행의 space가 변경되었을 때 두 번째 행의 angle 업데이트
+        if (field === "space" && id === 1) {
+          const firstRowSpaceLength = newRows[0].space.length;
+          const targetLength = firstRowSpaceLength + 1;
+
+          newRows[1] = {
+            ...newRows[1],
+            angle: Array(targetLength).fill(0),
+          };
+        }
+
+        return newRows;
+      });
+      setEditingValues((prev) => {
+        const newValues = { ...prev };
+        delete newValues[id];
+        return newValues;
+      });
+    }
+  };
+
+  const getDisplayValue = (
+    row: PileLocationRowData,
+    field: keyof PileLocationRowData
+  ): string => {
+    if (field === "space" || field === "angle") {
+      const editingValue = editingValues[row.id]?.[field];
+      if (editingValue !== undefined) {
+        return editingValue;
+      }
+      return field === "space" && row.id === 2
+        ? ""
+        : formatSpaceDisplay(row[field] as number[]);
+    }
+    return String(row[field]);
+  };
+
+  // 테이블 너비 설정
+  const fieldWidths: Partial<Record<keyof PileLocationRowData, number>> = {
+    loc_title: 90,
+    ref_point: 100,
+    loc: 100,
+    space: 100,
+    angle: 100,
+  };
+
   // 테이블 렌더링 함수
   const renderRow = (row: PileLocationRowData): ReactNode[] => [
     t(row.loc_title),
@@ -98,35 +229,38 @@ export const usePileLocation = () => {
           ? Array.from(PileLocRefXItems())
           : Array.from(PileLocRefYItems())
       }
-      width={inputWidth}
-      droplistWidth={inputWidth}
+      width={fieldWidths.ref_point}
+      droplistWidth={fieldWidths.ref_point}
       hideBorder
       textAlign="center"
     />,
     <CustomNumberField
       value={row.loc.toString()}
       onChange={(e) => handleChange(row.id, "loc", e.target.value)}
-      width={inputWidth}
-      numberFieldWidth={inputWidth}
+      width={fieldWidths.loc}
+      numberFieldWidth={fieldWidths.loc}
       placeholder="0"
       hideBorder
       textAlign="center"
     />,
     <CustomTextField
-      value={formatSpaceDisplay(row.space)}
+      value={getDisplayValue(row, "space")}
       onChange={(e) => handleChange(row.id, "space", e.target.value)}
-      width={inputWidth}
-      textFieldWidth={inputWidth}
-      placeholder="3@2.0, 1.0"
+      onBlur={(e) => handleBlur(row.id, "space", e.target.value)}
+      width={fieldWidths.space}
+      textFieldWidth={fieldWidths.space}
+      placeholder={row.id === 2 ? "" : "3@2.0, 1.0"}
       hideBorder
       textAlign="center"
+      disabled={row.id === 2}
     />,
     <CustomTextField
-      value={row.angle.toString()}
+      value={getDisplayValue(row, "angle")}
       onChange={(e) => handleChange(row.id, "angle", e.target.value)}
-      width={inputWidth}
-      textFieldWidth={inputWidth}
-      placeholder="4@0.0, 1.0"
+      onBlur={(e) => handleBlur(row.id, "angle", e.target.value)}
+      width={fieldWidths.angle}
+      textFieldWidth={fieldWidths.angle}
+      placeholder={"4@0.0, 1.0"}
       hideBorder
       textAlign="center"
     />,
@@ -135,10 +269,10 @@ export const usePileLocation = () => {
   const getHeaders = () => {
     return [
       { label: t("Pile_Location_Title") },
-      { label: t("Pile_Ref_Point"), width: 100 },
-      { label: t("Pile_Loc"), width: 100 },
-      { label: t("Pile_Space"), width: 100 },
-      { label: t("Pile_Angle"), width: 100 },
+      { label: t("Pile_Ref_Point"), width: fieldWidths.ref_point },
+      { label: t("Pile_Loc"), width: fieldWidths.loc },
+      { label: t("Pile_Space"), width: fieldWidths.space },
+      { label: t("Pile_Angle"), width: fieldWidths.angle },
     ];
   };
 
