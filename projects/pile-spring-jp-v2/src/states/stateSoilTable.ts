@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
 // 인터페이스 정의
-export interface SoilTableRowData {
+export interface SoilTable {
   id: number;
   layerNo: number;
   layerType: string;
@@ -17,10 +17,10 @@ export interface SoilTableRowData {
   Vsi: number;
   ED: number;
   DE: number;
-  legnth: number;
+  length: number;
 }
 
-export const defaultRowData: SoilTableRowData = {
+export const defaultSoilTable: SoilTable = {
   id: 1,
   layerNo: 1,
   layerType: "SoilType_Clay",
@@ -36,10 +36,10 @@ export const defaultRowData: SoilTableRowData = {
   Vsi: 0,
   ED: 0,
   DE: 1,
-  legnth: 1,
+  length: 1,
 };
 
-export const soilTableData = atom<SoilTableRowData[]>({
+export const soilTableState = atom<SoilTable[]>({
   key: "soilTableState",
   default: [],
 });

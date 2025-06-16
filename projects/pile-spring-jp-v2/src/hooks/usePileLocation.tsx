@@ -1,6 +1,6 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useCallback } from "react";
 import { useRecoilState } from "recoil";
-import { pileLocationState, PileLocationRowData } from "../states";
+import { pileLocationState, PileLocation } from "../states";
 import { PileLocRefXItems, PileLocRefYItems } from "../constants";
 import { useTranslation } from "react-i18next";
 import {
@@ -8,6 +8,15 @@ import {
   CustomDropList,
   CustomTextField,
 } from "../components";
+
+// 상수 정의
+const FIELD_WIDTHS: Partial<Record<keyof PileLocation, number>> = {
+  loc_title: 90,
+  ref_point: 100,
+  loc: 100,
+  space: 100,
+  angle: 100,
+};
 
 export const usePileLocation = () => {
   const [rows, setRows] = useRecoilState(pileLocationState);
@@ -17,8 +26,8 @@ export const usePileLocation = () => {
 
   const { t } = useTranslation();
 
-  // space 문자열을 number[]로 변환하는 유틸리티 함수
-  const parseSpaceInput = (input: string): number[] => {
+  // 입력값 파싱 함수
+  const parseSpaceInput = useCallback((input: string): number[] => {
     if (!input) return [];
 
     const parts = input.split(",");
@@ -26,7 +35,7 @@ export const usePileLocation = () => {
 
     for (const part of parts) {
       const trimmed = part.trim();
-      if (!trimmed) continue; // 빈 문자열 건너뛰기
+      if (!trimmed) continue;
 
       if (trimmed.includes("@")) {
         const [count, value] = trimmed.split("@");
@@ -46,14 +55,18 @@ export const usePileLocation = () => {
       }
     }
 
-    return result;
-  };
+    // 0 하나만 있는 경우 빈 배열로 처리
+    if (result.length === 1 && result[0] === 0) {
+      return [];
+    }
 
-  // number[]를 문자열로 변환하는 함수
-  const formatSpaceDisplay = (spaceArray: number[]): string => {
+    return result;
+  }, []);
+
+  // 입력값 포맷팅 함수
+  const formatSpaceDisplay = useCallback((spaceArray: number[]): string => {
     if (!spaceArray.length) return "";
 
-    // 연속된 같은 숫자들을 그룹화
     const groups: { value: number; count: number }[] = [];
     let currentValue = spaceArray[0];
     let currentCount = 1;
@@ -69,212 +82,269 @@ export const usePileLocation = () => {
     }
     groups.push({ value: currentValue, count: currentCount });
 
-    // 그룹을 문자열로 변환
     return groups
       .map((group) =>
         group.count > 1 ? `${group.count}@${group.value}` : `${group.value}`
       )
       .join(", ");
-  };
+  }, []);
 
-  // 테이블 데이터 변경 함수
-  const handleChange = (
-    id: number,
-    field: keyof PileLocationRowData,
-    value: string | boolean
-  ) => {
-    if (field === "space" || field === "angle") {
-      setEditingValues((prev) => ({
-        ...prev,
-        [id]: { ...prev[id], [field]: value as string },
-      }));
-    } else {
-      setRows((prev) =>
-        prev.map((row) => {
-          if (row.id === id) {
-            return { ...row, [field]: value };
-          }
-          return row;
-        })
-      );
-    }
-  };
+  // 간격 입력값 변경 함수
+  const handleSpaceChange = useCallback((id: number, value: string) => {
+    setEditingValues((prev) => ({
+      ...prev,
+      [id]: { ...prev[id], space: value },
+    }));
+  }, []);
 
-  const handleBlur = (
-    id: number,
-    field: keyof PileLocationRowData,
-    value: string
-  ) => {
-    if (field === "space" || field === "angle") {
+  // 각도 입력값 변경 함수
+  const handleAngleChange = useCallback((id: number, value: string) => {
+    setEditingValues((prev) => ({
+      ...prev,
+      [id]: { ...prev[id], angle: value },
+    }));
+  }, []);
+
+  // 간격 입력값 포커스 아웃될 때 동작하도록 처리
+  // 입력값을 바꾸는 과정에서 문제가 생길 수 있어 처리
+  const handleSpaceBlur = useCallback(
+    (id: number, value: string) => {
       setRows((prev) => {
         const newRows = prev.map((row) => {
           if (row.id === id) {
-            if (field === "space") {
-              const spaceArray = parseSpaceInput(value);
-              // space가 변경되면 angle도 업데이트
-              const angleArray =
-                row.angle.length === 0 ||
-                (row.angle.length === 1 && row.angle[0] === 0)
-                  ? Array(spaceArray.length + 1).fill(0)
-                  : row.angle;
+            const spaceArray = parseSpaceInput(value);
+            // 간격이 0이거나 비어있을 때는 빈 배열로 처리
+            const finalSpaceArray =
+              spaceArray.length === 1 && spaceArray[0] === 0 ? [] : spaceArray;
 
-              // angle 배열의 길이 조정
-              let adjustedAngleArray: number[];
-              const targetLength = spaceArray.length + 1;
+            // 각도는 간격 배열보다 하나 크게 설정
+            const targetLength = finalSpaceArray.length + 1;
+            let angleArray: number[];
 
-              if (angleArray.length < targetLength) {
-                // 길이가 짧으면 나머지를 0으로 채움
-                adjustedAngleArray = [
-                  ...angleArray,
-                  ...Array(targetLength - angleArray.length).fill(0),
+            if (
+              row.angle.length === 0 ||
+              (row.angle.length === 1 && row.angle[0] === 0)
+            ) {
+              // 기존 각도가 비어있거나 0 하나만 있을 때는 새로운 길이로 0으로 채움
+              angleArray = Array(targetLength).fill(0);
+            } else {
+              // 기존 각도가 있을 때는 최대한 유지하면서 길이 조정
+              if (row.angle.length < targetLength) {
+                // 기존 각도보다 길이가 길어지면 나머지를 0으로 채움
+                angleArray = [
+                  ...row.angle,
+                  ...Array(targetLength - row.angle.length).fill(0),
                 ];
-              } else if (angleArray.length > targetLength) {
-                // 길이가 길면 잘라냄
-                adjustedAngleArray = angleArray.slice(0, targetLength);
+              } else if (row.angle.length > targetLength) {
+                // 기존 각도보다 길이가 짧아지면 앞부분만 유지
+                angleArray = row.angle.slice(0, targetLength);
               } else {
-                adjustedAngleArray = angleArray;
+                // 길이가 같으면 기존 각도 유지
+                angleArray = row.angle;
               }
-
-              return { ...row, space: spaceArray, angle: adjustedAngleArray };
-            } else if (field === "angle") {
-              const angleArray = parseSpaceInput(value);
-              // 첫 번째 행의 space 길이를 기준으로 함
-              const firstRowSpaceLength = prev[0].space.length;
-              const targetLength = firstRowSpaceLength + 1;
-
-              // angle이 비어있거나 0이면 첫 번째 행의 space 길이 + 1만큼 0으로 채움
-              if (
-                angleArray.length === 0 ||
-                (angleArray.length === 1 && angleArray[0] === 0)
-              ) {
-                return { ...row, angle: Array(targetLength).fill(0) };
-              }
-
-              // angle 배열의 길이 조정
-              let adjustedAngleArray: number[];
-
-              if (angleArray.length < targetLength) {
-                // 길이가 짧으면 나머지를 0으로 채움
-                adjustedAngleArray = [
-                  ...angleArray,
-                  ...Array(targetLength - angleArray.length).fill(0),
-                ];
-              } else if (angleArray.length > targetLength) {
-                // 길이가 길면 잘라냄
-                adjustedAngleArray = angleArray.slice(0, targetLength);
-              } else {
-                adjustedAngleArray = angleArray;
-              }
-
-              return { ...row, angle: adjustedAngleArray };
             }
+
+            return { ...row, space: finalSpaceArray, angle: angleArray };
           }
           return row;
         });
 
-        // 첫 번째 행의 space가 변경되었을 때 두 번째 행의 angle 업데이트
-        if (field === "space" && id === 1) {
+        // 1행의 간격이 변경될 때 2행의 각도도 동일하게 업데이트
+        if (id === 1) {
           const firstRowSpaceLength = newRows[0].space.length;
-          const targetLength = firstRowSpaceLength + 1;
+          const secondRowAngle = newRows[1].angle;
 
-          newRows[1] = {
-            ...newRows[1],
-            angle: Array(targetLength).fill(0),
-          };
+          if (
+            secondRowAngle.length === 0 ||
+            (secondRowAngle.length === 1 && secondRowAngle[0] === 0)
+          ) {
+            // 2행의 각도가 비어있거나 0 하나만 있을 때는 새로운 길이로 0으로 채움
+            newRows[1] = {
+              ...newRows[1],
+              angle: Array(firstRowSpaceLength + 1).fill(0),
+            };
+          } else {
+            // 2행의 각도가 있을 때는 최대한 유지하면서 길이 조정
+            const targetLength = firstRowSpaceLength + 1;
+            if (secondRowAngle.length < targetLength) {
+              newRows[1] = {
+                ...newRows[1],
+                angle: [
+                  ...secondRowAngle,
+                  ...Array(targetLength - secondRowAngle.length).fill(0),
+                ],
+              };
+            } else if (secondRowAngle.length > targetLength) {
+              newRows[1] = {
+                ...newRows[1],
+                angle: secondRowAngle.slice(0, targetLength),
+              };
+            }
+          }
         }
 
         return newRows;
       });
+
       setEditingValues((prev) => {
         const newValues = { ...prev };
         delete newValues[id];
         return newValues;
       });
-    }
-  };
+    },
+    [parseSpaceInput]
+  );
 
-  const getDisplayValue = (
-    row: PileLocationRowData,
-    field: keyof PileLocationRowData
-  ): string => {
-    if (field === "space" || field === "angle") {
-      const editingValue = editingValues[row.id]?.[field];
-      if (editingValue !== undefined) {
-        return editingValue;
+  // 각도 입력값 포커스 아웃될 때 동작하도록 처리
+  // 입력값을 바꾸는 과정에서 문제가 생길 수 있어 처리
+  const handleAngleBlur = useCallback(
+    (id: number, value: string) => {
+      setRows((prev) => {
+        const newRows = prev.map((row) => {
+          if (row.id === id) {
+            const angleArray = parseSpaceInput(value);
+            const firstRowSpaceLength = prev[0].space.length;
+            const targetLength = firstRowSpaceLength + 1;
+
+            if (
+              angleArray.length === 0 ||
+              (angleArray.length === 1 && angleArray[0] === 0)
+            ) {
+              return { ...row, angle: Array(targetLength).fill(0) };
+            }
+
+            let adjustedAngleArray: number[];
+
+            if (angleArray.length < targetLength) {
+              adjustedAngleArray = [
+                ...angleArray,
+                ...Array(targetLength - angleArray.length).fill(0),
+              ];
+            } else if (angleArray.length > targetLength) {
+              adjustedAngleArray = angleArray.slice(0, targetLength);
+            } else {
+              adjustedAngleArray = angleArray;
+            }
+
+            return { ...row, angle: adjustedAngleArray };
+          }
+          return row;
+        });
+
+        return newRows;
+      });
+
+      setEditingValues((prev) => {
+        const newValues = { ...prev };
+        delete newValues[id];
+        return newValues;
+      });
+    },
+    [parseSpaceInput]
+  );
+
+  // 입력값 표시 함수
+  const getDisplayValue = useCallback(
+    (row: PileLocation, field: keyof PileLocation): string => {
+      if (field === "space" || field === "angle") {
+        const editingValue = editingValues[row.id]?.[field];
+        if (editingValue !== undefined) {
+          return editingValue;
+        }
+        return field === "space" && row.id === 2
+          ? ""
+          : formatSpaceDisplay(row[field] as number[]);
       }
-      return field === "space" && row.id === 2
-        ? ""
-        : formatSpaceDisplay(row[field] as number[]);
-    }
-    return String(row[field]);
-  };
+      return String(row[field]);
+    },
+    [editingValues, formatSpaceDisplay]
+  );
 
-  // 테이블 너비 설정
-  const fieldWidths: Partial<Record<keyof PileLocationRowData, number>> = {
-    loc_title: 90,
-    ref_point: 100,
-    loc: 100,
-    space: 100,
-    angle: 100,
-  };
+  // 테이블 행 렌더링 함수
+  const renderRow = useCallback(
+    (row: PileLocation): ReactNode[] => [
+      t(row.loc_title),
+      <CustomDropList
+        key="ref_point"
+        value={row.ref_point}
+        onChange={(e) =>
+          setRows((prev) =>
+            prev.map((r) =>
+              r.id === row.id ? { ...r, ref_point: e.target.value } : r
+            )
+          )
+        }
+        itemList={
+          row.id === 1
+            ? Array.from(PileLocRefXItems())
+            : Array.from(PileLocRefYItems())
+        }
+        width={FIELD_WIDTHS.ref_point}
+        droplistWidth={FIELD_WIDTHS.ref_point}
+        hideBorder
+        textAlign="center"
+      />,
+      <CustomNumberField
+        key="loc"
+        value={row.loc.toString()}
+        onChange={(e) =>
+          setRows((prev) =>
+            prev.map((r) =>
+              r.id === row.id ? { ...r, loc: Number(e.target.value) } : r
+            )
+          )
+        }
+        width={FIELD_WIDTHS.loc}
+        numberFieldWidth={FIELD_WIDTHS.loc}
+        placeholder="0"
+        hideBorder
+        textAlign="center"
+      />,
+      <CustomTextField
+        key="space"
+        value={getDisplayValue(row, "space")}
+        onChange={(e) => handleSpaceChange(row.id, e.target.value)}
+        onBlur={(e) => handleSpaceBlur(row.id, e.target.value)}
+        width={FIELD_WIDTHS.space}
+        textFieldWidth={FIELD_WIDTHS.space}
+        placeholder={row.id === 2 ? "" : "3@2.0, 1.0"}
+        hideBorder
+        textAlign="center"
+        disabled={row.id === 2}
+      />,
+      <CustomTextField
+        key="angle"
+        value={getDisplayValue(row, "angle")}
+        onChange={(e) => handleAngleChange(row.id, e.target.value)}
+        onBlur={(e) => handleAngleBlur(row.id, e.target.value)}
+        width={FIELD_WIDTHS.angle}
+        textFieldWidth={FIELD_WIDTHS.angle}
+        placeholder={"4@0.0, 1.0"}
+        hideBorder
+        textAlign="center"
+      />,
+    ],
+    [
+      t,
+      getDisplayValue,
+      handleSpaceChange,
+      handleSpaceBlur,
+      handleAngleChange,
+      handleAngleBlur,
+    ]
+  );
 
-  // 테이블 렌더링 함수
-  const renderRow = (row: PileLocationRowData): ReactNode[] => [
-    t(row.loc_title),
-    <CustomDropList
-      value={row.ref_point}
-      onChange={(e) => handleChange(row.id, "ref_point", e.target.value)}
-      itemList={
-        row.id === 1
-          ? Array.from(PileLocRefXItems())
-          : Array.from(PileLocRefYItems())
-      }
-      width={fieldWidths.ref_point}
-      droplistWidth={fieldWidths.ref_point}
-      hideBorder
-      textAlign="center"
-    />,
-    <CustomNumberField
-      value={row.loc.toString()}
-      onChange={(e) => handleChange(row.id, "loc", e.target.value)}
-      width={fieldWidths.loc}
-      numberFieldWidth={fieldWidths.loc}
-      placeholder="0"
-      hideBorder
-      textAlign="center"
-    />,
-    <CustomTextField
-      value={getDisplayValue(row, "space")}
-      onChange={(e) => handleChange(row.id, "space", e.target.value)}
-      onBlur={(e) => handleBlur(row.id, "space", e.target.value)}
-      width={fieldWidths.space}
-      textFieldWidth={fieldWidths.space}
-      placeholder={row.id === 2 ? "" : "3@2.0, 1.0"}
-      hideBorder
-      textAlign="center"
-      disabled={row.id === 2}
-    />,
-    <CustomTextField
-      value={getDisplayValue(row, "angle")}
-      onChange={(e) => handleChange(row.id, "angle", e.target.value)}
-      onBlur={(e) => handleBlur(row.id, "angle", e.target.value)}
-      width={fieldWidths.angle}
-      textFieldWidth={fieldWidths.angle}
-      placeholder={"4@0.0, 1.0"}
-      hideBorder
-      textAlign="center"
-    />,
-  ];
-
-  const getHeaders = () => {
-    return [
+  // 테이블 헤더 렌더링 함수
+  const getHeaders = useCallback(
+    () => [
       { label: t("Pile_Location_Title") },
-      { label: t("Pile_Ref_Point"), width: fieldWidths.ref_point },
-      { label: t("Pile_Loc"), width: fieldWidths.loc },
-      { label: t("Pile_Space"), width: fieldWidths.space },
-      { label: t("Pile_Angle"), width: fieldWidths.angle },
-    ];
-  };
+      { label: t("Pile_Ref_Point"), width: FIELD_WIDTHS.ref_point },
+      { label: t("Pile_Loc"), width: FIELD_WIDTHS.loc },
+      { label: t("Pile_Space"), width: FIELD_WIDTHS.space },
+      { label: t("Pile_Angle"), width: FIELD_WIDTHS.angle },
+    ],
+    [t]
+  );
 
   return {
     rows,

@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-export interface PileInitSetData {
+export interface PileInitSet {
   pileName: string;
   pileLength: number;
   topLevel: number;
@@ -9,7 +9,7 @@ export interface PileInitSetData {
   bottomCondition: string;
 }
 
-export const defaultPileInitSetData: PileInitSetData = {
+export const defaultPileInitSet: PileInitSet = {
   pileName: "",
   pileLength: 0,
   topLevel: 0,
@@ -18,7 +18,7 @@ export const defaultPileInitSetData: PileInitSetData = {
   bottomCondition: "Bottom_Condition_Free",
 };
 
-export const pileInitSetState = atom<PileInitSetData>({
+export const pileInitSetState = atom<PileInitSet>({
   key: "pileInitSetState",
-  default: defaultPileInitSetData,
+  default: defaultPileInitSet,
 });

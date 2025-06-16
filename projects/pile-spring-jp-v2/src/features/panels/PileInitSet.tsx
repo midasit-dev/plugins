@@ -1,5 +1,5 @@
 import React from "react";
-import { GuideBox, Panel } from "@midasit-dev/moaui";
+import { GuideBox } from "@midasit-dev/moaui";
 import { Paper } from "@mui/material";
 import {
   CustomNumberField,
@@ -15,6 +15,16 @@ import { usePileInitSet } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
 const PileInitSet = () => {
+  /**
+  말뚝 기본 설정
+
+  말뚝 명칭: 말뚝 이름
+  말뚝 길이(m): 전체 길이, 기존 버전에서는 값을 입력받았지만, 지금은 Section에서 설정한 값을 합쳐서 표기
+  저면 표고(m): 말뚝 머리 표고, 기존 버전에서는 하나의 값으로 받았지만, 지금은 각 파일에 적용 가능한 형식으로 변경
+  말뚝머리 접합조건: 강결 또는 힌지
+  시공방법: 7개 옵션
+  말뚝 선단 조건: 자유, 힌지 또는 고정
+  **/
   const { t } = useTranslation();
   const { values, handlers } = usePileInitSet();
 
@@ -23,13 +33,7 @@ const PileInitSet = () => {
 
   return (
     <Paper id="PileInitSet_Panel" sx={{ padding: "8px" }}>
-      <GuideBox
-        id="PileInitSet_GuideBox"
-        column
-        verCenter
-        verSpaceBetween
-        spacing={0.75}
-      >
+      <GuideBox width="100%" column verCenter verSpaceBetween spacing={0.75}>
         <CustomTextField
           label={t("Pile_Name")}
           width={totalWidth}

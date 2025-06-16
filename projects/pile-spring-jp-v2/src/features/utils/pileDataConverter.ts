@@ -1,9 +1,10 @@
 import {
   PileDataItem,
-  PileReinforcedRowData,
-  PileRowData,
-  PileBasicDimensions,
-  defaultPileSectionData,
+  PileReinforced,
+  PileSection,
+  PileBasicDim,
+  defaultPileSection,
+  PileType,
 } from "../../states";
 import { parseSpaceInput } from "./spacingConverter";
 
@@ -68,8 +69,8 @@ interface LegacyJsonData {
 }
 
 // Section 데이터 처리
-const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
-  const sections: PileRowData[] = [];
+const convertLegacySectionData = (pile: LegacyPileData): PileSection[] => {
+  const sections: PileSection[] = [];
 
   // 하부 말뚝이 있는 경우 추가
   if (pile.compositeTypeCheck) {
@@ -78,7 +79,7 @@ const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
         id: 1,
         checked: true,
         name: "Pile_Category_Basic",
-        pileType: pile.pileType,
+        pileType: pile.pileType as PileType,
         length: Number(pile.compStartLength),
         concrete_diameter: Number(pile.concreteDiameter),
         concrete_thickness: Number(pile.concreteThickness),
@@ -92,7 +93,7 @@ const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
         id: 2,
         checked: true,
         name: "Pile_Category_Sub1",
-        pileType: pile.compPileType,
+        pileType: pile.compPileType as PileType,
         length: Number(pile.pileLength) - Number(pile.compStartLength),
         concrete_diameter: Number(pile.compConcreteDiameter),
         concrete_thickness: Number(pile.compConcreteThickness),
@@ -102,8 +103,8 @@ const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
         steel_modulus: Number(pile.compSteelModulus),
         steel_cor_thickness: Number(pile.compSteelCorThickness),
       },
-      defaultPileSectionData[2],
-      defaultPileSectionData[3]
+      defaultPileSection[2],
+      defaultPileSection[3]
     );
   } else {
     sections.push(
@@ -111,7 +112,7 @@ const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
         id: 1,
         checked: true,
         name: "Pile_Category_Basic",
-        pileType: pile.pileType,
+        pileType: pile.pileType as PileType,
         length: Number(pile.pileLength),
         concrete_diameter: Number(pile.concreteDiameter),
         concrete_thickness: Number(pile.concreteThickness),
@@ -121,9 +122,9 @@ const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
         steel_modulus: Number(pile.steelModulus),
         steel_cor_thickness: Number(pile.steelCorThickness),
       },
-      defaultPileSectionData[1],
-      defaultPileSectionData[2],
-      defaultPileSectionData[3]
+      defaultPileSection[1],
+      defaultPileSection[2],
+      defaultPileSection[3]
     );
   }
 
@@ -133,8 +134,8 @@ const convertLegacySectionData = (pile: LegacyPileData): PileRowData[] => {
 // Reinforced 데이터 처리
 const convertLegacyReinforcedData = (
   pile: LegacyPileData
-): PileReinforcedRowData[] => {
-  const reinforcedData: PileReinforcedRowData[] = [];
+): PileReinforced[] => {
+  const reinforcedData: PileReinforced[] = [];
 
   if (
     Number(pile.reinforcedStartLength) === 0 &&
@@ -145,20 +146,20 @@ const convertLegacyReinforcedData = (
       {
         id: 1,
         checked: false,
-        reinforced_method: "Reinforced_Method_Outer",
-        reinforced_start: 0,
-        reinforced_end: 0,
-        reinforced_thickness: 0,
-        reinforced_modulus: 0,
+        method: "Reinforced_Method_Outer",
+        start: 0,
+        end: 0,
+        thickness: 0,
+        modulus: 0,
       },
       {
         id: 2,
         checked: false,
-        reinforced_method: "Reinforced_Method_Inner",
-        reinforced_start: 0,
-        reinforced_end: 0,
-        reinforced_thickness: 0,
-        reinforced_modulus: 0,
+        method: "Reinforced_Method_Inner",
+        start: 0,
+        end: 0,
+        thickness: 0,
+        modulus: 0,
       }
     );
   } else {
@@ -166,11 +167,11 @@ const convertLegacyReinforcedData = (
       {
         id: 1,
         checked: true,
-        reinforced_method: pile.reinforcedMethod,
-        reinforced_start: Number(pile.reinforcedStartLength),
-        reinforced_end: Number(pile.reinforcedEndLength),
-        reinforced_thickness: Number(pile.outerThickness),
-        reinforced_modulus: Number(pile.outerModulus),
+        method: pile.reinforcedMethod,
+        start: Number(pile.reinforcedStartLength),
+        end: Number(pile.reinforcedEndLength),
+        thickness: Number(pile.outerThickness),
+        modulus: Number(pile.outerModulus),
       },
       {
         id: 2,
@@ -178,11 +179,11 @@ const convertLegacyReinforcedData = (
           pile.reinforcedMethod === "Reinforced_Method_Inner_Outer"
             ? true
             : false,
-        reinforced_method: "Reinforced_Method_Inner",
-        reinforced_start: Number(pile.reinforcedStartLength),
-        reinforced_end: Number(pile.reinforcedEndLength),
-        reinforced_thickness: Number(pile.innerThickness),
-        reinforced_modulus: Number(pile.innerModulus),
+        method: "Reinforced_Method_Inner",
+        start: Number(pile.reinforcedStartLength),
+        end: Number(pile.reinforcedEndLength),
+        thickness: Number(pile.innerThickness),
+        modulus: Number(pile.innerModulus),
       }
     );
   }
@@ -193,7 +194,7 @@ const convertLegacyReinforcedData = (
 // pileData 전체 데이터 변환
 const convertPileLegacyToCurrent = (
   legacyData: LegacyJsonData
-): { pileData: PileDataItem[]; basicDimensions: PileBasicDimensions } => {
+): { pileData: PileDataItem[]; basicDimensions: PileBasicDim } => {
   const pileData = legacyData.piletableData.map((pile, index) => {
     // space와 angle 데이터 처리
     const majorSpace = parseSpaceInput(pile.majorSpace);

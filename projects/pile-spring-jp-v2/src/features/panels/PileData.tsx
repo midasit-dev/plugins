@@ -17,6 +17,14 @@ import { GuideBox, Button } from "@midasit-dev/moaui";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+// 로그 메시지 상수
+const LOG_MESSAGES = {
+  DATA_DESELECTED: "[PileData] 데이터 선택이 해제되었습니다.",
+  DATA_NOT_FOUND: "[PileData] 데이터를 찾을 수 없습니다.",
+  DATA_LOAD_SUCCESS: "[PileData] 데이터가 성공적으로 로드되었습니다.",
+  DATA_LOAD_FAILED: "[PileData] 데이터 로드에 실패했습니다.",
+} as const;
+
 /**
  * 파일 데이터 목록 및 관리 컴포넌트
  * 사용자가 파일을 조회, 선택, 삭제할 수 있는 인터페이스를 제공합니다.
@@ -38,22 +46,22 @@ const PileData = () => {
     // 이미 선택된 행을 다시 클릭한 경우 선택 해제
     if (selectedId === id) {
       deselectItem();
-      console.log("[PileData] 데이터 선택이 해제되었습니다.");
+      console.log(LOG_MESSAGES.DATA_DESELECTED);
       return;
     }
 
     const item = summaryList.find((item) => item.id === id);
     if (!item) {
-      console.error("[PileData] 데이터를 찾을 수 없습니다.");
+      console.error(LOG_MESSAGES.DATA_NOT_FOUND);
       return;
     }
 
     const success = loadData(id);
 
     if (success) {
-      console.log("[PileData] 데이터가 성공적으로 로드되었습니다.");
+      console.log(LOG_MESSAGES.DATA_LOAD_SUCCESS);
     } else {
-      console.error("[PileData] 데이터 로드에 실패했습니다.");
+      console.error(LOG_MESSAGES.DATA_LOAD_FAILED);
     }
   };
 

@@ -10,15 +10,17 @@ export interface SoilBasic {
   groupEffectValue: number;
 }
 
-export const soilBasicData = atom<SoilBasic>({
-  key: "soilBasicData",
-  default: {
-    groundLevel: 0,
-    waterLevel: 0,
-    calVsiState: false,
-    liquefactionState: false,
-    slopeEffectState: false,
-    groupEffectState: false,
-    groupEffectValue: 1,
-  },
+export const defaultSoilBasic: SoilBasic = {
+  groundLevel: 0,
+  waterLevel: 0,
+  calVsiState: false,
+  liquefactionState: false,
+  slopeEffectState: false,
+  groupEffectState: false,
+  groupEffectValue: 1,
+};
+
+export const soilBasicState = atom<SoilBasic>({
+  key: "soilBasicState",
+  default: defaultSoilBasic,
 });

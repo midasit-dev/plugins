@@ -3,10 +3,10 @@ import { Button } from "@midasit-dev/moaui";
 import { useRecoilValue } from "recoil";
 import {
   projectData,
-  pileBasicDimensions,
-  soilBasicData,
-  soilResistance,
-  soilTableData,
+  pileBasicDimState,
+  soilBasicState,
+  // soilResistance,
+  soilTableState,
   pileDataListState,
 } from "../../states";
 import { useNotification } from "../../hooks/useNotification";
@@ -15,10 +15,10 @@ import { useTranslation } from "react-i18next";
 const DataExport = () => {
   const { t } = useTranslation();
   const common = useRecoilValue(projectData);
-  const pileBasicDim = useRecoilValue(pileBasicDimensions);
-  const soilBasic = useRecoilValue(soilBasicData);
-  const soilResist = useRecoilValue(soilResistance);
-  const soilTable = useRecoilValue(soilTableData);
+  const pileBasicDimValue = useRecoilValue(pileBasicDimState);
+  const soilBasic = useRecoilValue(soilBasicState);
+  // const soilResist = useRecoilValue(soilResistance);
+  const soilTable = useRecoilValue(soilTableState);
   const pileDataList = useRecoilValue(pileDataListState);
 
   const { showNotification } = useNotification();
@@ -31,7 +31,7 @@ const DataExport = () => {
 
     const data = {
       common,
-      pileBasicDim,
+      pileBasicDimValue,
       pileDataList,
       soilBasic,
       // soilResist,

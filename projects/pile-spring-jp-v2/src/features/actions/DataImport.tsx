@@ -3,14 +3,14 @@ import { Button } from "@midasit-dev/moaui";
 import { useSetRecoilState } from "recoil";
 import {
   pileDataListState,
-  pileBasicDimensions,
-  soilBasicData,
-  soilTableData,
+  pileBasicDimState,
+  soilBasicState,
+  soilTableState,
   projectData,
-  defaultPileInitSetData,
-  defaultPileLocationData,
-  defaultPileReinforcedData,
-  defaultPileSectionData,
+  defaultPileInitSet,
+  defaultPileLocation,
+  defaultPileReinforced,
+  defaultPileSection,
   pileInitSetState,
   pileLocationState,
   pileReinforcedState,
@@ -36,9 +36,9 @@ export const DataImport: React.FC<ImportJsonButtonProps> = ({
   const { deselectItem } = usePileData();
 
   const setPileDataList = useSetRecoilState(pileDataListState);
-  const setPileBasicDimensions = useSetRecoilState(pileBasicDimensions);
-  const setSoilBasicData = useSetRecoilState(soilBasicData);
-  const setSoilTableData = useSetRecoilState(soilTableData);
+  const setPileBasicDimensions = useSetRecoilState(pileBasicDimState);
+  const setSoilBasicData = useSetRecoilState(soilBasicState);
+  const setSoilTableData = useSetRecoilState(soilTableState);
   const setProjectData = useSetRecoilState(projectData);
 
   const setInitSetData = useSetRecoilState(pileInitSetState);
@@ -62,10 +62,10 @@ export const DataImport: React.FC<ImportJsonButtonProps> = ({
           const { pileData, basicDimensions } =
             convertPileLegacyToCurrent(data);
           // 입력창 초기화
-          setInitSetData(defaultPileInitSetData);
-          setLocationData(defaultPileLocationData);
-          setReinforcedData(defaultPileReinforcedData);
-          setSectionData(defaultPileSectionData);
+          setInitSetData(defaultPileInitSet);
+          setLocationData(defaultPileLocation);
+          setReinforcedData(defaultPileReinforced);
+          setSectionData(defaultPileSection);
 
           // Recoil state 업데이트
           setPileDataList(pileData);

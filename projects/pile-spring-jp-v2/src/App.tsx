@@ -29,7 +29,6 @@ import {
   PileData,
 } from "./features/panels";
 import { PileMain, Main } from "./features/frames";
-import { PileActions } from "./features/actions";
 import { Button } from "@mui/material";
 import {
   pileSectionState,

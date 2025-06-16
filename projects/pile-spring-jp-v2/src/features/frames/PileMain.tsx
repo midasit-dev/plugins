@@ -7,7 +7,7 @@ import {
   PileReinforced,
   PileSection,
 } from "../panels";
-import { PileActions } from "../actions";
+import { PileDataEditor } from "../actions";
 import { GuideBox, Typography, Panel } from "@midasit-dev/moaui";
 import { useTranslation } from "react-i18next";
 import { TabGroup, Tab } from "../../components";
@@ -71,7 +71,7 @@ const PileMain = () => {
               {tabValue === 2 && <PileSection />}
             </GuideBox>
             <GuideBox width="100%" row horRight>
-              <PileActions />
+              <PileDataEditor />
             </GuideBox>
           </GuideBox>
         </Panel>

@@ -1,4 +1,5 @@
 import { useRecoilState, useRecoilValue } from "recoil";
+import { useMemo } from "react";
 import {
   pileDataListState,
   pileReinforcedState,
@@ -8,10 +9,10 @@ import {
   pileSectionState,
   PileDataItem,
   pileSummaryListState,
-  defaultPileInitSetData,
-  defaultPileLocationData,
-  defaultPileReinforcedData,
-  defaultPileSectionData,
+  defaultPileInitSet,
+  defaultPileLocation,
+  defaultPileReinforced,
+  defaultPileSection,
 } from "../states";
 
 export const usePileData = () => {
@@ -28,11 +29,14 @@ export const usePileData = () => {
     useRecoilState(pileReinforcedState);
   const [sectionData, setSectionData] = useRecoilState(pileSectionState);
 
-  // 선택된 데이터 아이템
-  const selectedItem =
-    selectedId !== null
-      ? pileDataList.find((item) => item.id === selectedId)
-      : null;
+  // 선택된 데이터 아이템 - useMemo로 최적화
+  const selectedItem = useMemo(
+    () =>
+      selectedId !== null
+        ? pileDataList.find((item) => item.id === selectedId)
+        : null,
+    [selectedId, pileDataList]
+  );
 
   /**
    * 데이터 항목 선택 함수
@@ -53,10 +57,10 @@ export const usePileData = () => {
   const deselectItem = () => {
     setSelectedId(null);
     // 기본 데이터로 초기화
-    setInitSetData(defaultPileInitSetData);
-    setLocationData(defaultPileLocationData);
-    setReinforcedData(defaultPileReinforcedData);
-    setSectionData(defaultPileSectionData);
+    setInitSetData(defaultPileInitSet);
+    setLocationData(defaultPileLocation);
+    setReinforcedData(defaultPileReinforced);
+    setSectionData(defaultPileSection);
   };
 
   // 데이터 유효성 검토 함수
@@ -153,11 +157,7 @@ export const usePileData = () => {
       if (currentSelectedId !== null && currentSelectedId !== id) {
         // 삭제된 항목 이후에 있던 항목이 선택되어 있었다면 ID 조정
         if (currentSelectedId > id) {
-          // 비동기적으로 selectedId 업데이트
-          setTimeout(() => setSelectedId(currentSelectedId - 1), 0);
-        } else if (currentSelectedId < id) {
-          // ID 변경 없이 그대로 유지 (항목 자체는 안 바뀜)
-          // 대신 reorderedList에서 ID가 바뀌었으니 다시 조회 필요할 수 있음
+          setSelectedId(currentSelectedId - 1);
         }
       }
 

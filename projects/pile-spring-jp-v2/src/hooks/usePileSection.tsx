@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRecoilState } from "recoil";
-import { pileSectionState, PileRowData } from "../states";
+import { pileSectionState, PileSection, PileType } from "../states";
 import { PileTypeItems } from "../constants";
 import {
   CustomNumberField,
@@ -9,17 +9,41 @@ import {
 } from "../components";
 import { useTranslation } from "react-i18next";
 
+// 파일 타입에 따라, 수정 불가능한 필드 정의
+const NO_EDIT_FIELDS: Partial<Record<keyof PileSection, string[]>> = {
+  concrete_thickness: ["Cast_In_Situ", "Steel_Pile", "Soil_Cement_Pile"],
+  concrete_diameter: ["Steel_Pile"],
+  concrete_modulus: ["Steel_Pile"],
+  steel_diameter: ["SC_Pile"],
+  steel_thickness: ["Cast_In_Situ", "PHC_Pile"],
+  steel_cor_thickness: ["Cast_In_Situ"],
+};
+
+// 테이블 너비 정의
+const FIELD_WIDTHS: Partial<Record<keyof PileSection, number>> = {
+  name: 120,
+  pileType: 140,
+  length: 130,
+  concrete_diameter: 130,
+  concrete_thickness: 130,
+  concrete_modulus: 140,
+  steel_diameter: 100,
+  steel_thickness: 100,
+  steel_modulus: 100,
+  steel_cor_thickness: 100,
+} as const;
+
 export const usePileSectionTable = () => {
   const [rows, setRows] = useRecoilState(pileSectionState);
   const [tabValue, setTabValue] = useState("concrete");
-  const [editingRow, setEditingRow] = useState<PileRowData | null>(null);
+  const [editingRow, setEditingRow] = useState<PileSection | null>(null);
 
   const { t } = useTranslation();
 
   // 테이블 데이터 변경 함수
   const handleChange = (
     id: number,
-    field: keyof PileRowData,
+    field: keyof PileSection,
     value: string | boolean | number
   ) => {
     // 수정 중인 행 저장
@@ -34,37 +58,15 @@ export const usePileSectionTable = () => {
   };
 
   // 테이블 데이터 수정 가능 여부 확인 함수
-  const isEditable = (field: keyof PileRowData, type: string) => {
-    const noEdit: Partial<Record<keyof PileRowData, string[]>> = {
-      concrete_thickness: ["Cast_In_Situ", "Steel_Pile", "Soil_Cement_Pile"],
-      concrete_diameter: ["Steel_Pile"],
-      concrete_modulus: ["Steel_Pile"],
-      steel_diameter: ["SC_Pile"],
-      steel_thickness: ["Cast_In_Situ", "PHC_Pile"],
-      steel_cor_thickness: ["Cast_In_Situ"],
-    };
-    return !noEdit[field]?.includes(type);
-  };
-
-  // 테이블 너비 설정
-  const fieldWidths: Partial<Record<keyof PileRowData, number>> = {
-    name: 120,
-    pileType: 140,
-    length: 130,
-    concrete_diameter: 130,
-    concrete_thickness: 130,
-    concrete_modulus: 140,
-    steel_diameter: 100,
-    steel_thickness: 100,
-    steel_modulus: 100,
-    steel_cor_thickness: 100,
+  const isEditable = (field: keyof PileSection, type: PileType) => {
+    return !NO_EDIT_FIELDS[field]?.includes(type);
   };
 
   // 테이블 렌더링 로직
   const getNumberCell = (
-    row: PileRowData,
-    field: keyof PileRowData,
-    width = fieldWidths[field] || 100
+    row: PileSection,
+    field: keyof PileSection,
+    width = FIELD_WIDTHS[field] || 100
   ) => (
     <CustomNumberField
       value={String(row[field])}
@@ -79,79 +81,87 @@ export const usePileSectionTable = () => {
     />
   );
 
-  const renderRow = (row: PileRowData) => {
-    // 공통 셀 (처음 4개 열)
-    const commonCells = [
-      <CustomCheckBox
-        key="checkbox"
-        checked={row.checked}
-        disabled={row.id === 1}
-        onChange={(e) => {
-          const checked = e.target.checked;
-          if (checked) {
-            const allAboveChecked = rows
-              .filter((r) => r.id < row.id && r.id !== 1)
-              .every((r) => r.checked);
-            if (allAboveChecked) {
-              handleChange(row.id, "checked", true);
+  // 테이블 렌더링 함수
+  const renderRow = useMemo(
+    () => (row: PileSection) => {
+      // 공통 셀 (처음 4개 열)
+      const commonCells = [
+        <CustomCheckBox
+          key="checkbox"
+          checked={row.checked}
+          disabled={row.id === 1}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            if (checked) {
+              const allAboveChecked = rows
+                .filter((r) => r.id < row.id && r.id !== 1)
+                .every((r) => r.checked);
+              if (allAboveChecked) {
+                handleChange(row.id, "checked", true);
+              }
+            } else {
+              setRows((prev) =>
+                prev.map((r) => (r.id >= row.id ? { ...r, checked: false } : r))
+              );
             }
-          } else {
-            setRows((prev) =>
-              prev.map((r) => (r.id >= row.id ? { ...r, checked: false } : r))
-            );
-          }
-        }}
-      />,
-      t(row.name),
-      <CustomDropList
-        key="pileType"
-        value={row.pileType}
-        onChange={(e) => handleChange(row.id, "pileType", e.target.value)}
-        itemList={Array.from(PileTypeItems())}
-        width={140}
-        droplistWidth={140}
-        hideBorder
-        textAlign="center"
-      />,
-      getNumberCell(row, "length", fieldWidths.length),
-    ];
+          }}
+        />,
+        t(row.name),
+        <CustomDropList
+          key="pileType"
+          value={row.pileType}
+          onChange={(e) => handleChange(row.id, "pileType", e.target.value)}
+          itemList={Array.from(PileTypeItems())}
+          width={140}
+          droplistWidth={140}
+          hideBorder
+          textAlign="center"
+        />,
+        getNumberCell(row, "length", FIELD_WIDTHS.length),
+      ];
 
-    // 탭에 따른 추가 셀 (콘크리트 / 강재)
-    const tabSpecificCells =
-      tabValue === "concrete"
-        ? [
-            getNumberCell(
-              row,
-              "concrete_diameter",
-              fieldWidths.concrete_diameter
-            ),
-            getNumberCell(
-              row,
-              "concrete_thickness",
-              fieldWidths.concrete_thickness
-            ),
-            getNumberCell(
-              row,
-              "concrete_modulus",
-              fieldWidths.concrete_modulus
-            ),
-          ]
-        : [
-            getNumberCell(row, "steel_diameter", fieldWidths.steel_diameter),
-            getNumberCell(row, "steel_thickness", fieldWidths.steel_thickness),
-            getNumberCell(row, "steel_modulus", fieldWidths.steel_modulus),
-            getNumberCell(
-              row,
-              "steel_cor_thickness",
-              fieldWidths.steel_cor_thickness
-            ),
-          ];
+      // 탭에 따른 추가 셀 (콘크리트 / 강재)
+      const tabSpecificCells =
+        tabValue === "concrete"
+          ? [
+              getNumberCell(
+                row,
+                "concrete_diameter",
+                FIELD_WIDTHS.concrete_diameter
+              ),
+              getNumberCell(
+                row,
+                "concrete_thickness",
+                FIELD_WIDTHS.concrete_thickness
+              ),
+              getNumberCell(
+                row,
+                "concrete_modulus",
+                FIELD_WIDTHS.concrete_modulus
+              ),
+            ]
+          : [
+              getNumberCell(row, "steel_diameter", FIELD_WIDTHS.steel_diameter),
+              getNumberCell(
+                row,
+                "steel_thickness",
+                FIELD_WIDTHS.steel_thickness
+              ),
+              getNumberCell(row, "steel_modulus", FIELD_WIDTHS.steel_modulus),
+              getNumberCell(
+                row,
+                "steel_cor_thickness",
+                FIELD_WIDTHS.steel_cor_thickness
+              ),
+            ];
 
-    return [...commonCells, ...tabSpecificCells];
-  };
+      return [...commonCells, ...tabSpecificCells];
+    },
+    [rows, tabValue, t]
+  );
 
   // 테이블 헤더 렌더링 함수
-  const getHeaders = () => {
+  const getHeaders = useMemo(() => {
     // 기본 헤더
     const baseHeaders = [
       {
@@ -172,9 +182,9 @@ export const usePileSectionTable = () => {
         ),
         width: 50,
       },
-      { label: t("Pile_Name"), width: fieldWidths.name },
-      { label: t("Pile_Type"), width: fieldWidths.pileType },
-      { label: t("Pile_Length"), width: fieldWidths.length },
+      { label: t("Pile_Name"), width: FIELD_WIDTHS.name },
+      { label: t("Pile_Type"), width: FIELD_WIDTHS.pileType },
+      { label: t("Pile_Length"), width: FIELD_WIDTHS.length },
     ];
 
     // 수정 중인 행의 PileType 가져오기
@@ -201,9 +211,9 @@ export const usePileSectionTable = () => {
 
       return [
         ...baseHeaders,
-        { label: diameterText, width: fieldWidths.concrete_diameter },
-        { label: thicknessText, width: fieldWidths.concrete_thickness },
-        { label: modulusText, width: fieldWidths.concrete_modulus },
+        { label: diameterText, width: FIELD_WIDTHS.concrete_diameter },
+        { label: thicknessText, width: FIELD_WIDTHS.concrete_thickness },
+        { label: modulusText, width: FIELD_WIDTHS.concrete_modulus },
       ];
     } else {
       // 강재 탭
@@ -225,13 +235,13 @@ export const usePileSectionTable = () => {
 
       return [
         ...baseHeaders,
-        { label: diameterText, width: fieldWidths.steel_diameter },
-        { label: thicknessText, width: fieldWidths.steel_thickness },
-        { label: t("Basic_Steel_Modulus"), width: fieldWidths.steel_modulus },
-        { label: corThicknessText, width: fieldWidths.steel_cor_thickness },
+        { label: diameterText, width: FIELD_WIDTHS.steel_diameter },
+        { label: thicknessText, width: FIELD_WIDTHS.steel_thickness },
+        { label: t("Basic_Steel_Modulus"), width: FIELD_WIDTHS.steel_modulus },
+        { label: corThicknessText, width: FIELD_WIDTHS.steel_cor_thickness },
       ];
     }
-  };
+  }, [rows, tabValue, editingRow, t]);
 
   return {
     rows,

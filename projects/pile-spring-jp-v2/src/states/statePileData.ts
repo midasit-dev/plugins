@@ -1,11 +1,8 @@
 import { atom, selector } from "recoil";
-import { PileInitSetData } from "./statePileInitSet";
-import { PileLocationRowData } from "./statePileLocation";
-import { PileReinforcedRowData } from "./statePileReinforced";
-import { PileRowData } from "./statePileSection";
-import { pileInitSetState } from "./statePileInitSet";
-import { pileSectionState } from "./statePileSection";
-import { useTranslation } from "react-i18next";
+import { PileInitSet } from "./statePileInitSet";
+import { PileLocation } from "./statePileLocation";
+import { PileReinforced } from "./statePileReinforced";
+import { PileSection } from "./statePileSection";
 
 // 모든 데이터를 포함하는 통합 인터페이스
 export interface PileDataItem {
@@ -14,10 +11,10 @@ export interface PileDataItem {
   pileNumber: number; // 말뚝 개수를 숫자로 저장
 
   // 각 패널의 데이터
-  initSetData: PileInitSetData;
-  locationData: PileLocationRowData[];
-  reinforcedData: PileReinforcedRowData[];
-  sectionData: PileRowData[];
+  initSetData: PileInitSet;
+  locationData: PileLocation[];
+  reinforcedData: PileReinforced[];
+  sectionData: PileSection[];
 }
 
 // 데이터 그리드에 표시될 요약 정보

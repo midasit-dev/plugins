@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-export interface PileLocationRowData {
+export interface PileLocation {
   id: number;
   loc_title: string;
   ref_point: string;
@@ -9,14 +9,14 @@ export interface PileLocationRowData {
   angle: number[];
 }
 
-export const defaultPileLocationData: PileLocationRowData[] = [
+export const defaultPileLocation: PileLocation[] = [
   {
     id: 1,
     loc_title: "Pile_X_Dir",
     ref_point: "Ref_Point_Right",
     loc: 0,
     space: [],
-    angle: [],
+    angle: [0],
   },
   {
     id: 2,
@@ -24,11 +24,11 @@ export const defaultPileLocationData: PileLocationRowData[] = [
     ref_point: "Ref_Point_Top",
     loc: 0,
     space: [],
-    angle: [],
+    angle: [0],
   },
 ];
 
-export const pileLocationState = atom<PileLocationRowData[]>({
+export const pileLocationState = atom<PileLocation[]>({
   key: "pileLocationState",
-  default: defaultPileLocationData,
+  default: defaultPileLocation,
 });

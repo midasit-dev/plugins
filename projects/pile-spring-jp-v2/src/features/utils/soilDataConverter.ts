@@ -1,4 +1,4 @@
-import { SoilBasic, SoilResistance, SoilTableRowData } from "../../states";
+import { SoilBasic, SoilTable } from "../../states";
 
 interface LegacySoilBasic {
   groundLevel: string | number;
@@ -46,7 +46,7 @@ interface LegacySoilTable {
 
 const convertSoilTableLegacyToCurrent = (
   legacyData: LegacySoilTable[]
-): SoilTableRowData[] => {
+): SoilTable[] => {
   return legacyData.map((item) => ({
     id: item.id,
     layerNo: item.LayerNo,
@@ -63,7 +63,7 @@ const convertSoilTableLegacyToCurrent = (
     Vsi: item.Vsi,
     ED: item.ED,
     DE: item.DE,
-    legnth: item.Length,
+    length: item.Length,
   }));
 };
 

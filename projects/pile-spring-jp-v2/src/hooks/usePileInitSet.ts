@@ -1,30 +1,51 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { pileSectionState, pileInitSetState } from "../states";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { PileInitSet } from "../states/statePileInitSet";
+
+interface PileSection {
+  checked: boolean;
+  length: number;
+}
 
 export const usePileInitSet = () => {
   const [pileInitSet, setPileInitSet] = useRecoilState(pileInitSetState);
   const pileSection = useRecoilValue(pileSectionState);
 
   const handleChange =
-    (field: keyof typeof pileInitSet) =>
+    (field: keyof PileInitSet) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setPileInitSet((prev) => ({
-        ...prev,
-        [field]: e.target.value,
-      }));
+      const value = e.target.value;
+
+      // 숫자 필드인 경우 숫자로 변환
+      if (field === "topLevel" || field === "pileLength") {
+        const numValue = parseFloat(value);
+        if (!isNaN(numValue)) {
+          setPileInitSet((prev) => ({
+            ...prev,
+            [field]: numValue,
+          }));
+        }
+      } else {
+        setPileInitSet((prev) => ({
+          ...prev,
+          [field]: value,
+        }));
+      }
     };
 
-  useEffect(() => {
-    const totalLength = pileSection
-      .filter((pile) => pile.checked)
+  const totalLength = useMemo(() => {
+    return pileSection
+      .filter((pile: PileSection) => pile.checked)
       .reduce((acc, curr) => acc + curr.length, 0);
+  }, [pileSection]);
 
+  useEffect(() => {
     setPileInitSet((prev) => ({
       ...prev,
       pileLength: totalLength,
     }));
-  }, [pileSection]);
+  }, [totalLength]);
 
   return {
     values: pileInitSet,
@@ -34,6 +55,7 @@ export const usePileInitSet = () => {
       handleTopLevelChange: handleChange("topLevel"),
       handleConstructionMethodChange: handleChange("constructionMethod"),
       handleBottomConditionChange: handleChange("bottomCondition"),
+      handlePileLengthChange: handleChange("pileLength"),
     },
   };
 };

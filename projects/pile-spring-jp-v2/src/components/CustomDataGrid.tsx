@@ -1,6 +1,5 @@
 import React from "react";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 interface CustomDataGridProps {
