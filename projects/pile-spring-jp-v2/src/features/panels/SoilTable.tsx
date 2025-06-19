@@ -1,7 +1,7 @@
 import { GuideBox, Typography } from "@midasit-dev/moaui";
 import { CustomTable } from "../../components";
 import { IconButton } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import { useTranslation } from "react-i18next";
 import { useSoilTable } from "../../hooks";
 
@@ -14,7 +14,7 @@ const SoilTable = () => {
       <GuideBox width="100%" row horSpaceBetween verCenter>
         <Typography variant="body2">{t("Soil_Table")}</Typography>
         <IconButton size="small" onClick={handleAddRow}>
-          <Add sx={{ fontSize: 18 }} />
+          <AddIcon sx={{ fontSize: 18 }} />
         </IconButton>
       </GuideBox>
       <GuideBox width="860px" column>

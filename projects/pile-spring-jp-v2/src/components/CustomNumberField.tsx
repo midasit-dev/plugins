@@ -77,6 +77,9 @@ const CustomNumberField: React.FC<CustomNumberFieldProps> = ({
             fontFamily: "Pretendard",
             fontSize: "12px",
             textAlign: textAlign,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
           },
           "& .MuiInputBase-root": {
             height: "28px",

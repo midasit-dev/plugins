@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Typography, Select, MenuItem, FormControl } from "@mui/material";
+import {
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  SxProps,
+  Theme,
+} from "@mui/material";
 
 interface CustomDropListProps {
   width?: number | string;
@@ -31,8 +38,8 @@ const CustomDropList: React.FC<CustomDropListProps> = ({
   const itemListMap = new Map(itemList);
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         width,
         height,
         display: "flex",
@@ -79,7 +86,7 @@ const CustomDropList: React.FC<CustomDropListProps> = ({
           ))}
         </Select>
       </FormControl>
-    </Box>
+    </div>
   );
 };
 

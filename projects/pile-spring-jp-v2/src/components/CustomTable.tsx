@@ -200,7 +200,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 align="center"
                 sx={{ padding: 0, backgroundColor: "#E6E6E6" }}
               >
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <div style={{ display: "flex", justifyContent: "center" }}>
                   <TabGroup value={currentTab} onChange={handleTabChange}>
                     {tabs.map((tab) => (
                       <Tab
@@ -210,7 +210,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                       />
                     ))}
                   </TabGroup>
-                </Box>
+                </div>
               </TableCell>
             </TableRow>
           )}

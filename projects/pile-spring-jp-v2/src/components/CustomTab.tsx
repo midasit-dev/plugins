@@ -136,7 +136,7 @@ export const TabGroup = forwardRef<HTMLDivElement, TabGroupProps>(
     } = props;
 
     return (
-      <Box sx={{ width, height, minWidth, minHeight }}>
+      <div style={{ width, height, minWidth, minHeight }}>
         <StyledTabs
           ref={ref}
           value={value}
@@ -148,7 +148,7 @@ export const TabGroup = forwardRef<HTMLDivElement, TabGroupProps>(
         >
           {children}
         </StyledTabs>
-      </Box>
+      </div>
     );
   }
 );

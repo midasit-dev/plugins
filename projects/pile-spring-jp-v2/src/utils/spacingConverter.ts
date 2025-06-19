@@ -1,5 +1,5 @@
 // space 문자열을 number[]로 변환하는 유틸리티 함수
-const parseSpaceInput = (input: string): number[] => {
+export const parseSpaceInput = (input: string): number[] => {
   if (!input) return [];
 
   const parts = input.split(",");
@@ -24,7 +24,7 @@ const parseSpaceInput = (input: string): number[] => {
 };
 
 // number[]를 문자열로 변환하는 함수
-const formatSpaceDisplay = (spaceArray: number[]): string => {
+export const formatSpaceDisplay = (spaceArray: number[]): string => {
   if (!spaceArray.length) return "";
 
   // 연속된 같은 숫자들을 그룹화
@@ -50,5 +50,3 @@ const formatSpaceDisplay = (spaceArray: number[]): string => {
     )
     .join(", ");
 };
-
-export { parseSpaceInput, formatSpaceDisplay };

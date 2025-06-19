@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { GuideBox } from "@midasit-dev/moaui";
 import { Paper } from "@mui/material";
 import {
@@ -14,7 +14,7 @@ import {
 import { usePileInitSet } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
-const PileInitSet = () => {
+const PileInitSet = React.memo(() => {
   /**
   말뚝 기본 설정
 
@@ -28,8 +28,13 @@ const PileInitSet = () => {
   const { t } = useTranslation();
   const { values, handlers } = usePileInitSet();
 
-  const totalWidth = 260;
-  const fieldWidth = 160;
+  const { totalWidth, fieldWidth } = useMemo(
+    () => ({
+      totalWidth: 260,
+      fieldWidth: 160,
+    }),
+    []
+  );
 
   return (
     <Paper id="PileInitSet_Panel" sx={{ padding: "8px" }}>
@@ -83,6 +88,8 @@ const PileInitSet = () => {
       </GuideBox>
     </Paper>
   );
-};
+});
+
+PileInitSet.displayName = "PileInitSet";
 
 export default PileInitSet;

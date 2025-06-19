@@ -1,22 +1,19 @@
 import { useRecoilState } from "recoil";
 import { pileBasicDimState } from "../states";
-import { useCallback } from "react";
+import { ChangeEvent, useCallback } from "react";
 
-interface ChangeEvent {
-  target: {
-    value: string;
-  };
-}
+type InputChangeEvent = ChangeEvent<HTMLInputElement>;
 
 export const usePileBasicDim = () => {
   const [dimensions, setDimensions] = useRecoilState(pileBasicDimState);
 
   const handleChange = useCallback(
-    (fieldName: keyof typeof dimensions) => (e: ChangeEvent) => {
+    (fieldName: keyof typeof dimensions) => (e: InputChangeEvent) => {
       const value = e.target.value;
       setDimensions((prev) => ({
         ...prev,
-        [fieldName]: value,
+        [fieldName]:
+          typeof prev[fieldName] === "number" ? Number(value) : value,
       }));
     },
     [setDimensions]

@@ -7,3 +7,4 @@ export { default as PileData } from "./PileData";
 export { default as SoilBasic } from "./SoilBasic";
 export { default as SoilResistance } from "./SoilResistance";
 export { default as SoilTable } from "./SoilTable";
+export { default as PileViewer } from "./PileViewer";

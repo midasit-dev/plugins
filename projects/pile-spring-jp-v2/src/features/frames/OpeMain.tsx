@@ -1,5 +1,5 @@
 import { GuideBox, Button } from "@midasit-dev/moaui";
-import { DataImport, DataExport } from "../actions";
+import { DataImport, DataExport, Calculation } from "../actions";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { pileDataListState, soilBasicState, projectData } from "../../states";
 import { CustomTextField } from "../../components";
@@ -25,7 +25,7 @@ const OpeMain = () => {
   };
 
   return (
-    <GuideBox width="100%" row spacing={1} horRight>
+    <GuideBox id="OpeMain" width="100%" row spacing={1} horRight>
       <CustomTextField
         label={t("Project_Name")}
         value={project.projectName}
@@ -35,6 +35,7 @@ const OpeMain = () => {
       />
       <DataExport />
       <DataImport />
+      <Calculation />
       <Button onClick={clickbutton}>Click</Button>
     </GuideBox>
   );

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { GuideBox, Panel } from "@midasit-dev/moaui";
 import { CustomNumberField } from "../../components";
 import { usePileBasicDim } from "../../hooks";
 import { useTranslation } from "react-i18next";
 
-const PileBasicDim = () => {
+const PileBasicDim = React.memo(() => {
   /**
   기초 제원 설정 패널
 
@@ -18,39 +18,42 @@ const PileBasicDim = () => {
   const { t } = useTranslation();
   const { values, handleChange } = usePileBasicDim();
 
-  const fields = [
-    {
-      label: t("Xdir_Dim"),
-      width: 170,
-      value: values.foundationWidth.toString(),
-      onChange: handleChange("foundationWidth"),
-      hasValidation: true,
-    },
-    {
-      label: t("Ydir_Dim"),
-      width: 170,
-      value: values.sideLength.toString(),
-      onChange: handleChange("sideLength"),
-      hasValidation: true,
-    },
-    {
-      label: t("X_Force_Point"),
-      width: 230,
-      value: values.forcePointX.toString(),
-      onChange: handleChange("forcePointX"),
-      hasValidation: false,
-    },
-    {
-      label: t("Y_Force_Point"),
-      width: 230,
-      value: values.forcePointY.toString(),
-      onChange: handleChange("forcePointY"),
-      hasValidation: false,
-    },
-  ];
+  const fields = useMemo(
+    () => [
+      {
+        label: t("Xdir_Dim"),
+        width: 170,
+        value: values.foundationWidth.toString(),
+        onChange: handleChange("foundationWidth"),
+        hasValidation: true,
+      },
+      {
+        label: t("Ydir_Dim"),
+        width: 170,
+        value: values.sideLength.toString(),
+        onChange: handleChange("sideLength"),
+        hasValidation: true,
+      },
+      {
+        label: t("X_Force_Point"),
+        width: 230,
+        value: values.forcePointX.toString(),
+        onChange: handleChange("forcePointX"),
+        hasValidation: false,
+      },
+      {
+        label: t("Y_Force_Point"),
+        width: 230,
+        value: values.forcePointY.toString(),
+        onChange: handleChange("forcePointY"),
+        hasValidation: false,
+      },
+    ],
+    [t, values, handleChange]
+  );
 
   return (
-    <Panel id="PileBasicDim_Panel" width="100%">
+    <Panel width="100%">
       <GuideBox width="100%" row verCenter horSpaceBetween>
         {fields.map((field, index) => (
           <CustomNumberField
@@ -75,6 +78,8 @@ const PileBasicDim = () => {
       </GuideBox>
     </Panel>
   );
-};
+});
+
+PileBasicDim.displayName = "PileBasicDim";
 
 export default PileBasicDim;

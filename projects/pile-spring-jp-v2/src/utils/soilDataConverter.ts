@@ -1,4 +1,4 @@
-import { SoilBasic, SoilTable } from "../../states";
+import { SoilBasic, SoilTable } from "../states";
 
 interface LegacySoilBasic {
   groundLevel: string | number;
@@ -10,7 +10,7 @@ interface LegacySoilBasic {
   groupEffectValue: string | number;
 }
 
-const convertSoilBasicLegacyToCurrent = (
+export const convertSoilBasicLegacyToCurrent = (
   legacyData: LegacySoilBasic
 ): SoilBasic => {
   const basicData = {
@@ -29,7 +29,7 @@ interface LegacySoilTable {
   id: number;
   LayerNo: number;
   LayerType: string;
-  LayerDepth: number;
+  LayerDepth: string | number;
   Depth: string | number;
   AvgNValue: string | number;
   c: string | number;
@@ -37,21 +37,21 @@ interface LegacySoilTable {
   gamma: string | number;
   aE0: string | number;
   aE0_Seis: string | number;
-  vd: number;
-  Vsi: number;
-  ED: number;
-  DE: number;
-  Length: number;
+  vd: string | number;
+  Vsi: string | number;
+  ED: string | number;
+  DE: string | number;
+  Length: string | number;
 }
 
-const convertSoilTableLegacyToCurrent = (
+export const convertSoilTableLegacyToCurrent = (
   legacyData: LegacySoilTable[]
 ): SoilTable[] => {
   return legacyData.map((item) => ({
     id: item.id,
     layerNo: item.LayerNo,
     layerType: item.LayerType,
-    layerDepth: item.LayerDepth,
+    layerDepth: Number(item.LayerDepth),
     depth: Number(item.Depth),
     avgNvalue: Number(item.AvgNValue),
     c: Number(item.c),
@@ -59,12 +59,10 @@ const convertSoilTableLegacyToCurrent = (
     gamma: Number(item.gamma),
     aE0: Number(item.aE0),
     aE0_Seis: Number(item.aE0_Seis),
-    vd: item.vd,
-    Vsi: item.Vsi,
-    ED: item.ED,
-    DE: item.DE,
-    length: item.Length,
+    vd: Number(item.vd),
+    Vsi: Number(item.Vsi),
+    ED: Number(item.ED),
+    DE: Number(item.DE),
+    length: Number(item.Length),
   }));
 };
-
-export { convertSoilBasicLegacyToCurrent, convertSoilTableLegacyToCurrent };

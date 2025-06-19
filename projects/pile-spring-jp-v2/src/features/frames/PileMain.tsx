@@ -6,6 +6,7 @@ import {
   PileLocation,
   PileReinforced,
   PileSection,
+  PileViewer,
 } from "../panels";
 import { PileDataEditor } from "../actions";
 import { GuideBox, Typography, Panel } from "@midasit-dev/moaui";
@@ -21,18 +22,18 @@ const PileMain = () => {
   };
 
   return (
-    <GuideBox width="100%" spacing={2}>
-      <GuideBox width="100%" column>
+    <GuideBox id="PileMain_Guide" width="100%" spacing={2}>
+      <GuideBox id="PileMain_BasicDim" width="100%" column>
         <Typography variant="body2">{t("Footing_Dimension")}</Typography>
         <PileBasicDim />
       </GuideBox>
 
-      <GuideBox width="100%" column>
+      <GuideBox id="PileMain_PileSetting" width="100%">
         <Typography variant="body2">{t("Pile_Setting")}</Typography>
         <Panel width="100%">
           <GuideBox width="100%" spacing={1}>
             <GuideBox
-              id="Main_Guide"
+              id="PileMain_PileSetting_Guide"
               width="100%"
               height={280}
               column
@@ -43,7 +44,7 @@ const PileMain = () => {
                 <Tab label={t("Section_Setting")} value={2} />
               </TabGroup>
               {tabValue === 1 && (
-                <GuideBox width="100%" row spacing={3}>
+                <GuideBox width="100%" spacing={3} row horSpaceBetween>
                   <GuideBox column spacing={1}>
                     <Typography variant="body2">
                       {t("Initial_Setting")}
@@ -76,9 +77,16 @@ const PileMain = () => {
           </GuideBox>
         </Panel>
       </GuideBox>
-      <GuideBox width="100%" column spacing={1}>
-        <Typography variant="body2">{t("Pile_Arrangement_Table")}</Typography>
-        <PileData />
+
+      <GuideBox id="PileMain_PileData" width="100%" row horSpaceBetween>
+        <GuideBox column spacing={1}>
+          <Typography variant="body2">{t("Pile_Arrangement_Table")}</Typography>
+          <PileData />
+        </GuideBox>
+        <GuideBox column spacing={1}>
+          <Typography variant="body2">{t("Pile_Arrangement_Table")}</Typography>
+          <PileViewer />
+        </GuideBox>
       </GuideBox>
     </GuideBox>
   );

@@ -1,19 +1,17 @@
 import React from "react";
 import { SnackbarContent, CustomContentProps, closeSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
-import {
-  Close,
-  CheckCircleOutline,
-  InfoOutlined,
-  ErrorOutline,
-  WarningOutlined,
-} from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import WarningOutlinedIcon from "@mui/icons-material/WarningOutlined";
 
 const NOTIFICATION_ICONS = {
-  success: CheckCircleOutline,
-  error: ErrorOutline,
-  info: InfoOutlined,
-  warning: WarningOutlined,
+  success: CheckCircleOutlineIcon,
+  error: ErrorOutlineIcon,
+  info: InfoOutlinedIcon,
+  warning: WarningOutlinedIcon,
 };
 
 const NOTIFICATION_CONFIG = {
@@ -86,7 +84,7 @@ const CustomSnackbar = React.forwardRef<HTMLDivElement, CustomContentProps>(
             onClick={() => closeSnackbar(id)}
             style={{ color: config.color, width: "16px", height: "16px" }}
           >
-            <Close style={ICON_STYLE} />
+            <CloseIcon style={ICON_STYLE} />
           </IconButton>
         </div>
       </SnackbarContent>

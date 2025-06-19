@@ -142,7 +142,7 @@ const PileData = () => {
   ];
 
   return (
-    <GuideBox>
+    <>
       <Paper elevation={2} sx={{ width: "100%", height: "244px" }}>
         <CustomDataGrid
           rows={summaryList}
@@ -181,7 +181,7 @@ const PileData = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </GuideBox>
+    </>
   );
 };
 

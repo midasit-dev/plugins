@@ -5,7 +5,7 @@ import {
   PileBasicDim,
   defaultPileSection,
   PileType,
-} from "../../states";
+} from "../states";
 import { parseSpaceInput } from "./spacingConverter";
 
 interface LegacyPileData {
@@ -240,7 +240,7 @@ const convertPileLegacyToCurrent = (
           id: 1,
           loc_title: "Pile_X_Dir",
           ref_point:
-            pile.majorRefValue === 1 ? "Ref_Point_Left" : "Ref_Point_Right",
+            pile.majorRefValue === 1 ? "Ref_Point_Right" : "Ref_Point_Left",
           loc: Number(pile.majorStartPoint),
           space: majorSpace,
           angle: adjustAngleArray(majorSpace, majorDegree),
@@ -249,7 +249,7 @@ const convertPileLegacyToCurrent = (
           id: 2,
           loc_title: "Pile_Y_Dir",
           ref_point:
-            pile.minorRefValue === 1 ? "Ref_Point_Bottom" : "Ref_Point_Top",
+            pile.minorRefValue === 1 ? "Ref_Point_Top" : "Ref_Point_Bottom",
           loc: Number(pile.minorStartPoint),
           space: [],
           angle: adjustAngleArray(majorSpace, minorDegree),

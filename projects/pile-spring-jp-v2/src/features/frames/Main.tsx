@@ -20,8 +20,8 @@ const Main = () => {
   };
 
   return (
-    <GuideBox width="100%" height="100%" spacing={2} row>
-      <GuideBox width="100%" spacing={2} row>
+    <>
+      <GuideBox id="Main_Tab" spacing={2} row>
         <TabGroup
           orientation="vertical"
           value={tabValue}
@@ -29,19 +29,31 @@ const Main = () => {
         >
           <Tab label={t("TabName_Pile")} value={1} />
           <Tab label={t("TabName_Soil")} value={2} />
-          <Tab label={t("TabName_Import")} value={3} />
         </TabGroup>
       </GuideBox>
-      <GuideBox width="100%" height="100%" column verSpaceBetween>
-        <div style={{ display: tabValue === 1 ? "block" : "none" }}>
+      <GuideBox
+        id="Main_Content"
+        width="100%"
+        height="100%"
+        column
+        verSpaceBetween
+        padding={1}
+      >
+        <div
+          id="PileMain_Container"
+          style={{ display: tabValue === 1 ? "block" : "none" }}
+        >
           <MemoizedPileMain />
         </div>
-        <div style={{ display: tabValue === 2 ? "block" : "none" }}>
+        <div
+          id="SoilMain_Container"
+          style={{ display: tabValue === 2 ? "block" : "none" }}
+        >
           <MemoizedSoilMain />
         </div>
         <MemoizedOpeMain />
       </GuideBox>
-    </GuideBox>
+    </>
   );
 };
 
