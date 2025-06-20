@@ -45,7 +45,9 @@ It provides options for defining load cases, factors, and settings required for 
 - **Assign Factor Values**: Input values for Factors 1 to 5. Ensure at least one factor is defined per combination.
 - **Generate Load Cases and Combinations**: Use the plugin to import, modify, or export load cases and combinations as needed.
 - **Export or Import Configurations**: Save or load wizard files for efficient management across projects.
-
+### version 1.3.1
+- Added additional functionality for selecting multiple strength/service combinations.
+- Added an option to delete individual load cases within a load combination.
 ### version 1.3.0
 
 - Added a tutorial video to guide users through the plugin's functionalities and usage.
