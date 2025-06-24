@@ -17,7 +17,7 @@ import CustomToggleButton from "../../components/CustomToggleButton";
  * Canvas 사이즈를 상수로 미리 기록해두어, 카메라 위치 계산에 참조하여 사용
  */
 const CANVAS_WIDTH = 420;
-const CANVAS_HEIGHT = 244;
+const CANVAS_HEIGHT = 260;
 
 /*
  * 동적으로 자식 객체들의 바운딩 박스를 계산하여 카메라와 OrbitControls의 위치 및

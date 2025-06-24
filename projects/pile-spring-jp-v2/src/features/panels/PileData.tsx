@@ -143,7 +143,7 @@ const PileData = () => {
 
   return (
     <>
-      <Paper elevation={2} sx={{ width: "100%", height: "244px" }}>
+      <Paper elevation={2} sx={{ width: "100%", height: "260px" }}>
         <CustomDataGrid
           rows={summaryList}
           columns={columns}
