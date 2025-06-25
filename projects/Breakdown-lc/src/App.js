@@ -944,6 +944,7 @@ function App() {
               );
               return null;
             }
+            let filteredData;
             function filterBeamForceData(data) {
               // Group arrays by their 3rd element
               const groupedData = data.reduce((acc, item) => {
@@ -955,14 +956,16 @@ function App() {
                 return acc;
               }, {});
             
-              const filteredData = Object.values(groupedData).flatMap((group) => {
+              const filtered = Object.values(groupedData).flatMap((group) => {
                 const count = group.length;
                 return count >= 3 ? [group[count - 3]] : []; // Keep only the 3rd-to-last element if it exists
               });
-              return filteredData;
+              return filtered;
             }
-            const filteredData = filterBeamForceData(cstr_forces.BeamForce.DATA);
+            if (cstr_forces.message !== "") {
+            filteredData = filterBeamForceData(cstr_forces.BeamForce.DATA);
             console.log("filteredData", filteredData);
+            }
             
             console.log(cstr_forces);
             let forces;
