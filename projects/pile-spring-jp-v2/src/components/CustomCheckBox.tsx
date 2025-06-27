@@ -1,3 +1,7 @@
+/**
+ * @fileoverview 커스텀 체크박스 컴포넌트
+ */
+
 import React from "react";
 import { Checkbox, CheckboxProps, styled } from "@mui/material";
 

@@ -1,12 +1,11 @@
+/**
+ * @fileoverview 커스텀 드롭다운 리스트 컴포넌트
+ */
+
 import React from "react";
-import {
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  SxProps,
-  Theme,
-} from "@mui/material";
+import { Select, MenuItem, FormControl } from "@mui/material";
+import { Typography } from "@midasit-dev/moaui";
+import { CustomBox } from ".";
 
 interface CustomDropListProps {
   width?: number | string;
@@ -38,13 +37,15 @@ const CustomDropList: React.FC<CustomDropListProps> = ({
   const itemListMap = new Map(itemList);
 
   return (
-    <div
-      style={{
-        width,
-        height,
+    <CustomBox
+      sx={{
         display: "flex",
+        flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        width: width,
+        height: height,
+        paddingLeft: label ? 4 : 0,
       }}
     >
       {label && (
@@ -86,7 +87,7 @@ const CustomDropList: React.FC<CustomDropListProps> = ({
           ))}
         </Select>
       </FormControl>
-    </div>
+    </CustomBox>
   );
 };
 

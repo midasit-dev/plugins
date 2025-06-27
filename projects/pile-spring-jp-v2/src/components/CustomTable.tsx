@@ -1,3 +1,7 @@
+/**
+ * @fileoverview 커스텀 테이블 컴포넌트
+ */
+
 import React, { ReactNode, useRef, useEffect, useState } from "react";
 import {
   Table,
@@ -8,17 +12,18 @@ import {
   TableRow,
   Paper,
   styled,
-  Box,
 } from "@mui/material";
 import { TabGroup, Tab } from "./CustomTab";
 
 interface HeaderItem {
   label: ReactNode;
   width?: number;
+  colSpan?: number;
 }
 
 interface CustomTableProps {
   headers: HeaderItem[];
+  groupHeaders?: HeaderItem[];
   rows: any[];
   renderRow: (row: any, index: number) => ReactNode[];
   tabs?: { value: string; label: string }[];
@@ -29,7 +34,6 @@ interface CustomTableProps {
   tableProps?: any;
   headerStartIndex?: number;
   totalWidth?: number;
-  minColWidth?: number;
   height?: number | string;
   stickyLastColumn?: boolean;
 }
@@ -109,8 +113,11 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
+const MIN_COLUMN_WIDTH = 50;
+
 const CustomTable: React.FC<CustomTableProps> = ({
   headers,
+  groupHeaders,
   rows,
   renderRow,
   tabs,
@@ -120,43 +127,71 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableProps,
   headerStartIndex = 0,
   tableContainerProps,
-  totalWidth = 1000,
-  minColWidth = 50,
+  totalWidth,
   height,
   stickyLastColumn = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
 
+  // 컨테이너 너비를 감지하는 ResizeObserver 설정
   useEffect(() => {
-    if (containerRef.current) {
-      const scrollbarW =
-        containerRef.current.offsetWidth - containerRef.current.clientWidth;
-      setScrollbarWidth(scrollbarW);
-    }
-  }, [rows.length]);
+    if (!containerRef.current) return;
+
+    const updateWidths = () => {
+      if (containerRef.current) {
+        const scrollbarW =
+          containerRef.current.offsetWidth - containerRef.current.clientWidth;
+        setScrollbarWidth(scrollbarW);
+        setContainerWidth(containerRef.current.clientWidth);
+      }
+    };
+
+    // 초기 측정
+    updateWidths();
+
+    // ResizeObserver로 크기 변경 감지
+    const resizeObserver = new ResizeObserver(updateWidths);
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const getColumnWidths = () => {
-    const specifiedWidths = headers.map((h) => h.width ?? null);
-    const specifiedTotal = specifiedWidths.reduce<number>(
-      (sum, w) => sum + (w ?? 0),
+    console.log("containerWidth", containerWidth);
+    // 모든 열에 기본 너비 할당 (지정되지 않은 경우 MIN_COLUMN_WIDTH 사용)
+    const columnWidths = headers.map(
+      (header) => header.width || MIN_COLUMN_WIDTH
+    );
+
+    // 총 너비 계산
+    const calculatedTotalWidth = columnWidths.reduce(
+      (sum, width) => sum + width,
       0
     );
-    const unspecifiedCount = specifiedWidths.filter((w) => w === null).length;
-    const remaining = totalWidth - specifiedTotal;
-    const defaultWidth =
-      unspecifiedCount > 0
-        ? Math.max(minColWidth, Math.floor(remaining / unspecifiedCount))
-        : 0;
-    return specifiedWidths.map((w) => w ?? defaultWidth);
+
+    // 컨테이너 너비가 0이면 원래 너비 반환
+    if (containerWidth === 0) return columnWidths;
+
+    // totalWidth가 지정되지 않은 경우 부모 컨테이너의 너비 사용
+    const effectiveTotalWidth = totalWidth || containerWidth;
+
+    // 총 너비가 부모 컨테이너보다 작은 경우, 비율에 맞게 늘림
+    if (!totalWidth && calculatedTotalWidth < effectiveTotalWidth) {
+      const ratio = effectiveTotalWidth / calculatedTotalWidth;
+      return columnWidths.map((width) => Math.floor(width * ratio));
+    }
+
+    return columnWidths;
   };
 
   const columnWidths = getColumnWidths();
-  const totalCalculatedWidth = columnWidths.reduce<number>(
-    (sum, w) => sum + w,
-    0
-  );
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     if (onTabChange) onTabChange(newValue);
   };
@@ -176,7 +211,6 @@ const CustomTable: React.FC<CustomTableProps> = ({
         size="small"
         {...tableProps}
         sx={{
-          minWidth: `${totalCalculatedWidth}px`,
           tableLayout: "fixed",
         }}
       >
@@ -212,6 +246,30 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   </TabGroup>
                 </div>
               </TableCell>
+            </TableRow>
+          )}
+          {groupHeaders && (
+            <TableRow>
+              {groupHeaders.map((header, index) => (
+                <StyledHeaderCell
+                  key={index}
+                  align="center"
+                  colSpan={header.colSpan}
+                  className={
+                    stickyLastColumn && index === groupHeaders.length - 1
+                      ? "sticky-last"
+                      : ""
+                  }
+                  sx={{
+                    width: header.width ? `${header.width}px` : undefined,
+                    ...(index === groupHeaders.length - 1 && scrollbarWidth > 0
+                      ? { paddingRight: `${scrollbarWidth}px` }
+                      : {}),
+                  }}
+                >
+                  {header.label}
+                </StyledHeaderCell>
+              ))}
             </TableRow>
           )}
           <TableRow>

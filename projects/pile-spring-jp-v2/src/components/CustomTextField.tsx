@@ -1,6 +1,11 @@
+/**
+ * @fileoverview 커스텀 텍스트 필드 컴포넌트
+ */
+
 import React from "react";
-import { GuideBox, Typography } from "@midasit-dev/moaui";
+import { Typography } from "@midasit-dev/moaui";
 import { TextField } from "@mui/material";
+import { CustomBox } from ".";
 
 interface CustomTextFieldProps {
   width?: number | string;
@@ -32,7 +37,17 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
   textAlign = "left",
 }) => {
   return (
-    <GuideBox width={width} height={height} row verCenter horSpaceBetween>
+    <CustomBox
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: width,
+        height: height,
+        paddingLeft: label ? 4 : 0,
+      }}
+    >
       {label && <Typography variant={variant}>{label}</Typography>}
       <TextField
         value={value}
@@ -69,7 +84,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
           },
         }}
       />
-    </GuideBox>
+    </CustomBox>
   );
 };
 

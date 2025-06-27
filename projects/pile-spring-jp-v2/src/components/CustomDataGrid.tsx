@@ -1,3 +1,7 @@
+/**
+ * @fileoverview 커스텀 데이터 그리드 컴포넌트
+ */
+
 import React from "react";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";

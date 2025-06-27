@@ -1,6 +1,10 @@
+/**
+ * @fileoverview 커스텀 숫자 필드 컴포넌트
+ */
+
 import React from "react";
 import { Typography, TextField } from "@mui/material";
-import { GuideBox } from "@midasit-dev/moaui";
+import { CustomBox } from ".";
 
 interface NumberOptions {
   min?: number;
@@ -51,7 +55,17 @@ const CustomNumberField: React.FC<CustomNumberFieldProps> = ({
   const { min, max, step } = numberOptions || {};
 
   return (
-    <GuideBox width={width} height={height} row verCenter horSpaceBetween>
+    <CustomBox
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: width,
+        height: height,
+        paddingLeft: label ? 4 : 0,
+      }}
+    >
       {label && (
         <Typography variant={variant} color={labelColor}>
           {label}
@@ -98,7 +112,7 @@ const CustomNumberField: React.FC<CustomNumberFieldProps> = ({
           },
         }}
       />
-    </GuideBox>
+    </CustomBox>
   );
 };
 

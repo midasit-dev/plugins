@@ -12,7 +12,6 @@
  */
 
 import { VerifyUtil } from "@midasit-dev/moaui";
-import { SoilTable, PileDataItem, SoilBasic } from "./states";
 
 export function checkPyScriptReady(callback: any) {
   // if pyscript is ready, call callback function
@@ -161,32 +160,6 @@ export function dbDelete(itemName: string, item_id: string | number) {
   return checkPyScriptReady(() => {
     const py_db_delete_func = pyscript.interpreter.globals.get("py_db_delete");
     const result = py_db_delete_func(itemName, item_id);
-    return JSON.parse(result);
-  });
-}
-
-/**
- * @description this function is for python script to calculate data
- * @see ./public/py_main.py
- * @param itemName name of item
- * @returns
- * @example
- */
-
-export function CalculateBeta(
-  Condition: string,
-  SoilData: SoilTable[],
-  PileData: PileDataItem[],
-  SoilBasic: SoilBasic
-) {
-  return checkPyScriptReady(() => {
-    const Cal_Beta = pyscript.interpreter.globals.get("Cal_Beta");
-    const result = Cal_Beta(
-      Condition,
-      JSON.stringify(SoilData),
-      JSON.stringify(PileData),
-      JSON.stringify(SoilBasic)
-    );
     return JSON.parse(result);
   });
 }

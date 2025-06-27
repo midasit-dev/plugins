@@ -1,3 +1,7 @@
+/**
+ * @fileoverview 커스텀 토글 버튼 컴포넌트
+ */
+
 import React from "react";
 import {
   ToggleButtonGroup,

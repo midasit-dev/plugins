@@ -1,3 +1,7 @@
+/**
+ * @fileoverview 커스텀 스낵바 컴포넌트
+ */
+
 import React from "react";
 import { SnackbarContent, CustomContentProps, closeSnackbar } from "notistack";
 import { IconButton } from "@mui/material";

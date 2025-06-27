@@ -12,8 +12,8 @@
  */
 
 import React from "react";
-import { Main } from "./features/frames";
-import { GuideBox } from "@midasit-dev/moaui";
+import { Main } from "./features/containers";
+import { CustomBox } from "./components";
 
 const opacity = 0.5;
 //If you want to test, try using the GuideApp component.
@@ -38,9 +38,17 @@ const opacity = 0.5;
 
 const App = () => {
   return (
-    <GuideBox id="App" row width={1000} height={800} border="1px solid black">
+    <CustomBox
+      sx={{
+        width: 1000,
+        height: 800,
+        border: "1px solid black",
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
       <Main />
-    </GuideBox>
+    </CustomBox>
   );
 };
 

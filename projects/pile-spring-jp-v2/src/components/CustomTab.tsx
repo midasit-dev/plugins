@@ -1,6 +1,10 @@
-import React, { SyntheticEvent, ReactNode, forwardRef } from "react";
+/**
+ * @fileoverview 커스텀 탭 컴포넌트
+ */
+
+import React, { ReactNode, forwardRef } from "react";
 import { styled } from "@mui/material/styles";
-import { Tabs, Tab as MuiTab, Box, TabsProps } from "@mui/material";
+import { Tabs, Tab as MuiTab, TabsProps } from "@mui/material";
 
 // 색상 정의
 const colors = {
