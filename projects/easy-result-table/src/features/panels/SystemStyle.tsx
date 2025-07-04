@@ -2,24 +2,28 @@
  * @fileoverview
  * 시스템 스타일 설정을 위한 패널 컴포넌트.
  * 표시 스타일(Default, Fixed 등)과 소수점 자릿수를 설정할 수 있는
- * UI를 제공합니다. moaui의 Panel 컴포넌트를 기반으로 구현되었으며,
- * 사용자 정의 드롭다운과 숫자 입력 필드를 포함합니다.
+ * UI를 제공합니다. MUI의 Paper 컴포넌트를 기반으로 구현되었으며,
+ * FormControl과 TextField 컴포넌트를 사용합니다.
  */
 
-import { Panel } from "@midasit-dev/moaui";
-import CustomDropList from "../components/CustomDropList";
+import {
+  Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Box,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import CustomNumberField from "../components/CustomNumberField";
-import { SystemStyleSettings } from "../types/category";
-
-// 컴포넌트 props 인터페이스
-interface SystemStyleProps {
-  value?: SystemStyleSettings; // 현재 스타일 설정 값
-  onChange: (newSettings: SystemStyleSettings) => void; // 설정 변경 핸들러
-}
+import {
+  SystemStyleProps,
+  DEFAULT_SETTINGS_SYSTEMSTYLE,
+} from "../types/panels";
 
 const SystemStyle: React.FC<SystemStyleProps> = ({
-  value = { style: "Default", decimalPlaces: 0 }, // 기본값 설정
+  value = DEFAULT_SETTINGS_SYSTEMSTYLE,
   onChange,
 }) => {
   // 로컬 상태 관리
@@ -53,30 +57,53 @@ const SystemStyle: React.FC<SystemStyleProps> = ({
   };
 
   // 스타일 선택 옵션 정의
-  const itemListStyle: Array<[string, string | number]> = [
-    ["Default", "Default"],
-    ["Fixed", "Fixed"],
-    ["Scientific", "Scientific"],
-    ["General", "General"],
-  ];
+  const styleOptions = ["Default", "Fixed", "Scientific", "General"];
 
   return (
-    <Panel>
-      <CustomDropList
-        width={150}
-        droplistWidth={100}
-        label="Style"
-        value={style}
-        itemList={itemListStyle}
-        onChange={handleStyleChange}
-      />
-      <CustomNumberField
-        width={150}
-        label="Decimal Places"
-        value={decimalPlaces.toString()}
-        onChange={handleDecimalPlacesChange}
-      />
-    </Panel>
+    <Paper
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 2,
+        height: "100%",
+      }}
+    >
+      <Typography variant="h2" sx={{ mb: 4 }}>
+        Styles
+      </Typography>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <FormControl>
+          <InputLabel id="style-select-label">Style</InputLabel>
+          <Select
+            labelId="style-select-label"
+            value={style}
+            label="Style"
+            onChange={handleStyleChange}
+            size="small"
+          >
+            {styleOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <TextField
+          label="Decimal Places"
+          type="number"
+          value={decimalPlaces}
+          onChange={handleDecimalPlacesChange}
+          size="small"
+          InputProps={{
+            inputProps: {
+              min: 0,
+              max: 10,
+            },
+          }}
+        />
+      </Box>
+    </Paper>
   );
 };
 

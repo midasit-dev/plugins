@@ -2,23 +2,24 @@
  * @fileoverview
  * 시스템 단위 설정을 위한 패널 컴포넌트.
  * 힘(Force)과 거리(Distance) 단위를 설정할 수 있는 UI를 제공합니다.
- * moaui의 Panel 컴포넌트를 기반으로 구현되었으며,
- * 각 단위 설정에 대한 드롭다운 리스트를 포함합니다.
+ * MUI의 Paper 컴포넌트를 기반으로 구현되었으며,
+ * FormControl과 Select 컴포넌트를 사용합니다.
  */
 
-import { Panel } from "@midasit-dev/moaui";
-import CustomDropList from "../components/CustomDropList";
+import {
+  Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography,
+  Box,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import { SystemUnitSettings } from "../types/category";
-
-// 컴포넌트 Props 인터페이스
-interface SystemUnitProps {
-  value?: SystemUnitSettings; // 현재 단위 설정 값
-  onChange: (newSettings: SystemUnitSettings) => void; // 설정 변경 핸들러
-}
+import { SystemUnitProps, DEFAULT_SETTINGS_SYSTEMUNIT } from "../types/panels";
 
 const SystemUnit: React.FC<SystemUnitProps> = ({
-  value = { force: "kN", distance: "mm" }, // 기본값 설정
+  value = DEFAULT_SETTINGS_SYSTEMUNIT,
   onChange,
 }) => {
   // 로컬 상태 관리
@@ -52,40 +53,59 @@ const SystemUnit: React.FC<SystemUnitProps> = ({
   };
 
   // 거리 단위 선택 옵션
-  const itemListDistance: Array<[string, string | number]> = [
-    ["mm", "mm"],
-    ["cm", "cm"],
-    ["m", "m"],
-    ["km", "km"],
-  ];
+  const distanceOptions = ["mm", "cm", "m", "in", "ft"];
 
   // 힘 단위 선택 옵션
-  const itemListForce: Array<[string, string | number]> = [
-    ["kN", "kN"],
-    ["N", "N"],
-  ];
+  const forceOptions = ["kgf", "tonf", "N", "kN", "lbf", "kips"];
 
   return (
-    <Panel>
-      {/* 힘 단위 설정 드롭다운 */}
-      <CustomDropList
-        width={150}
-        droplistWidth={100}
-        label="Force"
-        value={force}
-        itemList={itemListForce}
-        onChange={handleForceChange}
-      />
-      {/* 거리 단위 설정 드롭다운 */}
-      <CustomDropList
-        width={150}
-        droplistWidth={100}
-        label="Distance"
-        value={distance}
-        itemList={itemListDistance}
-        onChange={handleDistanceChange}
-      />
-    </Panel>
+    <Paper
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 2,
+        height: "100%",
+      }}
+    >
+      <Typography variant="h2" sx={{ mb: 4 }}>
+        Units
+      </Typography>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <FormControl>
+          <InputLabel id="force-select-label">Force</InputLabel>
+          <Select
+            labelId="force-select-label"
+            value={force}
+            label="Force"
+            onChange={handleForceChange}
+            size="small"
+          >
+            {forceOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl>
+          <InputLabel id="distance-select-label">Distance</InputLabel>
+          <Select
+            labelId="distance-select-label"
+            value={distance}
+            label="Distance"
+            onChange={handleDistanceChange}
+            size="small"
+          >
+            {distanceOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+    </Paper>
   );
 };
 

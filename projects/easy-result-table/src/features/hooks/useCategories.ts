@@ -13,7 +13,14 @@ import {
   selectedItemState,
   expandedCategoriesState,
 } from "../states/stateCategories";
-import { Category, TodoItem } from "../types/category";
+import { Category, TableItem } from "../types/category";
+import {
+  getLoadCase,
+  getStaticLoadCase,
+  getDynamicLoadCase,
+  getStaticDynamicLoadCase,
+} from "../utils/getLoadCaseList";
+import { LoadCaseNameSettings, LoadCase } from "../types/panels";
 
 export const useCategories = () => {
   // Recoil 상태 관리
@@ -53,7 +60,7 @@ export const useCategories = () => {
         // 아이템 타입에 따른 기본 설정 가져오기
         const defaultSettings =
           category.itemTypeInfo[itemType]?.defaultSettings || {};
-        const newItem: TodoItem = {
+        const newItem: TableItem = {
           id: uuidv4(),
           name: itemType,
           type: itemType,
@@ -95,7 +102,82 @@ export const useCategories = () => {
     );
   };
 
-  const handleItemClick = (categoryId: string, itemId: string) => {
+  // 로드케이스 타입에 따른 함수 선택
+  const getFetchFunction = (
+    loadCaseType: string = "default",
+    customFetchFunction?: () => Promise<string[]>
+  ) => {
+    switch (loadCaseType) {
+      case "static":
+        return async () => getStaticLoadCase();
+      case "dynamic":
+        return async () => getDynamicLoadCase();
+      case "static_dynamic":
+        return async () => getStaticDynamicLoadCase();
+      default:
+        return customFetchFunction || (async () => getLoadCase());
+    }
+  };
+
+  const handleItemClick = async (categoryId: string, itemId: string) => {
+    try {
+      const items = categories
+        .find((c) => c.id === categoryId)
+        ?.items.find((i) => i.id === itemId)?.settings;
+
+      if (items?.LoadCaseName) {
+        if (items.LoadCaseName?.loadCases?.length === 0) {
+          const fetchFunction = getFetchFunction(
+            items.LoadCaseName?.loadCaseType || "default",
+            items.LoadCaseName?.fetchFunction
+              ? async () => {
+                  const result = items.LoadCaseName?.fetchFunction!();
+                  return result || [];
+                }
+              : undefined
+          );
+          const loadCaseNames = await fetchFunction();
+
+          // loadCaseNames를 모두 false로 설정하여 저장
+          setCategories((prevCategories) =>
+            prevCategories.map((category) => {
+              if (category.id === categoryId) {
+                return {
+                  ...category,
+                  items: category.items.map((item) => {
+                    if (item.id === itemId) {
+                      const newLoadCaseSettings: LoadCaseNameSettings = {
+                        loadCases: loadCaseNames.map(
+                          (name: string): LoadCase => ({
+                            name,
+                            isChecked: false,
+                          })
+                        ),
+                        selectAll: false,
+                        loadCaseType:
+                          items.LoadCaseName?.loadCaseType || "default",
+                      };
+                      return {
+                        ...item,
+                        settings: {
+                          ...item.settings,
+                          LoadCaseName: newLoadCaseSettings,
+                        },
+                      };
+                    }
+                    return item;
+                  }),
+                };
+              }
+              return category;
+            })
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Failed to refresh load cases:", error);
+    }
+
     if (
       selectedItem?.categoryId === categoryId &&
       selectedItem?.itemId === itemId
@@ -112,6 +194,81 @@ export const useCategories = () => {
     );
   };
 
+  const handleLoadCaseRefresh = async (categoryId: string, itemId: string) => {
+    try {
+      const category = categories.find((c) => c.id === categoryId);
+      const item = category?.items.find((i) => i.id === itemId);
+      const loadCaseSettings = item?.settings?.LoadCaseName as
+        | LoadCaseNameSettings
+        | undefined;
+
+      if (!loadCaseSettings) return;
+
+      const fetchFunction = getFetchFunction(
+        loadCaseSettings.loadCaseType,
+        loadCaseSettings.fetchFunction &&
+          (async () => loadCaseSettings.fetchFunction!())
+      );
+      const newLoadCaseNames: string[] = await fetchFunction();
+
+      // 기존 데이터와 비교
+      const existingNames = loadCaseSettings.loadCases.map((lc) => lc.name);
+      const isIdentical =
+        newLoadCaseNames.length === existingNames.length &&
+        newLoadCaseNames.every((name: string) => existingNames.includes(name));
+
+      if (!isIdentical) {
+        // 새로운 데이터 생성 (기존 체크 상태 유지)
+        const newLoadCases = newLoadCaseNames.map((name: string) => {
+          const existingCase = loadCaseSettings.loadCases.find(
+            (lc) => lc.name === name
+          );
+          return {
+            name,
+            isChecked: existingCase ? existingCase.isChecked : false,
+          };
+        });
+
+        setCategories((prevCategories) =>
+          prevCategories.map((category) => {
+            if (category.id === categoryId) {
+              return {
+                ...category,
+                items: category.items.map((item) => {
+                  if (item.id === itemId) {
+                    const updatedSettings: LoadCaseNameSettings = {
+                      loadCases: newLoadCases,
+                      selectAll: newLoadCases.every((lc) => lc.isChecked),
+                      loadCaseType: loadCaseSettings.loadCaseType,
+                      fetchFunction: loadCaseSettings.fetchFunction,
+                    };
+
+                    return {
+                      ...item,
+                      settings: {
+                        ...item.settings,
+                        LoadCaseName: updatedSettings,
+                      },
+                    };
+                  }
+                  return item;
+                }),
+              };
+            }
+            return category;
+          })
+        );
+
+        return true; // 데이터가 변경되었음을 알림
+      }
+
+      return false; // 데이터가 동일함을 알림
+    } catch (error) {
+      console.error("Failed to refresh load cases:", error);
+      throw error;
+    }
+  };
+
   return {
     categories,
     setCategories,
@@ -124,6 +281,7 @@ export const useCategories = () => {
     handleAddItem,
     handleDeleteItem,
     handleItemClick,
+    handleLoadCaseRefresh,
     isItemSelected,
   };
 };

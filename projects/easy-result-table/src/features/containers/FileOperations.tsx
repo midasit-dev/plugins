@@ -7,9 +7,12 @@
  */
 
 import React, { useRef } from "react";
-import { Box, Button, Snackbar, Alert } from "@mui/material";
+import { Box, Button, Snackbar, Alert, Stack } from "@mui/material";
 import { Save as SaveIcon, Upload as UploadIcon } from "@mui/icons-material";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useFileOperations } from "../hooks/useFileOperations";
+import { useRecoilValue } from "recoil";
+import { categoriesState } from "../states/stateCategories";
 
 const FileOperations: React.FC = () => {
   // 파일 작업 관련 상태와 핸들러
@@ -37,50 +40,67 @@ const FileOperations: React.FC = () => {
     }
   };
 
+  // 테이블 생성 시 처리
+  const categories = useRecoilValue(categoriesState);
+  const handleCreateTable = () => {
+    console.log(categories);
+  };
+
   return (
     <>
       {/* 플로팅 버튼 컨테이너 */}
       <Box
         sx={{
-          position: "fixed",
-          bottom: 20,
-          right: 20,
           display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
           gap: 1,
-          zIndex: 1000,
+          padding: 2,
         }}
       >
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<SaveIcon />}
+            onClick={handleSaveToFile}
+          >
+            SAVE
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<UploadIcon />}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            LOAD
+          </Button>
+          {/* 숨겨진 파일 입력 요소 */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            accept=".json"
+            onChange={handleFileInputChange}
+          />
+        </Stack>
         <Button
           variant="contained"
           color="primary"
-          startIcon={<SaveIcon />}
-          onClick={handleSaveToFile}
+          startIcon={<KeyboardDoubleArrowRightIcon />}
+          onClick={handleCreateTable}
         >
-          저장
+          CREATE TABLE
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<UploadIcon />}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          불러오기
-        </Button>
-        {/* 숨겨진 파일 입력 요소 */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          accept=".json"
-          onChange={handleFileInputChange}
-        />
       </Box>
       {/* 작업 결과 알림을 위한 스낵바 */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnackbar}

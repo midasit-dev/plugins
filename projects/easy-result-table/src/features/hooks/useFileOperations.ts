@@ -2,8 +2,8 @@
  * @fileoverview
  * 파일 작업 관련 커스텀 훅.
  * 카테고리와 설정 데이터를 JSON 파일로 저장하고 불러오는 기능을 제공합니다.
- * 파일 저장/로드 시 날짜 형식 변환과 에러 처리를 포함하며,
- * 작업 결과를 스낵바를 통해 사용자에게 알립니다.
+ * 파일 저장/로드 시 Date 객체의 직렬화/역직렬화를 처리하며,
+ * 작업 결과를 스낵바를 통해 알리는 기능을 포함합니다.
  */
 
 import { useState } from "react";
@@ -13,19 +13,19 @@ import {
   expandedCategoriesState,
   selectedItemState,
 } from "../states/stateCategories";
-import { Category, TodoItem } from "../types/category";
+import { Category, TableItem } from "../types/category";
 
-// Date 객체를 직렬화하기 위한 TodoItem 인터페이스
-interface SerializedTodoItem extends Omit<TodoItem, "createdAt"> {
+// Date 객체를 포함한 Item을 직렬화하기 위한 인터페이스
+interface SerializedTodoItem extends Omit<TableItem, "createdAt"> {
   createdAt: string; // ISO 문자열로 변환된 날짜
 }
 
-// 직렬화된 카테고리 인터페이스
+// 직렬화된 Item을 포함한 Category 인터페이스
 interface SerializedCategory extends Omit<Category, "items"> {
-  items: SerializedTodoItem[]; // 직렬화된 아이템 배열
+  items: SerializedTodoItem[];
 }
 
-// 파일로 저장될 데이터 구조
+// 파일로 저장될 전체 데이터 구조
 interface SavedData {
   categories: SerializedCategory[];
   expandedCategories: Record<string, boolean>;
@@ -88,17 +88,15 @@ export const useFileOperations = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      // 성공 메시지 표시
       setSnackbar({
         open: true,
-        message: "설정이 성공적으로 저장되었습니다.",
+        message: "Settings saved successfully.",
         severity: "success",
       });
     } catch (error) {
-      // 에러 메시지 표시
       setSnackbar({
         open: true,
-        message: "설정 저장 중 오류가 발생했습니다.",
+        message: "Failed to save settings.",
         severity: "error",
       });
     }
@@ -119,27 +117,24 @@ export const useFileOperations = () => {
             items: category.items.map((item) => ({
               ...item,
               createdAt: new Date(item.createdAt),
-            })) as TodoItem[],
+            })) as TableItem[],
           })
         );
 
-        // 상태 업데이트
         setCategories(processedCategories);
         setExpandedCategories(data.expandedCategories);
         setSelectedItem(null);
 
-        // 성공 메시지 표시
         setSnackbar({
           open: true,
-          message: "설정이 성공적으로 불러와졌습니다.",
+          message: "Settings loaded successfully.",
           severity: "success",
         });
       } catch (error) {
         console.error("Error loading file:", error);
-        // 에러 메시지 표시
         setSnackbar({
           open: true,
-          message: "설정을 불러오는 중 오류가 발생했습니다.",
+          message: "Failed to load settings.",
           severity: "error",
         });
       }

@@ -6,24 +6,58 @@
  * 타입 시스템의 기반이 됩니다.
  */
 
-export interface SystemStyleSettings {
-  style: string;
-  decimalPlaces: number;
-}
+import {
+  LoadCaseNameSettings,
+  SystemStyleSettings,
+  SystemUnitSettings,
+  StoryDriftParameterSettings,
+  StoryDriftMethodSettings,
+  StoryStiffnessMethodSettings,
+  AngleSettingSettings,
+  StabilityCoefficientParameterSettings,
+} from "./panels";
 
-export interface SystemUnitSettings {
-  force: string;
-  distance: string;
-}
+// 패널 타입을 명시적으로 정의
+export const PanelTypes = {
+  SYSTEM_STYLE: "SystemStyle",
+  SYSTEM_UNIT: "SystemUnit",
+  LOAD_CASE_NAME: "LoadCaseName",
+  STORY_DRFIT_PARAMETER: "StoryDriftParameter",
+  STORY_DRIFT_METHOD: "StoryDriftMethod",
+  STORY_STIFFNESS_METHOD: "StoryStiffnessMethod",
+  ANGLE_SETTING: "AngleSetting",
+  STABILITY_COEFFICIENT_PARAMETER: "StabilityCoefficientParameter",
+} as const;
+
+// 패널 타입 유니온 타입 정의
+export type PanelType = (typeof PanelTypes)[keyof typeof PanelTypes];
+
+// 설정 키 타입을 PanelTypes에서 파생
+export type SettingsKey = Lowercase<PanelType>;
+
+// 설정 타입 매핑
+export type SettingsTypeMap = {
+  [PanelTypes.SYSTEM_STYLE]: SystemStyleSettings;
+  [PanelTypes.SYSTEM_UNIT]: SystemUnitSettings;
+  [PanelTypes.LOAD_CASE_NAME]: LoadCaseNameSettings;
+  [PanelTypes.STORY_DRFIT_PARAMETER]: StoryDriftParameterSettings;
+  [PanelTypes.STORY_DRIFT_METHOD]: StoryDriftMethodSettings;
+  [PanelTypes.STORY_STIFFNESS_METHOD]: StoryStiffnessMethodSettings;
+  [PanelTypes.ANGLE_SETTING]: AngleSettingSettings;
+  [PanelTypes.STABILITY_COEFFICIENT_PARAMETER]: StabilityCoefficientParameterSettings;
+};
 
 export interface ItemSettings {
-  systemStyle?: SystemStyleSettings;
-  systemUnit?: SystemUnitSettings;
-  [key: string]: any; // 추후 추가될 수 있는 다른 설정들을 위한 인덱스 시그니처
+  [PanelTypes.SYSTEM_STYLE]?: SystemStyleSettings;
+  [PanelTypes.SYSTEM_UNIT]?: SystemUnitSettings;
+  [PanelTypes.LOAD_CASE_NAME]?: LoadCaseNameSettings;
+  [PanelTypes.STORY_DRFIT_PARAMETER]?: StoryDriftParameterSettings;
+  [PanelTypes.STORY_DRIFT_METHOD]?: StoryDriftMethodSettings;
+  [PanelTypes.STORY_STIFFNESS_METHOD]?: StoryStiffnessMethodSettings;
+  [PanelTypes.ANGLE_SETTING]?: AngleSettingSettings;
+  [PanelTypes.STABILITY_COEFFICIENT_PARAMETER]?: StabilityCoefficientParameterSettings;
+  [key: string]: any;
 }
-
-// 패널 정보를 정의하는 타입
-export type PanelType = "SystemStyle" | "SystemUnit";
 
 // 각 항목 타입별로 필요한 패널 정보를 정의
 export interface ItemTypeInfo {
@@ -31,7 +65,7 @@ export interface ItemTypeInfo {
   defaultSettings?: ItemSettings; // 해당 항목의 기본 설정값
 }
 
-export interface TodoItem {
+export interface TableItem {
   id: string;
   name: string;
   type: string;
@@ -43,14 +77,16 @@ export interface TodoItem {
 export interface Category {
   id: string;
   name: string;
-  items: TodoItem[];
+  items: TableItem[];
   availableItems: string[];
   itemTypeInfo: Record<string, ItemTypeInfo>; // 각 availableItems의 항목별 패널 정보
 }
 
 export type Categories = Category[];
 
-// 미리 정의된 카테고리와 항목들
+/********************************************************************************
+ * @description 미리 정의된 카테고리와 항목들
+ *********************************************************************************/
 export const PREDEFINED_CATEGORIES: Category[] = [
   {
     id: "1",
@@ -59,15 +95,24 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["REACTIONG"],
     itemTypeInfo: {
       REACTIONG: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 6,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
-            distance: "mm",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
           },
         },
       },
@@ -80,11 +125,15 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["EIGENVALUEMODE"],
     itemTypeInfo: {
       EIGENVALUEMODE: {
-        panels: ["SystemStyle"],
+        panels: [PanelTypes.SYSTEM_STYLE, PanelTypes.SYSTEM_UNIT],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
           },
         },
       },
@@ -97,28 +146,62 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["STORY_DRIFT_X", "STORY_DRIFT_Y"],
     itemTypeInfo: {
       STORY_DRIFT_X: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STORY_DRFIT_PARAMETER,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
             distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STORY_DRFIT_PARAMETER]: {
+            deflectionFactor: 3.0,
+            importanceFactor: 1.5,
+            scaleFactor: 1.0,
+            allowableRatio: 0.015,
+            combinations: [],
           },
         },
       },
       STORY_DRIFT_Y: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STORY_DRFIT_PARAMETER,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
             distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STORY_DRFIT_PARAMETER]: {
+            deflectionFactor: 3.0,
+            importanceFactor: 1.5,
+            scaleFactor: 1.0,
+            allowableRatio: 0.015,
+            combinations: [],
           },
         },
       },
@@ -131,28 +214,46 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["STORY_DISPLACEMENT_X", "STORY_DISPLACEMENT_Y"],
     itemTypeInfo: {
       STORY_DISPLACEMENT_X: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
             distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
           },
         },
       },
       STORY_DISPLACEMENT_Y: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
             distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
           },
         },
       },
@@ -165,15 +266,24 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["STORY_SHEAR_FOR_RS"],
     itemTypeInfo: {
       STORY_SHEAR_FOR_RS: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Scientific",
+            decimalPlaces: 4,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
-            distance: "mm",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "dynamic",
           },
         },
       },
@@ -186,15 +296,15 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["STORY_ECNTRICITY"],
     itemTypeInfo: {
       STORY_ECNTRICITY: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [PanelTypes.SYSTEM_STYLE, PanelTypes.SYSTEM_UNIT],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 2,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
-            distance: "mm",
+            distance: "m",
           },
         },
       },
@@ -207,11 +317,28 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["STORY_SHEAR_FORCE_RATIO"],
     itemTypeInfo: {
       STORY_SHEAR_FORCE_RATIO: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.ANGLE_SETTING,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "static_dynamic",
+          },
+          [PanelTypes.ANGLE_SETTING]: {
+            angle: 0,
           },
         },
       },
@@ -227,20 +354,60 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     ],
     itemTypeInfo: {
       STORY_STABILITY_COEFFICIENT_X: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STABILITY_COEFFICIENT_PARAMETER,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STABILITY_COEFFICIENT_PARAMETER]: {
+            deflectionFactor: 3.0,
+            importanceFactor: 1.5,
+            scaleFactor: 1.0,
+            combinations: [],
           },
         },
       },
       STORY_STABILITY_COEFFICIENT_Y: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STABILITY_COEFFICIENT_PARAMETER,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STABILITY_COEFFICIENT_PARAMETER]: {
+            deflectionFactor: 3.0,
+            importanceFactor: 1.5,
+            scaleFactor: 1.0,
+            combinations: [],
           },
         },
       },
@@ -253,20 +420,54 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["WEIGHT_IRREGULARITY_X", "WEIGHT_IRREGULARITY_Y"],
     itemTypeInfo: {
       WEIGHT_IRREGULARITY_X: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STORY_DRIFT_METHOD,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 3,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STORY_DRIFT_METHOD]: {
+            method: "center",
           },
         },
       },
       WEIGHT_IRREGULARITY_Y: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STORY_DRIFT_METHOD,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 3,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STORY_DRIFT_METHOD]: {
+            method: "center",
           },
         },
       },
@@ -279,15 +480,28 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["OVERTURNING_MOMENT"],
     itemTypeInfo: {
       OVERTURNING_MOMENT: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.ANGLE_SETTING,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 2,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
-            distance: "mm",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.ANGLE_SETTING]: {
+            angle: 0,
           },
         },
       },
@@ -300,15 +514,24 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["STORY_AXIAL_FORCE_SUM"],
     itemTypeInfo: {
       STORY_AXIAL_FORCE_SUM: {
-        panels: ["SystemStyle", "SystemUnit"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
           },
-          systemUnit: {
+          [PanelTypes.SYSTEM_UNIT]: {
             force: "kN",
-            distance: "mm",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "static",
           },
         },
       },
@@ -321,20 +544,46 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["TORSIONAL_IRREGULARITY_X", "TORSIONAL_IRREGULARITY_Y"],
     itemTypeInfo: {
       TORSIONAL_IRREGULARITY_X: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
           },
         },
       },
       TORSIONAL_IRREGULARITY_Y: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 4,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
           },
         },
       },
@@ -350,20 +599,46 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     ],
     itemTypeInfo: {
       TORSIONAL_AMPLIFICATION_FACTOR_X: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 3,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
           },
         },
       },
       TORSIONAL_AMPLIFICATION_FACTOR_Y: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 3,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "mm",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
           },
         },
       },
@@ -376,20 +651,62 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["STIFNESS_IRREGULARITY_X", "STIFNESS_IRREGULARITY_Y"],
     itemTypeInfo: {
       STIFNESS_IRREGULARITY_X: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STORY_DRIFT_METHOD,
+          PanelTypes.STORY_STIFFNESS_METHOD,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 3,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STORY_DRIFT_METHOD]: {
+            method: "center",
+          },
+          [PanelTypes.STORY_STIFFNESS_METHOD]: {
+            method: "ratio",
           },
         },
       },
       STIFNESS_IRREGULARITY_Y: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.LOAD_CASE_NAME,
+          PanelTypes.STORY_DRIFT_METHOD,
+          PanelTypes.STORY_STIFFNESS_METHOD,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 3,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.LOAD_CASE_NAME]: {
+            loadCases: [],
+            selectAll: false,
+            loadCaseType: "default",
+          },
+          [PanelTypes.STORY_DRIFT_METHOD]: {
+            method: "center",
+          },
+          [PanelTypes.STORY_STIFFNESS_METHOD]: {
+            method: "ratio",
           },
         },
       },
@@ -402,11 +719,22 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     availableItems: ["CAPACITY_IRREGULARITY"],
     itemTypeInfo: {
       CAPACITY_IRREGULARITY: {
-        panels: ["SystemStyle"],
+        panels: [
+          PanelTypes.SYSTEM_STYLE,
+          PanelTypes.SYSTEM_UNIT,
+          PanelTypes.ANGLE_SETTING,
+        ],
         defaultSettings: {
-          systemStyle: {
-            style: "Default",
-            decimalPlaces: 0,
+          [PanelTypes.SYSTEM_STYLE]: {
+            style: "Fixed",
+            decimalPlaces: 3,
+          },
+          [PanelTypes.SYSTEM_UNIT]: {
+            force: "kN",
+            distance: "m",
+          },
+          [PanelTypes.ANGLE_SETTING]: {
+            angle: 0,
           },
         },
       },

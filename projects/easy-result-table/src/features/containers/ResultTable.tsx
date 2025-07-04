@@ -7,7 +7,7 @@
  */
 
 import React from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import CategoryList from "./CategoryList";
 import SettingsPanel from "./SettingsPanel";
 import FileOperations from "./FileOperations";
@@ -15,20 +15,55 @@ import FileOperations from "./FileOperations";
 const ResultTable: React.FC = () => {
   return (
     <Box
-      sx={{ maxWidth: "100%", margin: "0 auto", p: 3, position: "relative" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: 680,
+        width: 1000,
+      }}
     >
-      <Grid container spacing={2}>
-        {/* 왼쪽: 카테고리 목록 영역 (8/12) */}
-        <Grid item xs={8}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          height: "95%",
+          gap: 2,
+          padding: 2,
+        }}
+      >
+        <Paper
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "45%",
+            height: "100%",
+            padding: 2,
+          }}
+        >
           <CategoryList />
-        </Grid>
-        {/* 오른쪽: 설정 패널 영역 (4/12) */}
-        <Grid item xs={4}>
+        </Paper>
+        <Paper
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "55%",
+            height: "100%",
+            padding: 2,
+          }}
+        >
           <SettingsPanel />
-        </Grid>
-      </Grid>
-      {/* 하단: 파일 작업 플로팅 버튼 */}
-      <FileOperations />
+        </Paper>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          height: "5%",
+        }}
+      >
+        <FileOperations />
+      </Box>
     </Box>
   );
 };

@@ -12,8 +12,12 @@
  */
 
 import React from "react";
-import { GuideBox } from "@midasit-dev/moaui";
+import { CssBaseline, Box } from "@mui/material";
 import ResultTable from "./features/containers/ResultTable";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "./features/theme";
+import TableViewer from "./features/ViewerPrint/TableViewer";
+
 const opacity = 0.5;
 //If you want to test, try using the GuideApp component.
 //import GuideApp from './SampleComponents/GuideApp';
@@ -30,9 +34,11 @@ const opacity = 0.5;
  */
 const App = () => {
   return (
-    <GuideBox width={550} spacing={2} padding={2}>
-      <ResultTable />
-    </GuideBox>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {/* <ResultTable /> */}
+      <TableViewer />
+    </ThemeProvider>
   );
 };
 

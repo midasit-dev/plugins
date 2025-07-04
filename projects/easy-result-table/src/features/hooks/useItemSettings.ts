@@ -2,11 +2,11 @@
  * @fileoverview
  * 아이템 설정 관리를 위한 커스텀 훅.
  * 선택된 아이템의 설정을 임시로 저장하고 관리하는 기능을 제공합니다.
- * 설정 변경 시 임시 저장소에 보관하다가 사용자가 저장을 선택하면
- * 실제 상태에 반영하는 방식으로 동작합니다.
+ * 설정 변경 시 임시 저장소에 보관하다가 사용자가 저장하면 실제 상태에
+ * 반영하며, 취소 시 임시 저장소를 초기화하는 기능을 포함합니다.
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, selectedItemState } from "../states/stateCategories";
 import { PanelType } from "../types/category";
@@ -15,7 +15,7 @@ import { PanelType } from "../types/category";
 interface TempSettingsMap {
   [key: string]: {
     // categoryId-itemId 형식의 키
-    [panelKey: string]: any; // 패널 타입별 설정 값
+    [panelType in PanelType]?: any; // 패널 타입별 설정 값
   };
 }
 
@@ -25,6 +25,25 @@ export const useItemSettings = () => {
   const [selectedItem, setSelectedItem] = useRecoilState(selectedItemState);
   // 임시 설정 상태 관리
   const [tempSettings, setTempSettings] = useState<TempSettingsMap>({});
+  const [previousItemKey, setPreviousItemKey] = useState<string | null>(null);
+
+  // 선택된 항목이 변경될 때마다 이전 항목의 임시 설정을 초기화
+  useEffect(() => {
+    if (selectedItem) {
+      const currentItemKey = `${selectedItem.categoryId}-${selectedItem.itemId}`;
+
+      // 이전에 선택된 항목이 있고, 현재 선택된 항목이 다른 경우
+      if (previousItemKey && previousItemKey !== currentItemKey) {
+        setTempSettings((prev) => {
+          const newSettings = { ...prev };
+          delete newSettings[previousItemKey];
+          return newSettings;
+        });
+      }
+
+      setPreviousItemKey(currentItemKey);
+    }
+  }, [selectedItem]);
 
   // 현재 선택된 아이템 정보 조회
   const getSelectedItemInfo = () => {
@@ -46,58 +65,61 @@ export const useItemSettings = () => {
   const updateTempSettings = (panelType: PanelType, newSettings: any) => {
     if (!selectedItem) return;
 
-    // categoryId-itemId 형식의 고유 키 생성
     const itemKey = `${selectedItem.categoryId}-${selectedItem.itemId}`;
-    // 패널 타입을 camelCase로 변환 (예: SystemStyle -> systemStyle)
-    const panelKey = panelType.charAt(0).toLowerCase() + panelType.slice(1);
 
     setTempSettings((prev) => ({
       ...prev,
       [itemKey]: {
         ...(prev[itemKey] || {}),
-        [panelKey]: newSettings,
+        [panelType]: newSettings,
       },
     }));
   };
 
-  // 설정 저장 처리
-  const handleSave = () => {
+  // 설정 저장
+  const handleSave = async () => {
     if (!selectedItem) return;
 
     const itemKey = `${selectedItem.categoryId}-${selectedItem.itemId}`;
     const itemTempSettings = tempSettings[itemKey] || {};
 
-    // 카테고리와 아이템을 찾아서 설정 업데이트
-    setCategories((prevCategories) =>
-      prevCategories.map((category) =>
-        category.id === selectedItem.categoryId
-          ? {
-              ...category,
-              items: category.items.map((item) =>
-                item.id === selectedItem.itemId
-                  ? {
-                      ...item,
-                      settings: {
-                        ...item.settings,
-                        ...itemTempSettings,
-                      },
-                    }
-                  : item
-              ),
-            }
-          : category
-      )
-    );
+    try {
+      setCategories((prevCategories) =>
+        prevCategories.map((category) =>
+          category.id === selectedItem.categoryId
+            ? {
+                ...category,
+                items: category.items.map((item) =>
+                  item.id === selectedItem.itemId
+                    ? {
+                        ...item,
+                        settings: Object.entries(itemTempSettings).reduce(
+                          (acc, [panelType, settings]) => ({
+                            ...acc,
+                            [panelType]: settings,
+                          }),
+                          { ...item.settings }
+                        ),
+                      }
+                    : item
+                ),
+              }
+            : category
+        )
+      );
 
-    // 저장 후 해당 항목의 임시 설정 초기화
-    setTempSettings((prev) => {
-      const newSettings = { ...prev };
-      delete newSettings[itemKey];
-      return newSettings;
-    });
+      // 저장 후 임시 설정 초기화
+      setTempSettings((prev) => {
+        const newSettings = { ...prev };
+        delete newSettings[itemKey];
+        return newSettings;
+      });
+    } catch (error) {
+      throw new Error("설정 저장 중 오류가 발생했습니다.");
+    }
   };
 
-  // 설정 취소 처리
+  // 설정 취소
   const handleCancel = () => {
     if (selectedItem) {
       // 임시 설정 초기화
@@ -108,25 +130,37 @@ export const useItemSettings = () => {
         return newSettings;
       });
     }
-    // 선택 상태 초기화
     setSelectedItem(null);
   };
 
-  // 현재 설정 값 조회
+  // 현재 설정 값 조회 (임시 설정이 있으면 임시 설정 반환, 없으면 저장된 설정 반환)
   const getCurrentSettings = (panelType: PanelType) => {
     const selectedInfo = getSelectedItemInfo();
     if (!selectedItem || !selectedInfo) return null;
 
     const itemKey = `${selectedItem.categoryId}-${selectedItem.itemId}`;
-    const panelKey = panelType.charAt(0).toLowerCase() + panelType.slice(1);
-    const currentSettings = selectedInfo.item.settings || {};
     const itemTempSettings = tempSettings[itemKey] || {};
 
-    // 임시 설정이 있으면 임시 설정을, 없으면 저장된 설정을 반환
+    // 해당 패널의 임시 설정이 있으면 임시 설정을, 없으면 저장된 설정을 사용
+    const currentSettings = {
+      ...selectedInfo.item.settings,
+      [panelType]:
+        itemTempSettings[panelType] || selectedInfo.item.settings[panelType],
+    };
+
     return {
-      settings: itemTempSettings[panelKey] || currentSettings[panelKey] || {},
+      settings: currentSettings,
       typeInfo: selectedInfo.typeInfo,
     };
+  };
+
+  // 임시 설정이 있는지 확인
+  const hasPendingChanges = () => {
+    if (!selectedItem) return false;
+    const itemKey = `${selectedItem.categoryId}-${selectedItem.itemId}`;
+    return (
+      !!tempSettings[itemKey] && Object.keys(tempSettings[itemKey]).length > 0
+    );
   };
 
   return {
@@ -136,5 +170,6 @@ export const useItemSettings = () => {
     handleSave,
     handleCancel,
     getCurrentSettings,
+    hasPendingChanges,
   };
 };
