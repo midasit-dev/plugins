@@ -18,8 +18,6 @@ import {
   ListItemSecondaryAction,
   Button,
   Collapse,
-  Menu,
-  MenuItem,
   Tooltip,
 } from "@mui/material";
 import {
@@ -60,43 +58,16 @@ const CategoryList: React.FC = () => {
 
   const { getCurrentSettings } = useItemSettings();
 
-  // 메뉴 위치와 현재 선택된 카테고리 상태 관리
-  const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
-  const [currentCategory, setCurrentCategory] = useState<string | null>(null);
-
+  // 메뉴 관련 상태 제거
   const handleAddItemClick = (categoryId: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    const category = categories.find((c) => c.id === categoryId);
-
-    if (category && category.availableItems.length > 1) {
-      setCurrentCategory(categoryId);
-      setMenuPosition({
-        mouseX: event.clientX,
-        mouseY: event.clientY,
-      });
-    } else if (category && category.availableItems.length === 1) {
-      handleAddItem(categoryId, category.availableItems[0]);
-    }
-  };
-
-  const handleMenuClose = () => {
-    setMenuPosition(null);
-    setCurrentCategory(null);
-  };
-
-  const handleItemSelect = (itemType: string) => {
-    if (currentCategory) {
-      handleAddItem(currentCategory, itemType);
-      handleMenuClose();
-    }
+    handleAddItem(categoryId);
   };
 
   // 모든 카테고리에 아이템 추가/삭제/삭제 함수들
   const handleAddAllCategories = () => {
     categories.forEach((category) => {
-      if (category.availableItems.length > 0) {
-        handleAddItem(category.id, category.availableItems[0]);
-      }
+      handleAddItem(category.id);
     });
   };
 
@@ -225,11 +196,11 @@ const CategoryList: React.FC = () => {
               <AddCircleIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Remove Last Item from All Categories">
+          {/* <Tooltip title="Remove Last Item from All Categories">
             <IconButton onClick={handleRemoveLastFromCategories}>
               <RemoveCircleIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Delete All Items from All Categories">
             <IconButton onClick={handleClearAllCategories}>
               <DeleteSweepIcon />
@@ -371,29 +342,6 @@ const CategoryList: React.FC = () => {
           </Paper>
         ))}
       </Box>
-
-      <Menu
-        open={menuPosition !== null}
-        onClose={handleMenuClose}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          menuPosition !== null
-            ? { top: menuPosition.mouseY, left: menuPosition.mouseX }
-            : undefined
-        }
-      >
-        {currentCategory &&
-          categories
-            .find((c) => c.id === currentCategory)
-            ?.availableItems.map((itemType) => (
-              <MenuItem
-                key={itemType}
-                onClick={() => handleItemSelect(itemType)}
-              >
-                {itemType}
-              </MenuItem>
-            ))}
-      </Menu>
     </>
   );
 };

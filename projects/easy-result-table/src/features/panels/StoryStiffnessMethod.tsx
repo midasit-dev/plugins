@@ -31,12 +31,12 @@ const StoryStiffnessMethod: React.FC<StoryStiffnessMethodProps> = ({
       </Typography>
       <RadioGroup value={value.method} onChange={handleChange}>
         <FormControlLabel
-          value="ratio"
+          value="1 / story drift ratio"
           control={<Radio />}
           label="1 / Story Drift Ratio"
         />
         <FormControlLabel
-          value="shear"
+          value="story shear / story drift"
           control={<Radio />}
           label="Story Shear / Story Drift"
         />

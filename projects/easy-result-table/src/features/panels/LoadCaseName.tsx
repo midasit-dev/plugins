@@ -7,8 +7,6 @@ import {
   Paper,
   IconButton,
   Divider,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
@@ -16,22 +14,26 @@ import {
   DEFAULT_SETTINGS_LOADCASENAME,
 } from "../types/panels";
 import { useCategories } from "../hooks/useCategories";
+import { useSnackbarMessage } from "../hooks/useSnackbarMessage";
+import SnackBar from "../components/SnackBar";
 
 const LoadCaseName: React.FC<LoadCaseNameProps> = ({
   value = DEFAULT_SETTINGS_LOADCASENAME,
   height = "100%",
   onChange,
 }) => {
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState("");
+  const { snackbar, setSnackbar, handleCloseSnackbar } = useSnackbarMessage();
   const { handleLoadCaseRefresh, selectedItem } = useCategories();
 
   // 데이터 갱신 핸들러
   const handleRefresh = async () => {
     try {
       if (!selectedItem?.categoryId || !selectedItem?.itemId) {
-        setSnackbarMessage("Please select an item first");
-        setOpenSnackbar(true);
+        setSnackbar({
+          open: true,
+          message: "Please select an item first",
+          severity: "error",
+        });
         return;
       }
 
@@ -40,12 +42,18 @@ const LoadCaseName: React.FC<LoadCaseNameProps> = ({
         selectedItem.itemId
       );
       if (!hasChanges) {
-        setSnackbarMessage("No changes in load cases");
-        setOpenSnackbar(true);
+        setSnackbar({
+          open: true,
+          message: "No changes in load cases",
+          severity: "warning",
+        });
       }
     } catch (error) {
-      setSnackbarMessage("Failed to fetch load cases. Please try again.");
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: "Failed to fetch load cases. Please try again.",
+        severity: "error",
+      });
     }
   };
 
@@ -78,10 +86,6 @@ const LoadCaseName: React.FC<LoadCaseNameProps> = ({
       loadCases: newLoadCases,
       selectAll: allChecked,
     });
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   return (
@@ -151,20 +155,7 @@ const LoadCaseName: React.FC<LoadCaseNameProps> = ({
           ))}
         </Box>
       )}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="warning"
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      <SnackBar snackbar={snackbar} handleCloseSnackbar={handleCloseSnackbar} />
     </Paper>
   );
 };

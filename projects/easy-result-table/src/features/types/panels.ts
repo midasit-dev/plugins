@@ -94,7 +94,10 @@ export const DEFAULT_SETTINGS_LOADCASENAME: LoadCaseNameSettings = {
  *********************************************************************************/
 
 export interface StoryDriftMethodSettings {
-  method: "center" | "outer" | "vertical";
+  method:
+    | "drift at the center of mass"
+    | "max. drift of outer extreme points"
+    | "max. drift of all vertical elements";
 }
 
 export interface StoryDriftMethodProps {
@@ -103,7 +106,7 @@ export interface StoryDriftMethodProps {
 }
 
 export const DEFAULT_SETTINGS_STORDRIFTMETHOD: StoryDriftMethodSettings = {
-  method: "center",
+  method: "drift at the center of mass",
 };
 
 /********************************************************************************
@@ -111,7 +114,7 @@ export const DEFAULT_SETTINGS_STORDRIFTMETHOD: StoryDriftMethodSettings = {
  *********************************************************************************/
 
 export interface StoryStiffnessMethodSettings {
-  method: "ratio" | "shear";
+  method: "1 / story drift ratio" | "story shear / story drift";
 }
 
 export interface StoryStiffnessMethodProps {
@@ -121,7 +124,7 @@ export interface StoryStiffnessMethodProps {
 
 export const DEFAULT_SETTINGS_STORYSTIFFNESSMETHOD: StoryStiffnessMethodSettings =
   {
-    method: "ratio",
+    method: "1 / story drift ratio",
   };
 
 /********************************************************************************

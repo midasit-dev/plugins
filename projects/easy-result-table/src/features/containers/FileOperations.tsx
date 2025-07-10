@@ -7,21 +7,27 @@
  */
 
 import React, { useRef } from "react";
-import { Box, Button, Snackbar, Alert, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { Save as SaveIcon, Upload as UploadIcon } from "@mui/icons-material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useFileOperations } from "../hooks/useFileOperations";
-import { useRecoilValue } from "recoil";
-import { categoriesState } from "../states/stateCategories";
+import SnackBar from "../components/SnackBar";
+import ProcessingModal from "../components/ProcessingModal";
+import { useCreatePDF } from "../hooks/useCreatePDF";
 
-const FileOperations: React.FC = () => {
-  // 파일 작업 관련 상태와 핸들러
+export const FileOperations: React.FC = () => {
   const {
     snackbar,
     handleSaveToFile,
     handleLoadFromFile,
     handleCloseSnackbar,
+    handleCreateTable,
+    processingStatus,
+    handleCloseProcessingModal,
+    handleStopProcessing,
   } = useFileOperations();
+
+  const { handleDownloadPDF } = useCreatePDF();
 
   // 파일 입력을 위한 숨겨진 input 요소의 참조
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,12 +44,6 @@ const FileOperations: React.FC = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  };
-
-  // 테이블 생성 시 처리
-  const categories = useRecoilValue(categoriesState);
-  const handleCreateTable = () => {
-    console.log(categories);
   };
 
   return (
@@ -95,21 +95,17 @@ const FileOperations: React.FC = () => {
           CREATE TABLE
         </Button>
       </Box>
-      {/* 작업 결과 알림을 위한 스낵바 */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      <SnackBar snackbar={snackbar} handleCloseSnackbar={handleCloseSnackbar} />
+      <ProcessingModal
+        open={processingStatus.open}
+        onClose={handleCloseProcessingModal}
+        tableStatuses={processingStatus.tableStatuses}
+        currentTableName={processingStatus.currentTableName}
+        canClose={processingStatus.canClose}
+        onStop={handleStopProcessing}
+        isStopping={processingStatus.isStopping}
+        onDownloadPDF={handleDownloadPDF}
+      />
     </>
   );
 };

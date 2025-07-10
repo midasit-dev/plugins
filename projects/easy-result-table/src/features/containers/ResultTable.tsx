@@ -27,7 +27,7 @@ const ResultTable: React.FC = () => {
           display: "flex",
           flexDirection: "row",
           width: "100%",
-          height: "95%",
+          height: "94%",
           gap: 2,
           padding: 2,
         }}
@@ -59,7 +59,7 @@ const ResultTable: React.FC = () => {
         sx={{
           display: "flex",
           width: "100%",
-          height: "5%",
+          height: "6%",
         }}
       >
         <FileOperations />

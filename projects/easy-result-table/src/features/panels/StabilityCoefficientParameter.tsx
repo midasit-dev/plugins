@@ -63,7 +63,11 @@ const StabilityCoefficientParameter: React.FC<
         setSelectedLoadCase(newLoadCaseList[0]);
       }
     } catch (error) {
-      setSnackbarMessage("Failed to fetch load cases. Please try again.");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch load cases. Please try again.";
+      setSnackbarMessage(errorMessage);
       setOpenSnackbar(true);
     }
   };

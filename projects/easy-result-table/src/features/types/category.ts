@@ -359,6 +359,7 @@ export const PREDEFINED_CATEGORIES: Category[] = [
           PanelTypes.SYSTEM_UNIT,
           PanelTypes.LOAD_CASE_NAME,
           PanelTypes.STABILITY_COEFFICIENT_PARAMETER,
+          PanelTypes.STORY_DRIFT_METHOD,
         ],
         defaultSettings: {
           [PanelTypes.SYSTEM_STYLE]: {
@@ -379,6 +380,9 @@ export const PREDEFINED_CATEGORIES: Category[] = [
             importanceFactor: 1.5,
             scaleFactor: 1.0,
             combinations: [],
+          },
+          [PanelTypes.STORY_DRIFT_METHOD]: {
+            method: "drift at the center of mass",
           },
         },
       },
@@ -388,6 +392,7 @@ export const PREDEFINED_CATEGORIES: Category[] = [
           PanelTypes.SYSTEM_UNIT,
           PanelTypes.LOAD_CASE_NAME,
           PanelTypes.STABILITY_COEFFICIENT_PARAMETER,
+          PanelTypes.STORY_DRIFT_METHOD,
         ],
         defaultSettings: {
           [PanelTypes.SYSTEM_STYLE]: {
@@ -408,6 +413,9 @@ export const PREDEFINED_CATEGORIES: Category[] = [
             importanceFactor: 1.5,
             scaleFactor: 1.0,
             combinations: [],
+          },
+          [PanelTypes.STORY_DRIFT_METHOD]: {
+            method: "drift at the center of mass",
           },
         },
       },
@@ -441,7 +449,7 @@ export const PREDEFINED_CATEGORIES: Category[] = [
             loadCaseType: "default",
           },
           [PanelTypes.STORY_DRIFT_METHOD]: {
-            method: "center",
+            method: "drift at the center of mass",
           },
         },
       },
@@ -467,7 +475,7 @@ export const PREDEFINED_CATEGORIES: Category[] = [
             loadCaseType: "default",
           },
           [PanelTypes.STORY_DRIFT_METHOD]: {
-            method: "center",
+            method: "drift at the center of mass",
           },
         },
       },
@@ -673,10 +681,10 @@ export const PREDEFINED_CATEGORIES: Category[] = [
             loadCaseType: "default",
           },
           [PanelTypes.STORY_DRIFT_METHOD]: {
-            method: "center",
+            method: "drift at the center of mass",
           },
           [PanelTypes.STORY_STIFFNESS_METHOD]: {
-            method: "ratio",
+            method: "1 / story drift ratio",
           },
         },
       },
@@ -703,10 +711,10 @@ export const PREDEFINED_CATEGORIES: Category[] = [
             loadCaseType: "default",
           },
           [PanelTypes.STORY_DRIFT_METHOD]: {
-            method: "center",
+            method: "drift at the center of mass",
           },
           [PanelTypes.STORY_STIFFNESS_METHOD]: {
-            method: "ratio",
+            method: "1 / story drift ratio",
           },
         },
       },

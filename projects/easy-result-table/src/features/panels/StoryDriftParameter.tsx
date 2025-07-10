@@ -16,8 +16,6 @@ import {
   Typography,
   Divider,
   IconButton,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { getStaticLoadNameCase } from "../utils/getLoadCaseList";
@@ -27,6 +25,8 @@ import {
   StoryDriftParameterProps,
   DEFAULT_SETTINGS_STORYDRFITPARAMETER,
 } from "../types/panels";
+import SnackBar from "../components/SnackBar";
+import { useSnackbarMessage } from "../hooks/useSnackbarMessage";
 
 const StoryDriftParameter: React.FC<StoryDriftParameterProps> = ({
   value = DEFAULT_SETTINGS_STORYDRFITPARAMETER,
@@ -36,8 +36,7 @@ const StoryDriftParameter: React.FC<StoryDriftParameterProps> = ({
   const [selectedLoadCase, setSelectedLoadCase] = useState("");
   const [selectedScale, setSelectedScale] = useState(1.0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { snackbar, setSnackbar, handleCloseSnackbar } = useSnackbarMessage();
 
   const handleRefresh = async () => {
     try {
@@ -64,8 +63,11 @@ const StoryDriftParameter: React.FC<StoryDriftParameterProps> = ({
         setSelectedLoadCase(newLoadCaseList[0]);
       }
     } catch (error) {
-      setSnackbarMessage("Failed to fetch load cases. Please try again.");
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: "Failed to fetch load cases. Please try again.",
+        severity: "error",
+      });
     }
   };
 
@@ -90,10 +92,11 @@ const StoryDriftParameter: React.FC<StoryDriftParameterProps> = ({
     );
 
     if (isDuplicate) {
-      setSnackbarMessage(
-        `Load Case "${selectedLoadCase}" is already registered.`
-      );
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: `Load Case "${selectedLoadCase}" is already registered.`,
+        severity: "warning",
+      });
       return;
     }
 
@@ -119,10 +122,11 @@ const StoryDriftParameter: React.FC<StoryDriftParameterProps> = ({
     );
 
     if (isDuplicate) {
-      setSnackbarMessage(
-        `Load Case "${selectedLoadCase}" is already registered.`
-      );
-      setOpenSnackbar(true);
+      setSnackbar({
+        open: true,
+        message: `Load Case "${selectedLoadCase}" is already registered.`,
+        severity: "warning",
+      });
       return;
     }
 
@@ -162,10 +166,6 @@ const StoryDriftParameter: React.FC<StoryDriftParameterProps> = ({
     setSelectedIndex(index);
     setSelectedLoadCase(value.combinations[index].loadCase);
     setSelectedScale(value.combinations[index].scaleFactor);
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   return (
@@ -304,20 +304,7 @@ const StoryDriftParameter: React.FC<StoryDriftParameterProps> = ({
           </Box>
         </Box>
       </Stack>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="warning"
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      <SnackBar snackbar={snackbar} handleCloseSnackbar={handleCloseSnackbar} />
     </Paper>
   );
 };

@@ -31,17 +31,17 @@ const StoryDriftMethod: React.FC<StoryDriftMethodProps> = ({
       </Typography>
       <RadioGroup value={value.method} onChange={handleChange}>
         <FormControlLabel
-          value="center"
+          value="drift at the center of mass"
           control={<Radio />}
           label="Drift at the Center of Mass"
         />
         <FormControlLabel
-          value="outer"
+          value="max. drift of outer extreme points"
           control={<Radio />}
           label="Max. Drift of Outer Extreme Points"
         />
         <FormControlLabel
-          value="vertical"
+          value="max. drift of all vertical elements"
           control={<Radio />}
           label="Max. Drift of All Vertical Elements"
         />

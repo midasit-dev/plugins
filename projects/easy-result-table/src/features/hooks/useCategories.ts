@@ -13,7 +13,6 @@ import {
   selectedItemState,
   expandedCategoriesState,
 } from "../states/stateCategories";
-import { Category, TableItem } from "../types/category";
 import {
   getLoadCase,
   getStaticLoadCase,
@@ -52,26 +51,28 @@ export const useCategories = () => {
   };
 
   // 새로운 아이템 추가 처리
-  const handleAddItem = (categoryId: string, itemType: string) => {
+  const handleAddItem = (categoryId: string) => {
     setCategories((prevCategories) => {
       return prevCategories.map((category) => {
         if (category.id !== categoryId) return category;
 
-        // 아이템 타입에 따른 기본 설정 가져오기
-        const defaultSettings =
-          category.itemTypeInfo[itemType]?.defaultSettings || {};
-        const newItem: TableItem = {
-          id: uuidv4(),
-          name: itemType,
-          type: itemType,
-          isSelected: false,
-          createdAt: new Date(),
-          settings: defaultSettings,
-        };
+        // 카테고리의 모든 사용 가능한 아이템 타입에 대해 새로운 아이템 생성
+        const newItems = category.availableItems.map((itemType) => {
+          const defaultSettings =
+            category.itemTypeInfo[itemType]?.defaultSettings || {};
+          return {
+            id: uuidv4(),
+            name: itemType,
+            type: itemType,
+            isSelected: false,
+            createdAt: new Date(),
+            settings: defaultSettings,
+          };
+        });
 
         return {
           ...category,
-          items: [...category.items, newItem],
+          items: [...category.items, ...newItems],
         };
       });
     });

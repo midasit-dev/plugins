@@ -120,6 +120,7 @@ export const PREDEFINED_LAYOUTS: PanelLayout[] = [
       PanelTypes.SYSTEM_UNIT,
       PanelTypes.LOAD_CASE_NAME,
       PanelTypes.STABILITY_COEFFICIENT_PARAMETER,
+      PanelTypes.STORY_DRIFT_METHOD,
     ],
     render: (components) => (
       <Box
@@ -132,10 +133,13 @@ export const PREDEFINED_LAYOUTS: PanelLayout[] = [
         {React.cloneElement(
           components[PanelTypes.LOAD_CASE_NAME] as React.ReactElement,
           {
-            height: "467px",
+            height: "587px",
           }
         )}
-        {components[PanelTypes.STABILITY_COEFFICIENT_PARAMETER]}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {components[PanelTypes.STABILITY_COEFFICIENT_PARAMETER]}
+          {components[PanelTypes.STORY_DRIFT_METHOD]}
+        </Box>
         {components[PanelTypes.SYSTEM_UNIT]}
         {components[PanelTypes.SYSTEM_STYLE]}
       </Box>

@@ -1,0 +1,753 @@
+[
+    {
+        "Argument": {
+            "TABLE_NAME": "Reaction_#1",
+            "TABLE_TYPE": "REACTIONG",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 6
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Vibration Mode Shape_#1",
+            "TABLE_TYPE": "EIGENVALUEMODE",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Drift_#1",
+            "TABLE_TYPE": "STORY_DRIFT_X",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_STORY_DRIFT_PARAMS": {
+                    "RESPONSE_MOD_FACTOR_CHECK": false,
+                    "DEFLECTION_AMPL_FACTOR_VALUE": 3,
+                    "IMPORTANCE_FACTOR_VALUE": 1.5,
+                    "SCALE_FACTOR_VALUE": 1,
+                    "ALLOWABLE_RATIO": 0.015,
+                    "LCOMS": [
+                        {
+                            "NAME": "DL",
+                            "FACTOR": 1
+                        }
+                    ],
+                    "BETA": {
+                        "FIX_USER_CHECK": "FIXED",
+                        "VALUE": 1
+                    }
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Drift_#2",
+            "TABLE_TYPE": "STORY_DRIFT_Y",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_STORY_DRIFT_PARAMS": {
+                    "RESPONSE_MOD_FACTOR_CHECK": false,
+                    "DEFLECTION_AMPL_FACTOR_VALUE": 3,
+                    "IMPORTANCE_FACTOR_VALUE": 1.5,
+                    "SCALE_FACTOR_VALUE": 1,
+                    "ALLOWABLE_RATIO": 0.015,
+                    "LCOMS": [
+                        {
+                            "NAME": "DL",
+                            "FACTOR": 1
+                        }
+                    ],
+                    "BETA": {
+                        "FIX_USER_CHECK": "FIXED",
+                        "VALUE": 1
+                    }
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Displacement_#1",
+            "TABLE_TYPE": "STORY_DISPLACEMENT_X",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Displacement_#2",
+            "TABLE_TYPE": "STORY_DISPLACEMENT_Y",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Shear(Response Spectrum Analysis)_#1",
+            "TABLE_TYPE": "STORY_SHEAR_FOR_RS",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Scientific",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "RX(RS)",
+                "RY(RS)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Eccentricity_#1",
+            "TABLE_TYPE": "STORY_ECNTRICITY",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 2
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Shear Force Ratio_#1",
+            "TABLE_TYPE": "STORY_SHEAR_FORCE_RATIO",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)"
+            ],
+            "ADDITIONAL": {
+                "SET_ANGLE": {
+                    "ANGLE": 0
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Stability Coefficient_#1",
+            "TABLE_TYPE": "STORY_STABILITY_COEFFICIENT_X",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_STABILITY_COEFFICIENT_PARAMS": {
+                    "RESPONSE_MOD_FACTOR_CHECK": false,
+                    "LCOMS": []
+                },
+                "SET_CALCULATION_METHOD": {
+                    "STORY_DRIFT_METHOD": "drift at the center of mass"
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Stability Coefficient_#2",
+            "TABLE_TYPE": "STORY_STABILITY_COEFFICIENT_Y",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_STABILITY_COEFFICIENT_PARAMS": {
+                    "RESPONSE_MOD_FACTOR_CHECK": false,
+                    "LCOMS": []
+                },
+                "SET_CALCULATION_METHOD": {
+                    "STORY_DRIFT_METHOD": "drift at the center of mass"
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Weight Irregularity Check_#1",
+            "TABLE_TYPE": "WEIGHT_IRREGULARITY_X",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 3
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_CALCULATION_METHOD": {
+                    "STORY_DRIFT_METHOD": "drift at the center of mass"
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Weight Irregularity Check_#2",
+            "TABLE_TYPE": "WEIGHT_IRREGULARITY_Y",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 3
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_CALCULATION_METHOD": {
+                    "STORY_DRIFT_METHOD": "drift at the center of mass"
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Overturning Moment_#1",
+            "TABLE_TYPE": "OVERTURNING_MOMENT",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 2
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_ANGLE": {
+                    "ANGLE": 0
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Story Axial Force Sum_#1",
+            "TABLE_TYPE": "STORY_AXIAL_FORCE_SUM",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Torsional Irregularity Check_#1",
+            "TABLE_TYPE": "TORSIONAL_IRREGULARITY_X",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Torsional Irregularity Check_#2",
+            "TABLE_TYPE": "TORSIONAL_IRREGULARITY_Y",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 4
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Torsional Amplification Factor_#1",
+            "TABLE_TYPE": "TORSIONAL_AMPLIFICATION_FACTOR_X",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 3
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Torsional Amplification Factor_#2",
+            "TABLE_TYPE": "TORSIONAL_AMPLIFICATION_FACTOR_Y",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "mm"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 3
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ]
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Stiffness Irregularity Check(Soft Story)_#1",
+            "TABLE_TYPE": "STIFNESS_IRREGULARITY_X",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 3
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_CALCULATION_METHOD": {
+                    "STORY_DRIFT_METHOD": "drift at the center of mass",
+                    "STORY_STIFFNESS_METHOD": "1 / story drift ratio"
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Stiffness Irregularity Check(Soft Story)_#2",
+            "TABLE_TYPE": "STIFNESS_IRREGULARITY_Y",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 3
+            },
+            "LOAD_CASE_NAMES": [
+                "DL(ST)",
+                "AS(ST)",
+                "Wx+(ST)",
+                "Wy+(ST)",
+                "EX(ST)",
+                "EY(ST)",
+                "wx(A)(ST)",
+                "wy(A)(ST)",
+                "Wx-(ST)",
+                "Wy-(ST)",
+                "RX(RS)",
+                "RY(RS)",
+                "RX(ES)",
+                "RY(ES)",
+                "gLCB1(CB)",
+                "gLCB2(CB)",
+                "gLCB3(CB)",
+                "gLCB4(CB)"
+            ],
+            "ADDITIONAL": {
+                "SET_CALCULATION_METHOD": {
+                    "STORY_DRIFT_METHOD": "drift at the center of mass",
+                    "STORY_STIFFNESS_METHOD": "1 / story drift ratio"
+                }
+            }
+        }
+    },
+    {
+        "Argument": {
+            "TABLE_NAME": "Capacity Irregularity Check(Weak Story)_#1",
+            "TABLE_TYPE": "CAPACITY_IRREGULARITY",
+            "UNIT": {
+                "FORCE": "kN",
+                "DIST": "m"
+            },
+            "STYLES": {
+                "FORMAT": "Fixed",
+                "PLACE": 3
+            },
+            "ADDITIONAL": {
+                "SET_ANGLE": {
+                    "ANGLE": 0
+                }
+            }
+        }
+    }
+]

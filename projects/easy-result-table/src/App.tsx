@@ -12,11 +12,10 @@
  */
 
 import React from "react";
-import { CssBaseline, Box } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import ResultTable from "./features/containers/ResultTable";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./features/theme";
-import TableViewer from "./features/ViewerPrint/TableViewer";
 
 const opacity = 0.5;
 //If you want to test, try using the GuideApp component.
@@ -36,8 +35,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {/* <ResultTable /> */}
-      <TableViewer />
+      <ResultTable />
     </ThemeProvider>
   );
 };
