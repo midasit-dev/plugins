@@ -13,7 +13,6 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import { useFileOperations } from "../hooks/useFileOperations";
 import SnackBar from "../components/SnackBar";
 import ProcessingModal from "../components/ProcessingModal";
-import { useCreatePDF } from "../hooks/useCreatePDF";
 
 export const FileOperations: React.FC = () => {
   const {
@@ -25,9 +24,8 @@ export const FileOperations: React.FC = () => {
     processingStatus,
     handleCloseProcessingModal,
     handleStopProcessing,
+    handleDownloadSuccessfulPDF,
   } = useFileOperations();
-
-  const { handleDownloadPDF } = useCreatePDF();
 
   // 파일 입력을 위한 숨겨진 input 요소의 참조
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -104,7 +102,7 @@ export const FileOperations: React.FC = () => {
         canClose={processingStatus.canClose}
         onStop={handleStopProcessing}
         isStopping={processingStatus.isStopping}
-        onDownloadPDF={handleDownloadPDF}
+        onDownloadPDF={handleDownloadSuccessfulPDF}
       />
     </>
   );

@@ -29,7 +29,123 @@ const ValidationInput = (categories: Category[]): SnackbarState => {
           };
         }
       }
-      // StoryDriftParameter의 데이터가 있으나,
+      // StoryDriftParameter의 데이터 검증
+      if (
+        item.settings.StoryDriftParameter?.deflectionFactor &&
+        item.settings.StoryDriftParameter?.deflectionFactor < 1
+      ) {
+        return {
+          open: true,
+          message:
+            'Deflection Amplification Factor must be greater than or equal to 1 for "' +
+            item.name +
+            '"',
+          severity: "error",
+        };
+      }
+      if (
+        item.settings.StoryDriftParameter?.importanceFactor &&
+        item.settings.StoryDriftParameter?.importanceFactor <= 0
+      ) {
+        return {
+          open: true,
+          message:
+            'Importance Factor must be greater than 0 for "' + item.name + '"',
+          severity: "error",
+        };
+      }
+      if (
+        item.settings.StoryDriftParameter?.scaleFactor &&
+        item.settings.StoryDriftParameter?.scaleFactor <= 0
+      ) {
+        return {
+          open: true,
+          message:
+            'Scale Factor must be greater than 0 for "' + item.name + '"',
+          severity: "error",
+        };
+      }
+      if (
+        item.settings.StoryDriftParameter?.allowableRatio &&
+        item.settings.StoryDriftParameter?.allowableRatio <= 0
+      ) {
+        return {
+          open: true,
+          message:
+            'Allowable Ratio must be greater than 0 for "' + item.name + '"',
+          severity: "error",
+        };
+      }
+      // combinations의 데이터가 있으나, 각 데이터 scaleFactor가 0보다 같거나 작을경우 NG
+      if (
+        item.settings.StoryDriftParameter?.combinations.length !== 0 &&
+        item.settings.StoryDriftParameter?.combinations.every(
+          (combination) => combination.scaleFactor <= 0
+        )
+      ) {
+        return {
+          open: true,
+          message:
+            'Vertical Load Comb. Scale Factor must be greater than 0 for "' +
+            item.name +
+            '"',
+          severity: "error",
+        };
+      }
+
+      // StabilityCoefficientParameter의 데이터 검증
+      if (
+        item.settings.StabilityCoefficientParameter?.deflectionFactor &&
+        item.settings.StabilityCoefficientParameter?.deflectionFactor < 1
+      ) {
+        return {
+          open: true,
+          message:
+            'Deflection Amplification Factor must be greater than or equal to 1 for "' +
+            item.name +
+            '"',
+          severity: "error",
+        };
+      }
+      if (
+        item.settings.StabilityCoefficientParameter?.importanceFactor &&
+        item.settings.StabilityCoefficientParameter?.importanceFactor <= 0
+      ) {
+        return {
+          open: true,
+          message:
+            'Importance Factor must be greater than 0 for "' + item.name + '"',
+          severity: "error",
+        };
+      }
+      if (
+        item.settings.StabilityCoefficientParameter?.scaleFactor &&
+        item.settings.StabilityCoefficientParameter?.scaleFactor <= 0
+      ) {
+        return {
+          open: true,
+          message:
+            'Scale Factor must be greater than 0 for "' + item.name + '"',
+          severity: "error",
+        };
+      }
+      // combinations의 데이터가 있으나, 각 데이터 scaleFactor가 0보다 같거나 작을경우 NG
+      if (
+        item.settings.StabilityCoefficientParameter?.combinations.length !==
+          0 &&
+        item.settings.StabilityCoefficientParameter?.combinations.every(
+          (combination) => combination.scaleFactor <= 0
+        )
+      ) {
+        return {
+          open: true,
+          message:
+            'Vertical Load Comb. Scale Factor must be greater than 0 for "' +
+            item.name +
+            '"',
+          severity: "error",
+        };
+      }
     }
   }
 

@@ -656,9 +656,9 @@ export const PREDEFINED_CATEGORIES: Category[] = [
     id: "14",
     name: "Stiffness Irregularity Check(Soft Story)",
     items: [],
-    availableItems: ["STIFNESS_IRREGULARITY_X", "STIFNESS_IRREGULARITY_Y"],
+    availableItems: ["STIFFNESS_IRREGULARITY_X", "STIFFNESS_IRREGULARITY_Y"],
     itemTypeInfo: {
-      STIFNESS_IRREGULARITY_X: {
+      STIFFNESS_IRREGULARITY_X: {
         panels: [
           PanelTypes.SYSTEM_STYLE,
           PanelTypes.SYSTEM_UNIT,
@@ -688,7 +688,7 @@ export const PREDEFINED_CATEGORIES: Category[] = [
           },
         },
       },
-      STIFNESS_IRREGULARITY_Y: {
+      STIFFNESS_IRREGULARITY_Y: {
         panels: [
           PanelTypes.SYSTEM_STYLE,
           PanelTypes.SYSTEM_UNIT,

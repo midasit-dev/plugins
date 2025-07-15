@@ -7,6 +7,7 @@
  */
 
 import { useRecoilState } from "recoil";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   categoriesState,
@@ -28,6 +29,9 @@ export const useCategories = () => {
   const [expandedCategories, setExpandedCategories] = useRecoilState(
     expandedCategoriesState
   );
+
+  // 로딩 상태 관리
+  const [isLoading, setIsLoading] = useState(false);
 
   // 개별 카테고리 토글 처리
   const handleCategoryToggle = (categoryId: string) => {
@@ -121,6 +125,9 @@ export const useCategories = () => {
   };
 
   const handleItemClick = async (categoryId: string, itemId: string) => {
+    // 로딩 상태 시작
+    setIsLoading(true);
+
     try {
       const items = categories
         .find((c) => c.id === categoryId)
@@ -177,6 +184,9 @@ export const useCategories = () => {
       }
     } catch (error) {
       console.error("Failed to refresh load cases:", error);
+    } finally {
+      // 로딩 상태 종료
+      setIsLoading(false);
     }
 
     if (
@@ -277,6 +287,7 @@ export const useCategories = () => {
     setSelectedItem,
     expandedCategories,
     setExpandedCategories,
+    isLoading,
     handleCategoryToggle,
     toggleAllCategories,
     handleAddItem,

@@ -48,6 +48,7 @@ const CategoryList: React.FC = () => {
     categories,
     selectedItem,
     expandedCategories,
+    isLoading,
     handleCategoryToggle,
     toggleAllCategories,
     handleAddItem,
@@ -229,6 +230,7 @@ const CategoryList: React.FC = () => {
           flexGrow: 1,
           overflowY: "auto",
           pr: 2,
+          cursor: isLoading ? "wait" : "default",
         }}
       >
         {categories.map((category) => (
@@ -288,6 +290,7 @@ const CategoryList: React.FC = () => {
                           : "grey.900", // 선택되지 않은 아이템 텍스트 색상
                         borderRadius: 1,
                         transition: "all 0.2s ease",
+                        cursor: isLoading ? "wait" : "pointer",
                         "&:hover": {
                           bgcolor: isItemSelected(category.id, item.id)
                             ? "grey.400" // 선택된 아이템 호버 배경색
@@ -295,23 +298,23 @@ const CategoryList: React.FC = () => {
                         },
                       }}
                     >
-                      <Tooltip
+                      {/* <Tooltip
                         title={getSettingsSummary(item)}
                         placement="bottom-start"
-                      >
-                        <ListItemText
-                          primary={item.type}
-                          secondary={getSettingsSummary(item)}
-                          secondaryTypographyProps={{
-                            sx: {
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              display: "block",
-                            },
-                          }}
-                        />
-                      </Tooltip>
+                      > */}
+                      <ListItemText
+                        primary={item.type}
+                        secondary={getSettingsSummary(item)}
+                        secondaryTypographyProps={{
+                          sx: {
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            display: "block",
+                          },
+                        }}
+                      />
+                      {/* </Tooltip> */}
                       <ListItemSecondaryAction>
                         <IconButton
                           edge="end"

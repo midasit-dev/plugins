@@ -1,6 +1,6 @@
 {
-  "short_name": "Plug-in Title",
-  "name": "Plug-in Title",
+  "short_name": "Easy Result Table",
+  "name": "Easy Result Table",
   "icons": [
     {
       "src": "favicon.ico",
@@ -12,6 +12,6 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#fff",
-  "width": 600,
-  "height": 600
+  "width": 1000,
+  "height": 712
 }

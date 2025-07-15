@@ -13,6 +13,14 @@ interface TableProps {
   currentPage: number;
   tableName: string;
   totalPages: number;
+  projectInfo?: {
+    author: string;
+    filename: string;
+    client: string;
+    company: string;
+    project_title: string;
+    certified_by: string;
+  };
 }
 
 // PDF 테이블 컴포넌트
@@ -21,6 +29,7 @@ const PDFTableComponent: React.FC<TableProps> = ({
   currentPage,
   tableName,
   totalPages,
+  projectInfo,
 }) => {
   const renderer = useMemo(() => getTableRenderer(tableName), [tableName]);
 
@@ -53,7 +62,7 @@ const PDFTableComponent: React.FC<TableProps> = ({
         }}
       >
         {/* 공통 헤더 */}
-        <PDFCommonHeader tableName={tableName} />
+        <PDFCommonHeader tableName={tableName} projectInfo={projectInfo} />
         {/* 페이지별 테이블(헤더/행 모두 포함) */}
         {pageRows}
       </View>
@@ -66,7 +75,15 @@ const PDFTableComponent: React.FC<TableProps> = ({
 // PDF 문서 컴포넌트
 const PDFContent: React.FC<{
   tables: { title: string; data: TableData }[];
-}> = ({ tables }) => {
+  projectInfo?: {
+    author: string;
+    filename: string;
+    client: string;
+    company: string;
+    project_title: string;
+    certified_by: string;
+  };
+}> = ({ tables, projectInfo }) => {
   return (
     <>
       {tables.map(({ title, data }) => {
@@ -95,6 +112,7 @@ const PDFContent: React.FC<{
               currentPage={pageIndex + 1}
               tableName={title}
               totalPages={totalPages}
+              projectInfo={projectInfo}
             />
           </Page>
         ));
@@ -108,7 +126,7 @@ export const useCreatePDF = () => {
   const { snackbar, setSnackbar } = useSnackbarMessage();
 
   // PDF 다운로드 핸들러
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = async (signal?: AbortSignal) => {
     if (!tableData?.table?.length) {
       setSnackbar({
         open: true,
@@ -147,9 +165,14 @@ export const useCreatePDF = () => {
       // PDF 생성
       const pdfDoc = (
         <Document>
-          <PDFContent tables={tables} />
+          <PDFContent tables={tables} projectInfo={tableData} />
         </Document>
       );
+
+      // AbortSignal 체크
+      if (signal?.aborted) {
+        throw new Error("PDF generation was aborted");
+      }
 
       const pdfBlob = await pdf(pdfDoc).toBlob();
       const url = URL.createObjectURL(pdfBlob);

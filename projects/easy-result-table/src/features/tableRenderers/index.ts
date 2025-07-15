@@ -13,6 +13,7 @@ import { torsionalIrregularityCheckTableRenderer } from "./TorsionalIrregularity
 import { capacityIrregularityCheckTableRenderer } from "./CapacityIrregularityCheckTableRenderer";
 import { overturningMomentTableRenderer } from "./OverturningMomentTableRenderer";
 import { torsionalAmplificationFactorTableRenderer } from "./TorsionalAmplificationFactorTableRenderer";
+import { stiffnessIrregularityCheckTableRenderer } from "./StiffnessIrregularityCheckTableRenderer";
 
 const tableRenderers: { [key: string]: TableRenderer } = {
   Reaction: reactionTableRenderer,
@@ -29,6 +30,7 @@ const tableRenderers: { [key: string]: TableRenderer } = {
   "Capacity Irregularity Check": capacityIrregularityCheckTableRenderer,
   "Overturning Moment": overturningMomentTableRenderer,
   "Torsional Amplification Factor": torsionalAmplificationFactorTableRenderer,
+  "Stiffness Irregularity Check": stiffnessIrregularityCheckTableRenderer,
 };
 
 export const getTableRenderer = (tableName: string): TableRenderer | null => {

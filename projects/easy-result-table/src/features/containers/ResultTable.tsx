@@ -11,8 +11,11 @@ import { Box, Paper } from "@mui/material";
 import CategoryList from "./CategoryList";
 import SettingsPanel from "./SettingsPanel";
 import FileOperations from "./FileOperations";
+import { useCategories } from "../hooks/useCategories";
 
 const ResultTable: React.FC = () => {
+  const { isLoading } = useCategories();
+
   return (
     <Box
       sx={{
@@ -20,6 +23,7 @@ const ResultTable: React.FC = () => {
         flexDirection: "column",
         height: 680,
         width: 1000,
+        cursor: isLoading ? "wait" : "default",
       }}
     >
       <Box

@@ -2,24 +2,38 @@ import { View, Text, Image, StyleSheet } from "@react-pdf/renderer";
 
 const pdfStyles = StyleSheet.create({
   // PDF 헤더 스타일
-  headerMainfont: { fontSize: 12, fontWeight: "bold" },
-  headerSubfont: { fontSize: 10, fontWeight: "bold" },
+  headerMainfont: { fontSize: 12 },
+  headerSubfont: { fontSize: 10 },
 });
 
 // PDF 공통 헤더 컴포넌트
-export const PDFCommonHeader: React.FC<{ tableName: string }> = ({
-  tableName,
-}) => {
+export const PDFCommonHeader: React.FC<{
+  tableName: string;
+  projectInfo?: {
+    author: string;
+    filename: string;
+    client: string;
+    company: string;
+    project_title: string;
+    certified_by: string;
+  };
+}> = ({ tableName, projectInfo }) => {
+  console.log(projectInfo);
+  console.log(tableName);
   return (
     <View style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       <View style={{ marginBottom: 4 }}>
-        <Text style={pdfStyles.headerMainfont}>MIDAS GEN NX</Text>
+        <Text style={[pdfStyles.headerMainfont, { fontWeight: "bold" }]}>
+          MIDAS GEN NX
+        </Text>
       </View>
       <View style={{ padding: 2, borderTop: "2px solid #000" }}>
         <Text style={pdfStyles.headerSubfont}>Certified by:</Text>
       </View>
       <View style={{ padding: 2, borderTop: "1px solid #000" }}>
-        <Text style={pdfStyles.headerSubfont}>Project Title:</Text>
+        <Text style={pdfStyles.headerSubfont}>
+          Project Title: {projectInfo?.project_title || "-"}
+        </Text>
       </View>
 
       <View
@@ -76,7 +90,9 @@ export const PDFCommonHeader: React.FC<{ tableName: string }> = ({
                 borderBottom: "1px solid #000",
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>MIDAS IT</Text>
+              <Text style={pdfStyles.headerSubfont}>
+                {projectInfo?.company || "-"}
+              </Text>
             </View>
             <View
               style={{
@@ -102,7 +118,9 @@ export const PDFCommonHeader: React.FC<{ tableName: string }> = ({
                 borderBottom: "1px solid #000",
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>JAY</Text>
+              <Text style={pdfStyles.headerSubfont}>
+                {projectInfo?.client || "-"}
+              </Text>
             </View>
           </View>
           <View
@@ -131,7 +149,9 @@ export const PDFCommonHeader: React.FC<{ tableName: string }> = ({
                 paddingLeft: 10,
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>Chang</Text>
+              <Text style={pdfStyles.headerSubfont}>
+                {projectInfo?.author || "-"}
+              </Text>
             </View>
             <View
               style={{
@@ -144,7 +164,7 @@ export const PDFCommonHeader: React.FC<{ tableName: string }> = ({
                 alignItems: "center",
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>File</Text>
+              <Text style={pdfStyles.headerSubfont}>Table</Text>
             </View>
             <View
               style={{
@@ -155,7 +175,9 @@ export const PDFCommonHeader: React.FC<{ tableName: string }> = ({
                 paddingLeft: 10,
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>Story.mgb</Text>
+              <Text style={pdfStyles.headerSubfont}>
+                {tableName.split("_")[0]}
+              </Text>
             </View>
           </View>
         </View>
