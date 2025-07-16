@@ -1,0 +1,244 @@
+{
+  "global_setting" : {
+    "project_name": "설계하중 (아파트)",
+    "factor_dl": 1.2,
+    "factor_ll": 1.6,
+    "dl_case_name": "",
+    "ll_case_name": "",
+    "image_base64": ""
+  },
+  "table_setting": [
+    {
+      "name": "침실/거실(발코니 확장)",
+      "dead_load": [
+        {
+          "name": "경량 칸막이",
+          "type": "load",
+          "thickness": 0,
+          "unit_weight": 0,
+          "load": 1.00
+        },
+        {
+          "name": "지정목재 후로링",
+          "type": "thickness",
+          "thickness": 10,
+          "unit_weight": 0.5,
+          "load": 0.05
+        },
+        {
+          "name": "시멘트 몰탈",
+          "type": "thickness",
+          "thickness": 40,
+          "unit_weight": 2,
+          "load": 0.8
+        },
+        {
+          "name": "경량기포콘크리트",
+          "type": "thickness",
+          "thickness": 40,
+          "unit_weight": 0.65,
+          "load": 0.26
+        },
+        {
+          "name": "압출발포폴리스틸렌",
+          "type": "thickness",
+          "thickness": 30,
+          "unit_weight": 0.05,
+          "load": 0.015
+        },
+        {
+          "name": "콘크리트 슬래브",
+          "type": "thickness",
+          "thickness": 210,
+          "unit_weight": 2.4,
+          "load": 5.04
+        },
+        {
+          "name": "천정마감",
+          "type": "load",
+          "thickness": 0,
+          "unit_weight": 0,
+          "load": 0.25
+        }
+      ],
+      "live_load": 2.0
+    },
+    {
+      "name": "발코니",
+      "dead_load": [
+        {
+          "name": "지정타일",
+          "type": "thickness",
+          "thickness": 15,
+          "unit_weight": 2,
+          "load": 0.3
+        },
+        {
+          "name": "시멘트 몰탈",
+          "type": "thickness",
+          "thickness": 40,
+          "unit_weight": 2,
+          "load": 0.8
+        },
+        {
+          "name": "도막방수",
+          "type": "thickness",
+          "thickness": 5,
+          "unit_weight": 2,
+          "load": 0.1
+        },
+        {
+          "name": "콘크리트 슬래브",
+          "type": "thickness",
+          "thickness": 210,
+          "unit_weight": 2.4,
+          "load": 5.04
+        },
+        {
+          "name": "천정마감",
+          "type": "load",
+          "thickness": 0,
+          "unit_weight": 0,
+          "load": 0.25
+        }
+      ],
+      "live_load": 3.0
+    },
+    {
+      "name": "현관",
+      "dead_load": [
+        {
+          "name": "대리석",
+          "type": "thickness",
+          "thickness": 20,
+          "unit_weight": 2.6,
+          "load": 0.52
+        },
+        {
+          "name": "시멘트 몰탈",
+          "type": "thickness",
+          "thickness": 40,
+          "unit_weight": 2,
+          "load": 0.8
+        },
+        {
+          "name": "콘크리트 슬래브",
+          "type": "thickness",
+          "thickness": 210,
+          "unit_weight": 2.4,
+          "load": 5.04
+        },
+        {
+          "name": "천정마감",
+          "type": "load",
+          "thickness": 0,
+          "unit_weight": 0,
+          "load": 0.3
+        }
+      ],
+      "live_load": 2.0
+    },
+    {
+      "name": "욕실/다용도실",
+      "dead_load": [
+        {
+          "name": "지정타일",
+          "type": "thickness",
+          "thickness": 15,
+          "unit_weight": 2,
+          "load": 0.3
+        },
+        {
+          "name": "시멘트 몰탈",
+          "type": "thickness",
+          "thickness": 40,
+          "unit_weight": 2,
+          "load": 0.8
+        },
+        {
+          "name": "도막방수",
+          "type": "thickness",
+          "thickness": 5,
+          "unit_weight": 1.5,
+          "load": 0.08
+        },
+        {
+          "name": "콘크리트 슬래브",
+          "type": "thickness",
+          "thickness": 210,
+          "unit_weight": 2.4,
+          "load": 5.04
+        },
+        {
+          "name": "천정마감",
+          "type": "load",
+          "thickness": 0,
+          "unit_weight": 0,
+          "load": 0.25
+        }
+      ],
+      "live_load": 2.0
+    },
+    {
+      "name": "창고",
+      "dead_load": [
+        {
+          "name": "비닐계 시트",
+          "type": "thickness",
+          "thickness": 15,
+          "unit_weight": 2.0,
+          "load": 0.3
+        },
+        {
+          "name": "시멘트 몰탈",
+          "type": "thickness",
+          "thickness": 70,
+          "unit_weight": 2,
+          "load": 1.4
+        },
+        {
+          "name": "콘크리트 슬래브",
+          "type": "thickness",
+          "thickness": 210,
+          "unit_weight": 2.4,
+          "load": 5.04
+        },
+        {
+          "name": "천정마감",
+          "type": "load",
+          "thickness": 0,
+          "unit_weight": 0,
+          "load": 0.25
+        }
+      ],
+      "live_load": 2.0
+    },
+    {
+      "name": "AC룸",
+      "dead_load": [
+        {
+          "name": "비닐계 시트",
+          "type": "thickness",
+          "thickness": 15,
+          "unit_weight": 2.0,
+          "load": 0.3
+        },
+        {
+          "name": "시멘트 몰탈",
+          "type": "thickness",
+          "thickness": 70,
+          "unit_weight": 2,
+          "load": 1.4
+        },
+        {
+          "name": "콘크리트 슬래브",
+          "type": "thickness",
+          "thickness": 210,
+          "unit_weight": 2.4,
+          "load": 5.04
+        }
+      ],
+      "live_load": 2.0
+    }
+  ]
+}
