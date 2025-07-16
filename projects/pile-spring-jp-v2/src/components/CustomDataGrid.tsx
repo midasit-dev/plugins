@@ -1,3 +1,7 @@
+/**
+ * @fileoverview 커스텀 데이터 그리드 컴포넌트
+ */
+
 import React from "react";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
@@ -32,6 +36,7 @@ const StyledDataGrid = styled(DataGrid)<{ disableHoverStyle?: boolean }>(
       justifyContent: "center",
       alignItems: "center",
       textAlign: "center",
+      cursor: "default",
     },
     "& .MuiDataGrid-columnHeader": {
       backgroundColor: "#E6E6E6",
@@ -44,6 +49,7 @@ const StyledDataGrid = styled(DataGrid)<{ disableHoverStyle?: boolean }>(
       justifyContent: "center",
       alignItems: "center",
       textAlign: "center",
+      cursor: "default",
     },
     "& .MuiDataGrid-columnHeaderTitleContainer": {
       justifyContent: "center",
@@ -56,6 +62,9 @@ const StyledDataGrid = styled(DataGrid)<{ disableHoverStyle?: boolean }>(
     },
     "& .MuiDataGrid-columnHeader:focus": {
       outline: "1px solid #B9BCCF",
+    },
+    "& .MuiDataGrid-scrollbarFiller": {
+      backgroundColor: "#E6E6E6",
     },
   })
 );

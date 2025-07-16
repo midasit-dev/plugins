@@ -1,7 +1,15 @@
+/**
+ * @fileoverview 커스텀 체크박스 컴포넌트
+ */
+
 import React from "react";
 import { Checkbox, CheckboxProps, styled } from "@mui/material";
 
 const StyledCheckbox = styled(Checkbox)(({ theme }) => ({
+  "&.MuiCheckbox-root": {
+    padding: "6px",
+  },
+
   "& .MuiSvgIcon-root": {
     width: 16,
     height: 16,
