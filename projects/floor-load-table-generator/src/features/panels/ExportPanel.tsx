@@ -1,9 +1,21 @@
-import React from "react";
-import { Button, Box } from "@mui/material";
 import { PictureAsPdf, Send } from "@mui/icons-material";
-import { exportFloorLoad } from "../utils/exportFloorLoad";
-import { SnackbarState } from "../hooks/useSnackbarMessage";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControlLabel,
+  List,
+  ListItem,
+} from "@mui/material";
+import React, { useState } from "react";
 import { useFloorLoadState } from "../hooks/useFloorLoadState";
+import { SnackbarState } from "../hooks/useSnackbarMessage";
+import { exportFloorLoad } from "../utils/exportFloorLoad";
 import { pdfCreator } from "../utils/pdfCreator";
 
 interface ExportPanelProps {
@@ -12,6 +24,10 @@ interface ExportPanelProps {
 
 const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
   const { state: floorLoadData } = useFloorLoadState();
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
+    new Set()
+  );
 
   // 스낵바 메시지 표시 함수
   const showMessage = (
@@ -25,10 +41,57 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
     });
   };
 
+  // 카테고리 목록 가져오기
+  const getCategoryNames = () => {
+    return floorLoadData.table_setting.map(
+      (category) => Object.keys(category)[0]
+    );
+  };
+
+  // 카테고리 선택 모달 열기
+  const handleOpenCategoryModal = () => {
+    const categoryNames = getCategoryNames();
+    setSelectedCategories(new Set(categoryNames)); // 기본적으로 모든 카테고리 선택
+    setIsCategoryModalOpen(true);
+  };
+
+  // 카테고리 선택 모달 닫기
+  const handleCloseCategoryModal = () => {
+    setIsCategoryModalOpen(false);
+  };
+
+  // 카테고리 선택 상태 변경
+  const handleCategoryToggle = (categoryName: string) => {
+    const newSelected = new Set(selectedCategories);
+    if (newSelected.has(categoryName)) {
+      newSelected.delete(categoryName);
+    } else {
+      newSelected.add(categoryName);
+    }
+    setSelectedCategories(newSelected);
+  };
+
+  // 선택된 카테고리만 포함하는 데이터 생성
+  const getFilteredFloorLoadData = () => {
+    const filteredTableSetting = floorLoadData.table_setting.filter(
+      (category) => {
+        const categoryName = Object.keys(category)[0];
+        return selectedCategories.has(categoryName);
+      }
+    );
+
+    return {
+      ...floorLoadData,
+      table_setting: filteredTableSetting,
+    };
+  };
+
   // PDF 출력 함수
   const handleExportToPDF = async () => {
     try {
-      await pdfCreator(floorLoadData, showMessage);
+      const filteredData = getFilteredFloorLoadData();
+      await pdfCreator(filteredData, showMessage);
+      handleCloseCategoryModal();
     } catch (error) {
       console.error("PDF Export Error:", error);
     }
@@ -43,26 +106,70 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
     }
   };
 
-  return (
-    <Box sx={{ display: "flex", gap: 1 }}>
-      <Button
-        variant="contained"
-        startIcon={<PictureAsPdf />}
-        onClick={handleExportToPDF}
-        sx={{ minWidth: 150 }}
-      >
-        Export to PDF
-      </Button>
+  const categoryNames = getCategoryNames();
 
-      <Button
-        variant="contained"
-        startIcon={<Send />}
-        onClick={handleSendToMidas}
-        sx={{ minWidth: 150 }}
+  return (
+    <>
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <Button
+          variant="contained"
+          startIcon={<PictureAsPdf />}
+          onClick={handleOpenCategoryModal}
+          sx={{ minWidth: 150 }}
+        >
+          Export to PDF
+        </Button>
+
+        <Button
+          variant="contained"
+          startIcon={<Send />}
+          onClick={handleSendToMidas}
+          sx={{ minWidth: 150 }}
+        >
+          Send to MIDAS
+        </Button>
+      </Box>
+
+      {/* 카테고리 선택 모달 */}
+      <Dialog
+        open={isCategoryModalOpen}
+        onClose={handleCloseCategoryModal}
+        maxWidth="sm"
+        fullWidth
       >
-        Send to MIDAS
-      </Button>
-    </Box>
+        <DialogTitle>Select categories to export to PDF</DialogTitle>
+        <DialogContent>
+          <List>
+            {categoryNames.map((categoryName, index) => (
+              <React.Fragment key={categoryName}>
+                <ListItem>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedCategories.has(categoryName)}
+                        onChange={() => handleCategoryToggle(categoryName)}
+                      />
+                    }
+                    label={categoryName}
+                  />
+                </ListItem>
+                {index < categoryNames.length - 1 && <Divider />}
+              </React.Fragment>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseCategoryModal}>Cancel</Button>
+          <Button
+            onClick={handleExportToPDF}
+            variant="contained"
+            disabled={selectedCategories.size === 0}
+          >
+            Export to PDF
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

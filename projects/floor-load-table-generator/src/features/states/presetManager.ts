@@ -1,44 +1,58 @@
-import { FloorLoadState } from "./stateFloorLoad";
-import apartPreset from "./preset_apart.json";
-import parkingPreset from "./preset_parking.json";
+import commercialPreset from "./preset_commercial.json";
+import commonPreset from "./preset_common.json";
+import factoryPreset from "./preset_factory.json";
+import housePreset from "./preset_house.json";
+import { FloorLoadState, TableSetting } from "./stateFloorLoad";
 
 // 프리셋 정보 인터페이스
 export interface PresetInfo {
   id: string;
   name: string;
   description: string;
-  data: FloorLoadState;
+  data: FloorLoadState | TableSetting[];
 }
 
 // 프리셋 메타데이터 정의
 const presetMetadata: Omit<PresetInfo, "data">[] = [
   {
-    id: "apart",
-    name: "설계하중 (아파트)",
+    id: "common",
+    name: "공통 설계하중",
     description:
-      "침실/거실, 발코니, 현관, 욕실/다용도실, 창고, AC룸 등의 기본 설정",
+      "주차장 주차구역, 주차장 차로, 기계실, 지붕, 옥상정원 등의 기본 설정",
   },
   {
-    id: "parking",
-    name: "설계하중 (지하주차장)",
+    id: "commercial",
+    name: "상업시설 설계하중",
+    description: "판매시설, 업무시설, 화장실, 계단실 등의 기본 설정",
+  },
+  {
+    id: "factory",
+    name: "공장 설계하중",
     description:
-      "지상1층 조경/야외, 지하주차장, SUNKEN, 팬룸, 부대복리시설 등의 기본 설정",
+      "경공업 공장, 중공업 공장, 경량품 저장창고, 중량품 저장창고 등의 기본 설정",
+  },
+  {
+    id: "house",
+    name: "주택 설계하중",
+    description: "거실/장판류, 거실/석재, 욕실, 현관, 발코니 등의 기본 설정",
   },
 ];
 
 // 프리셋 데이터 매핑
 const presetDataMap = {
-  apart: apartPreset,
-  parking: parkingPreset,
+  common: commonPreset,
+  commercial: commercialPreset,
+  factory: factoryPreset,
+  house: housePreset,
 };
 
 // 모든 프리셋 목록 가져오기
 export const getAllPresets = (): PresetInfo[] => {
   return presetMetadata.map((metadata) => ({
     ...metadata,
-    data: presetDataMap[
-      metadata.id as keyof typeof presetDataMap
-    ] as FloorLoadState,
+    data: presetDataMap[metadata.id as keyof typeof presetDataMap] as
+      | FloorLoadState
+      | TableSetting[],
   }));
 };
 
@@ -52,12 +66,19 @@ export const getPresetById = (id: string): PresetInfo | undefined => {
 
   return {
     ...metadata,
-    data: data as FloorLoadState,
+    data: data as FloorLoadState | TableSetting[],
   };
 };
 
 // 프리셋 ID로 데이터만 로드
 export const loadPresetById = (presetId: string): FloorLoadState | null => {
   const preset = getPresetById(presetId);
-  return preset ? preset.data : null;
+  if (!preset) return null;
+
+  // 새로운 프리셋 구조인 경우 null 반환 (전체 상태 교체가 아닌 개별 테이블 추가용)
+  if (Array.isArray(preset.data)) {
+    return null;
+  }
+
+  return preset.data as FloorLoadState;
 };

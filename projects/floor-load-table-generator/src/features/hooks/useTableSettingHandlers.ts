@@ -1,31 +1,56 @@
 import { useState } from "react";
 import {
-  moveTableUp,
-  moveTableDown,
-  moveDeadLoadUp,
-  moveDeadLoadDown,
-  floorLoadState,
-  TableSetting,
+  addTableToCategory,
   DeadLoadItem,
+  moveDeadLoadDown,
+  moveDeadLoadUp,
+  moveTableDown,
+  moveTableUp,
+  removeTableFromCategory,
+  TableSetting,
+  updateTableInCategory,
 } from "../states/stateFloorLoad";
 import { useFloorLoadState } from "./useFloorLoadState";
 
 export const useTableSettingHandlers = (
-  setSnackbar?: React.Dispatch<React.SetStateAction<any>>
+  setSnackbar?: React.Dispatch<React.SetStateAction<any>>,
+  selectedCategoryIndex: number = 0
 ) => {
   const { state: currentState, notifyStateChange } = useFloorLoadState();
   const [expandedTables, setExpandedTables] = useState<Set<number>>(new Set());
 
+  // 현재 선택된 카테고리의 테이블들 가져오기
+  const getCurrentTables = () => {
+    if (
+      selectedCategoryIndex < 0 ||
+      selectedCategoryIndex >= currentState.table_setting.length
+    ) {
+      return [];
+    }
+    const category = currentState.table_setting[selectedCategoryIndex];
+    const categoryName = Object.keys(category)[0];
+    return category[categoryName];
+  };
+
   // 새 테이블 추가
-  const handleAddTable = () => {
+  const handleAddTable = (name?: string) => {
+    if (selectedCategoryIndex < 0) {
+      setSnackbar?.({
+        open: true,
+        message: "카테고리를 먼저 선택해주세요.",
+        severity: "warning",
+      });
+      return;
+    }
+
     try {
       const newTable: TableSetting = {
-        name: "",
+        name: name || "",
         dead_load: [],
         live_load: 0,
       };
-      const newTableSettings = [...currentState.table_setting, newTable];
-      floorLoadState.table_setting = newTableSettings;
+
+      addTableToCategory(selectedCategoryIndex, newTable);
       notifyStateChange();
       setSnackbar?.({
         open: true,
@@ -43,11 +68,10 @@ export const useTableSettingHandlers = (
 
   // 테이블 삭제
   const handleRemoveTable = (index: number) => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
-      const newTableSettings = currentState.table_setting.filter(
-        (_, i) => i !== index
-      );
-      floorLoadState.table_setting = newTableSettings;
+      removeTableFromCategory(selectedCategoryIndex, index);
       notifyStateChange();
       setSnackbar?.({
         open: true,
@@ -65,25 +89,26 @@ export const useTableSettingHandlers = (
 
   // 테이블 이름 업데이트
   const handleTableNameChange = (index: number, name: string) => {
-    const newTableSettings = [...currentState.table_setting];
-    newTableSettings[index] = { ...newTableSettings[index], name };
-    floorLoadState.table_setting = newTableSettings;
+    if (selectedCategoryIndex < 0) return;
+
+    updateTableInCategory(selectedCategoryIndex, index, { name });
     notifyStateChange();
   };
 
   // Live Load 업데이트
   const handleLiveLoadChange = (index: number, liveLoad: number) => {
-    const newTableSettings = [...currentState.table_setting];
-    newTableSettings[index] = {
-      ...newTableSettings[index],
+    if (selectedCategoryIndex < 0) return;
+
+    updateTableInCategory(selectedCategoryIndex, index, {
       live_load: liveLoad,
-    };
-    floorLoadState.table_setting = newTableSettings;
+    });
     notifyStateChange();
   };
 
   // Dead Load 항목 추가
   const handleAddDeadLoad = (tableIndex: number) => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
       const newDeadLoad: DeadLoadItem = {
         name: "",
@@ -92,21 +117,24 @@ export const useTableSettingHandlers = (
         unit_weight: 0,
         load: 0,
       };
-      const newTableSettings = [...currentState.table_setting];
-      newTableSettings[tableIndex].dead_load.push(newDeadLoad);
-      floorLoadState.table_setting = newTableSettings;
+
+      const currentTables = getCurrentTables();
+      const updatedTable = {
+        ...currentTables[tableIndex],
+        dead_load: [...currentTables[tableIndex].dead_load, newDeadLoad],
+      };
+
+      updateTableInCategory(selectedCategoryIndex, tableIndex, updatedTable);
       notifyStateChange();
 
       // 하위항목 추가 시 해당 테이블이 접혀있으면 자동으로 펴기
-      if (!expandedTables.has(tableIndex)) {
-        const newExpandedTables = new Set(expandedTables);
-        newExpandedTables.add(tableIndex);
-        setExpandedTables(newExpandedTables);
-      }
+      const newExpandedTables = new Set(expandedTables);
+      newExpandedTables.add(tableIndex);
+      setExpandedTables(newExpandedTables);
 
       setSnackbar?.({
         open: true,
-        message: "Sub Load added.",
+        message: "New Sub Load added.",
         severity: "success",
       });
     } catch (error) {
@@ -120,11 +148,20 @@ export const useTableSettingHandlers = (
 
   // Dead Load 항목 삭제
   const handleRemoveDeadLoad = (tableIndex: number, deadLoadIndex: number) => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
-      const newTableSettings = [...currentState.table_setting];
-      newTableSettings[tableIndex].dead_load.splice(deadLoadIndex, 1);
-      floorLoadState.table_setting = newTableSettings;
+      const currentTables = getCurrentTables();
+      const updatedTable = {
+        ...currentTables[tableIndex],
+        dead_load: currentTables[tableIndex].dead_load.filter(
+          (_, i) => i !== deadLoadIndex
+        ),
+      };
+
+      updateTableInCategory(selectedCategoryIndex, tableIndex, updatedTable);
       notifyStateChange();
+
       setSnackbar?.({
         open: true,
         message: "Sub Load deleted.",
@@ -139,23 +176,32 @@ export const useTableSettingHandlers = (
     }
   };
 
-  // Dead Load 항목 업데이트
+  // Dead Load 항목 변경
   const handleDeadLoadChange = (
     tableIndex: number,
     deadLoadIndex: number,
     field: keyof DeadLoadItem,
     value: any
   ) => {
-    const newTableSettings = [...currentState.table_setting];
-    newTableSettings[tableIndex].dead_load[deadLoadIndex] = {
-      ...newTableSettings[tableIndex].dead_load[deadLoadIndex],
+    if (selectedCategoryIndex < 0) return;
+
+    const currentTables = getCurrentTables();
+    const updatedDeadLoads = [...currentTables[tableIndex].dead_load];
+    updatedDeadLoads[deadLoadIndex] = {
+      ...updatedDeadLoads[deadLoadIndex],
       [field]: value,
     };
-    floorLoadState.table_setting = newTableSettings;
+
+    const updatedTable = {
+      ...currentTables[tableIndex],
+      dead_load: updatedDeadLoads,
+    };
+
+    updateTableInCategory(selectedCategoryIndex, tableIndex, updatedTable);
     notifyStateChange();
   };
 
-  // 테이블 접기/펼치기 토글
+  // 테이블 확장/축소 토글
   const handleToggleExpand = (tableIndex: number) => {
     const newExpandedTables = new Set(expandedTables);
     if (newExpandedTables.has(tableIndex)) {
@@ -166,118 +212,110 @@ export const useTableSettingHandlers = (
     setExpandedTables(newExpandedTables);
   };
 
-  // 모든 항목 지우기
+  // 모든 테이블 삭제
   const handleClearAll = () => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
-      floorLoadState.table_setting = [];
+      const { removeCategory } = require("../states/stateFloorLoad");
+      removeCategory(selectedCategoryIndex);
+      setExpandedTables(new Set());
       notifyStateChange();
+
       setSnackbar?.({
         open: true,
-        message: "All items deleted.",
+        message: "All Load Groups cleared.",
         severity: "success",
       });
     } catch (error) {
       setSnackbar?.({
         open: true,
-        message: "Error deleting items.",
+        message: "Error clearing Load Groups.",
         severity: "error",
       });
     }
   };
 
-  // 모든 항목 접기/펼치기 토글
+  // 모든 테이블 확장/축소 토글
   const handleToggleAllExpand = () => {
-    if (expandedTables.size === currentState.table_setting.length) {
-      // 모든 항목이 펼쳐져 있으면 모두 접기
+    const currentTables = getCurrentTables();
+    if (expandedTables.size === currentTables.length) {
       setExpandedTables(new Set());
     } else {
-      // 모든 항목 펼치기
-      const allExpanded = new Set(
-        currentState.table_setting.map((_, index) => index)
-      );
-      setExpandedTables(allExpanded);
+      const newExpandedTables = new Set<number>();
+      currentTables.forEach((_, index) => newExpandedTables.add(index));
+      setExpandedTables(newExpandedTables);
     }
   };
 
-  // 테이블 순서 변경 핸들러들
+  // 테이블 위로 이동
   const handleMoveTableUp = (tableIndex: number) => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
       moveTableUp(tableIndex);
       notifyStateChange();
-      setSnackbar?.({
-        open: true,
-        message: "Load Group moved up.",
-        severity: "success",
-      });
     } catch (error) {
       setSnackbar?.({
         open: true,
-        message: "Error moving Load Group.",
+        message: "Error moving table up.",
         severity: "error",
       });
     }
   };
 
+  // 테이블 아래로 이동
   const handleMoveTableDown = (tableIndex: number) => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
       moveTableDown(tableIndex);
       notifyStateChange();
-      setSnackbar?.({
-        open: true,
-        message: "Load Group moved down.",
-        severity: "success",
-      });
     } catch (error) {
       setSnackbar?.({
         open: true,
-        message: "Error moving Load Group.",
+        message: "Error moving table down.",
         severity: "error",
       });
     }
   };
 
-  // 하위항목 순서 변경 핸들러들
+  // Dead Load 위로 이동
   const handleMoveDeadLoadUp = (tableIndex: number, deadLoadIndex: number) => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
       moveDeadLoadUp(tableIndex, deadLoadIndex);
       notifyStateChange();
-      setSnackbar?.({
-        open: true,
-        message: "Sub Load moved up.",
-        severity: "success",
-      });
     } catch (error) {
       setSnackbar?.({
         open: true,
-        message: "Error moving Sub Load.",
+        message: "Error moving sub load up.",
         severity: "error",
       });
     }
   };
 
+  // Dead Load 아래로 이동
   const handleMoveDeadLoadDown = (
     tableIndex: number,
     deadLoadIndex: number
   ) => {
+    if (selectedCategoryIndex < 0) return;
+
     try {
       moveDeadLoadDown(tableIndex, deadLoadIndex);
       notifyStateChange();
-      setSnackbar?.({
-        open: true,
-        message: "Sub Load moved down.",
-        severity: "success",
-      });
     } catch (error) {
       setSnackbar?.({
         open: true,
-        message: "Error moving Sub Load.",
+        message: "Error moving sub load down.",
         severity: "error",
       });
     }
   };
 
   return {
-    currentState,
     expandedTables,
     handleAddTable,
     handleRemoveTable,
@@ -293,5 +331,6 @@ export const useTableSettingHandlers = (
     handleMoveTableDown,
     handleMoveDeadLoadUp,
     handleMoveDeadLoadDown,
+    getCurrentTables,
   };
 };

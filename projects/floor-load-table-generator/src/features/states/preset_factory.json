@@ -1,0 +1,82 @@
+[
+  {
+    "name": "경공업 공장",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "load",
+        "thickness": 150,
+        "unit_weight": 24,
+        "load": 3.6
+      },
+      {
+        "name": "보통 콘크리트",
+        "type": "load",
+        "thickness": 100.0,
+        "unit_weight": 22.54,
+        "load": 2.254
+      }
+    ],
+    "live_load": 6.0
+  },
+  {
+    "name": "중공업 공장",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "load",
+        "thickness": 150,
+        "unit_weight": 24,
+        "load": 3.6
+      },
+      {
+        "name": "보통 콘크리트",
+        "type": "load",
+        "thickness": 150.0,
+        "unit_weight": 22.54,
+        "load": 3.381
+      }
+    ],
+    "live_load": 12.0
+  },
+  {
+    "name": "경량품 저장창고",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "load",
+        "thickness": 150,
+        "unit_weight": 24,
+        "load": 3.6
+      },
+      {
+        "name": "보통 콘크리트",
+        "type": "load",
+        "thickness": 100.0,
+        "unit_weight": 22.54,
+        "load": 2.254
+      }
+    ],
+    "live_load": 6.0
+  },
+  {
+    "name": "중량품 저장창고",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "load",
+        "thickness": 150,
+        "unit_weight": 24,
+        "load": 3.6
+      },
+      {
+        "name": "보통 콘크리트",
+        "type": "load",
+        "thickness": 150.0,
+        "unit_weight": 22.54,
+        "load": 3.381
+      }
+    ],
+    "live_load": 12.0
+  }
+]

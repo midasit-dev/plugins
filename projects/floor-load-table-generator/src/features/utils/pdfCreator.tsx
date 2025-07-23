@@ -1,16 +1,16 @@
-import { FloorLoadState, TableSetting } from "../states/stateFloorLoad";
-import { validateAndShowMessage } from "./inputValidation";
 import {
   Document,
+  Font,
+  Image,
   Page,
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
   pdf,
-  Image,
-  Font,
 } from "@react-pdf/renderer";
 import PretendardRegular from "../fonts/Pretendard-Regular.ttf";
+import { FloorLoadState, TableSetting } from "../states/stateFloorLoad";
+import { validateAndShowMessage } from "./inputValidation";
 
 Font.register({
   family: "Pretendard",
@@ -168,6 +168,77 @@ const splitTableSettingsIntoPages = (tableSettings: TableSetting[]) => {
         currentPage = [];
         currentPageRows = 0;
       }
+    }
+  }
+
+  // 마지막 페이지 추가
+  if (currentPage.length > 0) {
+    pages.push(currentPage);
+  }
+
+  return pages;
+};
+
+// 카테고리별로 테이블을 분할하고 페이지 계산
+const splitCategoriesIntoPages = (floorLoadData: FloorLoadState) => {
+  const availableHeight = getAvailableHeightPerPage();
+  const categoryTitleHeight = 30; // 카테고리 제목 높이 (패딩 포함)
+
+  const pages: Array<{ categoryName: string; tables: TableSetting[] }>[] = [];
+  let currentPage: Array<{ categoryName: string; tables: TableSetting[] }> = [];
+  let currentPageHeight = 0;
+
+  // 빈 카테고리 필터링
+  const validCategories = floorLoadData.table_setting.filter((category) => {
+    const categoryName = Object.keys(category)[0];
+    const tables = category[categoryName];
+    return tables && tables.length > 0;
+  });
+
+  for (const category of validCategories) {
+    const categoryName = Object.keys(category)[0];
+    const tables = category[categoryName];
+
+    let categoryTables: TableSetting[] = [];
+    let categoryRows = 0;
+    let categoryHeight = categoryTitleHeight;
+
+    for (const table of tables) {
+      const itemRows = table.dead_load.length + 1; // +1 for subtotal row
+      const tableHeight = itemRows * ROW_HEIGHT;
+
+      // 현재 테이블이 현재 페이지에 들어갈 수 있는지 확인
+      if (currentPageHeight + categoryHeight + tableHeight <= availableHeight) {
+        categoryTables.push(table);
+        categoryRows += itemRows;
+        categoryHeight += tableHeight;
+      } else {
+        // 현재 카테고리의 테이블들을 현재 페이지에 추가
+        if (categoryTables.length > 0) {
+          currentPage.push({ categoryName, tables: categoryTables });
+          pages.push(currentPage);
+          currentPage = [];
+          currentPageHeight = 0;
+          categoryTables = [table];
+          categoryRows = itemRows;
+          categoryHeight = categoryTitleHeight + tableHeight;
+        } else {
+          // 테이블이 너무 크면 새 페이지에 강제로 추가
+          currentPage.push({ categoryName, tables: [table] });
+          pages.push(currentPage);
+          currentPage = [];
+          currentPageHeight = 0;
+          categoryTables = [];
+          categoryRows = 0;
+          categoryHeight = 0;
+        }
+      }
+    }
+
+    // 카테고리의 남은 테이블들을 현재 페이지에 추가
+    if (categoryTables.length > 0) {
+      currentPage.push({ categoryName, tables: categoryTables });
+      currentPageHeight += categoryHeight;
     }
   }
 
@@ -512,14 +583,58 @@ const TableContents = ({
   );
 };
 
+const CategoryTitle = ({ categoryName }: { categoryName: string }) => {
+  return (
+    <View
+      style={{
+        backgroundColor: "#f5f5f5",
+        padding: 4,
+        borderLeft: "2px solid #1976d2",
+        borderBottom: "1px solid #9e9e9e",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 9,
+          fontFamily: "Pretendard",
+          fontWeight: "bold",
+        }}
+      >
+        {categoryName}
+      </Text>
+    </View>
+  );
+};
+
+const CategoryTableContents = ({
+  categoryData,
+  dl_factor,
+  ll_factor,
+}: {
+  categoryData: { categoryName: string; tables: TableSetting[] };
+  dl_factor: number;
+  ll_factor: number;
+}) => {
+  return (
+    <View>
+      <CategoryTitle categoryName={categoryData.categoryName} />
+      <TableContents
+        tableSettings={categoryData.tables}
+        dl_factor={dl_factor}
+        ll_factor={ll_factor}
+      />
+    </View>
+  );
+};
+
 const FloorLoadPDF = ({ floorLoadData }: { floorLoadData: FloorLoadState }) => {
-  // 테이블 설정을 페이지별로 분할
-  const pages = splitTableSettingsIntoPages(floorLoadData.table_setting);
+  // 카테고리별로 테이블을 분할하고 페이지 계산
+  const pages = splitCategoriesIntoPages(floorLoadData);
   const totalPages = pages.length;
 
   return (
     <Document>
-      {pages.map((pageTableSettings, pageIndex) => (
+      {pages.map((pageCategories, pageIndex) => (
         <Page
           key={pageIndex}
           size="A4"
@@ -537,11 +652,14 @@ const FloorLoadPDF = ({ floorLoadData }: { floorLoadData: FloorLoadState }) => {
           <PageHeader floorLoadData={floorLoadData} />
           <View style={{ flex: 1 }}>
             <TableHeader floorLoadData={floorLoadData} />
-            <TableContents
-              tableSettings={pageTableSettings}
-              dl_factor={floorLoadData.global_setting.factor_ll || 1.2}
-              ll_factor={floorLoadData.global_setting.factor_ll || 1.6}
-            />
+            {pageCategories.map((categoryData, categoryIndex) => (
+              <CategoryTableContents
+                key={categoryIndex}
+                categoryData={categoryData}
+                dl_factor={floorLoadData.global_setting.factor_dl || 1.2}
+                ll_factor={floorLoadData.global_setting.factor_ll || 1.6}
+              />
+            ))}
           </View>
           <PageFooter pageNumber={pageIndex + 1} totalPages={totalPages} />
         </Page>

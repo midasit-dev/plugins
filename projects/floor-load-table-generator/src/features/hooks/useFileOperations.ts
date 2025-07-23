@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { floorLoadState, loadStateFromJson } from "../states/stateFloorLoad";
-import { loadPresetById } from "../states/presetManager";
+import { getAllPresets, getPresetById } from "../states/presetManager";
+import {
+  addTableToCategory,
+  floorLoadState,
+  loadStateFromJson,
+  TableSetting,
+} from "../states/stateFloorLoad";
 import { useFloorLoadState } from "./useFloorLoadState";
-import { FloorLoadState } from "../states/stateFloorLoad";
-import { getAllPresets, PresetInfo } from "../states/presetManager";
 
 export const useFileOperations = () => {
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
@@ -71,18 +74,33 @@ export const useFileOperations = () => {
     setSelectedPresetId(presetId);
   };
 
-  // 프리셋 적용
-  const applyPreset = () => {
-    if (selectedPresetId) {
-      const presetData = loadPresetById(selectedPresetId);
-      if (presetData) {
-        loadStateFromJson(presetData);
-        // 상태 변경 알림
+  // 프리셋을 카테고리에 추가
+  const applyPreset = (selectedCategoryIndex: number) => {
+    if (selectedPresetId && selectedCategoryIndex >= 0) {
+      const preset = getPresetById(selectedPresetId);
+      if (preset) {
+        // 새로운 프리셋 구조: 단순 테이블 배열
+        if (Array.isArray(preset.data)) {
+          preset.data.forEach((table: TableSetting) => {
+            addTableToCategory(selectedCategoryIndex, table);
+          });
+        } else {
+          // 기존 프리셋 구조: FloorLoadState
+          if (preset.data.table_setting.length > 0) {
+            const firstCategory = preset.data.table_setting[0];
+            const categoryName = Object.keys(firstCategory)[0];
+            const tables = firstCategory[categoryName];
+
+            tables.forEach((table: TableSetting) => {
+              addTableToCategory(selectedCategoryIndex, table);
+            });
+          }
+        }
+
         notifyStateChange();
         closePresetModal();
       }
     }
-    // 선택된 프리셋이 없으면 아무것도 하지 않음
   };
 
   return {

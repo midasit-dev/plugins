@@ -96,34 +96,55 @@ const validateTableSetting = (
 
   // table_setting 리스트 길이 검증
   if (tableSetting.length === 0) {
-    errors.push("At least one table setting is required.");
+    errors.push("At least one category is required.");
     return errors;
   }
 
-  // 각 테이블 항목 검증
-  tableSetting.forEach((table, tableIndex) => {
-    // name 검증
-    if (isEmptyOrWhitespace(table.name)) {
-      errors.push(`Please enter a name for table ${tableIndex + 1}.`);
+  // 각 카테고리 검증
+  tableSetting.forEach((category, categoryIndex) => {
+    const categoryName = Object.keys(category)[0];
+    const tables = category[categoryName];
+
+    // 카테고리 내 테이블 개수 검증
+    if (tables.length === 0) {
+      errors.push(`Category "${categoryName}" requires at least one table.`);
+      return;
     }
 
-    // dead_load 리스트 길이 검증
-    if (table.dead_load.length === 0) {
-      errors.push(
-        `Table ${tableIndex + 1} requires at least one dead load item.`
-      );
-    } else {
-      // 각 dead_load 항목 검증
-      table.dead_load.forEach((deadLoadItem, deadLoadIndex) => {
-        const deadLoadErrors = validateDeadLoadItem(
-          deadLoadItem,
-          deadLoadIndex
-        );
+    // 각 테이블 항목 검증
+    tables.forEach((table, tableIndex) => {
+      // name 검증
+      if (isEmptyOrWhitespace(table.name)) {
         errors.push(
-          ...deadLoadErrors.map((error) => `Table ${tableIndex + 1}: ${error}`)
+          `Please enter a name for table ${
+            tableIndex + 1
+          } in category "${categoryName}".`
         );
-      });
-    }
+      }
+
+      // dead_load 리스트 길이 검증
+      if (table.dead_load.length === 0) {
+        errors.push(
+          `Table ${
+            tableIndex + 1
+          } in category "${categoryName}" requires at least one dead load item.`
+        );
+      } else {
+        // 각 dead_load 항목 검증
+        table.dead_load.forEach((deadLoadItem, deadLoadIndex) => {
+          const deadLoadErrors = validateDeadLoadItem(
+            deadLoadItem,
+            deadLoadIndex
+          );
+          errors.push(
+            ...deadLoadErrors.map(
+              (error) =>
+                `Category "${categoryName}", Table ${tableIndex + 1}: ${error}`
+            )
+          );
+        });
+      }
+    });
   });
 
   return errors;

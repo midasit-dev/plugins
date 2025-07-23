@@ -1,18 +1,36 @@
-import React from "react";
+import { Box, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline, Box } from "@mui/material";
-import { theme } from "../theme";
+import React, { useEffect, useState } from "react";
+import SnackBar from "../components/SnackBar";
+import { useFloorLoadState } from "../hooks/useFloorLoadState";
+import { useSnackbarMessage } from "../hooks/useSnackbarMessage";
 import {
+  CategoryPanel,
+  ExportPanel,
+  FileOperationPanel,
   GlobalSettingPanel,
   TableSettingPanel,
-  FileOperationPanel,
-  ExportPanel,
 } from "../panels";
-import SnackBar from "../components/SnackBar";
-import { useSnackbarMessage } from "../hooks/useSnackbarMessage";
+import { theme } from "../theme";
 
 const FloorLoadContainer: React.FC = () => {
   const { snackbar, setSnackbar, handleCloseSnackbar } = useSnackbarMessage();
+  const { state: currentState } = useFloorLoadState();
+  const [selectedCategoryIndex, setSelectedCategoryIndex] =
+    useState<number>(-1);
+
+  // 초기 카테고리 선택
+  useEffect(() => {
+    if (currentState.table_setting.length > 0 && selectedCategoryIndex === -1) {
+      setSelectedCategoryIndex(0);
+    } else if (currentState.table_setting.length === 0) {
+      setSelectedCategoryIndex(-1);
+    }
+  }, [currentState.table_setting.length, selectedCategoryIndex]);
+
+  const handleCategorySelect = (index: number) => {
+    setSelectedCategoryIndex(index);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -22,7 +40,7 @@ const FloorLoadContainer: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          width: 1000,
+          width: 1200,
           height: 560,
           padding: 2,
         }}
@@ -36,7 +54,15 @@ const FloorLoadContainer: React.FC = () => {
           }}
         >
           <GlobalSettingPanel setSnackbar={setSnackbar} />
-          <TableSettingPanel setSnackbar={setSnackbar} />
+          <CategoryPanel
+            setSnackbar={setSnackbar}
+            selectedCategoryIndex={selectedCategoryIndex}
+            onCategorySelect={handleCategorySelect}
+          />
+          <TableSettingPanel
+            setSnackbar={setSnackbar}
+            selectedCategoryIndex={selectedCategoryIndex}
+          />
         </Box>
         <Box
           sx={{

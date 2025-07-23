@@ -1,6 +1,6 @@
 import { FloorLoadState } from "../states/stateFloorLoad";
-import { validateAndShowMessage } from "./inputValidation";
 import { midasAPI } from "./common";
+import { validateAndShowMessage } from "./inputValidation";
 
 /**
  * MIDAS API로 데이터를 전송하는 함수
@@ -55,11 +55,18 @@ export const exportFloorLoad = async (
     // FBLD 데이터에서 키 번호 결정
     let keyNumbers: number[];
 
+    // 전체 테이블 개수 계산
+    let totalTableCount = 0;
+    for (const category of floorLoadData.table_setting) {
+      const categoryName = Object.keys(category)[0];
+      totalTableCount += category[categoryName].length;
+    }
+
     // FBLD 데이터가 비어있거나 존재하지 않는 경우
     if (!fbldData.FBLD || Object.keys(fbldData.FBLD).length === 0) {
       console.log("FBLD 데이터가 비어있음, 1부터 순서대로 키 번호 생성");
       keyNumbers = Array.from(
-        { length: floorLoadData.table_setting.length },
+        { length: totalTableCount },
         (_, index) => index + 1
       );
       console.log("생성된 키 번호 목록:", keyNumbers);
@@ -70,10 +77,15 @@ export const exportFloorLoad = async (
       );
       console.log("기존 FBLD 이름 목록:", existingNames);
 
-      // table_setting의 name들을 리스트로 만들기
-      const tableSettingNames = floorLoadData.table_setting.map(
-        (table) => table.name
-      );
+      // 모든 테이블의 name들을 리스트로 만들기
+      const tableSettingNames: string[] = [];
+      for (const category of floorLoadData.table_setting) {
+        const categoryName = Object.keys(category)[0];
+        const tables = category[categoryName];
+        for (const table of tables) {
+          tableSettingNames.push(table.name);
+        }
+      }
       console.log("현재 table_setting 이름 목록:", tableSettingNames);
 
       // 각 table_setting 이름에 대해 키 번호 결정
@@ -100,7 +112,6 @@ export const exportFloorLoad = async (
             parseInt(key)
           );
           const allKeys = [...existingKeys, ...Array.from(usedKeys)];
-          const maxKey = Math.max(...allKeys);
 
           // 사용되지 않은 키 번호 찾기 (1부터 시작)
           let newKey = 1;
@@ -123,33 +134,40 @@ export const exportFloorLoad = async (
     // 이제 키 번호를 가지고 FBLD 객체를 만들어서 보내야 한다.
     const newFbld: any = {};
 
-    // 각 table_setting에 대해 FBLD 객체 생성
-    for (let i = 0; i < floorLoadData.table_setting.length; i++) {
-      const tableSetting = floorLoadData.table_setting[i];
-      const keyNumber = keyNumbers[i];
+    // 각 카테고리의 테이블들에 대해 FBLD 객체 생성
+    let tableIndex = 0;
+    for (const category of floorLoadData.table_setting) {
+      const categoryName = Object.keys(category)[0];
+      const tables = category[categoryName];
 
-      // dead_load의 합 계산
-      const deadLoadSum = tableSetting.dead_load.reduce(
-        (sum, load) => sum + load.load,
-        0
-      );
+      for (const tableSetting of tables) {
+        const keyNumber = keyNumbers[tableIndex];
 
-      newFbld[keyNumber.toString()] = {
-        NAME: tableSetting.name,
-        DESC: floorLoadData.global_setting.project_name,
-        ITEM: [
-          {
-            LCNAME: floorLoadData.global_setting.dl_case_name,
-            FLOOR_LOAD: -deadLoadSum, // 음수로 변환
-            OPT_SUB_BEAM_WEIGHT: true,
-          },
-          {
-            LCNAME: floorLoadData.global_setting.ll_case_name,
-            FLOOR_LOAD: -tableSetting.live_load, // 음수로 변환
-            OPT_SUB_BEAM_WEIGHT: false,
-          },
-        ],
-      };
+        // dead_load의 합 계산
+        const deadLoadSum = tableSetting.dead_load.reduce(
+          (sum, load) => sum + load.load,
+          0
+        );
+
+        newFbld[keyNumber.toString()] = {
+          NAME: tableSetting.name,
+          DESC:
+            floorLoadData.global_setting.project_name + " - " + categoryName,
+          ITEM: [
+            {
+              LCNAME: floorLoadData.global_setting.dl_case_name,
+              FLOOR_LOAD: -deadLoadSum, // 음수로 변환
+              OPT_SUB_BEAM_WEIGHT: true,
+            },
+            {
+              LCNAME: floorLoadData.global_setting.ll_case_name,
+              FLOOR_LOAD: -tableSetting.live_load, // 음수로 변환
+              OPT_SUB_BEAM_WEIGHT: false,
+            },
+          ],
+        };
+        tableIndex++;
+      }
     }
 
     console.log("생성된 FBLD 객체:", newFbld);
