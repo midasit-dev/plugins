@@ -22,12 +22,15 @@ interface ExportPanelProps {
   setSnackbar: React.Dispatch<React.SetStateAction<SnackbarState>>;
 }
 
+type ExportType = "pdf" | "midas";
+
 const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
   const { state: floorLoadData } = useFloorLoadState();
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
     new Set()
   );
+  const [exportType, setExportType] = useState<ExportType>("pdf");
 
   // 스낵바 메시지 표시 함수
   const showMessage = (
@@ -49,9 +52,10 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
   };
 
   // 카테고리 선택 모달 열기
-  const handleOpenCategoryModal = () => {
+  const handleOpenCategoryModal = (type: ExportType) => {
     const categoryNames = getCategoryNames();
     setSelectedCategories(new Set(categoryNames)); // 기본적으로 모든 카테고리 선택
+    setExportType(type);
     setIsCategoryModalOpen(true);
   };
 
@@ -100,10 +104,27 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
   // MIDAS API 전송 함수
   const handleSendToMidas = async () => {
     try {
-      await exportFloorLoad(floorLoadData, showMessage);
+      const filteredData = getFilteredFloorLoadData();
+      await exportFloorLoad(filteredData, showMessage);
+      handleCloseCategoryModal();
     } catch (error) {
       console.error("MIDAS API Error:", error);
     }
+  };
+
+  // 모달 제목과 버튼 텍스트 결정
+  const getModalTitle = () => {
+    return exportType === "pdf"
+      ? "Select categories to export to PDF"
+      : "Select categories to send to MIDAS";
+  };
+
+  const getActionButtonText = () => {
+    return exportType === "pdf" ? "Export to PDF" : "Send to MIDAS";
+  };
+
+  const getActionButtonHandler = () => {
+    return exportType === "pdf" ? handleExportToPDF : handleSendToMidas;
   };
 
   const categoryNames = getCategoryNames();
@@ -114,7 +135,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
         <Button
           variant="contained"
           startIcon={<PictureAsPdf />}
-          onClick={handleOpenCategoryModal}
+          onClick={() => handleOpenCategoryModal("pdf")}
           sx={{ minWidth: 150 }}
         >
           Export to PDF
@@ -123,7 +144,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
         <Button
           variant="contained"
           startIcon={<Send />}
-          onClick={handleSendToMidas}
+          onClick={() => handleOpenCategoryModal("midas")}
           sx={{ minWidth: 150 }}
         >
           Send to MIDAS
@@ -137,7 +158,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Select categories to export to PDF</DialogTitle>
+        <DialogTitle>{getModalTitle()}</DialogTitle>
         <DialogContent>
           <List>
             {categoryNames.map((categoryName, index) => (
@@ -161,11 +182,11 @@ const ExportPanel: React.FC<ExportPanelProps> = ({ setSnackbar }) => {
         <DialogActions>
           <Button onClick={handleCloseCategoryModal}>Cancel</Button>
           <Button
-            onClick={handleExportToPDF}
+            onClick={getActionButtonHandler()}
             variant="contained"
             disabled={selectedCategories.size === 0}
           >
-            Export to PDF
+            {getActionButtonText()}
           </Button>
         </DialogActions>
       </Dialog>

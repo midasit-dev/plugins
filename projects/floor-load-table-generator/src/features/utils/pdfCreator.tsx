@@ -139,46 +139,6 @@ const getAvailableHeightPerPage = () => {
   );
 };
 
-// 테이블 설정을 페이지별로 분할
-const splitTableSettingsIntoPages = (tableSettings: TableSetting[]) => {
-  const availableHeight = getAvailableHeightPerPage();
-  const maxRowsPerPage = Math.floor(availableHeight / ROW_HEIGHT);
-
-  const pages: TableSetting[][] = [];
-  let currentPage: TableSetting[] = [];
-  let currentPageRows = 0;
-
-  for (const tableSetting of tableSettings) {
-    const itemRows = tableSetting.dead_load.length + 1; // +1 for subtotal row
-
-    // 현재 아이템이 현재 페이지에 들어갈 수 있는지 확인
-    if (currentPageRows + itemRows <= maxRowsPerPage) {
-      currentPage.push(tableSetting);
-      currentPageRows += itemRows;
-    } else {
-      // 현재 페이지가 비어있지 않으면 새 페이지 시작
-      if (currentPage.length > 0) {
-        pages.push(currentPage);
-        currentPage = [tableSetting];
-        currentPageRows = itemRows;
-      } else {
-        // 현재 페이지가 비어있으면 강제로 추가 (아이템이 너무 클 경우)
-        currentPage.push(tableSetting);
-        pages.push(currentPage);
-        currentPage = [];
-        currentPageRows = 0;
-      }
-    }
-  }
-
-  // 마지막 페이지 추가
-  if (currentPage.length > 0) {
-    pages.push(currentPage);
-  }
-
-  return pages;
-};
-
 // 카테고리별로 테이블을 분할하고 페이지 계산
 const splitCategoriesIntoPages = (floorLoadData: FloorLoadState) => {
   const availableHeight = getAvailableHeightPerPage();

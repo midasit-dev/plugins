@@ -59,7 +59,11 @@ export const exportFloorLoad = async (
     let totalTableCount = 0;
     for (const category of floorLoadData.table_setting) {
       const categoryName = Object.keys(category)[0];
-      totalTableCount += category[categoryName].length;
+      const tables = category[categoryName];
+      // 빈 카테고리는 제외
+      if (tables && tables.length > 0) {
+        totalTableCount += tables.length;
+      }
     }
 
     // FBLD 데이터가 비어있거나 존재하지 않는 경우
@@ -77,13 +81,15 @@ export const exportFloorLoad = async (
       );
       console.log("기존 FBLD 이름 목록:", existingNames);
 
-      // 모든 테이블의 name들을 리스트로 만들기
+      // 모든 테이블의 name들을 리스트로 만들기 (빈 카테고리 제외)
       const tableSettingNames: string[] = [];
       for (const category of floorLoadData.table_setting) {
         const categoryName = Object.keys(category)[0];
         const tables = category[categoryName];
-        for (const table of tables) {
-          tableSettingNames.push(table.name);
+        if (tables && tables.length > 0) {
+          for (const table of tables) {
+            tableSettingNames.push(table.name);
+          }
         }
       }
       console.log("현재 table_setting 이름 목록:", tableSettingNames);
@@ -134,11 +140,16 @@ export const exportFloorLoad = async (
     // 이제 키 번호를 가지고 FBLD 객체를 만들어서 보내야 한다.
     const newFbld: any = {};
 
-    // 각 카테고리의 테이블들에 대해 FBLD 객체 생성
+    // 각 카테고리의 테이블들에 대해 FBLD 객체 생성 (빈 카테고리 제외)
     let tableIndex = 0;
     for (const category of floorLoadData.table_setting) {
       const categoryName = Object.keys(category)[0];
       const tables = category[categoryName];
+
+      // 빈 카테고리는 건너뛰기
+      if (!tables || tables.length === 0) {
+        continue;
+      }
 
       for (const tableSetting of tables) {
         const keyNumber = keyNumbers[tableIndex];
