@@ -1,12 +1,9 @@
 {
-	"packages": [
-		"numpy"
-	],
-	"fetch": [
-		{
-			"files": [
-				"./pyscript_engineers_web.py"
-			]
-		}
-	]
+  "packages": ["numpy"],
+  "fetch": [
+    {
+      "files": ["./pyscript_engineers_web.py"]
+    }
+  ],
+  "terminal": false
 }
