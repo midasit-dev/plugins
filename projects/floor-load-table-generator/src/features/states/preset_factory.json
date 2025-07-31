@@ -4,14 +4,14 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 100.0,
         "unit_weight": 22.54,
         "load": 2.254
@@ -24,14 +24,14 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150.0,
         "unit_weight": 22.54,
         "load": 3.381
@@ -44,14 +44,14 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 100.0,
         "unit_weight": 22.54,
         "load": 2.254
@@ -64,14 +64,14 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150.0,
         "unit_weight": 22.54,
         "load": 3.381

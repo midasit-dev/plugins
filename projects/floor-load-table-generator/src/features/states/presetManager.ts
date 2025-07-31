@@ -16,24 +16,24 @@ export interface PresetInfo {
 const presetMetadata: Omit<PresetInfo, "data">[] = [
   {
     id: "common",
-    name: "공통 설계하중",
+    name: "설계하중 (공통시설)",
     description:
       "주차장 주차구역, 주차장 차로, 기계실, 지붕, 옥상정원 등의 기본 설정",
   },
   {
     id: "commercial",
-    name: "상업시설 설계하중",
+    name: "설계하중 (상업시설)",
     description: "판매시설, 업무시설, 화장실, 계단실 등의 기본 설정",
   },
   {
     id: "factory",
-    name: "공장 설계하중",
+    name: "설계하중 (공장 및 창고시설)",
     description:
       "경공업 공장, 중공업 공장, 경량품 저장창고, 중량품 저장창고 등의 기본 설정",
   },
   {
     id: "house",
-    name: "주택 설계하중",
+    name: "주거시설",
     description: "거실/장판류, 거실/석재, 욕실, 현관, 발코니 등의 기본 설정",
   },
 ];

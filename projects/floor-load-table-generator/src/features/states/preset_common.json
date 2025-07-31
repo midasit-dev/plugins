@@ -4,21 +4,21 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "액체방수 2차",
-        "type": "load",
+        "type": "thickness",
         "thickness": 30.0,
         "unit_weight": 21.56,
         "load": 0.6468
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 120.0,
         "unit_weight": 22.54,
         "load": 2.7048
@@ -31,14 +31,14 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 100.0,
         "unit_weight": 22.54,
         "load": 2.254
@@ -51,21 +51,21 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "액체방수 2차",
-        "type": "load",
+        "type": "thickness",
         "thickness": 30.0,
         "unit_weight": 21.56,
         "load": 0.6468
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 170.0,
         "unit_weight": 22.54,
         "load": 3.8318
@@ -78,28 +78,28 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "보통 모르터",
-        "type": "load",
+        "type": "thickness",
         "thickness": 20.0,
         "unit_weight": 19.6,
         "load": 0.392
       },
       {
         "name": "보통 콘크리트",
-        "type": "load",
+        "type": "thickness",
         "thickness": 100.0,
         "unit_weight": 22.54,
         "load": 2.254
       },
       {
         "name": "보통 벽돌",
-        "type": "load",
+        "type": "thickness",
         "thickness": 100.0,
         "unit_weight": 18.62,
         "load": 1.862
@@ -112,28 +112,28 @@
     "dead_load": [
       {
         "name": "콘크리트 슬래브",
-        "type": "load",
+        "type": "thickness",
         "thickness": 150,
         "unit_weight": 24,
         "load": 3.6
       },
       {
         "name": "액체방수 2차",
-        "type": "load",
+        "type": "thickness",
         "thickness": 30.0,
         "unit_weight": 21.56,
         "load": 0.6468
       },
       {
         "name": "자갈(건조)",
-        "type": "load",
+        "type": "thickness",
         "thickness": 100.0,
         "unit_weight": 16.66,
         "load": 1.666
       },
       {
         "name": "인공토",
-        "type": "load",
+        "type": "thickness",
         "thickness": 600.0,
         "unit_weight": 9.8,
         "load": 5.88
