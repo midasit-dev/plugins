@@ -36,7 +36,7 @@ import { useSnackbar } from "notistack";
 const App = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [sectionList, setSectionList] = useState<any>([]);
-  const [NameTag, setNameTag] = useState<string>("");
+  const [NameTag, setNameTag] = useState<string>("_Mirror");
   const [SectionJson, setSectionJson] = useState<any>([]);
   const [maxID, setMaxID] = useState<number>(0);
   const getTaperedSection = useCallback(() => {
@@ -173,7 +173,7 @@ const App = () => {
         <Typography variant="h1"> New Section Name Tag </Typography>
         <TextField
           width={70}
-          placeholder="_Mirror"
+          value={NameTag}
           onChange={(e) => setNameTag(e.target.value)}
         />
       </GuideBox>
