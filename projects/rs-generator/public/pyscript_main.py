@@ -8,6 +8,10 @@ from code_SBC3012018 import main_SBC_301_CR_2018, SBC_input
 from code_AS1170_4_2024 import main_AS1170_4_2024, AS_input
 from code_NF1998_1_2008 import main_NF_EN1998, NF_input
 from code_UNE1998_1_2011 import main_UNE_EN1998, UNE_input
+from code_CYS1998_1_2004 import main_CYS_EN1998, CYS_input
+from code_NBN1998_1_2011 import main_NBN_EN1998, NBN_input
+from code_BDS1998_1_2012 import main_BDS_EN1998, BDS_input
+from code_DS1998_1_2020 import main_DS_EN1998, DS_input
 
 def HelloWorld():
 	return (f'Hello World! this message is from def HelloWorld of PythonCode.py')

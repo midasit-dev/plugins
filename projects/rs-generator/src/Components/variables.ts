@@ -43,6 +43,40 @@ export const VarValids = atom({
     VarUNE1998_1_2011_DampingRatio: (value: any) => isLargerThanZero(value),
     VarUNE1998_1_2011_BehaviorFactor: (value: any) => isLargerThanZero(value),
     VarUNE1998_1_2011_LowerBoundFactor: (value: any) => isLargerThanZero(value),
+
+    VarCYS1998_1_2004_SpectrumType: (value: any) => true,
+    VarCYS1998_1_2004_GroundType: (value: any) => true,
+    VarCYS1998_1_2004_SeismicZone: (value: any) => true,
+    VarCYS1998_1_2004_ImportanceFactor: (value: any) => isLargerThanZero(value),
+    VarCYS1998_1_2004_DampingRatio: (value: any) => isLargerThanZero(value),
+    VarCYS1998_1_2004_BehaviorFactor: (value: any) => isLargerThanZero(value),
+    VarCYS1998_1_2004_LowerBoundFactor: (value: any) => isLargerThanZero(value),
+
+    VarNBN1998_1_2011_SpectrumType: (value: any) => true,
+    VarNBN1998_1_2011_GroundType: (value: any) => true,
+    VarNBN1998_1_2011_SeismicZone: (value: any) => true,
+    VarNBN1998_1_2011_ImportanceFactor: (value: any) => isLargerThanZero(value),
+    VarNBN1998_1_2011_DampingRatio: (value: any) => isLargerThanZero(value),
+    VarNBN1998_1_2011_BehaviorFactor: (value: any) => isLargerThanZero(value),
+    VarNBN1998_1_2011_LowerBoundFactor: (value: any) => isLargerThanZero(value),
+
+    VarBDS1998_1_2012_SpectrumType: (value: any) => true,
+    VarBDS1998_1_2012_GroundType: (value: any) => true,
+    VarBDS1998_1_2012_Region: (value: any) => true,
+    VarBDS1998_1_2012_PgaValue: (value: any) => isLargerThanZero(value),
+    VarBDS1998_1_2012_ImportanceFactor: (value: any) => isLargerThanZero(value),
+    VarBDS1998_1_2012_DampingRatio: (value: any) => isLargerThanZero(value),
+    VarBDS1998_1_2012_BehaviorFactor: (value: any) => isLargerThanZero(value),
+    VarBDS1998_1_2012_LowerBoundFactor: (value: any) => isLargerThanZero(value),
+
+    VarDS1998_1_2020_SpectrumType: (value: any) => true,
+    VarDS1998_1_2020_GroundType: (value: any) => true,
+    VarDS1998_1_2020_Type: (value: any) => true,
+    VarDS1998_1_2020_PgaValue: (value: any) => isLargerThanZero(value),
+    VarDS1998_1_2020_ImportanceFactor: (value: any) => isLargerThanZero(value),
+    VarDS1998_1_2020_DampingRatio: (value: any) => isLargerThanZero(value),
+    VarDS1998_1_2020_BehaviorFactor: (value: any) => isLargerThanZero(value),
+    VarDS1998_1_2020_LowerBoundFactor: (value: any) => isLargerThanZero(value),
   },
 });
 
@@ -52,11 +86,15 @@ export const VarFuncName = atom({
 });
 
 const designSpectrumCodes: Array<[string, number]> = [
-  // // ["NZS 1170.5 (2004)", 1],
+  ["NZS 1170.5 (2004)", 1],
   // ["SBC 301-CR (2018)", 2],
-  ["AS 1170.4 (2024)", 3],
-  // ["NF EN1998-1 (2008)", 4],
-  // ["UNE EN1998-1 (2011)", 5],
+  // ["AS 1170.4 (2024)", 3],
+  ["NF EN1998-1 (2008)", 4],
+  ["UNE EN1998-1 (2011)", 5],
+  ["CYS EN1998-1 (2004)", 6],
+  ["NBN EN1998-1 (2011)", 7],
+  ["BDS 1998-1 (2012)", 8],
+  ["DS/EN1998-1 (2020)", 9],
 ];
 export const VarDesignSpectrumList = atom({
   key: "VarDesignSpectrumList",
@@ -73,7 +111,7 @@ export const getDesignSpectrumCodeName = (index: number): string => {
 
 export const VarDesignSpectrum = atom({
   key: "VarDesignSpectrum",
-  default: 3,
+  default: 5,
 });
 
 // NZS 1170.5 (2004)
@@ -317,5 +355,288 @@ export const VarUNE1998_1_2011_BehaviorFactor = atom({
 // UNE 1998-1 (2011)
 export const VarUNE1998_1_2011_LowerBoundFactor = atom({
   key: "VarUNE1998_1_2011_LowerBoundFactor",
+  default: "0.2",
+});
+//////////////////////////////////////
+// CYS 1998-1 (2004)
+const cys_spectrumType: Array<[string, number]> = [
+  ["Horizontal Elastic Spectrum", 1],
+  ["Vertical Elastic Spectrum", 2],
+  ["Horizontal Design Spectrum", 3],
+  ["Vertical Design Spectrum", 4],
+];
+
+export const VarCYS1998_1_2004_SpectrumTypeList = atom({
+  key: "VarCYS1998_1_2004_SpectrumTypeList",
+  default: cys_spectrumType,
+});
+
+export const VarCYS1998_1_2004_SpectrumType = atom({
+  key: "VarCYS1998_1_2004_SpectrumType",
+  default: 1,
+});
+
+// CYS 1998-1 (2004)
+export const VarCYS1998_1_2004_GroundType = atom({
+  key: "VarCYS1998_1_2004_GroundType",
+  default: "A",
+});
+
+const cys_seismicZone: Array<[string, number]> = [
+  ["Zone1(0.15g)", 1],
+  ["Zone2(0.20g)", 2],
+  ["Zone3(0.25g)", 3],
+];
+
+export const VarCYS1998_1_2004_SeismicZoneList = atom({
+  key: "VarCYS1998_1_2004_SeismicZoneList",
+  default: cys_seismicZone,
+});
+// CYS 1998-1 (2004)
+export const VarCYS1998_1_2004_SeismicZone = atom({
+  key: "VarCYS1998_1_2004_SeismicZone",
+  default: "1",
+});
+
+// CYS 1998-1 (2004)
+export const VarCYS1998_1_2004_ImportanceFactor = atom({
+  key: "VarCYS1998_1_2004_ImportanceFactor",
+  default: "1.0",
+});
+
+// CYS 1998-1 (2004)
+export const VarCYS1998_1_2004_DampingRatio = atom({
+  key: "VarCYS1998_1_2004_DampingRatio",
+  default: "5",
+});
+
+// CYS 1998-1 (2004)
+export const VarCYS1998_1_2004_BehaviorFactor = atom({
+  key: "VarCYS1998_1_2004_BehaviorFactor",
+  default: "1.5",
+});
+
+// CYS 1998-1 (2004)
+export const VarCYS1998_1_2004_LowerBoundFactor = atom({
+  key: "VarCYS1998_1_2004_LowerBoundFactor",
+  default: "0.2",
+});
+
+//////////////////////////////////////
+// NBN 1998-1 (2011)
+const nbn_spectrumType: Array<[string, number]> = [
+  ["Horizontal Elastic Spectrum", 1],
+  ["Vertical Elastic Spectrum", 2],
+  ["Horizontal Design Spectrum", 3],
+  ["Vertical Design Spectrum", 4],
+];
+
+export const VarNBN1998_1_2011_SpectrumTypeList = atom({
+  key: "VarNBN1998_1_2011_SpectrumTypeList",
+  default: nbn_spectrumType,
+});
+
+export const VarNBN1998_1_2011_SpectrumType = atom({
+  key: "VarNBN1998_1_2011_SpectrumType",
+  default: 1,
+});
+
+// NBN 1998-1 (2011)
+export const VarNBN1998_1_2011_GroundType = atom({
+  key: "VarNBN1998_1_2011_GroundType",
+  default: "A",
+});
+
+const nbn_seismicZone: Array<[string, number]> = [
+  ["Zone1(0.04g)", 1],
+  ["Zone2(0.06g)", 2],
+  ["Zone3(0.08g)", 3],
+  ["Zone4(0.10g)", 4],
+];
+
+export const VarNBN1998_1_2011_SeismicZoneList = atom({
+  key: "VarNBN1998_1_2011_SeismicZoneList",
+  default: nbn_seismicZone,
+});
+// NBN 1998-1 (2011)
+export const VarNBN1998_1_2011_SeismicZone = atom({
+  key: "VarNBN1998_1_2011_SeismicZone",
+  default: "1",
+});
+
+// NBN 1998-1 (2011)
+export const VarNBN1998_1_2011_ImportanceFactor = atom({
+  key: "VarNBN1998_1_2011_ImportanceFactor",
+  default: "1.0",
+});
+
+// NBN 1998-1 (2011)
+export const VarNBN1998_1_2011_DampingRatio = atom({
+  key: "VarNBN1998_1_2011_DampingRatio",
+  default: "5",
+});
+
+// NBN 1998-1 (2011)
+export const VarNBN1998_1_2011_BehaviorFactor = atom({
+  key: "VarNBN1998_1_2011_BehaviorFactor",
+  default: "1.5",
+});
+
+// NBN 1998-1 (2011)
+export const VarNBN1998_1_2011_LowerBoundFactor = atom({
+  key: "VarNBN1998_1_2011_LowerBoundFactor",
+  default: "0.2",
+});
+
+//BDS 1998-1 (2012)
+const bds_spectrumType: Array<[string, number]> = [
+  ["Horizontal Elastic Spectrum", 1],
+  ["Vertical Elastic Spectrum", 2],
+  ["Horizontal Design Spectrum", 3],
+  ["Vertical Design Spectrum", 4],
+];
+
+export const VarBDS1998_1_2012_SpectrumTypeList = atom({
+  key: "VarBDS1998_1_2012_SpectrumTypeList",
+  default: bds_spectrumType,
+});
+
+export const VarBDS1998_1_2012_SpectrumType = atom({
+  key: "VarBDS1998_1_2012_SpectrumType",
+  default: 1,
+});
+
+const bds_groundType: [string, string][] = [
+  ["A", "A"],
+  ["B", "B"],
+  ["C", "C"],
+  ["D", "D"],
+  ["E", "E"],
+];
+
+export const VarBDS1998_1_2012_GroundTypeList = atom<[string, string][]>({
+  key: "VarBDS1998_1_2012_GroundTypeList",
+  default: bds_groundType,
+});
+
+export const VarBDS1998_1_2012_GroundType = atom({
+  key: "VarBDS1998_1_2012_GroundType",
+  default: "A",
+});
+
+const bds_region: [string, string][] = [
+  ["Typical", "Typical"],
+  ["Vrancea", "Vrancea"],
+];
+
+export const VarBDS1998_1_2012_RegionList = atom<[string, string][]>({
+  key: "VarBDS1998_1_2012_RegionList",
+  default: bds_region,
+});
+
+export const VarBDS1998_1_2012_Region = atom({
+  key: "VarBDS1998_1_2012_Region",
+  default: "Typical",
+});
+
+export const VarBDS1998_1_2012_PgaValue = atom({
+  key: "VarBDS1998_1_2012_PgaValue",
+  default: "0.23",
+});
+
+export const VarBDS1998_1_2012_ImportanceFactor = atom({
+  key: "VarBDS1998_1_2012_ImportanceFactor",
+  default: "1.0",
+});
+
+export const VarBDS1998_1_2012_DampingRatio = atom({
+  key: "VarBDS1998_1_2012_DampingRatio",
+  default: "5",
+});
+
+export const VarBDS1998_1_2012_BehaviorFactor = atom({
+  key: "VarBDS1998_1_2012_BehaviorFactor",
+  default: "1.5",
+});
+
+export const VarBDS1998_1_2012_LowerBoundFactor = atom({
+  key: "VarBDS1998_1_2012_LowerBoundFactor",
+  default: "0.2",
+});
+
+//////////////////////////////////////
+// DS 1998-1 (2020)
+const ds_spectrumType: Array<[string, number]> = [
+  ["Horizontal Elastic Spectrum", 1],
+  ["Vertical Elastic Spectrum", 2],
+  ["Horizontal Design Spectrum", 3],
+  ["Vertical Design Spectrum", 4],
+];
+
+export const VarDS1998_1_2020_SpectrumTypeList = atom({
+  key: "VarDS1998_1_2020_SpectrumTypeList",
+  default: ds_spectrumType,
+});
+
+export const VarDS1998_1_2020_SpectrumType = atom({
+  key: "VarDS1998_1_2020_SpectrumType",
+  default: 1,
+});
+
+const ds_groundType: [string, string][] = [
+  ["A", "A"],
+  ["B", "B"],
+  ["C", "C"],
+  ["D", "D"],
+  ["E", "E"],
+];
+
+export const VarDS1998_1_2020_GroundTypeList = atom<[string, string][]>({
+  key: "VarDS1998_1_2020_GroundTypeList",
+  default: ds_groundType,
+});
+
+export const VarDS1998_1_2020_GroundType = atom({
+  key: "VarDS1998_1_2020_GroundType",
+  default: "A",
+});
+
+const ds_type: [string, string][] = [
+  ["Type 1", "Type 1"],
+  ["Type 2", "Type 2"],
+];
+
+export const VarDS1998_1_2020_TypeList = atom<[string, string][]>({
+  key: "VarDS1998_1_2020_TypeList",
+  default: ds_type,
+});
+
+export const VarDS1998_1_2020_Type = atom({
+  key: "VarDS1998_1_2020_Type",
+  default: "Type 1",
+});
+
+export const VarDS1998_1_2020_PgaValue = atom({
+  key: "VarDS1998_1_2020_PgaValue",
+  default: "0.1",
+});
+
+export const VarDS1998_1_2020_ImportanceFactor = atom({
+  key: "VarDS1998_1_2020_ImportanceFactor",
+  default: "1.0",
+});
+
+export const VarDS1998_1_2020_DampingRatio = atom({
+  key: "VarDS1998_1_2020_DampingRatio",
+  default: "5",
+});
+
+export const VarDS1998_1_2020_BehaviorFactor = atom({
+  key: "VarDS1998_1_2020_BehaviorFactor",
+  default: "1.5",
+});
+
+export const VarDS1998_1_2020_LowerBoundFactor = atom({
+  key: "VarDS1998_1_2020_LowerBoundFactor",
   default: "0.2",
 });

@@ -3,58 +3,61 @@ import numpy as np
 from pyscript_engineers_web import MidasAPI, Product
 
 
-def ag_value(seismic_zone, importance_factor):
-    if seismic_zone == "1":
-        pga_value = 0.4
-    elif seismic_zone == "2":
-        pga_value = 0.7
-    elif seismic_zone == "3":
-        pga_value = 1.1
-    elif seismic_zone == "4":
-        pga_value = 1.6
-    elif seismic_zone == "5":
-        pga_value = 3.0
-    ag_value = pga_value * 0.10197 * importance_factor
-    return ag_value
 
-def horizontal_spectrum_parameter(seismic_zone, ground_type):
-    zone5 = {
-        'A': np.array([1.0, 0.15, 0.4, 2.0]),
-        'B': np.array([1.2, 0.15, 0.5, 2.0]),
-        'C': np.array([1.15, 0.2, 0.6, 2.0]),
-        'D': np.array([1.35, 0.2, 0.8, 2.0]),
-        'E': np.array([1.4, 0.15, 0.5, 2.0])
-    }
-    
-    others = {
-        'A': np.array([1.0, 0.03, 0.2, 2.5]),
-        'B': np.array([1.35, 0.05, 0.25, 2.5]),
-        'C': np.array([1.5, 0.06, 0.4, 2.0]),
-        'D': np.array([1.6, 0.1, 0.6, 1.5]),
-        'E': np.array([1.8, 0.08, 0.45, 1.25])
-    }
-    
-    specturm_params = zone5 if seismic_zone == "5" else others
-    soil_factor, tb, tc, td = specturm_params[ground_type]
+def horizontal_spectrum_parameter(pga_value,importance_factor,region, ground_type):
+    ag_value = pga_value * importance_factor
+    if region == "Typical":
+      if ground_type == "A":
+          soil_factor = 1.00
+          tb = 0.10
+          tc = 0.30
+          td = 2.00
+      elif ground_type == "B":
+          soil_factor = 1.30
+          tb = 0.10
+          tc = 0.40
+          td = 2.0
+      elif ground_type == "C":
+          soil_factor = 1.20
+          tb = 0.10
+          tc = 0.50
+          td = 2.0
+      elif ground_type == "D":
+          soil_factor = 1.0
+          tb = 0.10
+          tc = 0.6
+          td = 2.0
+      elif ground_type == "E":
+          soil_factor = 1.20
+          tb = 0.10
+          tc = 0.5
+          td = 2.0
+    elif region == "Vrancea":
+      soil_factor = 1.0
+      tb = 0.20
+      tc = 1.0
+      td = 2.0
     return soil_factor, tb, tc, td
 
-def vertical_spectrum_parameter(seismic_zone, importance_factor):
-    ag = ag_value(seismic_zone, importance_factor)
-    if seismic_zone == "5":
-        avg_value = 0.9 * ag
-        tvb = 0.15 
-        tvc = 0.4
-        tvd = 2.0
-    else:
-        avg_value = 0.8 * ag
-        tvb = 0.03
-        tvc = 0.2
-        tvd = 2.5
+def vertical_spectrum_parameter(pga_value, importance_factor, region, ground_type):
+    soil_factor, tb, tc, td = horizontal_spectrum_parameter(pga_value, importance_factor, region, ground_type)
+    ag_value = pga_value * importance_factor
+    if region == "Typical":
+      avg_value = 0.85*ag_value
+      tvb = 0.1
+      tvc = 0.4
+      tvd = 2.0
+    elif region == "Vrancea":
+      avg_value = 0.85*ag_value
+      tvb = 0.20
+      tvc = 0.6
+      tvd = 2.0
+    
     return avg_value, tvb, tvc, tvd
 
-def horizontal_elastic_spectrum(ground_type, seismic_zone, importance_factor, damping_ratio, max_period):
-    soil_factor, tb, tc, td = horizontal_spectrum_parameter(seismic_zone, ground_type)
-    ag = ag_value(seismic_zone, importance_factor)
+def horizontal_elastic_spectrum(ground_type, pga_value, importance_factor, region, damping_ratio, max_period):
+    soil_factor, tb, tc, td = horizontal_spectrum_parameter(pga_value, importance_factor, region, ground_type)
+    ag = pga_value * importance_factor
     eta = max(0.55, (10 / (5 + damping_ratio / 100)) ** 0.5)
     DATA = []
     mp = max_period
@@ -96,9 +99,8 @@ def horizontal_elastic_spectrum(ground_type, seismic_zone, importance_factor, da
         DATA.append(cht)
     return DATA
 
-def vertical_elastic_spectrum(ground_type, seismic_zone, importance_factor, damping_ratio, max_period):
-    ag = ag_value(seismic_zone, importance_factor)
-    avg_value, tvb, tvc, tvd = vertical_spectrum_parameter(seismic_zone, importance_factor)
+def vertical_elastic_spectrum(ground_type, pga_value, importance_factor, region, damping_ratio, max_period):
+    avg_value, tvb, tvc, tvd = vertical_spectrum_parameter(pga_value, importance_factor, region, ground_type)
     eta = max(0.55, (10 / (5 + damping_ratio / 100)) ** 0.5)
     DATA = []
     mp = max_period
@@ -138,9 +140,9 @@ def vertical_elastic_spectrum(ground_type, seismic_zone, importance_factor, damp
 
     return DATA
 
-def horizontal_design_spectrum(ground_type, seismic_zone, importance_factor, behavior_factor, lower_bound_factor, max_period):
-    soil_factor, tb, tc, td = horizontal_spectrum_parameter(seismic_zone, ground_type)
-    ag = ag_value(seismic_zone, importance_factor)
+def horizontal_design_spectrum(ground_type, pga_value, importance_factor, region, behavior_factor, lower_bound_factor, max_period):
+    soil_factor, tb, tc, td = horizontal_spectrum_parameter(pga_value, importance_factor, region, ground_type)
+    ag = pga_value * importance_factor
     DATA = []
     mp = max_period
     increment = mp * 1/100
@@ -178,9 +180,8 @@ def horizontal_design_spectrum(ground_type, seismic_zone, importance_factor, beh
 
     return DATA
 
-def vertical_design_spectrum(ground_type, seismic_zone, importance_factor, behavior_factor, lower_bound_factor, max_period):
-    ag = ag_value(seismic_zone, importance_factor)
-    avg_value, tvb, tvc, tvd = vertical_spectrum_parameter(seismic_zone, importance_factor)
+def vertical_design_spectrum(ground_type, pga_value, importance_factor, region, behavior_factor, lower_bound_factor, max_period):
+    avg_value, tvb, tvc, tvd = vertical_spectrum_parameter(pga_value, importance_factor, region, ground_type)
     DATA = []
     mp = max_period
     increment = mp * 1/100
@@ -218,7 +219,7 @@ def vertical_design_spectrum(ground_type, seismic_zone, importance_factor, behav
         DATA.append(cht)
     return DATA
 
-def NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period):
+def BDS_input(spectrum_type, ground_type, pga_value,  region, importance_factor,damping_ratio, behavior_factor, lower_bound_factor, max_period):
     # period 생성
     p = 0
     per_list = []
@@ -227,7 +228,7 @@ def NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, dampin
         p += max_period * 0.01
     
     # tb, tc, td 값이 없으면 추가
-    soil_factor, tb, tc, td = horizontal_spectrum_parameter(seismic_zone, ground_type)
+    soil_factor, tb, tc, td = horizontal_spectrum_parameter(pga_value, importance_factor, region, ground_type)
     if tb not in per_list:
         per_list.append(tb)
     if tc not in per_list:
@@ -239,13 +240,13 @@ def NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, dampin
     
     # 스펙트럼 타입에 따른 계산
     if spectrum_type == "Horizontal Elastic Spectrum":
-        value = horizontal_elastic_spectrum(ground_type, seismic_zone, importance_factor, damping_ratio, max_period)
+          value = horizontal_elastic_spectrum(ground_type, pga_value, importance_factor, region, damping_ratio, max_period)
     elif spectrum_type == "Vertical Elastic Spectrum":
-        value = vertical_elastic_spectrum(ground_type, seismic_zone, importance_factor, damping_ratio, max_period)
+        value = vertical_elastic_spectrum(ground_type, pga_value, importance_factor, region, damping_ratio, max_period)
     elif spectrum_type == "Horizontal Design Spectrum":
-        value = horizontal_design_spectrum(ground_type, seismic_zone, importance_factor, behavior_factor, lower_bound_factor, max_period)
+        value = horizontal_design_spectrum(ground_type, pga_value, importance_factor, region, behavior_factor, lower_bound_factor, max_period)
     elif spectrum_type == "Vertical Design Spectrum":
-        value = vertical_design_spectrum(ground_type, seismic_zone, importance_factor, behavior_factor, lower_bound_factor, max_period)
+        value = vertical_design_spectrum(ground_type, pga_value, importance_factor, region, behavior_factor, lower_bound_factor, max_period)
     
     # period와 value의 길이가 다른 경우 처리
     if len(period) != len(value):
@@ -288,45 +289,45 @@ def UNIT_GET():
     return GRAV_const
 
 
-# ==================================== RS 입력 ================================== #
-
 def generate_description(
     standard: str,
     spectrum_type: str,
+    region: str,
     ground_type: str,
-    seismic_zone: str,
+    pga_value: float,
     importance_factor: float,
     damping_ratio: float = None,
     behavior_factor: float = None,
-    lower_bound_factor: float = None,
-    max_period: float = None
+    lower_bound_factor: float = None
 ) -> str:
-    base = (
-        f"{standard}, {spectrum_type}, Seismic Zone={seismic_zone}, Ground Type={ground_type}, "
-        f"γI={importance_factor:.2f}"
-    )
-
+    # 공통 정보
+    desc = f"{standard}, {spectrum_type}, Region={region}, Ground Type={ground_type}, γI={importance_factor:.2f}, AgR={pga_value:.3f}g"
+    
+    # 각 타입에 따른 부가 정보
     if spectrum_type == "Horizontal Elastic Spectrum":
-        desc = base + f", Damping Ratio={damping_ratio:.1f}%"
+        desc += f", Damping Ratio={damping_ratio:.1f}%"
+        
     elif spectrum_type == "Vertical Elastic Spectrum":
-        desc = base + f", Damping Ratio={damping_ratio:.1f}%"
+        desc += f", Damping Ratio={damping_ratio:.1f}%"
+        
     elif spectrum_type == "Horizontal Design Spectrum":
-        desc = base + f", q={behavior_factor:.2f}, β={lower_bound_factor:.2f}"
+        desc += f", q={behavior_factor:.2f}, β={lower_bound_factor:.2f}"
+        
     elif spectrum_type == "Vertical Design Spectrum":
-        desc = base + f", q={behavior_factor:.2f}, β={lower_bound_factor:.2f}"
+        desc += f", q={behavior_factor:.2f}, β={lower_bound_factor:.2f}"
+        
     else:
-        desc = base + ", Unknown Spectrum Type"
-
-    if max_period is not None:
-        desc += f", Max Period={max_period:.2f}s"
+        desc += " (Unknown Spectrum Type)"
     
     return desc
 
 
+# ==================================== RS 입력 ================================== #
+
 def SPFC_UPDATE(ID, name, GRAV, aFUNC, description):
     civilApp = MidasAPI(Product.CIVIL, "KR")
     data = {
-        "NAME": name,    
+        "NAME": name,
         "iTYPE": 1,
         "iMETHOD": 0,
         "SCALE": 1,
@@ -341,38 +342,43 @@ def SPFC_UPDATE(ID, name, GRAV, aFUNC, description):
     civilApp.db_update_item("SPFC", ID, data)
     return json.dumps({"success": "Updating SPFC is completed"})
 
-
-def main_NF_EN1998(
-    func_name: str,
+    
+def main_BDS_EN1998(
+    func_name: str, 
     spectrum_type: str,
+    region: str,
     ground_type: str,
-    seismic_zone: str,
+    pga_value: float,
     importance_factor: float,
     damping_ratio: float,
     behavior_factor: float,
     lower_bound_factor: float,
     max_period: float
 ):
-    # 그래프용 스펙트럼 계산
-    inputs = json.loads(NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period))
+    # Spectrum data 생성
+    inputs = json.loads(BDS_input(spectrum_type, ground_type, pga_value, region, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period))
     aPeriod = inputs["period"]
     aValue = inputs["value"]
     aFUNC = to_aFUNC(aPeriod, aValue)
+    
+    # 단위계에서 GRAV 추출
     GRAV = UNIT_GET()
     
-    # 설명 생성
+    # DESC 설명 텍스트 생성
+    standard = "BDS1998-1:2012"
     description = generate_description(
-        standard="NF EN 1998-1:2008",
-        spectrum_type=spectrum_type,
-        ground_type=ground_type,
-        seismic_zone=seismic_zone,
-        importance_factor=importance_factor,
-        damping_ratio=damping_ratio,
-        behavior_factor=behavior_factor,
-        lower_bound_factor=lower_bound_factor,
-        max_period=max_period
+        standard,
+        spectrum_type,
+        region,
+        ground_type,
+        pga_value,
+        importance_factor,
+        damping_ratio,
+        behavior_factor,
+        lower_bound_factor
     )
-    
+
+    # SPFC 항목 업데이트
     civilApp = MidasAPI(Product.CIVIL, "KR")
     ID = civilApp.db_get_next_id("SPFC")
     result = SPFC_UPDATE(ID, func_name, GRAV, aFUNC, description)

@@ -277,9 +277,43 @@ def UNIT_GET():
     return GRAV_const
 
 
+def generate_description(
+    standard: str,
+    spectrum_type: str,
+    ground_type: str,
+    pga_value: float,
+    K_factor: float,
+    C_factor: float,
+    importance_factor: float,
+    damping_ratio: float = None,
+    behavior_factor: float = None,
+    lower_bound_factor: float = None
+) -> str:
+    # 공통 정보
+    desc = f"{standard}, {spectrum_type}, Ground Type={ground_type}, γI={importance_factor:.2f}, AgR={pga_value:.3f}g, K={K_factor:.2f}, C={C_factor:.2f}"
+    
+    # 각 타입에 따른 부가 정보
+    if spectrum_type == "Horizontal Elastic Spectrum":
+        desc += f", Damping Ratio={damping_ratio:.1f}%"
+        
+    elif spectrum_type == "Vertical Elastic Spectrum":
+        desc += f", Damping Ratio={damping_ratio:.1f}%"
+        
+    elif spectrum_type == "Horizontal Design Spectrum":
+        desc += f", q={behavior_factor:.2f}, β={lower_bound_factor:.2f}"
+        
+    elif spectrum_type == "Vertical Design Spectrum":
+        desc += f", q={behavior_factor:.2f}, β={lower_bound_factor:.2f}"
+        
+    else:
+        desc += " (Unknown Spectrum Type)"
+    
+    return desc
+
+
 # ==================================== RS 입력 ================================== #
 
-def SPFC_UPDATE(ID,name,GRAV, aFUNC):
+def SPFC_UPDATE(ID, name, GRAV, aFUNC, description):
     civilApp = MidasAPI(Product.CIVIL, "KR")
     data = {
         "NAME": name,
@@ -288,18 +322,15 @@ def SPFC_UPDATE(ID,name,GRAV, aFUNC):
         "SCALE": 1,
         "GRAV": GRAV,
         "DRATIO": 0.05,
+        "DESC": description,
         "STR": {
             "SPEC_CODE": "USER"
         },
         "aFUNC": aFUNC
     }
     civilApp.db_update_item("SPFC", ID, data)
-    
-    result_message = {"success":"Updating SPFC is completed"}
-    return json.dumps(result_message)
+    return json.dumps({"success": "Updating SPFC is completed"})
 
-
-    
     
 def main_UNE_EN1998(
     func_name: str,
@@ -314,16 +345,32 @@ def main_UNE_EN1998(
     lower_bound_factor: float,
     max_period: float
 ):
-    # for graph data
+    # Spectrum data 생성
     inputs = json.loads(UNE_input(spectrum_type, ground_type, pga_value, K_factor, C_factor, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period))
     aPeriod = inputs["period"]
     aValue = inputs["value"]
+    aFUNC = to_aFUNC(aPeriod, aValue)
     
-    # do SPFC_UPDATE
+    # 단위계에서 GRAV 추출
+    GRAV = UNIT_GET()
+    
+    # DESC 설명 텍스트 생성
+    standard = "UNE1998-1:2011"
+    description = generate_description(
+        standard,
+        spectrum_type,
+        ground_type,
+        pga_value,
+        K_factor,
+        C_factor,
+        importance_factor,
+        damping_ratio,
+        behavior_factor,
+        lower_bound_factor
+    )
+
+    # SPFC 항목 업데이트
     civilApp = MidasAPI(Product.CIVIL, "KR")
     ID = civilApp.db_get_next_id("SPFC")
-    name = func_name
-    aFUNC = to_aFUNC(aPeriod, aValue)
-    GRAV = UNIT_GET()
-    result = SPFC_UPDATE(ID,name,GRAV, aFUNC)
+    result = SPFC_UPDATE(ID, func_name, GRAV, aFUNC, description)
     return result

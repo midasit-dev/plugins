@@ -5,51 +5,34 @@ from pyscript_engineers_web import MidasAPI, Product
 
 def ag_value(seismic_zone, importance_factor):
     if seismic_zone == "1":
-        pga_value = 0.4
+        pga_value = 0.04
     elif seismic_zone == "2":
-        pga_value = 0.7
+        pga_value = 0.06
     elif seismic_zone == "3":
-        pga_value = 1.1
+        pga_value = 0.08
     elif seismic_zone == "4":
-        pga_value = 1.6
-    elif seismic_zone == "5":
-        pga_value = 3.0
-    ag_value = pga_value * 0.10197 * importance_factor
+        pga_value = 0.10
+    ag_value = pga_value * importance_factor
     return ag_value
 
 def horizontal_spectrum_parameter(seismic_zone, ground_type):
-    zone5 = {
-        'A': np.array([1.0, 0.15, 0.4, 2.0]),
-        'B': np.array([1.2, 0.15, 0.5, 2.0]),
-        'C': np.array([1.15, 0.2, 0.6, 2.0]),
-        'D': np.array([1.35, 0.2, 0.8, 2.0]),
-        'E': np.array([1.4, 0.15, 0.5, 2.0])
+    type1_params = {
+        'A': np.array([1.0, 0.05, 0.25, 1.2]),
+        'B': np.array([1.35, 0.05, 0.25, 1.2]),
+        'C': np.array([1.5, 0.10, 0.25, 1.2]),
+        'D': np.array([1.8, 0.10, 0.30, 1.2]),
+        'E': np.array([1.6, 0.05, 0.25, 1.2])
     }
-    
-    others = {
-        'A': np.array([1.0, 0.03, 0.2, 2.5]),
-        'B': np.array([1.35, 0.05, 0.25, 2.5]),
-        'C': np.array([1.5, 0.06, 0.4, 2.0]),
-        'D': np.array([1.6, 0.1, 0.6, 1.5]),
-        'E': np.array([1.8, 0.08, 0.45, 1.25])
-    }
-    
-    specturm_params = zone5 if seismic_zone == "5" else others
+    specturm_params = type1_params
     soil_factor, tb, tc, td = specturm_params[ground_type]
     return soil_factor, tb, tc, td
 
 def vertical_spectrum_parameter(seismic_zone, importance_factor):
     ag = ag_value(seismic_zone, importance_factor)
-    if seismic_zone == "5":
-        avg_value = 0.9 * ag
-        tvb = 0.15 
-        tvc = 0.4
-        tvd = 2.0
-    else:
-        avg_value = 0.8 * ag
-        tvb = 0.03
-        tvc = 0.2
-        tvd = 2.5
+    avg_value = 0.45 * ag
+    tvb = 0.05 
+    tvc = 0.15
+    tvd = 1.0  
     return avg_value, tvb, tvc, tvd
 
 def horizontal_elastic_spectrum(ground_type, seismic_zone, importance_factor, damping_ratio, max_period):
@@ -218,7 +201,7 @@ def vertical_design_spectrum(ground_type, seismic_zone, importance_factor, behav
         DATA.append(cht)
     return DATA
 
-def NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period):
+def NBN_input(spectrum_type, ground_type, seismic_zone, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period):
     # period 생성
     p = 0
     per_list = []
@@ -237,7 +220,7 @@ def NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, dampin
     
     period = sorted(set(per_list))
     
-    # 스펙트럼 타입에 따른 계산
+    # 스펙트럼 타입에 따른 계산 (숫자와 문자열 모두 지원)
     if spectrum_type == "Horizontal Elastic Spectrum":
         value = horizontal_elastic_spectrum(ground_type, seismic_zone, importance_factor, damping_ratio, max_period)
     elif spectrum_type == "Vertical Elastic Spectrum":
@@ -246,6 +229,9 @@ def NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, dampin
         value = horizontal_design_spectrum(ground_type, seismic_zone, importance_factor, behavior_factor, lower_bound_factor, max_period)
     elif spectrum_type == "Vertical Design Spectrum":
         value = vertical_design_spectrum(ground_type, seismic_zone, importance_factor, behavior_factor, lower_bound_factor, max_period)
+    else:
+        # 기본값으로 Horizontal Elastic Spectrum 사용
+        value = horizontal_elastic_spectrum(ground_type, seismic_zone, importance_factor, damping_ratio, max_period)
     
     # period와 value의 길이가 다른 경우 처리
     if len(period) != len(value):
@@ -290,6 +276,25 @@ def UNIT_GET():
 
 # ==================================== RS 입력 ================================== #
 
+def SPFC_UPDATE(ID, name, GRAV, aFUNC, description):
+    civilApp = MidasAPI(Product.CIVIL, "KR")
+    data = {
+        "NAME": name,    
+        "iTYPE": 1,
+        "iMETHOD": 0,
+        "SCALE": 1,
+        "GRAV": GRAV,
+        "DRATIO": 0.05,
+         "DESC": description,
+        "STR": {
+            "SPEC_CODE": "USER"
+        },
+        "aFUNC": aFUNC
+    }
+    civilApp.db_update_item("SPFC", ID, data)
+    return json.dumps({"success": "Updating SPFC is completed"})
+
+
 def generate_description(
     standard: str,
     spectrum_type: str,
@@ -323,26 +328,8 @@ def generate_description(
     return desc
 
 
-def SPFC_UPDATE(ID, name, GRAV, aFUNC, description):
-    civilApp = MidasAPI(Product.CIVIL, "KR")
-    data = {
-        "NAME": name,    
-        "iTYPE": 1,
-        "iMETHOD": 0,
-        "SCALE": 1,
-        "GRAV": GRAV,
-        "DRATIO": 0.05,
-        "DESC": description,
-        "STR": {
-            "SPEC_CODE": "USER"
-        },
-        "aFUNC": aFUNC
-    }
-    civilApp.db_update_item("SPFC", ID, data)
-    return json.dumps({"success": "Updating SPFC is completed"})
 
-
-def main_NF_EN1998(
+def main_NBN_EN1998(
     func_name: str,
     spectrum_type: str,
     ground_type: str,
@@ -354,7 +341,7 @@ def main_NF_EN1998(
     max_period: float
 ):
     # 그래프용 스펙트럼 계산
-    inputs = json.loads(NF_input(spectrum_type, ground_type, seismic_zone, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period))
+    inputs = json.loads(NBN_input(spectrum_type, ground_type, seismic_zone, importance_factor, damping_ratio, behavior_factor, lower_bound_factor, max_period))
     aPeriod = inputs["period"]
     aValue = inputs["value"]
     aFUNC = to_aFUNC(aPeriod, aValue)
@@ -362,7 +349,7 @@ def main_NF_EN1998(
     
     # 설명 생성
     description = generate_description(
-        standard="NF EN 1998-1:2008",
+        standard="NBN EN 1998-1:2011",
         spectrum_type=spectrum_type,
         ground_type=ground_type,
         seismic_zone=seismic_zone,
@@ -377,3 +364,4 @@ def main_NF_EN1998(
     ID = civilApp.db_get_next_id("SPFC")
     result = SPFC_UPDATE(ID, func_name, GRAV, aFUNC, description)
     return result
+

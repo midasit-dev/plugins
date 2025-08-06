@@ -107,8 +107,34 @@ def UNIT_GET():
     return GRAV_const
 
 
+def generate_description(
+    standard: str,
+    soilClass: str,
+    spectrum_type: str,
+    kp: float,
+    z: float,
+    sp: float,
+    mu: float,
+    max_period: float
+) -> str:
+    # spectrum_type 정제
+    spectrum_type = spectrum_type.upper()
+    if spectrum_type == "1":
+        spectrum_type = "Horizontal"
+    elif spectrum_type == "2":
+        spectrum_type = "Vertical"
+    else:
+        spectrum_type = spectrum_type.capitalize()
+
+    desc = (
+        f"{standard}, Soil Class={soilClass}, Spectrum Type={spectrum_type}, "
+        f"kp={kp:.3f}, Z={z:.3f}, Sp={sp:.2f}, μ={mu:.2f}, Max Period={max_period:.2f}s"
+    )
+    return desc
+
+
 # MIDAS DB 업데이트
-def SPFC_UPDATE(ID, name, GRAV, aFUNC):
+def SPFC_UPDATE(ID, name, GRAV, aFUNC, description):
     civilApp = MidasAPI(Product.CIVIL, "KR")
     data = {
         "NAME": name,
@@ -117,6 +143,7 @@ def SPFC_UPDATE(ID, name, GRAV, aFUNC):
         "SCALE": 1,
         "GRAV": GRAV,
         "DRATIO": 0.05,
+        "DESC": description,
         "STR": {"SPEC_CODE": "USER"},
         "aFUNC": aFUNC
     }
@@ -135,19 +162,29 @@ def main_AS1170_4_2024(
     mu: float,
     max_period: float
 ):
-    # for graph data
     inputs = json.loads(AS_input(
         soilClass, spectrum_type, kp, z, sp, mu, max_period
     ))      
     aPeriod = inputs["period"]
     aValue = inputs["value"]        
-    
-    civilApp = MidasAPI(Product.CIVIL, "KR")
-    ID = civilApp.db_get_next_id("SPFC")
-    name = func_name
     aFUNC = to_aFUNC(aPeriod, aValue)
     GRAV = UNIT_GET()
-    result = SPFC_UPDATE(ID, name, GRAV, aFUNC) 
+
+    # DESC 설명 생성
+    description = generate_description(
+        standard="AS 1170.4:2024",
+        soilClass=soilClass,
+        spectrum_type=spectrum_type,
+        kp=kp,
+        z=z,
+        sp=sp,
+        mu=mu,
+        max_period=max_period
+    )
+
+    civilApp = MidasAPI(Product.CIVIL, "KR")
+    ID = civilApp.db_get_next_id("SPFC")
+    result = SPFC_UPDATE(ID, func_name, GRAV, aFUNC, description) 
     return result
 
 

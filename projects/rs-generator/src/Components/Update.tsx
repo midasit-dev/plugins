@@ -45,6 +45,44 @@ import {
   VarUNE1998_1_2011_DampingRatio,
   VarUNE1998_1_2011_BehaviorFactor,
   VarUNE1998_1_2011_LowerBoundFactor,
+
+  // CYS1998_1_2004
+  VarCYS1998_1_2004_SpectrumType,
+  VarCYS1998_1_2004_GroundType,
+  VarCYS1998_1_2004_SeismicZone,
+  VarCYS1998_1_2004_ImportanceFactor,
+  VarCYS1998_1_2004_DampingRatio,
+  VarCYS1998_1_2004_BehaviorFactor,
+  VarCYS1998_1_2004_LowerBoundFactor,
+
+  // NBN1998_1_2011
+  VarNBN1998_1_2011_SpectrumType,
+  VarNBN1998_1_2011_GroundType,
+  VarNBN1998_1_2011_SeismicZone,
+  VarNBN1998_1_2011_ImportanceFactor,
+  VarNBN1998_1_2011_DampingRatio,
+  VarNBN1998_1_2011_BehaviorFactor,
+  VarNBN1998_1_2011_LowerBoundFactor,
+
+  // BDS1998_1_2012
+  VarBDS1998_1_2012_SpectrumType,
+  VarBDS1998_1_2012_GroundType,
+  VarBDS1998_1_2012_Region,
+  VarBDS1998_1_2012_PgaValue,
+  VarBDS1998_1_2012_ImportanceFactor,
+  VarBDS1998_1_2012_DampingRatio,
+  VarBDS1998_1_2012_BehaviorFactor,
+  VarBDS1998_1_2012_LowerBoundFactor,
+
+  // DS1998_1_2020
+  VarDS1998_1_2020_SpectrumType,
+  VarDS1998_1_2020_GroundType,
+  VarDS1998_1_2020_Type,
+  VarDS1998_1_2020_PgaValue,
+  VarDS1998_1_2020_ImportanceFactor,
+  VarDS1998_1_2020_DampingRatio,
+  VarDS1998_1_2020_BehaviorFactor,
+  VarDS1998_1_2020_LowerBoundFactor,
 } from "./variables";
 import {
   GuideBox,
@@ -58,6 +96,10 @@ import {
   spfcUpdate4AS1170_4_2024,
   spfcUpdate4NF1998_1_2008,
   spfcUpdate4UNE1998_1_2011,
+  spfcUpdate4CYS1998_1_2004,
+  spfcUpdate4NBN1998_1_2011,
+  spfcUpdate4BDS1998_1_2012,
+  spfcUpdate4DS1998_1_2020,
 } from "../utils_pyscript";
 
 const CompUpdate = () => {
@@ -107,12 +149,41 @@ const CompUpdate = () => {
           design_spectrum={design_spectrum}
         />
       )}
+      {design_spectrum === 6 && (
+        <CompValidCheckDialogCYS199812004
+          open={open}
+          setOpen={setOpen}
+          design_spectrum={design_spectrum}
+        />
+      )}
+      {design_spectrum === 7 && (
+        <CompValidCheckDialogNBN199812011
+          open={open}
+          setOpen={setOpen}
+          design_spectrum={design_spectrum}
+        />
+      )}
+      {design_spectrum === 8 && (
+        <CompValidCheckDialogBDS199812012
+          open={open}
+          setOpen={setOpen}
+          design_spectrum={design_spectrum}
+        />
+      )}
+      {design_spectrum === 9 && (
+        <CompValidCheckDialogDS199812020
+          open={open}
+          setOpen={setOpen}
+          design_spectrum={design_spectrum}
+        />
+      )}
     </GuideBox>
   );
 };
 
 export default CompUpdate;
 
+// NZS 1170.5 (2004)
 const CompValidCheckDialogNZS117052004 = (props: any) => {
   const { open, setOpen, design_spectrum } = props;
 
@@ -233,6 +304,7 @@ const CompValidCheckDialogNZS117052004 = (props: any) => {
   );
 };
 
+// SBC 301-CR (2018)
 const CompValidCheckDialogSBC301CR2018 = (props: any) => {
   const { open, setOpen, design_spectrum } = props;
 
@@ -361,6 +433,7 @@ const CompValidCheckDialogSBC301CR2018 = (props: any) => {
   );
 };
 
+// AS 1170.4 (2024)
 const CompValidCheckDialogAS117042024 = (props: any) => {
   const { open, setOpen, design_spectrum } = props;
   const { enqueueSnackbar } = useSnackbar();
@@ -493,6 +566,7 @@ const CompValidCheckDialogAS117042024 = (props: any) => {
   );
 };
 
+// NF 1998-1 (2008)
 const CompValidCheckDialogNF199812008 = (props: any) => {
   const { open, setOpen, design_spectrum } = props;
   const { enqueueSnackbar } = useSnackbar();
@@ -513,7 +587,7 @@ const CompValidCheckDialogNF199812008 = (props: any) => {
   //Create CheckList
   const valids = useRecoilValue(VarValids);
   React.useEffect(() => {
-    setCheckList([
+    const baseCheckList = [
       {
         title: "Function Name",
         value: func_name,
@@ -551,31 +625,41 @@ const CompValidCheckDialogNF199812008 = (props: any) => {
         error: !valids.VarNF1998_1_2008_ImportanceFactor(importance_factor),
         reason: "Importance Factor must be greater than 0.",
       },
-      {
+    ];
+
+    // spectrum_type에 따라 조건부로 항목 추가
+    if (spectrum_type === 1 || spectrum_type === 2) {
+      // 탄성 스펙트럼일 때 Damping Ratio만 추가
+      baseCheckList.push({
         title: "Damping Ratio(%)",
         value: damping_ratio,
         error: !valids.VarNF1998_1_2008_DampingRatio(damping_ratio),
         reason: "Damping Ratio must be greater than 0.",
-      },
-      {
+      });
+    } else if (spectrum_type === 3 || spectrum_type === 4) {
+      // 설계 스펙트럼일 때 Behavior Factor와 Lower Bound Factor 추가
+      baseCheckList.push({
         title: "Behavior Factor(q)",
         value: behavior_factor,
         error: !valids.VarNF1998_1_2008_BehaviorFactor(behavior_factor),
         reason: "Behavior Factor must be greater than 0.",
-      },
-      {
+      });
+      baseCheckList.push({
         title: "Lower Bound Factor(β)",
         value: lower_bound_factor,
         error: !valids.VarNF1998_1_2008_LowerBoundFactor(lower_bound_factor),
         reason: "Lower Bound Factor must be greater than 0.",
-      },
-      {
-        title: "Maximum Period",
-        value: maximum_period,
-        error: !valids.VarMaximumPeriod(maximum_period),
-        reason: "Maximum Period must be greater than 0.",
-      },
-    ]);
+      });
+    }
+
+    baseCheckList.push({
+      title: "Maximum Period",
+      value: maximum_period,
+      error: !valids.VarMaximumPeriod(maximum_period),
+      reason: "Maximum Period must be greater than 0.",
+    });
+
+    setCheckList(baseCheckList);
   }, [
     func_name,
     design_spectrum,
@@ -626,6 +710,7 @@ const CompValidCheckDialogNF199812008 = (props: any) => {
   );
 };
 
+// UNE 1998-1 (2011)
 const CompValidCheckDialogUNE199812011 = (props: any) => {
   const { open, setOpen, design_spectrum } = props;
   const { enqueueSnackbar } = useSnackbar();
@@ -648,7 +733,7 @@ const CompValidCheckDialogUNE199812011 = (props: any) => {
   //Create CheckList
   const valids = useRecoilValue(VarValids);
   React.useEffect(() => {
-    setCheckList([
+    const baseCheckList = [
       {
         title: "Function Name",
         value: func_name,
@@ -698,31 +783,41 @@ const CompValidCheckDialogUNE199812011 = (props: any) => {
         error: !valids.VarUNE1998_1_2011_ImportanceFactor(importance_factor),
         reason: "Importance Factor must be greater than 0.",
       },
-      {
+    ];
+
+    // spectrum_type에 따라 조건부로 항목 추가
+    if (spectrum_type === 1 || spectrum_type === 2) {
+      // 탄성 스펙트럼일 때 Damping Ratio만 추가
+      baseCheckList.push({
         title: "Damping Ratio(%)",
         value: damping_ratio,
         error: !valids.VarUNE1998_1_2011_DampingRatio(damping_ratio),
         reason: "Damping Ratio must be greater than 0.",
-      },
-      {
+      });
+    } else if (spectrum_type === 3 || spectrum_type === 4) {
+      // 설계 스펙트럼일 때 Behavior Factor와 Lower Bound Factor 추가
+      baseCheckList.push({
         title: "Behavior Factor(q)",
         value: behavior_factor,
         error: !valids.VarUNE1998_1_2011_BehaviorFactor(behavior_factor),
         reason: "Behavior Factor must be greater than 0.",
-      },
-      {
+      });
+      baseCheckList.push({
         title: "Lower Bound Factor(β)",
         value: lower_bound_factor,
         error: !valids.VarUNE1998_1_2011_LowerBoundFactor(lower_bound_factor),
         reason: "Lower Bound Factor must be greater than 0.",
-      },
-      {
-        title: "Maximum Period",
-        value: maximum_period,
-        error: !valids.VarMaximumPeriod(maximum_period),
-        reason: "Maximum Period must be greater than 0.",
-      },
-    ]);
+      });
+    }
+
+    baseCheckList.push({
+      title: "Maximum Period",
+      value: maximum_period,
+      error: !valids.VarMaximumPeriod(maximum_period),
+      reason: "Maximum Period must be greater than 0.",
+    });
+
+    setCheckList(baseCheckList);
   }, [
     func_name,
     design_spectrum,
@@ -753,6 +848,602 @@ const CompValidCheckDialogUNE199812011 = (props: any) => {
           pga_value,
           k_factor,
           c_factor,
+          importance_factor.toString(),
+          damping_ratio,
+          behavior_factor,
+          lower_bound_factor,
+          maximum_period
+        );
+
+        if ("error" in result) {
+          enqueueSnackbar(result.error, { variant: "error" });
+        }
+        console.log(result);
+
+        if ("success" in result) {
+          enqueueSnackbar(result.success, {
+            variant: "success",
+            autoHideDuration: 1500,
+          });
+        }
+      }}
+      maxPanelRows={11}
+    />
+  );
+};
+
+// CYS 1998-1 (2004)
+const CompValidCheckDialogCYS199812004 = (props: any) => {
+  const { open, setOpen, design_spectrum } = props;
+  const { enqueueSnackbar } = useSnackbar();
+  //for CheckList
+  const [checkList, setCheckList] = React.useState<any>([]);
+
+  //UI Values
+  const func_name = useRecoilValue(VarFuncName);
+  const spectrum_type = useRecoilValue(VarCYS1998_1_2004_SpectrumType);
+  const ground_type = useRecoilValue(VarCYS1998_1_2004_GroundType);
+  const seismic_zone = useRecoilValue(VarCYS1998_1_2004_SeismicZone);
+  const importance_factor = useRecoilValue(VarCYS1998_1_2004_ImportanceFactor);
+  const damping_ratio = useRecoilValue(VarCYS1998_1_2004_DampingRatio);
+  const behavior_factor = useRecoilValue(VarCYS1998_1_2004_BehaviorFactor);
+  const lower_bound_factor = useRecoilValue(VarCYS1998_1_2004_LowerBoundFactor);
+  const maximum_period = useRecoilValue(VarMaximumPeriod);
+
+  //Create CheckList
+  const valids = useRecoilValue(VarValids);
+  React.useEffect(() => {
+    const baseCheckList = [
+      {
+        title: "Function Name",
+        value: func_name,
+        error: !valids.VarFunctionName(func_name),
+        reason: "The length of name must be greater than 0.",
+      },
+      {
+        title: "Spectrum Type",
+        value:
+          spectrum_type === 1
+            ? "Horizontal Elastic Spectrum"
+            : spectrum_type === 2
+            ? "Vertical Elastic Spectrum"
+            : spectrum_type === 3
+            ? "Horizontal Design Spectrum"
+            : "Vertical Design Spectrum",
+        error: !valids.VarCYS1998_1_2004_SpectrumType(spectrum_type),
+        reason: "",
+      },
+      {
+        title: "Ground Type",
+        value: ground_type,
+        error: !valids.VarCYS1998_1_2004_GroundType(ground_type),
+        reason: "",
+      },
+      {
+        title: "Seismic Zone",
+        value: seismic_zone,
+        error: !valids.VarCYS1998_1_2004_SeismicZone(seismic_zone),
+        reason: "",
+      },
+      {
+        title: "Importance Factor(I)",
+        value: importance_factor,
+        error: !valids.VarCYS1998_1_2004_ImportanceFactor(importance_factor),
+        reason: "Importance Factor must be greater than 0.",
+      },
+    ];
+
+    // spectrum_type에 따라 조건부로 항목 추가
+    if (spectrum_type === 1 || spectrum_type === 2) {
+      // 탄성 스펙트럼일 때 Damping Ratio만 추가
+      baseCheckList.push({
+        title: "Damping Ratio(%)",
+        value: damping_ratio,
+        error: !valids.VarCYS1998_1_2004_DampingRatio(damping_ratio),
+        reason: "Damping Ratio must be greater than 0.",
+      });
+    } else if (spectrum_type === 3 || spectrum_type === 4) {
+      // 설계 스펙트럼일 때 Behavior Factor와 Lower Bound Factor 추가
+      baseCheckList.push({
+        title: "Behavior Factor(q)",
+        value: behavior_factor,
+        error: !valids.VarCYS1998_1_2004_BehaviorFactor(behavior_factor),
+        reason: "Behavior Factor must be greater than 0.",
+      });
+      baseCheckList.push({
+        title: "Lower Bound Factor(β)",
+        value: lower_bound_factor,
+        error: !valids.VarCYS1998_1_2004_LowerBoundFactor(lower_bound_factor),
+        reason: "Lower Bound Factor must be greater than 0.",
+      });
+    }
+
+    baseCheckList.push({
+      title: "Maximum Period",
+      value: maximum_period,
+      error: !valids.VarMaximumPeriod(maximum_period),
+      reason: "Maximum Period must be greater than 0.",
+    });
+
+    setCheckList(baseCheckList);
+  }, [
+    func_name,
+    design_spectrum,
+    spectrum_type,
+    ground_type,
+    seismic_zone,
+    importance_factor,
+    damping_ratio,
+    behavior_factor,
+    lower_bound_factor,
+    maximum_period,
+    valids,
+  ]);
+
+  return (
+    <TemplatesFunctionalComponentsValidCheckDialog
+      open={open}
+      setOpen={setOpen}
+      checkList={checkList}
+      buttonText="Update"
+      buttonClick={() => {
+        const result = spfcUpdate4CYS1998_1_2004(
+          func_name,
+          spectrum_type.toString(),
+          ground_type,
+          seismic_zone,
+          importance_factor.toString(),
+          damping_ratio,
+          behavior_factor,
+          lower_bound_factor,
+          maximum_period
+        );
+
+        if ("error" in result) {
+          enqueueSnackbar(result.error, { variant: "error" });
+        }
+        console.log(result);
+
+        if ("success" in result) {
+          enqueueSnackbar(result.success, {
+            variant: "success",
+            autoHideDuration: 1500,
+          });
+        }
+      }}
+      maxPanelRows={11}
+    />
+  );
+};
+
+// NBN 1998-1 (2011)
+const CompValidCheckDialogNBN199812011 = (props: any) => {
+  const { open, setOpen, design_spectrum } = props;
+  const { enqueueSnackbar } = useSnackbar();
+  //for CheckList
+  const [checkList, setCheckList] = React.useState<any>([]);
+
+  //UI Values
+  const func_name = useRecoilValue(VarFuncName);
+  const spectrum_type = useRecoilValue(VarNBN1998_1_2011_SpectrumType);
+  const ground_type = useRecoilValue(VarNBN1998_1_2011_GroundType);
+  const seismic_zone = useRecoilValue(VarNBN1998_1_2011_SeismicZone);
+  const importance_factor = useRecoilValue(VarNBN1998_1_2011_ImportanceFactor);
+  const damping_ratio = useRecoilValue(VarNBN1998_1_2011_DampingRatio);
+  const behavior_factor = useRecoilValue(VarNBN1998_1_2011_BehaviorFactor);
+  const lower_bound_factor = useRecoilValue(VarNBN1998_1_2011_LowerBoundFactor);
+  const maximum_period = useRecoilValue(VarMaximumPeriod);
+
+  //Create CheckList
+  const valids = useRecoilValue(VarValids);
+  React.useEffect(() => {
+    const baseCheckList = [
+      {
+        title: "Function Name",
+        value: func_name,
+        error: !valids.VarFunctionName(func_name),
+        reason: "The length of name must be greater than 0.",
+      },
+      {
+        title: "Spectrum Type",
+        value:
+          spectrum_type === 1
+            ? "Horizontal Elastic Spectrum"
+            : spectrum_type === 2
+            ? "Vertical Elastic Spectrum"
+            : spectrum_type === 3
+            ? "Horizontal Design Spectrum"
+            : "Vertical Design Spectrum",
+        error: !valids.VarNBN1998_1_2011_SpectrumType(spectrum_type),
+        reason: "",
+      },
+      {
+        title: "Ground Type",
+        value: ground_type,
+        error: !valids.VarNBN1998_1_2011_GroundType(ground_type),
+        reason: "",
+      },
+      {
+        title: "Seismic Zone",
+        value: seismic_zone,
+        error: !valids.VarNBN1998_1_2011_SeismicZone(seismic_zone),
+        reason: "",
+      },
+      {
+        title: "Importance Factor(I)",
+        value: importance_factor,
+        error: !valids.VarNBN1998_1_2011_ImportanceFactor(importance_factor),
+        reason: "Importance Factor must be greater than 0.",
+      },
+    ];
+
+    // spectrum_type에 따라 조건부로 항목 추가
+    if (spectrum_type === 1 || spectrum_type === 2) {
+      // 탄성 스펙트럼일 때 Damping Ratio만 추가
+      baseCheckList.push({
+        title: "Damping Ratio(%)",
+        value: damping_ratio,
+        error: !valids.VarNBN1998_1_2011_DampingRatio(damping_ratio),
+        reason: "Damping Ratio must be greater than 0.",
+      });
+    } else if (spectrum_type === 3 || spectrum_type === 4) {
+      // 설계 스펙트럼일 때 Behavior Factor와 Lower Bound Factor 추가
+      baseCheckList.push({
+        title: "Behavior Factor(q)",
+        value: behavior_factor,
+        error: !valids.VarNBN1998_1_2011_BehaviorFactor(behavior_factor),
+        reason: "Behavior Factor must be greater than 0.",
+      });
+      baseCheckList.push({
+        title: "Lower Bound Factor(β)",
+        value: lower_bound_factor,
+        error: !valids.VarNBN1998_1_2011_LowerBoundFactor(lower_bound_factor),
+        reason: "Lower Bound Factor must be greater than 0.",
+      });
+    }
+
+    baseCheckList.push({
+      title: "Maximum Period",
+      value: maximum_period,
+      error: !valids.VarMaximumPeriod(maximum_period),
+      reason: "Maximum Period must be greater than 0.",
+    });
+
+    setCheckList(baseCheckList);
+  }, [
+    func_name,
+    design_spectrum,
+    spectrum_type,
+    ground_type,
+    seismic_zone,
+    importance_factor,
+    damping_ratio,
+    behavior_factor,
+    lower_bound_factor,
+    maximum_period,
+    valids,
+  ]);
+
+  return (
+    <TemplatesFunctionalComponentsValidCheckDialog
+      open={open}
+      setOpen={setOpen}
+      checkList={checkList}
+      buttonText="Update"
+      buttonClick={() => {
+        const result = spfcUpdate4NBN1998_1_2011(
+          func_name,
+          spectrum_type.toString(),
+          ground_type,
+          seismic_zone,
+          importance_factor.toString(),
+          damping_ratio,
+          behavior_factor,
+          lower_bound_factor,
+          maximum_period
+        );
+
+        if ("error" in result) {
+          enqueueSnackbar(result.error, { variant: "error" });
+        }
+        console.log(result);
+
+        if ("success" in result) {
+          enqueueSnackbar(result.success, {
+            variant: "success",
+            autoHideDuration: 1500,
+          });
+        }
+      }}
+      maxPanelRows={11}
+    />
+  );
+};
+
+// BDS 1998-1 (2012)
+const CompValidCheckDialogBDS199812012 = (props: any) => {
+  const { open, setOpen, design_spectrum } = props;
+  const { enqueueSnackbar } = useSnackbar();
+
+  //for CheckList
+  const [checkList, setCheckList] = React.useState<any>([]);
+
+  //UI Values
+  const func_name = useRecoilValue(VarFuncName);
+  const spectrum_type = useRecoilValue(VarBDS1998_1_2012_SpectrumType);
+  const ground_type = useRecoilValue(VarBDS1998_1_2012_GroundType);
+  const region = useRecoilValue(VarBDS1998_1_2012_Region);
+  const pga_value = useRecoilValue(VarBDS1998_1_2012_PgaValue);
+  const importance_factor = useRecoilValue(VarBDS1998_1_2012_ImportanceFactor);
+  const damping_ratio = useRecoilValue(VarBDS1998_1_2012_DampingRatio);
+  const behavior_factor = useRecoilValue(VarBDS1998_1_2012_BehaviorFactor);
+  const lower_bound_factor = useRecoilValue(VarBDS1998_1_2012_LowerBoundFactor);
+  const maximum_period = useRecoilValue(VarMaximumPeriod);
+
+  //Create CheckList
+  const valids = useRecoilValue(VarValids);
+  React.useEffect(() => {
+    const baseCheckList = [
+      {
+        title: "Function Name",
+        value: func_name,
+        error: !valids.VarFunctionName(func_name),
+        reason: "The length of name must be greater than 0.",
+      },
+      {
+        title: "Spectrum Type",
+        value:
+          spectrum_type === 1
+            ? "Horizontal Elastic Spectrum"
+            : spectrum_type === 2
+            ? "Vertical Elastic Spectrum"
+            : spectrum_type === 3
+            ? "Horizontal Design Spectrum"
+            : "Vertical Design Spectrum",
+        error: !valids.VarBDS1998_1_2012_SpectrumType(spectrum_type),
+        reason: "",
+      },
+      {
+        title: "Ground Type",
+        value: ground_type,
+        error: !valids.VarBDS1998_1_2012_GroundType(ground_type),
+        reason: "",
+      },
+      {
+        title: "Region",
+        value: region,
+        error: !valids.VarBDS1998_1_2012_Region(region),
+        reason: "",
+      },
+      {
+        title: "PGA Value",
+        value: pga_value,
+        error: !valids.VarBDS1998_1_2012_PgaValue(pga_value),
+        reason: "PGA Value must be greater than 0.",
+      },
+      {
+        title: "Importance Factor(I)",
+        value: importance_factor,
+        error: !valids.VarBDS1998_1_2012_ImportanceFactor(importance_factor),
+        reason: "Importance Factor must be greater than 0.",
+      },
+    ];
+
+    // spectrum_type에 따라 조건부로 항목 추가
+    if (spectrum_type === 1 || spectrum_type === 2) {
+      // 탄성 스펙트럼일 때 Damping Ratio만 추가
+      baseCheckList.push({
+        title: "Damping Ratio(%)",
+        value: damping_ratio,
+        error: !valids.VarBDS1998_1_2012_DampingRatio(damping_ratio),
+        reason: "Damping Ratio must be greater than 0.",
+      });
+    } else if (spectrum_type === 3 || spectrum_type === 4) {
+      // 설계 스펙트럼일 때 Behavior Factor와 Lower Bound Factor 추가
+      baseCheckList.push({
+        title: "Behavior Factor(q)",
+        value: behavior_factor,
+        error: !valids.VarBDS1998_1_2012_BehaviorFactor(behavior_factor),
+        reason: "Behavior Factor must be greater than 0.",
+      });
+      baseCheckList.push({
+        title: "Lower Bound Factor(β)",
+        value: lower_bound_factor,
+        error: !valids.VarBDS1998_1_2012_LowerBoundFactor(lower_bound_factor),
+        reason: "Lower Bound Factor must be greater than 0.",
+      });
+    }
+
+    baseCheckList.push({
+      title: "Maximum Period",
+      value: maximum_period,
+      error: !valids.VarMaximumPeriod(maximum_period),
+      reason: "Maximum Period must be greater than 0.",
+    });
+
+    setCheckList(baseCheckList);
+  }, [
+    func_name,
+    design_spectrum,
+    spectrum_type,
+    ground_type,
+    region,
+    pga_value,
+    importance_factor,
+    damping_ratio,
+    behavior_factor,
+    lower_bound_factor,
+    maximum_period,
+    valids,
+  ]);
+
+  return (
+    <TemplatesFunctionalComponentsValidCheckDialog
+      open={open}
+      setOpen={setOpen}
+      checkList={checkList}
+      buttonText="Update"
+      buttonClick={() => {
+        const result = spfcUpdate4BDS1998_1_2012(
+          func_name,
+          spectrum_type.toString(),
+          ground_type,
+          region,
+          pga_value.toString(),
+          importance_factor.toString(),
+          damping_ratio,
+          behavior_factor,
+          lower_bound_factor,
+          maximum_period
+        );
+
+        if ("error" in result) {
+          enqueueSnackbar(result.error, { variant: "error" });
+        }
+        console.log(result);
+
+        if ("success" in result) {
+          enqueueSnackbar(result.success, {
+            variant: "success",
+            autoHideDuration: 1500,
+          });
+        }
+      }}
+      maxPanelRows={11}
+    />
+  );
+};
+
+// DS 1998-1 (2020)
+const CompValidCheckDialogDS199812020 = (props: any) => {
+  const { open, setOpen, design_spectrum } = props;
+  const { enqueueSnackbar } = useSnackbar();
+
+  //for CheckList
+  const [checkList, setCheckList] = React.useState<any>([]);
+
+  //UI Values
+  const func_name = useRecoilValue(VarFuncName);
+  const spectrum_type = useRecoilValue(VarDS1998_1_2020_SpectrumType);
+  const ground_type = useRecoilValue(VarDS1998_1_2020_GroundType);
+  const type = useRecoilValue(VarDS1998_1_2020_Type);
+  const pga_value = useRecoilValue(VarDS1998_1_2020_PgaValue);
+  const importance_factor = useRecoilValue(VarDS1998_1_2020_ImportanceFactor);
+  const damping_ratio = useRecoilValue(VarDS1998_1_2020_DampingRatio);
+  const behavior_factor = useRecoilValue(VarDS1998_1_2020_BehaviorFactor);
+  const lower_bound_factor = useRecoilValue(VarDS1998_1_2020_LowerBoundFactor);
+  const maximum_period = useRecoilValue(VarMaximumPeriod);
+
+  //Create CheckList
+  const valids = useRecoilValue(VarValids);
+  React.useEffect(() => {
+    const baseCheckList = [
+      {
+        title: "Function Name",
+        value: func_name,
+        error: !valids.VarFunctionName(func_name),
+        reason: "The length of name must be greater than 0.",
+      },
+      {
+        title: "Spectrum Type",
+        value:
+          spectrum_type === 1
+            ? "Horizontal Elastic Spectrum"
+            : spectrum_type === 2
+            ? "Vertical Elastic Spectrum"
+            : spectrum_type === 3
+            ? "Horizontal Design Spectrum"
+            : "Vertical Design Spectrum",
+        error: !valids.VarDS1998_1_2020_SpectrumType(spectrum_type),
+        reason: "",
+      },
+      {
+        title: "Ground Type",
+        value: ground_type,
+        error: !valids.VarDS1998_1_2020_GroundType(ground_type),
+        reason: "",
+      },
+      {
+        title: "Type",
+        value: type,
+        error: !valids.VarDS1998_1_2020_Type(type),
+        reason: "",
+      },
+      {
+        title: "PGA Value",
+        value: pga_value,
+        error: !valids.VarDS1998_1_2020_PgaValue(pga_value),
+        reason: "PGA Value must be greater than 0.",
+      },
+      {
+        title: "Importance Factor(I)",
+        value: importance_factor,
+        error: !valids.VarDS1998_1_2020_ImportanceFactor(importance_factor),
+        reason: "Importance Factor must be greater than 0.",
+      },
+    ];
+
+    // spectrum_type에 따라 조건부로 항목 추가
+    if (spectrum_type === 1 || spectrum_type === 2) {
+      // 탄성 스펙트럼일 때 Damping Ratio만 추가
+      baseCheckList.push({
+        title: "Damping Ratio(%)",
+        value: damping_ratio,
+        error: !valids.VarDS1998_1_2020_DampingRatio(damping_ratio),
+        reason: "Damping Ratio must be greater than 0.",
+      });
+    } else if (spectrum_type === 3 || spectrum_type === 4) {
+      // 설계 스펙트럼일 때 Behavior Factor와 Lower Bound Factor 추가
+      baseCheckList.push({
+        title: "Behavior Factor(q)",
+        value: behavior_factor,
+        error: !valids.VarDS1998_1_2020_BehaviorFactor(behavior_factor),
+        reason: "Behavior Factor must be greater than 0.",
+      });
+      baseCheckList.push({
+        title: "Lower Bound Factor(β)",
+        value: lower_bound_factor,
+        error: !valids.VarDS1998_1_2020_LowerBoundFactor(lower_bound_factor),
+        reason: "Lower Bound Factor must be greater than 0.",
+      });
+    }
+
+    baseCheckList.push({
+      title: "Maximum Period",
+      value: maximum_period,
+      error: !valids.VarMaximumPeriod(maximum_period),
+      reason: "Maximum Period must be greater than 0.",
+    });
+
+    setCheckList(baseCheckList);
+  }, [
+    func_name,
+    design_spectrum,
+    spectrum_type,
+    ground_type,
+    type,
+    pga_value,
+    importance_factor,
+    damping_ratio,
+    behavior_factor,
+    lower_bound_factor,
+    maximum_period,
+    valids,
+  ]);
+
+  return (
+    <TemplatesFunctionalComponentsValidCheckDialog
+      open={open}
+      setOpen={setOpen}
+      checkList={checkList}
+      buttonText="Update"
+      buttonClick={() => {
+        const result = spfcUpdate4DS1998_1_2020(
+          func_name,
+          spectrum_type.toString(),
+          ground_type,
+          type,
+          pga_value.toString(),
           importance_factor.toString(),
           damping_ratio,
           behavior_factor,

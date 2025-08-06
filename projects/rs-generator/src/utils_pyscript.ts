@@ -165,6 +165,7 @@ export function dbDelete(itemName: string, item_id: string | number) {
   });
 }
 
+// NZS 1170.5 (2004)-Create Graph Data
 export function createGraphData4NZS1170_5_2004(
   soliClass: string,
   R: string,
@@ -196,6 +197,7 @@ export function generalFunction(pyFunctionName: string, pyArgs: any) {
   });
 }
 
+// NZS 1170.5 (2004)-Update
 export function spfcUpdate4NZS1170_5_2004(
   funcName: string,
   soliClass: string,
@@ -225,6 +227,7 @@ export function spfcUpdate4NZS1170_5_2004(
   });
 }
 
+// SBC 301-CR (2018)-Create Graph Data
 export function createGraphData4SBC301_CR_2018(
   site_class: string,
   ss: string,
@@ -250,6 +253,7 @@ export function createGraphData4SBC301_CR_2018(
   });
 }
 
+// SBC 301-CR (2018)-Update
 export function spfcUpdate4SBC301_CR_2018(
   funcName: string,
   site_class: string,
@@ -282,6 +286,7 @@ export function spfcUpdate4SBC301_CR_2018(
   });
 }
 
+// AS 1170.4 (2024)-Create Graph Data
 export function createGraphData4AS1170_4_2024(
   soilClass: string,
   spectrum_type: string,
@@ -310,6 +315,7 @@ export function createGraphData4AS1170_4_2024(
   });
 }
 
+// AS 1170.4 (2024)-Update
 export function spfcUpdate4AS1170_4_2024(
   funcName: string,
   soilClass: string,
@@ -340,6 +346,7 @@ export function spfcUpdate4AS1170_4_2024(
   });
 }
 
+// NF 1998-1 (2008)-Create Graph Data
 export function createGraphData4NF1998_1_2008(
   spectrum_type: string,
   ground_type: string,
@@ -369,6 +376,7 @@ export function createGraphData4NF1998_1_2008(
   });
 }
 
+// NF 1998-1 (2008)-Update
 export function spfcUpdate4NF1998_1_2008(
   funcName: string,
   spectrum_type: string,
@@ -406,6 +414,7 @@ export function spfcUpdate4NF1998_1_2008(
   });
 }
 
+// UNE 1998-1 (2011)-Create Graph Data
 export function createGraphData4UNE1998_1_2011(
   spectrum_type: string,
   ground_type: string,
@@ -439,6 +448,7 @@ export function createGraphData4UNE1998_1_2011(
   });
 }
 
+// UNE 1998-1 (2011)-Update
 export function spfcUpdate4UNE1998_1_2011(
   funcName: string,
   spectrum_type: string,
@@ -475,6 +485,325 @@ export function spfcUpdate4UNE1998_1_2011(
       Number.parseFloat(max_period)
     );
     console.log(result);
+
+    return JSON.parse(result);
+  });
+}
+
+// CYS 1998-1 (2004)-Create Graph Data
+export function createGraphData4CYS1998_1_2004(
+  spectrum_type: string,
+  ground_type: string,
+  seismic_zone: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_create_graph_data_func =
+      pyscript.interpreter.globals.get("CYS_input");
+    const result = py_create_graph_data_func(
+      spectrum_type,
+      ground_type,
+      seismic_zone,
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log(result);
+
+    return JSON.parse(result);
+  });
+}
+
+// CYS 1998-1 (2004)-Update
+export function spfcUpdate4CYS1998_1_2004(
+  funcName: string,
+  spectrum_type: string,
+  ground_type: string,
+  seismic_zone: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_spfc_update_func =
+      pyscript.interpreter.globals.get("main_CYS_EN1998");
+    const result = py_spfc_update_func(
+      funcName,
+      spectrum_type === "1"
+        ? "Horizontal Elastic Spectrum"
+        : spectrum_type === "2"
+        ? "Vertical Elastic Spectrum"
+        : spectrum_type === "3"
+        ? "Horizontal Design Spectrum"
+        : "Vertical Design Spectrum",
+      ground_type,
+      seismic_zone,
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log(result);
+
+    return JSON.parse(result);
+  });
+}
+
+// NBN 1998-1 (2011)-Create Graph Data
+export function createGraphData4NBN1998_1_2011(
+  spectrum_type: string,
+  ground_type: string,
+  seismic_zone: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_create_graph_data_func =
+      pyscript.interpreter.globals.get("NBN_input");
+    const result = py_create_graph_data_func(
+      spectrum_type,
+      ground_type,
+      seismic_zone,
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log(result);
+
+    return JSON.parse(result);
+  });
+}
+
+// NBN 1998-1 (2011)-Update
+export function spfcUpdate4NBN1998_1_2011(
+  funcName: string,
+  spectrum_type: string,
+  ground_type: string,
+  seismic_zone: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_spfc_update_func =
+      pyscript.interpreter.globals.get("main_NBN_EN1998");
+
+    // console.log("NBN Update Parameters:", {
+    //   funcName,
+    //   spectrum_type,
+    //   ground_type,
+    //   seismic_zone,
+    //   importance_factor,
+    //   damping_ratio,
+    //   behavior_factor,
+    //   lower_bound_factor,
+    //   max_period,
+    // });
+
+    const result = py_spfc_update_func(
+      funcName,
+      spectrum_type === "1"
+        ? "Horizontal Elastic Spectrum"
+        : spectrum_type === "2"
+        ? "Vertical Elastic Spectrum"
+        : spectrum_type === "3"
+        ? "Horizontal Design Spectrum"
+        : "Vertical Design Spectrum",
+      ground_type,
+      seismic_zone,
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log("NBN Update Result:", result);
+
+    return JSON.parse(result);
+  });
+}
+
+// BDS 1998-1 (2012)-Create Graph Data
+export function createGraphData4BDS1998_1_2012(
+  spectrum_type: string,
+  ground_type: string,
+  region: string,
+  pga_value: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_create_graph_data_func =
+      pyscript.interpreter.globals.get("BDS_input");
+    const result = py_create_graph_data_func(
+      spectrum_type,
+      ground_type,
+      Number.parseFloat(pga_value),
+      region,
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log(result);
+
+    return JSON.parse(result);
+  });
+}
+
+// BDS 1998-1 (2012)-Update
+export function spfcUpdate4BDS1998_1_2012(
+  funcName: string,
+  spectrum_type: string,
+  ground_type: string,
+  region: string,
+  pga_value: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_spfc_update_func =
+      pyscript.interpreter.globals.get("main_BDS_EN1998");
+
+    console.log("BDS Update Parameters:", {
+      funcName,
+      spectrum_type,
+      ground_type,
+      region,
+      pga_value,
+      importance_factor,
+      damping_ratio,
+      behavior_factor,
+      lower_bound_factor,
+      max_period,
+    });
+
+    const result = py_spfc_update_func(
+      funcName,
+      spectrum_type === "1"
+        ? "Horizontal Elastic Spectrum"
+        : spectrum_type === "2"
+        ? "Vertical Elastic Spectrum"
+        : spectrum_type === "3"
+        ? "Horizontal Design Spectrum"
+        : "Vertical Design Spectrum",
+      region,
+      ground_type,
+      Number.parseFloat(pga_value),
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log("BDS Update Result:", result);
+
+    return JSON.parse(result);
+  });
+}
+
+// DS 1998-1 (2020)-Create Graph Data
+export function createGraphData4DS1998_1_2020(
+  spectrum_type: string,
+  ground_type: string,
+  type: string,
+  pga_value: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_create_graph_data_func =
+      pyscript.interpreter.globals.get("DS_input");
+    const result = py_create_graph_data_func(
+      spectrum_type,
+      ground_type,
+      Number.parseFloat(pga_value),
+      type,
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log(result);
+
+    return JSON.parse(result);
+  });
+}
+
+// DS 1998-1 (2020)-Update
+export function spfcUpdate4DS1998_1_2020(
+  funcName: string,
+  spectrum_type: string,
+  ground_type: string,
+  type: string,
+  pga_value: string,
+  importance_factor: string,
+  damping_ratio: string,
+  behavior_factor: string,
+  lower_bound_factor: string,
+  max_period: string
+) {
+  return checkPyScriptReady(() => {
+    const py_spfc_update_func =
+      pyscript.interpreter.globals.get("main_DS_EN1998");
+    console.log("DS Update Parameters:", {
+      funcName,
+      spectrum_type,
+      ground_type,
+      type,
+      pga_value,
+      importance_factor,
+      damping_ratio,
+      behavior_factor,
+      lower_bound_factor,
+      max_period,
+    });
+    const result = py_spfc_update_func(
+      funcName,
+      spectrum_type === "1"
+        ? "Horizontal Elastic Spectrum"
+        : spectrum_type === "2"
+        ? "Vertical Elastic Spectrum"
+        : spectrum_type === "3"
+        ? "Horizontal Design Spectrum"
+        : "Vertical Design Spectrum",
+      type,
+      ground_type,
+      Number.parseFloat(pga_value),
+      Number.parseFloat(importance_factor),
+      Number.parseFloat(damping_ratio),
+      Number.parseFloat(behavior_factor),
+      Number.parseFloat(lower_bound_factor),
+      Number.parseFloat(max_period)
+    );
+    console.log("DS Update Result:", result);
 
     return JSON.parse(result);
   });

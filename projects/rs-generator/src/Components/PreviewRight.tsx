@@ -6,6 +6,10 @@ import {
   createGraphData4AS1170_4_2024,
   createGraphData4NF1998_1_2008,
   createGraphData4UNE1998_1_2011,
+  createGraphData4CYS1998_1_2004,
+  createGraphData4NBN1998_1_2011,
+  createGraphData4BDS1998_1_2012,
+  createGraphData4DS1998_1_2020,
 } from "../utils_pyscript";
 import {
   VarDesignSpectrum,
@@ -48,6 +52,44 @@ import {
   VarUNE1998_1_2011_DampingRatio,
   VarUNE1998_1_2011_BehaviorFactor,
   VarUNE1998_1_2011_LowerBoundFactor,
+
+  // CYS1998_1_2004
+  VarCYS1998_1_2004_SpectrumType,
+  VarCYS1998_1_2004_GroundType,
+  VarCYS1998_1_2004_SeismicZone,
+  VarCYS1998_1_2004_ImportanceFactor,
+  VarCYS1998_1_2004_DampingRatio,
+  VarCYS1998_1_2004_BehaviorFactor,
+  VarCYS1998_1_2004_LowerBoundFactor,
+
+  // NBN1998_1_2011
+  VarNBN1998_1_2011_SpectrumType,
+  VarNBN1998_1_2011_GroundType,
+  VarNBN1998_1_2011_SeismicZone,
+  VarNBN1998_1_2011_ImportanceFactor,
+  VarNBN1998_1_2011_DampingRatio,
+  VarNBN1998_1_2011_BehaviorFactor,
+  VarNBN1998_1_2011_LowerBoundFactor,
+
+  // BDS1998_1_2012
+  VarBDS1998_1_2012_SpectrumType,
+  VarBDS1998_1_2012_GroundType,
+  VarBDS1998_1_2012_Region,
+  VarBDS1998_1_2012_PgaValue,
+  VarBDS1998_1_2012_ImportanceFactor,
+  VarBDS1998_1_2012_DampingRatio,
+  VarBDS1998_1_2012_BehaviorFactor,
+  VarBDS1998_1_2012_LowerBoundFactor,
+
+  // DS1998_1_2020
+  VarDS1998_1_2020_SpectrumType,
+  VarDS1998_1_2020_GroundType,
+  VarDS1998_1_2020_Type,
+  VarDS1998_1_2020_PgaValue,
+  VarDS1998_1_2020_ImportanceFactor,
+  VarDS1998_1_2020_DampingRatio,
+  VarDS1998_1_2020_BehaviorFactor,
+  VarDS1998_1_2020_LowerBoundFactor,
 } from "./variables";
 import { useRecoilValue } from "recoil";
 import { useSnackbar } from "notistack";
@@ -140,6 +182,94 @@ const CompPreviewRight = () => {
   );
   const lower_bound_factor_UNE1998_1_2011 = useRecoilValue(
     VarUNE1998_1_2011_LowerBoundFactor
+  );
+
+  //CYS1998_1_2004
+  const spectrum_type_CYS1998_1_2004 = useRecoilValue(
+    VarCYS1998_1_2004_SpectrumType
+  );
+  const ground_type_CYS1998_1_2004 = useRecoilValue(
+    VarCYS1998_1_2004_GroundType
+  );
+  const seismic_zone_CYS1998_1_2004 = useRecoilValue(
+    VarCYS1998_1_2004_SeismicZone
+  );
+  const importance_factor_CYS1998_1_2004 = useRecoilValue(
+    VarCYS1998_1_2004_ImportanceFactor
+  );
+  const damping_ratio_CYS1998_1_2004 = useRecoilValue(
+    VarCYS1998_1_2004_DampingRatio
+  );
+  const behavior_factor_CYS1998_1_2004 = useRecoilValue(
+    VarCYS1998_1_2004_BehaviorFactor
+  );
+  const lower_bound_factor_CYS1998_1_2004 = useRecoilValue(
+    VarCYS1998_1_2004_LowerBoundFactor
+  );
+
+  //NBN1998_1_2011
+  const spectrum_type_NBN1998_1_2011 = useRecoilValue(
+    VarNBN1998_1_2011_SpectrumType
+  );
+  const ground_type_NBN1998_1_2011 = useRecoilValue(
+    VarNBN1998_1_2011_GroundType
+  );
+  const seismic_zone_NBN1998_1_2011 = useRecoilValue(
+    VarNBN1998_1_2011_SeismicZone
+  );
+  const importance_factor_NBN1998_1_2011 = useRecoilValue(
+    VarNBN1998_1_2011_ImportanceFactor
+  );
+  const damping_ratio_NBN1998_1_2011 = useRecoilValue(
+    VarNBN1998_1_2011_DampingRatio
+  );
+  const behavior_factor_NBN1998_1_2011 = useRecoilValue(
+    VarNBN1998_1_2011_BehaviorFactor
+  );
+  const lower_bound_factor_NBN1998_1_2011 = useRecoilValue(
+    VarNBN1998_1_2011_LowerBoundFactor
+  );
+
+  // BDS1998_1_2012
+  const spectrum_type_BDS1998_1_2012 = useRecoilValue(
+    VarBDS1998_1_2012_SpectrumType
+  );
+  const ground_type_BDS1998_1_2012 = useRecoilValue(
+    VarBDS1998_1_2012_GroundType
+  );
+  const region_BDS1998_1_2012 = useRecoilValue(VarBDS1998_1_2012_Region);
+  const pga_value_BDS1998_1_2012 = useRecoilValue(VarBDS1998_1_2012_PgaValue);
+  const importance_factor_BDS1998_1_2012 = useRecoilValue(
+    VarBDS1998_1_2012_ImportanceFactor
+  );
+  const damping_ratio_BDS1998_1_2012 = useRecoilValue(
+    VarBDS1998_1_2012_DampingRatio
+  );
+  const behavior_factor_BDS1998_1_2012 = useRecoilValue(
+    VarBDS1998_1_2012_BehaviorFactor
+  );
+  const lower_bound_factor_BDS1998_1_2012 = useRecoilValue(
+    VarBDS1998_1_2012_LowerBoundFactor
+  );
+
+  // DS1998_1_2020
+  const spectrum_type_DS1998_1_2020 = useRecoilValue(
+    VarDS1998_1_2020_SpectrumType
+  );
+  const ground_type_DS1998_1_2020 = useRecoilValue(VarDS1998_1_2020_GroundType);
+  const type_DS1998_1_2020 = useRecoilValue(VarDS1998_1_2020_Type);
+  const pga_value_DS1998_1_2020 = useRecoilValue(VarDS1998_1_2020_PgaValue);
+  const importance_factor_DS1998_1_2020 = useRecoilValue(
+    VarDS1998_1_2020_ImportanceFactor
+  );
+  const damping_ratio_DS1998_1_2020 = useRecoilValue(
+    VarDS1998_1_2020_DampingRatio
+  );
+  const behavior_factor_DS1998_1_2020 = useRecoilValue(
+    VarDS1998_1_2020_BehaviorFactor
+  );
+  const lower_bound_factor_DS1998_1_2020 = useRecoilValue(
+    VarDS1998_1_2020_LowerBoundFactor
   );
 
   React.useEffect(() => {
@@ -325,6 +455,228 @@ const CompPreviewRight = () => {
           );
         }
 
+        //CYS1998_1_2004
+        if (design_spectrum === 6) {
+          console.log(
+            spectrum_type_CYS1998_1_2004,
+            ground_type_CYS1998_1_2004,
+            seismic_zone_CYS1998_1_2004,
+            importance_factor_CYS1998_1_2004,
+            damping_ratio_CYS1998_1_2004,
+            behavior_factor_CYS1998_1_2004,
+            lower_bound_factor_CYS1998_1_2004,
+            maximum_period
+          );
+
+          const effective_damping_ratio =
+            spectrum_type_CYS1998_1_2004 === 1 ||
+            spectrum_type_CYS1998_1_2004 === 2
+              ? damping_ratio_CYS1998_1_2004
+              : "1";
+
+          const effective_behavior_factor =
+            spectrum_type_CYS1998_1_2004 === 3 ||
+            spectrum_type_CYS1998_1_2004 === 4
+              ? behavior_factor_CYS1998_1_2004
+              : "1";
+
+          const effective_lower_bound_factor =
+            spectrum_type_CYS1998_1_2004 === 3 ||
+            spectrum_type_CYS1998_1_2004 === 4
+              ? lower_bound_factor_CYS1998_1_2004
+              : "1";
+
+          result = createGraphData4CYS1998_1_2004(
+            spectrum_type_CYS1998_1_2004 === 1
+              ? "Horizontal Elastic Spectrum"
+              : spectrum_type_CYS1998_1_2004 === 2
+              ? "Vertical Elastic Spectrum"
+              : spectrum_type_CYS1998_1_2004 === 3
+              ? "Horizontal Design Spectrum"
+              : "Vertical Design Spectrum",
+            ground_type_CYS1998_1_2004,
+            seismic_zone_CYS1998_1_2004.toString(),
+            importance_factor_CYS1998_1_2004,
+            effective_damping_ratio,
+            effective_behavior_factor,
+            effective_lower_bound_factor,
+            maximum_period
+          );
+        }
+
+        // NBN1998_1_2011
+        if (design_spectrum === 7) {
+          console.log(
+            spectrum_type_NBN1998_1_2011,
+            ground_type_NBN1998_1_2011,
+            seismic_zone_NBN1998_1_2011,
+            importance_factor_NBN1998_1_2011,
+            damping_ratio_NBN1998_1_2011,
+            behavior_factor_NBN1998_1_2011,
+            lower_bound_factor_NBN1998_1_2011,
+            maximum_period
+          );
+
+          // 스펙트럼 타입에 따른 유효 매개변수 설정
+          const effective_damping_ratio =
+            spectrum_type_NBN1998_1_2011 === 1 ||
+            spectrum_type_NBN1998_1_2011 === 2
+              ? damping_ratio_NBN1998_1_2011
+              : "1";
+
+          const effective_behavior_factor =
+            spectrum_type_NBN1998_1_2011 === 3 ||
+            spectrum_type_NBN1998_1_2011 === 4
+              ? behavior_factor_NBN1998_1_2011
+              : "1";
+
+          const effective_lower_bound_factor =
+            spectrum_type_NBN1998_1_2011 === 3 ||
+            spectrum_type_NBN1998_1_2011 === 4
+              ? lower_bound_factor_NBN1998_1_2011
+              : "1";
+
+          // 스펙트럼 타입 문자열 변환
+          const spectrumTypeString =
+            spectrum_type_NBN1998_1_2011 === 1
+              ? "Horizontal Elastic Spectrum"
+              : spectrum_type_NBN1998_1_2011 === 2
+              ? "Vertical Elastic Spectrum"
+              : spectrum_type_NBN1998_1_2011 === 3
+              ? "Horizontal Design Spectrum"
+              : "Vertical Design Spectrum";
+
+          // 그래프 데이터 생성
+          console.log("NBN Input parameters:", {
+            spectrumTypeString,
+            ground_type_NBN1998_1_2011,
+            seismic_zone_NBN1998_1_2011: seismic_zone_NBN1998_1_2011.toString(),
+            importance_factor_NBN1998_1_2011,
+            effective_damping_ratio,
+            effective_behavior_factor,
+            effective_lower_bound_factor,
+            maximum_period,
+          });
+
+          result = createGraphData4NBN1998_1_2011(
+            spectrumTypeString,
+            ground_type_NBN1998_1_2011,
+            seismic_zone_NBN1998_1_2011.toString(),
+            importance_factor_NBN1998_1_2011,
+            effective_damping_ratio,
+            effective_behavior_factor,
+            effective_lower_bound_factor,
+            maximum_period
+          );
+
+          console.log("NBN result:", result);
+        }
+
+        // BDS1998_1_2012
+        if (design_spectrum === 8) {
+          console.log(
+            spectrum_type_BDS1998_1_2012,
+            ground_type_BDS1998_1_2012,
+            region_BDS1998_1_2012,
+            pga_value_BDS1998_1_2012,
+            importance_factor_BDS1998_1_2012,
+            damping_ratio_BDS1998_1_2012,
+            behavior_factor_BDS1998_1_2012,
+            lower_bound_factor_BDS1998_1_2012,
+            maximum_period
+          );
+
+          const effective_damping_ratio =
+            spectrum_type_BDS1998_1_2012 === 1 ||
+            spectrum_type_BDS1998_1_2012 === 2
+              ? damping_ratio_BDS1998_1_2012
+              : "1";
+
+          const effective_behavior_factor =
+            spectrum_type_BDS1998_1_2012 === 3 ||
+            spectrum_type_BDS1998_1_2012 === 4
+              ? behavior_factor_BDS1998_1_2012
+              : "1";
+
+          const effective_lower_bound_factor =
+            spectrum_type_BDS1998_1_2012 === 3 ||
+            spectrum_type_BDS1998_1_2012 === 4
+              ? lower_bound_factor_BDS1998_1_2012
+              : "1";
+
+          result = createGraphData4BDS1998_1_2012(
+            spectrum_type_BDS1998_1_2012 === 1
+              ? "Horizontal Elastic Spectrum"
+              : spectrum_type_BDS1998_1_2012 === 2
+              ? "Vertical Elastic Spectrum"
+              : spectrum_type_BDS1998_1_2012 === 3
+              ? "Horizontal Design Spectrum"
+              : "Vertical Design Spectrum",
+            ground_type_BDS1998_1_2012,
+            region_BDS1998_1_2012,
+            pga_value_BDS1998_1_2012,
+            importance_factor_BDS1998_1_2012,
+            effective_damping_ratio,
+            effective_behavior_factor,
+            effective_lower_bound_factor,
+            maximum_period
+          );
+
+          console.log("BDS1998_1_2012 result:", result);
+        }
+
+        // DS1998_1_2020
+        if (design_spectrum === 9) {
+          console.log(
+            spectrum_type_DS1998_1_2020,
+            ground_type_DS1998_1_2020,
+            type_DS1998_1_2020,
+            pga_value_DS1998_1_2020,
+            importance_factor_DS1998_1_2020,
+            damping_ratio_DS1998_1_2020,
+            behavior_factor_DS1998_1_2020,
+            lower_bound_factor_DS1998_1_2020,
+            maximum_period
+          );
+          const effective_damping_ratio =
+            spectrum_type_DS1998_1_2020 === 1 ||
+            spectrum_type_DS1998_1_2020 === 2
+              ? damping_ratio_DS1998_1_2020
+              : "1";
+
+          const effective_behavior_factor =
+            spectrum_type_DS1998_1_2020 === 3 ||
+            spectrum_type_DS1998_1_2020 === 4
+              ? behavior_factor_DS1998_1_2020
+              : "1";
+
+          const effective_lower_bound_factor =
+            spectrum_type_DS1998_1_2020 === 3 ||
+            spectrum_type_DS1998_1_2020 === 4
+              ? lower_bound_factor_DS1998_1_2020
+              : "1";
+
+          result = createGraphData4DS1998_1_2020(
+            spectrum_type_DS1998_1_2020 === 1
+              ? "Horizontal Elastic Spectrum"
+              : spectrum_type_DS1998_1_2020 === 2
+              ? "Vertical Elastic Spectrum"
+              : spectrum_type_DS1998_1_2020 === 3
+              ? "Horizontal Design Spectrum"
+              : "Vertical Design Spectrum",
+            ground_type_DS1998_1_2020,
+            type_DS1998_1_2020,
+            pga_value_DS1998_1_2020,
+            importance_factor_DS1998_1_2020,
+            effective_damping_ratio,
+            effective_behavior_factor,
+            effective_lower_bound_factor,
+            maximum_period
+          );
+
+          console.log("DS1998_1_2020 result:", result);
+        }
+
         const arrX = result.period;
         const arrY = result.value;
 
@@ -403,6 +755,44 @@ const CompPreviewRight = () => {
     damping_ratio_UNE1998_1_2011,
     behavior_factor_UNE1998_1_2011,
     lower_bound_factor_UNE1998_1_2011,
+
+    //CYS1998_1_2004
+    spectrum_type_CYS1998_1_2004,
+    ground_type_CYS1998_1_2004,
+    seismic_zone_CYS1998_1_2004,
+    importance_factor_CYS1998_1_2004,
+    damping_ratio_CYS1998_1_2004,
+    behavior_factor_CYS1998_1_2004,
+    lower_bound_factor_CYS1998_1_2004,
+
+    //NBN1998_1_2011
+    spectrum_type_NBN1998_1_2011,
+    ground_type_NBN1998_1_2011,
+    seismic_zone_NBN1998_1_2011,
+    importance_factor_NBN1998_1_2011,
+    damping_ratio_NBN1998_1_2011,
+    behavior_factor_NBN1998_1_2011,
+    lower_bound_factor_NBN1998_1_2011,
+
+    //BDS1998_1_2012
+    spectrum_type_BDS1998_1_2012,
+    ground_type_BDS1998_1_2012,
+    region_BDS1998_1_2012,
+    pga_value_BDS1998_1_2012,
+    importance_factor_BDS1998_1_2012,
+    damping_ratio_BDS1998_1_2012,
+    behavior_factor_BDS1998_1_2012,
+    lower_bound_factor_BDS1998_1_2012,
+
+    //DS1998_1_2020
+    spectrum_type_DS1998_1_2020,
+    ground_type_DS1998_1_2020,
+    type_DS1998_1_2020,
+    pga_value_DS1998_1_2020,
+    importance_factor_DS1998_1_2020,
+    damping_ratio_DS1998_1_2020,
+    behavior_factor_DS1998_1_2020,
+    lower_bound_factor_DS1998_1_2020,
   ]);
 
   return (

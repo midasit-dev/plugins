@@ -26,6 +26,10 @@ import CompSeismicDataSBC301CR2018 from "./Components/SeismicData_SBC301_CR_2018
 import CompSeismicDataAS117042024 from "./Components/SeismicData_AS1170_4_2024";
 import CompSeismicDataNF199812008 from "./Components/SeismicData_NF1998_1_2008";
 import CompSeismicDataUNE199812011 from "./Components/SeismicData_UNE1998_1_2011";
+import CompSeismicDataCYS199812004 from "./Components/SeismicData_CYS1998_1_2004";
+import CompSeismicDataNBN199812011 from "./Components/SeismicData_NBN1998_1_2011";
+import CompSeismicDataBDS199812012 from "./Components/SeismicData_BDS1998_1_2012";
+import CompSeismicDataDS199812020 from "./Components/SeismicData_DS1998_1_2020";
 import CompHelpDialog from "./Components/HelpDialog";
 import CompUpdate from "./Components/Update";
 import CompPreviewRight from "./Components/PreviewRight";
@@ -57,6 +61,10 @@ const App = () => {
               {design_spectrum === 3 && <CompSeismicDataAS117042024 />}
               {design_spectrum === 4 && <CompSeismicDataNF199812008 />}
               {design_spectrum === 5 && <CompSeismicDataUNE199812011 />}
+              {design_spectrum === 6 && <CompSeismicDataCYS199812004 />}
+              {design_spectrum === 7 && <CompSeismicDataNBN199812011 />}
+              {design_spectrum === 8 && <CompSeismicDataBDS199812012 />}
+              {design_spectrum === 9 && <CompSeismicDataDS199812020 />}
               {/** 기준이 추가되면 아래로 추가 */}
               <CompTypographyAndTextFieldNumOnly
                 title="Maximum Period (sec)"

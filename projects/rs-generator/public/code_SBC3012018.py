@@ -145,9 +145,29 @@ def UNIT_GET():
     return GRAV_const
 
 
+def generate_description(
+    standard: str,
+    site_class: str,
+    ss: float,
+    s1: float,
+    importance_factor: float,
+    response_factor: float,
+    TL: float,
+    max_period: float
+) -> str:
+    fa = get_fa_value(site_class, ss)
+    fv = get_fv_value(site_class, s1)
+    sds = ss * fa * 2 / 3
+    sd1 = s1 * fv * 2 / 3
+
+    desc = f"{standard}, Site Class={site_class}, Ss={ss:.3f}, S1={s1:.3f}, Fa={fa:.2f}, Fv={fv:.2f}, "
+    desc += f"Sds={sds:.3f}, Sd1={sd1:.3f}, I={importance_factor:.2f}, R={response_factor:.2f}, TL={TL:.2f}, Max Period={max_period:.2f}s"
+    return desc
+
+
 # ==================================== RS 입력 ================================== #
 
-def SPFC_UPDATE(ID,name,GRAV, aFUNC):
+def SPFC_UPDATE(ID, name, GRAV, aFUNC, description):
     civilApp = MidasAPI(Product.CIVIL, "KR")
     data = {
         "NAME": name,
@@ -156,15 +176,14 @@ def SPFC_UPDATE(ID,name,GRAV, aFUNC):
         "SCALE": 1,
         "GRAV": GRAV,
         "DRATIO": 0.05,
+        "DESC": description,
         "STR": {
             "SPEC_CODE": "USER"
         },
         "aFUNC": aFUNC
     }
     civilApp.db_update_item("SPFC", ID, data)
-    
-    result_message = {"success":"Updating SPFC is completed"}
-    return json.dumps(result_message)
+    return json.dumps({"success": "Updating SPFC is completed"})
     
 def main_SBC_301_CR_2018(
     func_name: str,
@@ -176,18 +195,29 @@ def main_SBC_301_CR_2018(
     TL: float,
     max_period: float
 ):
-  # for graph data
-	inputs = json.loads(SBC_input(site_class,ss,s1,importance_factor,response_factor,TL,max_period)) 	# Seismic Data, Maximum Period (sec)
-	aPeriod = inputs["period"] 																# Period
-	aValue = inputs["value"] 																	# Spectral Data
-	
-	# do SPFC_UPDATE
-	civilApp = MidasAPI(Product.CIVIL, "KR")
-	ID = civilApp.db_get_next_id("SPFC")
-	name = func_name 																					# func name
-	aFUNC = to_aFUNC(aPeriod, aValue)
-	GRAV = UNIT_GET()
-	return SPFC_UPDATE(ID,name,GRAV, aFUNC)
+    # 계산
+    inputs = json.loads(SBC_input(site_class, ss, s1, importance_factor, response_factor, TL, max_period))
+    aPeriod = inputs["period"]
+    aValue = inputs["value"]
+    aFUNC = to_aFUNC(aPeriod, aValue)
+    GRAV = UNIT_GET()
+
+    # DESC 생성
+    description = generate_description(
+        standard="SBC 301-CR:2018",
+        site_class=site_class,
+        ss=ss,
+        s1=s1,
+        importance_factor=importance_factor,
+        response_factor=response_factor,
+        TL=TL,
+        max_period=max_period
+    )
+
+    # 업데이트
+    civilApp = MidasAPI(Product.CIVIL, "KR")
+    ID = civilApp.db_get_next_id("SPFC")
+    return SPFC_UPDATE(ID, func_name, GRAV, aFUNC, description)
 
         
 

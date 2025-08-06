@@ -15,39 +15,37 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import {
   VarValids,
   VarFuncName,
-  VarUNE1998_1_2011_SpectrumType,
-  VarUNE1998_1_2011_GroundType,
-  VarUNE1998_1_2011_PgaValue,
-  VarUNE1998_1_2011_KFactor,
-  VarUNE1998_1_2011_CFactor,
-  VarUNE1998_1_2011_ImportanceFactor,
-  VarUNE1998_1_2011_DampingRatio,
-  VarUNE1998_1_2011_BehaviorFactor,
-  VarUNE1998_1_2011_LowerBoundFactor,
-  VarUNE1998_1_2011_SpectrumTypeList,
-  VarUNE1998_1_2011_GroundTypeList,
+  VarDS1998_1_2020_SpectrumType,
+  VarDS1998_1_2020_GroundType,
+  VarDS1998_1_2020_Type,
+  VarDS1998_1_2020_PgaValue,
+  VarDS1998_1_2020_ImportanceFactor,
+  VarDS1998_1_2020_DampingRatio,
+  VarDS1998_1_2020_BehaviorFactor,
+  VarDS1998_1_2020_LowerBoundFactor,
+  VarDS1998_1_2020_SpectrumTypeList,
+  VarDS1998_1_2020_GroundTypeList,
+  VarDS1998_1_2020_TypeList,
 } from "./variables";
 import CompTypographyAndTextFieldNumOnly from "./TypographyAndTextFieldNumOnly";
 
-const CompSeismicData_UNE1998_1_2011 = () => {
+const CompSeismicData_DS1998_1_2020 = () => {
   const valids = useRecoilValue(VarValids);
-  const spectrumType = useRecoilValue(VarUNE1998_1_2011_SpectrumType);
-  const [pgaValue, setPgaValue] = useRecoilState(VarUNE1998_1_2011_PgaValue);
-  const [kFactor, setKFactor] = useRecoilState(VarUNE1998_1_2011_KFactor);
-  const [cFactor, setCFactor] = useRecoilState(VarUNE1998_1_2011_CFactor);
-
+  const spectrumType = useRecoilValue(VarDS1998_1_2020_SpectrumType);
+  const groundType = useRecoilValue(VarDS1998_1_2020_GroundType);
+  const type = useRecoilValue(VarDS1998_1_2020_Type);
+  const [pgaValue, setPgaValue] = useRecoilState(VarDS1998_1_2020_PgaValue);
   const [importanceFactor, setImportanceFactor] = useRecoilState(
-    VarUNE1998_1_2011_ImportanceFactor
+    VarDS1998_1_2020_ImportanceFactor
   );
-
   const [dampingRatio, setDampingRatio] = useRecoilState(
-    VarUNE1998_1_2011_DampingRatio
+    VarDS1998_1_2020_DampingRatio
   );
   const [behaviorFactor, setBehaviorFactor] = useRecoilState(
-    VarUNE1998_1_2011_BehaviorFactor
+    VarDS1998_1_2020_BehaviorFactor
   );
   const [lowerBoundFactor, setLowerBoundFactor] = useRecoilState(
-    VarUNE1998_1_2011_LowerBoundFactor
+    VarDS1998_1_2020_LowerBoundFactor
   );
 
   // 스펙트럼 타입이 변경될 때 Behavior Factor와 Damping Ratio 값 설정
@@ -71,35 +69,20 @@ const CompSeismicData_UNE1998_1_2011 = () => {
         <GuideBox width="100%" spacing={2}>
           <CompSpectrumType />
           <CompGroundType />
+          <CompType />
           <CompTypographyAndTextFieldNumOnly
-            title="Reference Peak Ground Acceleration(g)"
+            title="Reference Peak Ground Acceleration(m/s²)"
             state={pgaValue}
             setState={setPgaValue}
-            error={!valids.VarUNE1998_1_2011_PgaValue(pgaValue)}
-            height={25}
+            error={!valids.VarDS1998_1_2020_PgaValue(pgaValue)}
+            height={20}
             step={0.01}
-          />
-          <CompTypographyAndTextFieldNumOnly
-            title="K Factor"
-            state={kFactor}
-            setState={setKFactor}
-            error={!valids.VarUNE1998_1_2011_KFactor(kFactor)}
-            height={20}
-            step={0.1}
-          />
-          <CompTypographyAndTextFieldNumOnly
-            title="C Factor"
-            state={cFactor}
-            setState={setCFactor}
-            error={!valids.VarUNE1998_1_2011_CFactor(cFactor)}
-            height={20}
-            step={0.1}
           />
           <CompTypographyAndTextFieldNumOnly
             title="Importance Factor (γI)"
             state={importanceFactor}
             setState={setImportanceFactor}
-            error={!valids.VarUNE1998_1_2011_ImportanceFactor(importanceFactor)}
+            error={!valids.VarDS1998_1_2020_ImportanceFactor(importanceFactor)}
             height={20}
             step={0.1}
           />
@@ -109,7 +92,7 @@ const CompSeismicData_UNE1998_1_2011 = () => {
                 title="Viscous Damping Ratio (%)"
                 state={dampingRatio}
                 setState={setDampingRatio}
-                error={!valids.VarUNE1998_1_2011_DampingRatio(dampingRatio)}
+                error={!valids.VarDS1998_1_2020_DampingRatio(dampingRatio)}
                 height={20}
               />
             ) : null}
@@ -118,7 +101,7 @@ const CompSeismicData_UNE1998_1_2011 = () => {
                 title="Behavior Factor (q)"
                 state={behaviorFactor}
                 setState={setBehaviorFactor}
-                error={!valids.VarUNE1998_1_2011_BehaviorFactor(behaviorFactor)}
+                error={!valids.VarDS1998_1_2020_BehaviorFactor(behaviorFactor)}
                 height={20}
                 step={0.1}
               />
@@ -131,7 +114,7 @@ const CompSeismicData_UNE1998_1_2011 = () => {
                 state={lowerBoundFactor}
                 setState={setLowerBoundFactor}
                 error={
-                  !valids.VarUNE1998_1_2011_LowerBoundFactor(lowerBoundFactor)
+                  !valids.VarDS1998_1_2020_LowerBoundFactor(lowerBoundFactor)
                 }
                 height={20}
                 step={0.1}
@@ -144,7 +127,7 @@ const CompSeismicData_UNE1998_1_2011 = () => {
   );
 };
 
-export default CompSeismicData_UNE1998_1_2011;
+export default CompSeismicData_DS1998_1_2020;
 
 const CompInfoDialog = () => {
   const [open, setOpen] = React.useState(false);
@@ -158,44 +141,37 @@ const CompInfoDialog = () => {
         open={open}
         setOpen={setOpen}
         headerIcon={<Icon iconName="InfoOutlined" />}
-        headerTitle="Seismic Data : Spain UNE-EN1998-1 (2011)"
+        headerTitle="Seismic Data : Denmark DS/EN1998-1 (2020)"
       >
         <GuideBox spacing={2}>
           <Typography variant="h1">- Ground Type : </Typography>
           <Typography variant="body1">
-            A,B,C,D (Refer to UNE-EN1998-1 Table 3.1)
+            A,B,C,D,E (Refer to DS/EN1998-1 Table 3.1)
           </Typography>
-
+          <Typography variant="h1">- Spectrum Type : </Typography>
+          <Typography variant="body1">
+            Type 1, Type 2(Refer to DS/EN1998-1 Section 3.2.2.1)
+          </Typography>
           <Typography variant="h1">
             - Reference Peak Ground Acceleration(AgR):
           </Typography>
           <Typography variant="body1">
-            Refer to UNE-EN1998-1 Section 3.2.1(2)
+            Refer to DS/EN1998-1 Figure D.2 Value of design ground Acceleration
           </Typography>
 
-          <Typography variant="h1">- K Factor:</Typography>
+          <Typography variant="h1">- Importance Factor (γI):</Typography>
           <Typography variant="body1">
-            Refer to UNE-EN1998-1 Section 3.2.1(2)
-          </Typography>
-
-          <Typography variant="h1">- C Factor:</Typography>
-          <Typography variant="body1">
-            Refer to UNE-EN1998-1 Section 3.2.2.1(4), 3.2.2.2(2)
-          </Typography>
-
-          <Typography variant="h1">- Importance Factor (I):</Typography>
-          <Typography variant="body1">
-            Refer to UNE-EN1998-1 Section 4.2.5(5)
+            Refer to DS/EN1998-1 Section 4.2.5(5)
           </Typography>
 
           <Typography variant="h1">- Behavior Factor:</Typography>
           <Typography variant="body1">
-            Refer to UNE-EN1998-1 Table 9.1
+            Refer to DS/EN1998-1 Table 9.1
           </Typography>
 
           <Typography variant="h1">- Lower Bound Factor:</Typography>
           <Typography variant="body1">
-            Refer to UNE-EN1998-1 Section 3.2.2.5(4)
+            Refer to DS/EN1998-1 Section 3.2.2.5(4)
           </Typography>
         </GuideBox>
       </Dialog>
@@ -205,9 +181,9 @@ const CompInfoDialog = () => {
 
 const CompSpectrumType = () => {
   const [spectrumType, setSpectrumType] = useRecoilState(
-    VarUNE1998_1_2011_SpectrumType
+    VarDS1998_1_2020_SpectrumType
   );
-  const spectrumTypeList = useRecoilValue(VarUNE1998_1_2011_SpectrumTypeList);
+  const spectrumTypeList = useRecoilValue(VarDS1998_1_2020_SpectrumTypeList);
 
   return (
     <GuideBox width="100%" row horSpaceBetween>
@@ -230,9 +206,9 @@ const CompSpectrumType = () => {
 
 const CompGroundType = () => {
   const [groundType, setGroundType] = useRecoilState(
-    VarUNE1998_1_2011_GroundType
+    VarDS1998_1_2020_GroundType
   );
-  const groundTypeList = useRecoilValue(VarUNE1998_1_2011_GroundTypeList);
+  const groundTypeList = useRecoilValue(VarDS1998_1_2020_GroundTypeList);
 
   return (
     <GuideBox width="100%" row horSpaceBetween>
@@ -253,78 +229,24 @@ const CompGroundType = () => {
   );
 };
 
-// const CompGroundType = () => {
-//   const [groundType, setGroundType] = useRecoilState(
-//     VarUNE1998_1_2011_GroundType
-//   );
-
-//   const handleChange = (event: React.ChangeEvent, state: string) => {
-//     setGroundType(state);
-//   };
-
-//   return (
-//     <GuideBox width="100%">
-//       <Typography variant="h1" height={30} verCenter>
-//         Ground Type
-//       </Typography>
-//       <GuideBox padding={1} width="100%" center>
-//         <RadioGroup onChange={handleChange} value={groundType} row>
-//           <Radio name="A" value="A" />
-//           <Radio name="B" value="B" marginLeft={3.5} />
-//           <Radio name="C" value="C" marginLeft={2.5} />
-//           <Radio name="D" value="D" marginLeft={2.5} />
-//         </RadioGroup>
-//       </GuideBox>
-//     </GuideBox>
-//   );
-// };
-
-// const CompSeismicZone = () => {
-//   const [seismicZone, setSeismicZone] = useRecoilState(
-//     VarNF1998_1_2008_SeismicZone
-//   );
-//   const seismicZoneList = useRecoilValue(VarNF1998_1_2008_SeismicZoneList);
-
-//   return (
-//     <GuideBox width="100%" row horSpaceBetween>
-//       <GuideBox width="inherit" row horSpaceBetween verCenter height={30}>
-//         <Typography variant="h1" height={30} verCenter>
-//           Seismic Zone
-//         </Typography>
-//         <DropList
-//           width={200}
-//           itemList={seismicZoneList}
-//           defaultValue={seismicZone}
-//           value={seismicZone}
-//           onChange={(e: any) => setSeismicZone(e.target.value)}
-//           listWidth={200}
-//         />
-//       </GuideBox>
-//     </GuideBox>
-//   );
-// };
-
-// const CompGroundType = () => {
-//   const [groundType, setGroundType] = useRecoilState(
-//     VarNF1998_1_2008_GroundType
-//   );
-//   const groundTypeList = useRecoilValue(VarNF1998_1_2008_GroundTypeList);
-
-//   return (
-//     <GuideBox width="100%" row horSpaceBetween>
-//       <GuideBox width="inherit" row horSpaceBetween verCenter height={30}>
-//         <Typography variant="h1" height={30} verCenter>
-//           Ground Type
-//         </Typography>
-//         <DropList
-//           width={200}
-//           itemList={groundTypeList}
-//           defaultValue={groundType}
-//           value={groundType}
-//           onChange={(e: any) => setGroundType(e.target.value)}
-//           listWidth={200}
-//         />
-//       </GuideBox>
-//     </GuideBox>
-//   );
-// };
+const CompType = () => {
+  const [type, setType] = useRecoilState(VarDS1998_1_2020_Type);
+  const typeList = useRecoilValue(VarDS1998_1_2020_TypeList);
+  return (
+    <GuideBox width="100%" row horSpaceBetween>
+      <GuideBox width="inherit" row horSpaceBetween verCenter height={30}>
+        <Typography variant="h1" height={30} verCenter>
+          Spectrum Type
+        </Typography>
+        <DropList
+          width={200}
+          itemList={typeList}
+          defaultValue={type}
+          value={type}
+          onChange={(e: any) => setType(e.target.value)}
+          listWidth={200}
+        />
+      </GuideBox>
+    </GuideBox>
+  );
+};
