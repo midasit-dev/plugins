@@ -3,6 +3,50 @@ import { midasAPI } from "./common";
 import { validateAndShowMessage } from "./inputValidation";
 
 /**
+ * 사용자의 현재 단위 시스템을 가져오는 함수
+ * @returns 현재 단위 시스템 정보
+ */
+const getCurrentUnitSystem = async () => {
+  try {
+    const unitData = await midasAPI("GET", "/db/unit", {});
+    if (unitData.status && (unitData.status < 200 || unitData.status >= 300)) {
+      throw new Error(`API Error: ${unitData.status}`);
+    }
+    return unitData.UNIT;
+  } catch (error) {
+    console.error("단위 시스템 가져오기 실패:", error);
+    throw error;
+  }
+};
+
+/**
+ * 단위 시스템을 설정하는 함수
+ * @param forceUnit - FORCE 단위 (예: "KN")
+ * @param distUnit - DIST 단위 (예: "M")
+ */
+const setUnitSystem = async (forceUnit: string, distUnit: string) => {
+  try {
+    const unitData = {
+      Assign: {
+        "1": {
+          FORCE: forceUnit,
+          DIST: distUnit,
+        },
+      },
+    };
+
+    const response = await midasAPI("PUT", "/db/unit", unitData);
+    if (response.status && (response.status < 200 || response.status >= 300)) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+    console.log(`단위 시스템이 ${forceUnit}/${distUnit}로 변경되었습니다.`);
+  } catch (error) {
+    console.error("단위 시스템 설정 실패:", error);
+    throw error;
+  }
+};
+
+/**
  * MIDAS API로 데이터를 전송하는 함수
  * @param floorLoadData - 전송할 바닥하중 데이터
  * @param showMessage - 스낵바 메시지 표시 콜백 함수
@@ -14,6 +58,8 @@ export const exportFloorLoad = async (
     severity: "success" | "error" | "warning" | "info"
   ) => void
 ) => {
+  let originalUnitSystem: any = null;
+
   try {
     console.log("MIDAS API 전송 시작:", floorLoadData);
 
@@ -22,6 +68,15 @@ export const exportFloorLoad = async (
     if (!isValid) {
       return; // 검증 실패 시 함수 종료 (이미 스낵바로 오류 메시지가 표시됨)
     }
+
+    // 1. 현재 사용자의 단위 시스템을 저장
+    console.log("현재 단위 시스템을 가져오는 중...");
+    originalUnitSystem = await getCurrentUnitSystem();
+    console.log("저장된 원래 단위 시스템:", originalUnitSystem);
+
+    // 2. 단위 시스템을 KN/M으로 변경
+    console.log("단위 시스템을 KN/M으로 변경하는 중...");
+    await setUnitSystem("KN", "M");
 
     // 다시 한번 검토 지금 지정한 Load Case가 있는가?
     const loadCase = await midasAPI("GET", "/db/stld", {});
@@ -194,12 +249,36 @@ export const exportFloorLoad = async (
       return null;
     }
 
+    // 3. 원래 사용자의 단위 시스템으로 복원
+    if (originalUnitSystem) {
+      console.log("원래 단위 시스템으로 복원하는 중...");
+      await setUnitSystem(
+        originalUnitSystem["1"].FORCE,
+        originalUnitSystem["1"].DIST
+      );
+      console.log("단위 시스템이 원래대로 복원되었습니다.");
+    }
+
     // 성공 메시지 표시
     if (showMessage) {
       showMessage("MIDAS API transmission completed successfully.", "success");
     }
   } catch (error) {
     console.error("Error occurred during MIDAS API transmission:", error);
+
+    // 에러 발생 시에도 원래 단위 시스템으로 복원 시도
+    if (originalUnitSystem) {
+      try {
+        console.log("에러 발생으로 인한 단위 시스템 복원 시도...");
+        await setUnitSystem(
+          originalUnitSystem["1"].FORCE,
+          originalUnitSystem["1"].DIST
+        );
+        console.log("단위 시스템이 원래대로 복원되었습니다.");
+      } catch (restoreError) {
+        console.error("단위 시스템 복원 실패:", restoreError);
+      }
+    }
 
     // 에러 메시지 표시
     if (showMessage) {
