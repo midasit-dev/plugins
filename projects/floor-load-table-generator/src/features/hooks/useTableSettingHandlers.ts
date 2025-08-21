@@ -10,6 +10,7 @@ import {
   TableSetting,
   updateTableInCategory,
 } from "../states/stateFloorLoad";
+import { calculateLoad } from "../utils/loadCalculation";
 import { useFloorLoadState } from "./useFloorLoadState";
 
 export const useTableSettingHandlers = (
@@ -115,7 +116,13 @@ export const useTableSettingHandlers = (
         type: "thickness",
         thickness: 0,
         unit_weight: 0,
-        load: 0,
+        load: calculateLoad({
+          name: "",
+          type: "thickness",
+          thickness: 0,
+          unit_weight: 0,
+          load: 0,
+        }),
       };
 
       const currentTables = getCurrentTables();
@@ -187,10 +194,26 @@ export const useTableSettingHandlers = (
 
     const currentTables = getCurrentTables();
     const updatedDeadLoads = [...currentTables[tableIndex].dead_load];
+    const currentItem = updatedDeadLoads[deadLoadIndex];
+
+    // 기본 필드 업데이트
     updatedDeadLoads[deadLoadIndex] = {
-      ...updatedDeadLoads[deadLoadIndex],
+      ...currentItem,
       [field]: value,
     };
+
+    // thickness 타입일 때, thickness나 unit_weight가 변경되거나 타입이 thickness로 변경될 때 자동으로 load 계산
+    const updatedItem = updatedDeadLoads[deadLoadIndex];
+    if (
+      updatedItem.type === "thickness" &&
+      (field === "thickness" || field === "unit_weight" || field === "type")
+    ) {
+      const calculatedLoad = calculateLoad(updatedItem);
+      updatedDeadLoads[deadLoadIndex] = {
+        ...updatedItem,
+        load: calculatedLoad,
+      };
+    }
 
     const updatedTable = {
       ...currentTables[tableIndex],

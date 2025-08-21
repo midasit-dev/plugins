@@ -69,6 +69,26 @@ export const exportFloorLoad = async (
       return; // 검증 실패 시 함수 종료 (이미 스낵바로 오류 메시지가 표시됨)
     }
 
+    // dead_load에서 load가 0인 항목이 있는지 검증
+    for (const category of floorLoadData.table_setting) {
+      const categoryName = Object.keys(category)[0];
+      const tables = category[categoryName];
+
+      if (tables && tables.length > 0) {
+        for (const table of tables) {
+          for (const deadLoad of table.dead_load) {
+            if (deadLoad.load === 0) {
+              showMessage?.(
+                `경고: "${table.name}" 테이블의 "${deadLoad.name}" 항목의 Load 값이 0입니다. Load 값을 확인해주세요.`,
+                "warning"
+              );
+              return; // dead_load가 0인 항목이 있으면 API 전송 중단
+            }
+          }
+        }
+      }
+    }
+
     // 1. 현재 사용자의 단위 시스템을 저장
     console.log("현재 단위 시스템을 가져오는 중...");
     originalUnitSystem = await getCurrentUnitSystem();
@@ -215,22 +235,29 @@ export const exportFloorLoad = async (
           0
         );
 
+        // ITEM 배열 생성 - dead_load는 항상 포함
+        const items = [
+          {
+            LCNAME: floorLoadData.global_setting.dl_case_name,
+            FLOOR_LOAD: -deadLoadSum, // 음수로 변환
+            OPT_SUB_BEAM_WEIGHT: true,
+          },
+        ];
+
+        // live_load가 0이 아닐 때만 추가
+        if (tableSetting.live_load !== 0) {
+          items.push({
+            LCNAME: floorLoadData.global_setting.ll_case_name,
+            FLOOR_LOAD: -tableSetting.live_load, // 음수로 변환
+            OPT_SUB_BEAM_WEIGHT: false,
+          });
+        }
+
         newFbld[keyNumber.toString()] = {
           NAME: tableSetting.name,
           DESC:
             floorLoadData.global_setting.project_name + " - " + categoryName,
-          ITEM: [
-            {
-              LCNAME: floorLoadData.global_setting.dl_case_name,
-              FLOOR_LOAD: -deadLoadSum, // 음수로 변환
-              OPT_SUB_BEAM_WEIGHT: true,
-            },
-            {
-              LCNAME: floorLoadData.global_setting.ll_case_name,
-              FLOOR_LOAD: -tableSetting.live_load, // 음수로 변환
-              OPT_SUB_BEAM_WEIGHT: false,
-            },
-          ],
+          ITEM: items,
         };
         tableIndex++;
       }
