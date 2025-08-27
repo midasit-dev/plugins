@@ -75,7 +75,7 @@ const App = () => {
         <Moaui.Switch
           {...{
             id: "ID_SWITCH",
-            checked: false,
+            checked: true,
             label: "Auto Save",
             disabled: false,
           }}
