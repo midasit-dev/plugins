@@ -210,10 +210,10 @@ let defaultLoadNamesKey = [];
           }
     
           // Process MVLDID
-          if (mvldid && mvldid.MVLDID) {
-            for (const key in mvldid.MVLDID) {
-              if (mvldid.MVLDID.hasOwnProperty(key)) {
-                const item = mvldid.MVLDID[key];
+          if (mvldid && mvldid.MVLDid) {
+            for (const key in mvldid.MVLDid) {
+              if (mvldid.MVLDid.hasOwnProperty(key)) {
+                const item = mvldid.MVLDid[key];
                 if (item && item.LCNAME) {
                   newLoadNames.push(item.LCNAME);
                   newLoadCasesWithKeys.push({ key: 'MV', name: item.LCNAME });
@@ -232,10 +232,10 @@ let defaultLoadNamesKey = [];
             }
           }
         }
-        if (mvldch && mvldch.MVLDCH) {
-          for (const key in mvldch.MVLDCH) {
-            if (mvldch.MVLDCH.hasOwnProperty(key)) {
-              const item = mvldch.MVLDCH[key];
+        if (mvldch && mvldch.MVLDch) {
+          for (const key in mvldch.MVLDch) {
+            if (mvldch.MVLDch.hasOwnProperty(key)) {
+              const item = mvldch.MVLDch[key];
               if (item && item.LCNAME) {
                 newLoadNames.push(item.LCNAME);
                 newLoadCasesWithKeys.push({ key: 'MV', name: item.LCNAME });
@@ -243,10 +243,10 @@ let defaultLoadNamesKey = [];
             }
           }
         }
-        if (mvldeu && mvldeu.MVLDEU) {
-          for (const key in mvldeu.MVLDEU) {
-            if (mvldeu.MVLDEU.hasOwnProperty(key)) {
-              const item = mvldeu.MVLDEU[key];
+        if (mvldeu && mvldeu.MVLDeu) {
+          for (const key in mvldeu.MVLDeu) {
+            if (mvldeu.MVLDeu.hasOwnProperty(key)) {
+              const item = mvldeu.MVLDeu[key];
               if (item && item.LCNAME) {
                 newLoadNames.push(item.LCNAME);
                 newLoadCasesWithKeys.push({ key: 'MV', name: item.LCNAME });
@@ -256,10 +256,10 @@ let defaultLoadNamesKey = [];
         }
 
         // Process MVLDBS and store keys with names
-        if (mvldbs && mvldbs.MVLDBS) {
-          for (const key in mvldbs.MVLDBS) {
-            if (mvldbs.MVLDBS.hasOwnProperty(key)) {
-              const item = mvldbs.MVLDBS[key];
+        if (mvldbs && mvldbs.MVLDbs) {
+          for (const key in mvldbs.MVLDbs) {
+            if (mvldbs.MVLDbs.hasOwnProperty(key)) {
+              const item = mvldbs.MVLDbs[key];
               if (item && item.LCNAME) {
                 newLoadNames.push(item.LCNAME);
                 newLoadCasesWithKeys.push({ key: 'MV', name: item.LCNAME });
@@ -269,10 +269,10 @@ let defaultLoadNamesKey = [];
         }
 
         // Process MVLDPL and store keys with names
-        if (mvldpl && mvldpl.MVLDPL) {
-          for (const key in mvldpl.MVLDPL) {
-            if (mvldpl.MVLDPL.hasOwnProperty(key)) {
-              const item = mvldpl.MVLDPL[key];
+        if (mvldpl && mvldpl.MVLDpl) {
+          for (const key in mvldpl.MVLDpl) {
+            if (mvldpl.MVLDpl.hasOwnProperty(key)) {
+              const item = mvldpl.MVLDpl[key];
               if (item && item.LCNAME) {
                 newLoadNames.push(item.LCNAME);
                 newLoadCasesWithKeys.push({ key: 'MV', name: item.LCNAME });
