@@ -19,7 +19,4 @@
 ### version 1.2.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
-
-### version 1.3.0
-
 - Added exception handling when no Moving Load Cases are present

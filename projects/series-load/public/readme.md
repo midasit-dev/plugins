@@ -20,6 +20,9 @@
 
 ## Release Notes
 
+- **v1.3.0**
+  - Added defensive checks to prevent runtime errors caused by undefined values in load assignment arrays.
+  - API request structure updated to exclude invalid keys for enhanced stability.
 - **v1.2.0**
   - Added LM 71 to preset loads
   - Enhanced the help modal

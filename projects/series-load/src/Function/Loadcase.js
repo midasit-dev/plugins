@@ -66,7 +66,11 @@ async function CreateLcom(nameCases, noCases) {
     for (let i = 0; i < tempN.length; i++) {
       tempN[i] = parseFloat(tempN[i]);
     }
-    nb = Math.max(...tempN) + 1;
+    if (tempN.length === 0) {
+      nb = 1;
+    } else {
+      nb = Math.max(...tempN) + 1;
+    }
   }
   //Error message - Check Load Case Name Duplication
   if ("LCOM-GEN" in lcomRes) {

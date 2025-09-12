@@ -255,15 +255,21 @@ async function AxleLoads(
   let TotalElemNo = [];
   for (let i = 0; i < nbCases; i++) {
     for (let j = 0; j < nAxle; j++) {
-      TotalElemNo.push(BmldInputP[i][j][3]);
+      if (BmldInputP?.[i]?.[j]?.[3] !== undefined) {
+        TotalElemNo.push(BmldInputP[i][j][3]);
+      }
     }
   }
   for (let i = 0; i < nbCases; i++) {
     for (let j = 0; j < BmldInputW[i][4].length; j++) {
-      TotalElemNo.push(BmldInputW[i][4][j]);
+      if (BmldInputW?.[i]?.[4]?.[j] !== undefined) {
+        TotalElemNo.push(BmldInputW[i][4][j]);
+      }
     }
     for (let j = 0; j < BmldInputW[i][8].length; j++) {
-      TotalElemNo.push(BmldInputW[i][8][j]);
+      if (BmldInputW?.[i]?.[8]?.[j] !== undefined) {
+        TotalElemNo.push(BmldInputW[i][8][j]);
+      }
     }
   }
   let UniquElemArray = [...new Set(TotalElemNo)];
@@ -287,6 +293,10 @@ async function AxleLoads(
       }
     }
   }
+
+  UniquElemNo = UniquElemNo.filter((element) => element !== undefined);
+  UniquElemCount = UniquElemCount.filter((element) => element !== undefined);
+
   //Axle Loads!!!!!
   let axleLoadBody = { Assign: {} };
   let tempBody = {};
@@ -326,9 +336,12 @@ async function AxleLoads(
           }
         }
       }
-      axleLoadBody["Assign"][UniquElemNo[i]] = {
-        ITEMS: tempArray,
-      };
+
+      if (UniquElemNo[i] !== undefined) {
+        axleLoadBody["Assign"][UniquElemNo[i]] = {
+          ITEMS: tempArray,
+        };
+      }
     }
     let res_axle = await Common.midasAPI("PUT", "/db/bmld", axleLoadBody);
     // return message of unit
@@ -434,9 +447,11 @@ async function AxleLoads(
           }
         }
       }
-      distLoadBody["Assign"][UniquElemNo[i]] = {
-        ITEMS: tempArray,
-      };
+      if (UniquElemNo[i] !== undefined) {
+        distLoadBody["Assign"][UniquElemNo[i]] = {
+          ITEMS: tempArray,
+        };
+      }
     }
     let res_dist = await Common.midasAPI("PUT", "/db/bmld", distLoadBody);
     // return message of unit
@@ -483,9 +498,12 @@ async function AxleLoads(
           }
         }
       }
-      centLoadBody["Assign"][UniquElemNo[i]] = {
-        ITEMS: tempArray,
-      };
+
+      if (UniquElemNo[i] !== undefined) {
+        centLoadBody["Assign"][UniquElemNo[i]] = {
+          ITEMS: tempArray,
+        };
+      }
     }
     let res_cent = await Common.midasAPI("PUT", "/db/bmld", centLoadBody);
     // return message of unit
