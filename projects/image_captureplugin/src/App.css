@@ -1,0 +1,62 @@
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #282c34;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: row; /* 가로로 나란히 배치 */
+    gap: 20px; /* 컴포넌트 사이의 간격 */
+    align-items: flex-start; /* 상단 정렬 */
+  }
+  
+  .truncate {
+    width: 200px; /* 원하는 너비로 설정 */
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+    overflow: hidden; /* 넘치는 부분 숨기기 */
+    text-overflow: ellipsis; /* 넘치는 부분을 말줄임표(...)로 표시 */
+    border: 1px solid #000; /* 시각적으로 구분하기 위해 경계선 추가 (선택사항) */
+  }

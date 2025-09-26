@@ -1,0 +1,21 @@
+.chip-button-container {
+    display: inline-block;
+    transition: transform 0.3s;
+    /* 호버 효과의 부드러운 전환을 위해 추가 */
+}
+
+.chip-button-container:hover {
+    transform: scale(1.05);
+    /* 마우스 호버 시 약간 커지는 효과 */
+}
+
+.chip-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.chip-text {
+    font-size: 14px;
+    color: #000;
+}
