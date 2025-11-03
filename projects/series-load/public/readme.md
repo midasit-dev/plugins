@@ -20,6 +20,8 @@
 
 ## Release Notes
 
+- **v1.4.0**
+  - Fixed load assignment failure for elements with numbers exceeding 35 and specific load cases due to incorrect array indexing with element numbers.
 - **v1.3.0**
   - Added defensive checks to prevent runtime errors caused by undefined values in load assignment arrays.
   - API request structure updated to exclude invalid keys for enhanced stability.
