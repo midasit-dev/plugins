@@ -912,38 +912,38 @@ function App() {
             });
             console.log(static_forces);
 
-            if ("error" in static_forces) {
-              enqueueSnackbar(
-                "Please perform Analysis before load-Comb breakdown",
-                {
-                  variant: "error",
-                  anchorOrigin: {
-                    vertical: "top",
-                    horizontal: "center",
-                  },
-                  action,
-                }
-              );
-              return null;
-            }
+          if (
+            static_forces?.error?.message ===
+            "[BeamForce] Cannot generate table data as there is no analysis result."
+          ) {
+            enqueueSnackbar("Please perform Analysis before load-Comb breakdown", {
+              variant: "error",
+              anchorOrigin: {
+                vertical: "top",
+                horizontal: "center",
+              },
+              action,
+            });
+            return null;
+          }
             let cstr_forces = await midasAPI("POST", "/post/table", {
               Argument: cs_forces.Argument,
             });
 
-            if ("error" in cstr_forces) {
-              enqueueSnackbar(
-                "Please perform Analysis before load-Comb breakdown",
-                {
-                  variant: "error",
-                  anchorOrigin: {
-                    vertical: "top",
-                    horizontal: "center",
-                  },
-                  action,
-                }
-              );
-              return null;
-            }
+            // if ("error" in cstr_forces) {
+            //   enqueueSnackbar(
+            //     "Please perform Analysis before load-Comb breakdown",
+            //     {
+            //       variant: "error",
+            //       anchorOrigin: {
+            //         vertical: "top",
+            //         horizontal: "center",
+            //       },
+            //       action,
+            //     }
+            //   );
+            //   return null;
+            // }
             let filteredData;
             function filterBeamForceData(data) {
               // Group arrays by their 3rd element
@@ -962,14 +962,14 @@ function App() {
               });
               return filtered;
             }
-            if (cstr_forces.message !== "") {
+            if (cstr_forces?.error?.message !== "Please check construction stage in this model." && cstr_forces?.message !== "") {
             filteredData = filterBeamForceData(cstr_forces.BeamForce.DATA);
             console.log("filteredData", filteredData);
             }
             
             console.log(cstr_forces);
             let forces;
-            if (cstr_forces.message !== "") {
+            if (cstr_forces?.error?.message !== "Please check construction stage in this model."&& cstr_forces?.message !== "") {
             forces = {
               ...static_forces,
               BeamForce: {
