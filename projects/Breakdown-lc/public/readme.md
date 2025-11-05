@@ -40,6 +40,10 @@ Where:
 
 ## Release notes.
 
+### version 1.2.2
+
+- Compatible for all the versions.
+
 ### version 1.2.1
 
 - Added error handling for cases where construction stage load case data is empty.
