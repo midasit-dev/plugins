@@ -1,6 +1,6 @@
 {
-  "short_name": "Plug-in Title",
-  "name": "Plug-in Title",
+  "short_name": "Image Capture Generator",
+  "name": "Image Capture Generator",
   "icons": [
     {
       "src": "favicon.ico",
@@ -12,6 +12,6 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#fff",
-  "width": 400,
-  "height": 400
+  "width": 860,
+  "height": 783
 }
