@@ -20,6 +20,15 @@
 
 ## Release Notes
 
+- **v1.4.0**
+  - Fixed load assignment failure for elements with numbers exceeding 35 and specific load cases due to incorrect array indexing with element numbers.
+- **v1.3.0**
+  - Added defensive checks to prevent runtime errors caused by undefined values in load assignment arrays.
+  - API request structure updated to exclude invalid keys for enhanced stability.
+- **v1.2.0**
+  - Added LM 71 to preset loads
+  - Enhanced the help modal
+  - Bug fixed
 - **v1.1.0**
   - bugs have been fixed to ensure the model file functions correctly.
   - even when there are no static loads, load combinations and beam loads.

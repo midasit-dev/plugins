@@ -24,3 +24,4 @@ It is used when quickly checking and reviewing specific element details.
 ### version 1.1.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
+- Fixed exception handling when BER data is not available

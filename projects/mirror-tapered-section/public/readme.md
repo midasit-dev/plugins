@@ -13,3 +13,11 @@
 ### version 1.1.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
+
+### version 1.1.1
+
+- Minor Bug Fixed (off the pyscript terminal)
+
+### version 1.1.2
+
+- Changed the default value of "New Section Name Tag" from placeholder to "\_Mirror"

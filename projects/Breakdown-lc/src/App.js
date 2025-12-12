@@ -205,8 +205,15 @@ function App() {
           );
         }
         for (const forceData of filteredForces) {
-          let selectedForceValue =
-            forceData[selectedForceIndex] * vcombObj.FACTOR;
+          let selectedForceValue;
+
+          // Check if forceData length is greater than 10
+          if (forceData.length > 10) {
+            selectedForceValue = (forceData[selectedForceIndex + 2]) * vcombObj.FACTOR;
+          } else {
+            selectedForceValue = forceData[selectedForceIndex] * vcombObj.FACTOR;
+          }
+        
           if (name === "max") {
             // Update maxForceValue and maxCorrespondingFactor if necessary
             if (selectedForceValue >= maxForceValue) {
@@ -545,6 +552,8 @@ function App() {
         COMPONENTS: [
           "Elem",
           "Load",
+          "Stage",
+          "Step",
           "Part",
           "Axial",
           "Shear-y",
@@ -552,6 +561,9 @@ function App() {
           "Torsion",
           "Moment-y",
           "Moment-z",
+          "Bi-Moment",
+          "T-Moment",
+          "W-Moment"
         ],
         NODE_ELEMS: {
           KEYS: [1],
@@ -569,7 +581,8 @@ function App() {
         ],
         PARTS: [`Part ${selectedPart}`],
         OPT_CS: true,
-        STAGE_STEP: [],
+        "STAGE_STEP": [
+      ]
       },
     };
     const stct = await midasAPI("GET", "/db/stct");
@@ -883,7 +896,7 @@ function App() {
 
         if (selectedRange.includes(name)) {
           console.log(`Processing ${name} load combinations`);
-          cs_forces.Argument.STAGE_STEP = `Min/Max:${name}`;
+          // cs_forces.Argument.STAGE_STEP = `Min/Max:${name}`;
           console.log(cs_forces);
           let iterationOffset = 0 + a;
 
@@ -899,47 +912,70 @@ function App() {
             });
             console.log(static_forces);
 
-            if ("error" in static_forces) {
-              enqueueSnackbar(
-                "Please perform Analysis before load-Comb breakdown",
-                {
-                  variant: "error",
-                  anchorOrigin: {
-                    vertical: "top",
-                    horizontal: "center",
-                  },
-                  action,
-                }
-              );
-              return null;
-            }
+          if (
+            static_forces?.error?.message ===
+            "[BeamForce] Cannot generate table data as there is no analysis result."
+          ) {
+            enqueueSnackbar("Please perform Analysis before load-Comb breakdown", {
+              variant: "error",
+              anchorOrigin: {
+                vertical: "top",
+                horizontal: "center",
+              },
+              action,
+            });
+            return null;
+          }
             let cstr_forces = await midasAPI("POST", "/post/table", {
               Argument: cs_forces.Argument,
             });
 
-            if ("error" in cstr_forces) {
-              enqueueSnackbar(
-                "Please perform Analysis before load-Comb breakdown",
-                {
-                  variant: "error",
-                  anchorOrigin: {
-                    vertical: "top",
-                    horizontal: "center",
-                  },
-                  action,
+            // if ("error" in cstr_forces) {
+            //   enqueueSnackbar(
+            //     "Please perform Analysis before load-Comb breakdown",
+            //     {
+            //       variant: "error",
+            //       anchorOrigin: {
+            //         vertical: "top",
+            //         horizontal: "center",
+            //       },
+            //       action,
+            //     }
+            //   );
+            //   return null;
+            // }
+            let filteredData;
+            function filterBeamForceData(data) {
+              // Group arrays by their 3rd element
+              const groupedData = data.reduce((acc, item) => {
+                const key = item[2]; // 3rd element
+                if (!acc[key]) {
+                  acc[key] = [];
                 }
-              );
-              return null;
+                acc[key].push(item);
+                return acc;
+              }, {});
+            
+              const filtered = Object.values(groupedData).flatMap((group) => {
+                const count = group.length;
+                return count >= 3 ? [group[count - 3]] : []; // Keep only the 3rd-to-last element if it exists
+              });
+              return filtered;
             }
+            if (cstr_forces?.error?.message !== "Please check construction stage in this model." && cstr_forces?.message !== "") {
+            filteredData = filterBeamForceData(cstr_forces.BeamForce.DATA);
+            console.log("filteredData", filteredData);
+            }
+            
             console.log(cstr_forces);
             let forces;
-            if (cstr_forces.message !== "") {
+            if (cstr_forces?.error?.message !== "Please check construction stage in this model."&& cstr_forces?.message !== "") {
             forces = {
               ...static_forces,
               BeamForce: {
                 ...static_forces.BeamForce,
                 DATA: static_forces.BeamForce.DATA.concat(
-                  cstr_forces.BeamForce.DATA
+                  filteredData
                 ),
               },
             }; 

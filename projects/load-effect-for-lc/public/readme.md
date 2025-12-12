@@ -5,6 +5,10 @@
 
 ## Details
 
+### version 1.2.1
+
+- Added exception handling for CS(Construction Stage) Load
+
 ### version 1.2.0
 
 - Added "kips" unit system

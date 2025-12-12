@@ -155,7 +155,7 @@ class MidasAPI:
     
     def db_save(self):
         url = f'{self.base_url}/doc/save'
-        return requests_json.post(url, headers=self.headers, jsonObj={})
+        return requests_json.post(url, headers=self.headers, jsonObj={'Argument':{}})
 
     def db_read(self, item_name):
         url = f'{self.base_url}/db/{item_name}'

@@ -22,3 +22,7 @@
 ### version 1.1.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
+
+### version 1.2.0
+
+- The download issue has been resolved.

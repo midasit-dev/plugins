@@ -11,8 +11,8 @@ This plug-in calculates thermal actions on bridge structures based on Section 3.
 - **Reference**: SDM 2013, Chapter 3.5 "Temperature Effects"
 - **Issue Date**: December 2023
 
-This plug-in is developed based on the Structures Design Manual for Highways and Railways, 2013 Edition (Revision 5), issued in December 2023.
-**Users should take note of the latest version of the Manual when performing relevant designs.**
+This plug-in is developed based on the Structures Design Manual for Highways and Railways, 2013 Edition (Revision 5), issued in December 2023. Users should take note of the latest version of the Manual when performing relevant designs.​
+
 It estimates thermal actions on the bridge superstructure by considering both uniform temperature changes and temperature differences within the structure.
 
 ### Functionality

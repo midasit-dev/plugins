@@ -13,16 +13,23 @@ export default function CalculateButton() {
     delayCallback(() => {
       if (!tempValue?.procedureSimplified) return;
 
-      const { category, location, period, degree } =
+      // procedureSimplified에서 필요한 값 추출
+      const { category, location, period, degree, reducedBy20 } =
         tempValue.procedureSimplified;
 
+      // reducedBy20 값이 true이면 applyReduction 적용
+      const applyReduction = reducedBy20 === true;
+
+      // Python 함수 호출
       const calculatedValue = simplified_calculate_qp(
         category,
         location as string,
         period,
-        degree
+        degree,
+        applyReduction // ✅ applyReduction 전달
       );
 
+      // 계산된 값 업데이트
       setTempValueCallback({
         value: calculatedValue,
       });

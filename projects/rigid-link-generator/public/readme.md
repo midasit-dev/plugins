@@ -16,3 +16,7 @@
 ### version 1.1.0
 
 - We have updated and improved the internal libraries, enhancing performance and stability.
+
+### version 1.1.1
+
+- Miner Bug Fixed (off the pyscript terminal)

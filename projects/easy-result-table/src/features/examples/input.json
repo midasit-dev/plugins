@@ -1,0 +1,2524 @@
+[
+    {
+        "id": "1",
+        "name": "Reaction",
+        "items": [
+            {
+                "id": "e8fb5de5-f094-415f-a924-65d2272bbf22",
+                "name": "REACTIONG",
+                "type": "REACTIONG",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.623Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 6
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "REACTIONG"
+        ],
+        "itemTypeInfo": {
+            "REACTIONG": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 6
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "2",
+        "name": "Vibration Mode Shape",
+        "items": [
+            {
+                "id": "1df8d888-480d-46b0-9c82-d57b8e9cf616",
+                "name": "EIGENVALUEMODE",
+                "type": "EIGENVALUEMODE",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "EIGENVALUEMODE"
+        ],
+        "itemTypeInfo": {
+            "EIGENVALUEMODE": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "3",
+        "name": "Story Drift",
+        "items": [
+            {
+                "id": "363e470e-aec0-40ae-ad6e-3ec563397e66",
+                "name": "STORY_DRIFT_X",
+                "type": "STORY_DRIFT_X",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "allowableRatio": 0.015,
+                        "combinations": [
+                            {
+                                "loadCase": "DL",
+                                "scaleFactor": 1
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "id": "20be7aef-39f6-4d9a-8e9c-d6eb9d0cf9ee",
+                "name": "STORY_DRIFT_Y",
+                "type": "STORY_DRIFT_Y",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "allowableRatio": 0.015,
+                        "combinations": [
+                            {
+                                "loadCase": "DL",
+                                "scaleFactor": 1
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STORY_DRIFT_X",
+            "STORY_DRIFT_Y"
+        ],
+        "itemTypeInfo": {
+            "STORY_DRIFT_X": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StoryDriftParameter"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "allowableRatio": 0.015,
+                        "combinations": []
+                    }
+                }
+            },
+            "STORY_DRIFT_Y": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StoryDriftParameter"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "allowableRatio": 0.015,
+                        "combinations": []
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "4",
+        "name": "Story Displacement",
+        "items": [
+            {
+                "id": "60661631-5a4c-464e-afca-aa7025f598f8",
+                "name": "STORY_DISPLACEMENT_X",
+                "type": "STORY_DISPLACEMENT_X",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    }
+                }
+            },
+            {
+                "id": "52ab6ed3-e0e7-4709-926f-5c96f4f1460d",
+                "name": "STORY_DISPLACEMENT_Y",
+                "type": "STORY_DISPLACEMENT_Y",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STORY_DISPLACEMENT_X",
+            "STORY_DISPLACEMENT_Y"
+        ],
+        "itemTypeInfo": {
+            "STORY_DISPLACEMENT_X": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    }
+                }
+            },
+            "STORY_DISPLACEMENT_Y": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "5",
+        "name": "Story Shear(Response Spectrum Analysis)",
+        "items": [
+            {
+                "id": "94ebd061-511a-45c9-9d68-25a81a9c4b67",
+                "name": "STORY_SHEAR_FOR_RS",
+                "type": "STORY_SHEAR_FOR_RS",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Scientific",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "dynamic"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STORY_SHEAR_FOR_RS"
+        ],
+        "itemTypeInfo": {
+            "STORY_SHEAR_FOR_RS": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Scientific",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "dynamic"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "6",
+        "name": "Story Eccentricity",
+        "items": [
+            {
+                "id": "05a68a68-53af-447a-80fb-da832455cf57",
+                "name": "STORY_ECNTRICITY",
+                "type": "STORY_ECNTRICITY",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 2
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STORY_ECNTRICITY"
+        ],
+        "itemTypeInfo": {
+            "STORY_ECNTRICITY": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 2
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "7",
+        "name": "Story Shear Force Ratio",
+        "items": [
+            {
+                "id": "7be9662c-b581-4b10-938c-fb7b5910e868",
+                "name": "STORY_SHEAR_FORCE_RATIO",
+                "type": "STORY_SHEAR_FORCE_RATIO",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "static_dynamic"
+                    },
+                    "AngleSetting": {
+                        "angle": 0
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STORY_SHEAR_FORCE_RATIO"
+        ],
+        "itemTypeInfo": {
+            "STORY_SHEAR_FORCE_RATIO": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "AngleSetting"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "static_dynamic"
+                    },
+                    "AngleSetting": {
+                        "angle": 0
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "8",
+        "name": "Stability Coefficient",
+        "items": [
+            {
+                "id": "f2363af0-4cb4-4391-8ea6-ec19fe085eee",
+                "name": "STORY_STABILITY_COEFFICIENT_X",
+                "type": "STORY_STABILITY_COEFFICIENT_X",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StabilityCoefficientParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "combinations": [
+                            {
+                                "loadCase": "DL",
+                                "scaleFactor": 1
+                            }
+                        ]
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            },
+            {
+                "id": "ede54cf8-7f82-40ac-8547-8015125d69dc",
+                "name": "STORY_STABILITY_COEFFICIENT_Y",
+                "type": "STORY_STABILITY_COEFFICIENT_Y",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StabilityCoefficientParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "combinations": []
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STORY_STABILITY_COEFFICIENT_X",
+            "STORY_STABILITY_COEFFICIENT_Y"
+        ],
+        "itemTypeInfo": {
+            "STORY_STABILITY_COEFFICIENT_X": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StabilityCoefficientParameter",
+                    "StoryDriftMethod"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StabilityCoefficientParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "combinations": []
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            },
+            "STORY_STABILITY_COEFFICIENT_Y": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StabilityCoefficientParameter",
+                    "StoryDriftMethod"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StabilityCoefficientParameter": {
+                        "deflectionFactor": 3,
+                        "importanceFactor": 1.5,
+                        "scaleFactor": 1,
+                        "combinations": []
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "9",
+        "name": "Weight Irregularity Check",
+        "items": [
+            {
+                "id": "09594977-0898-4c05-9ba9-802f8264f8a1",
+                "name": "WEIGHT_IRREGULARITY_X",
+                "type": "WEIGHT_IRREGULARITY_X",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            },
+            {
+                "id": "3d4ff795-a55b-45f6-afe0-0e923b35c665",
+                "name": "WEIGHT_IRREGULARITY_Y",
+                "type": "WEIGHT_IRREGULARITY_Y",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.624Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "WEIGHT_IRREGULARITY_X",
+            "WEIGHT_IRREGULARITY_Y"
+        ],
+        "itemTypeInfo": {
+            "WEIGHT_IRREGULARITY_X": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StoryDriftMethod"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            },
+            "WEIGHT_IRREGULARITY_Y": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StoryDriftMethod"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "10",
+        "name": "Overturning Moment",
+        "items": [
+            {
+                "id": "5d481909-44fa-468c-bfbb-aa1c0c26ef0b",
+                "name": "OVERTURNING_MOMENT",
+                "type": "OVERTURNING_MOMENT",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 2
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "AngleSetting": {
+                        "angle": 0
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "OVERTURNING_MOMENT"
+        ],
+        "itemTypeInfo": {
+            "OVERTURNING_MOMENT": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "AngleSetting"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 2
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "AngleSetting": {
+                        "angle": 0
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "11",
+        "name": "Story Axial Force Sum",
+        "items": [
+            {
+                "id": "1185385a-c3ab-482d-b168-01f1e019f56c",
+                "name": "STORY_AXIAL_FORCE_SUM",
+                "type": "STORY_AXIAL_FORCE_SUM",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "static"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STORY_AXIAL_FORCE_SUM"
+        ],
+        "itemTypeInfo": {
+            "STORY_AXIAL_FORCE_SUM": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "static"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "12",
+        "name": "Torsional Irregularity Check",
+        "items": [
+            {
+                "id": "b62808f5-b6e3-4a40-b8f7-295b804037e9",
+                "name": "TORSIONAL_IRREGULARITY_X",
+                "type": "TORSIONAL_IRREGULARITY_X",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    }
+                }
+            },
+            {
+                "id": "1627f1ca-3bfc-41d2-bc26-64375b6c098e",
+                "name": "TORSIONAL_IRREGULARITY_Y",
+                "type": "TORSIONAL_IRREGULARITY_Y",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "TORSIONAL_IRREGULARITY_X",
+            "TORSIONAL_IRREGULARITY_Y"
+        ],
+        "itemTypeInfo": {
+            "TORSIONAL_IRREGULARITY_X": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    }
+                }
+            },
+            "TORSIONAL_IRREGULARITY_Y": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 4
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "13",
+        "name": "Torsional Amplification Factor",
+        "items": [
+            {
+                "id": "c5baf3d4-7c94-4fbf-81f7-27029bb367d6",
+                "name": "TORSIONAL_AMPLIFICATION_FACTOR_X",
+                "type": "TORSIONAL_AMPLIFICATION_FACTOR_X",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    }
+                }
+            },
+            {
+                "id": "a7f4d91e-9fbb-45f3-9044-79d23586598d",
+                "name": "TORSIONAL_AMPLIFICATION_FACTOR_Y",
+                "type": "TORSIONAL_AMPLIFICATION_FACTOR_Y",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "TORSIONAL_AMPLIFICATION_FACTOR_X",
+            "TORSIONAL_AMPLIFICATION_FACTOR_Y"
+        ],
+        "itemTypeInfo": {
+            "TORSIONAL_AMPLIFICATION_FACTOR_X": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    }
+                }
+            },
+            "TORSIONAL_AMPLIFICATION_FACTOR_Y": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "mm"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "14",
+        "name": "Stiffness Irregularity Check(Soft Story)",
+        "items": [
+            {
+                "id": "188b591c-641d-4e26-8613-da68ffbe5f2d",
+                "name": "STIFNESS_IRREGULARITY_X",
+                "type": "STIFNESS_IRREGULARITY_X",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    },
+                    "StoryStiffnessMethod": {
+                        "method": "1 / story drift ratio"
+                    }
+                }
+            },
+            {
+                "id": "9cb862fb-d445-4c8e-80b2-0dab96fa1dfd",
+                "name": "STIFNESS_IRREGULARITY_Y",
+                "type": "STIFNESS_IRREGULARITY_Y",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [
+                            {
+                                "name": "DL(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "AS(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy+(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EX(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "EY(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wx(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "wy(A)(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wx-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "Wy-(ST)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(RS)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RX(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "RY(ES)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB1(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB2(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB3(CB)",
+                                "isChecked": true
+                            },
+                            {
+                                "name": "gLCB4(CB)",
+                                "isChecked": true
+                            }
+                        ],
+                        "selectAll": true,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    },
+                    "StoryStiffnessMethod": {
+                        "method": "1 / story drift ratio"
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "STIFNESS_IRREGULARITY_X",
+            "STIFNESS_IRREGULARITY_Y"
+        ],
+        "itemTypeInfo": {
+            "STIFNESS_IRREGULARITY_X": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StoryDriftMethod",
+                    "StoryStiffnessMethod"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    },
+                    "StoryStiffnessMethod": {
+                        "method": "1 / story drift ratio"
+                    }
+                }
+            },
+            "STIFNESS_IRREGULARITY_Y": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "LoadCaseName",
+                    "StoryDriftMethod",
+                    "StoryStiffnessMethod"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "LoadCaseName": {
+                        "loadCases": [],
+                        "selectAll": false,
+                        "loadCaseType": "default"
+                    },
+                    "StoryDriftMethod": {
+                        "method": "drift at the center of mass"
+                    },
+                    "StoryStiffnessMethod": {
+                        "method": "1 / story drift ratio"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "15",
+        "name": "Capacity Irregularity Check(Weak Story)",
+        "items": [
+            {
+                "id": "d149182d-91bf-4a48-ae4d-a73d80e67067",
+                "name": "CAPACITY_IRREGULARITY",
+                "type": "CAPACITY_IRREGULARITY",
+                "isSelected": false,
+                "createdAt": "2025-07-07T05:41:10.625Z",
+                "settings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "AngleSetting": {
+                        "angle": 0
+                    }
+                }
+            }
+        ],
+        "availableItems": [
+            "CAPACITY_IRREGULARITY"
+        ],
+        "itemTypeInfo": {
+            "CAPACITY_IRREGULARITY": {
+                "panels": [
+                    "SystemStyle",
+                    "SystemUnit",
+                    "AngleSetting"
+                ],
+                "defaultSettings": {
+                    "SystemStyle": {
+                        "style": "Fixed",
+                        "decimalPlaces": 3
+                    },
+                    "SystemUnit": {
+                        "force": "kN",
+                        "distance": "m"
+                    },
+                    "AngleSetting": {
+                        "angle": 0
+                    }
+                }
+            }
+        }
+    }
+]

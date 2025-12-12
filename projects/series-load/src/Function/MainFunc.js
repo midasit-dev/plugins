@@ -31,6 +31,24 @@ async function AxleLoads(
   impLoadChk,
   cntLoadChk
 ) {
+  distLoads = Number(distLoads);
+  distLenFor = Number(distLenFor);
+  distLenBak = Number(distLenBak);
+  imptFac = Number(imptFac);
+  maxSpeed = Number(maxSpeed);
+  grvAccel = Number(grvAccel);
+  centFac = Number(centFac);
+  startPt = Number(startPt);
+  endPt = Number(endPt);
+  nbCases = Number(nbCases);
+  distSeries = Number(distSeries);
+  firLoadPos = Number(firLoadPos);
+  horEccen = Number(horEccen);
+  verEccen = Number(verEccen);
+  orgPtStrPt = Number(orgPtStrPt);
+  strPtDist1 = Number(strPtDist1);
+  strPtDist2 = Number(strPtDist2);
+
   let resultAPI = [];
   //Element and Node List
   let res_unit = await Common.midasAPI("PUT", "/db/unit", {
@@ -50,7 +68,6 @@ async function AxleLoads(
   } else {
     resultAPI.push(["unit", false]);
   }
-
   let elemParsing = Common.NEParser(elemList);
   let elemSplit = elemParsing.split(",").map(Number);
   let elemRes = await Common.midasAPI("GET", "/db/elem");
@@ -134,7 +151,6 @@ async function AxleLoads(
   let TempDist;
   let BmldInputP = Array.matrix(nbCases, nAxle, 8);
   let BmldInputW = Array.matrix(nbCases, 10);
-
   //Create Input Data for Concentrate Loads
   for (let i = 0; i < nbCases; i++) {
     LoadCaseName[i] = lcName + "_#" + (i + 1);
@@ -239,51 +255,67 @@ async function AxleLoads(
   let TotalElemNo = [];
   for (let i = 0; i < nbCases; i++) {
     for (let j = 0; j < nAxle; j++) {
-      TotalElemNo.push(BmldInputP[i][j][3]);
+      if (BmldInputP?.[i]?.[j]?.[3] !== undefined) {
+        TotalElemNo.push(BmldInputP[i][j][3]);
+      }
     }
   }
   for (let i = 0; i < nbCases; i++) {
     for (let j = 0; j < BmldInputW[i][4].length; j++) {
-      TotalElemNo.push(BmldInputW[i][4][j]);
+      if (BmldInputW?.[i]?.[4]?.[j] !== undefined) {
+        TotalElemNo.push(BmldInputW[i][4][j]);
+      }
     }
     for (let j = 0; j < BmldInputW[i][8].length; j++) {
-      TotalElemNo.push(BmldInputW[i][8][j]);
-    }
-  }
-  let UniquElemArray = [...new Set(TotalElemNo)];
-  let UniquElemCount = UniquElemArray.filter(
-    (element) => !Array.isArray(element) || element.length > 0
-  );
-  let bmldRes = await Common.midasAPI("GET", "/db/bmld");
-  let ExistElemNo = [];
-  let UniquElemNo = [];
-  let TempNo, TempID;
-  if ("error" in bmldRes || hasNot(bmldRes, "BMLD")) {
-    UniquElemNo = [...UniquElemCount];
-  } else {
-    ExistElemNo = Object.keys(bmldRes["BMLD"]);
-    UniquElemNo = [...UniquElemCount];
-    for (let i = 0; i < UniquElemCount.length; i++) {
-      for (let j = 0; j < bmldRes["BMLD"].length; j++) {
-        TempNo = bmldRes["BMLD"][ExistElemNo[j]]["ITEMS"].length;
-        TempID = bmldRes["BMLD"][ExistElemNo[j]]["ITEMS"][TempNo]["ID"];
-        UniquElemCount[UniquElemNo[i]] = TempID;
+      if (BmldInputW?.[i]?.[8]?.[j] !== undefined) {
+        TotalElemNo.push(BmldInputW[i][8][j]);
       }
     }
   }
+  let UniquElemArray = [...new Set(TotalElemNo)];
+  let UniquElemNo = UniquElemArray.filter(
+    (element) => !Array.isArray(element) && element !== undefined
+  );
+
+  // UniquElemCount를 객체로 변경 (요소번호: 마지막 ID)
+  let UniquElemCount = {};
+  for (let i = 0; i < UniquElemNo.length; i++) {
+    UniquElemCount[UniquElemNo[i]] = 0;
+  }
+
+  let bmldRes = await Common.midasAPI("GET", "/db/bmld");
+  let TempID;
+
+  // 기존 BMLD 데이터가 있으면 마지막 ID를 가져옴
+  if (!("error" in bmldRes) && !hasNot(bmldRes, "BMLD")) {
+    for (let i = 0; i < UniquElemNo.length; i++) {
+      const elemNum = UniquElemNo[i];
+      // 해당 요소에 대한 기존 BMLD 데이터가 있는지 확인
+      if (bmldRes["BMLD"][elemNum] && bmldRes["BMLD"][elemNum]["ITEMS"]) {
+        const items = bmldRes["BMLD"][elemNum]["ITEMS"];
+        if (items.length > 0) {
+          // 마지막 항목의 ID를 가져옴
+          const lastID = items[items.length - 1]["ID"];
+          UniquElemCount[elemNum] = lastID;
+        }
+      }
+    }
+  }
+
   //Axle Loads!!!!!
   let axleLoadBody = { Assign: {} };
   let tempBody = {};
   let tempArray = [];
   if (axeLoadChk) {
-    for (let i = 0; i < UniquElemCount.length; i++) {
+    for (let i = 0; i < UniquElemNo.length; i++) {
+      const elemNum = UniquElemNo[i];
       tempArray = [];
       for (let j = 0; j < nbCases; j++) {
         for (let k = 0; k < nAxle; k++) {
-          if (BmldInputP[j][k][3] === UniquElemNo[i]) {
+          if (BmldInputP[j][k][3] === elemNum) {
             tempBody = {};
-            TempID = UniquElemCount[UniquElemNo[i]] + 1;
-            UniquElemCount[UniquElemNo[i]] = TempID;
+            TempID = UniquElemCount[elemNum] + 1;
+            UniquElemCount[elemNum] = TempID;
             tempBody["ID"] = TempID;
             tempBody["LCNAME"] = LoadCaseName[j];
             tempBody["CMD"] = "BEAM";
@@ -310,9 +342,12 @@ async function AxleLoads(
           }
         }
       }
-      axleLoadBody["Assign"][UniquElemNo[i]] = {
-        ITEMS: tempArray,
-      };
+
+      if (tempArray.length > 0) {
+        axleLoadBody["Assign"][elemNum] = {
+          ITEMS: tempArray,
+        };
+      }
     }
     let res_axle = await Common.midasAPI("PUT", "/db/bmld", axleLoadBody);
     // return message of unit
@@ -326,14 +361,15 @@ async function AxleLoads(
   //Distribution Loads
   let distLoadBody = { Assign: {} };
   if (dstLoadChk) {
-    for (let i = 0; i < UniquElemCount.length; i++) {
+    for (let i = 0; i < UniquElemNo.length; i++) {
+      const elemNum = UniquElemNo[i];
       tempArray = [];
       for (let j = 0; j < nbCases; j++) {
         for (let k = 0; k < BmldInputW[j][4].length; k++) {
-          if (BmldInputW[j][4][k] === UniquElemNo[i]) {
+          if (BmldInputW[j][4][k] === elemNum) {
             tempBody = {};
-            TempID = UniquElemCount[UniquElemNo[i]] + 1;
-            UniquElemCount[UniquElemNo[i]] = TempID;
+            TempID = UniquElemCount[elemNum] + 1;
+            UniquElemCount[elemNum] = TempID;
             tempBody["ID"] = TempID;
             tempBody["LCNAME"] = LoadCaseName[j];
             tempBody["CMD"] = "BEAM";
@@ -374,10 +410,10 @@ async function AxleLoads(
           }
         }
         for (let k = 0; k < BmldInputW[j][8].length; k++) {
-          if (BmldInputW[j][8][k] === UniquElemNo[i]) {
+          if (BmldInputW[j][8][k] === elemNum) {
             tempBody = {};
-            TempID = UniquElemCount[UniquElemNo[i]] + 1;
-            UniquElemCount[UniquElemNo[i]] = TempID;
+            TempID = UniquElemCount[elemNum] + 1;
+            UniquElemCount[elemNum] = TempID;
             tempBody["ID"] = TempID;
             tempBody["LCNAME"] = LoadCaseName[j];
             tempBody["CMD"] = "BEAM";
@@ -418,9 +454,11 @@ async function AxleLoads(
           }
         }
       }
-      distLoadBody["Assign"][UniquElemNo[i]] = {
-        ITEMS: tempArray,
-      };
+      if (tempArray.length > 0) {
+        distLoadBody["Assign"][elemNum] = {
+          ITEMS: tempArray,
+        };
+      }
     }
     let res_dist = await Common.midasAPI("PUT", "/db/bmld", distLoadBody);
     // return message of unit
@@ -434,17 +472,19 @@ async function AxleLoads(
   //Centrifugal
   let centLoadBody = { Assign: {} };
   if (cntLoadChk) {
-    for (let i = 0; i < UniquElemCount.length; i++) {
+    for (let i = 0; i < UniquElemNo.length; i++) {
+      const elemNum = UniquElemNo[i];
       tempArray = [];
       for (let j = 0; j < nbCases; j++) {
         for (let k = 0; k < nAxle; k++) {
           if (
-            BmldInputP[j][k][3] === UniquElemNo[i] &&
-            BmldInputP[j][k][7].length !== 0
+            BmldInputP[j][k][3] === elemNum &&
+            BmldInputP[j][k][7] !== undefined &&
+            BmldInputP[j][k][7] !== 0
           ) {
             tempBody = {};
-            TempID = UniquElemCount[UniquElemNo[i]] + 1;
-            UniquElemCount[UniquElemNo[i]] = TempID;
+            TempID = UniquElemCount[elemNum] + 1;
+            UniquElemCount[elemNum] = TempID;
             tempBody["ID"] = TempID;
             tempBody["LCNAME"] = LoadCaseName[j];
             tempBody["CMD"] = "BEAM";
@@ -467,9 +507,12 @@ async function AxleLoads(
           }
         }
       }
-      centLoadBody["Assign"][UniquElemNo[i]] = {
-        ITEMS: tempArray,
-      };
+
+      if (tempArray.length > 0) {
+        centLoadBody["Assign"][elemNum] = {
+          ITEMS: tempArray,
+        };
+      }
     }
     let res_cent = await Common.midasAPI("PUT", "/db/bmld", centLoadBody);
     // return message of unit

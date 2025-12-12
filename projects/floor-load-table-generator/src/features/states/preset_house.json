@@ -1,0 +1,179 @@
+[
+  {
+    "name": "거실/장판류",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "thickness",
+        "thickness": 210,
+        "unit_weight": 24,
+        "load": 5.04
+      },
+      {
+        "name": "폴리에틸렌 폼 보온재",
+        "type": "thickness",
+        "thickness": 30.0,
+        "unit_weight": 0.29,
+        "load": 0.0087
+      },
+      {
+        "name": "자갈(건조)",
+        "type": "thickness",
+        "thickness": 60.0,
+        "unit_weight": 16.66,
+        "load": 0.9996
+      },
+      {
+        "name": "보통 모르터",
+        "type": "thickness",
+        "thickness": 30.0,
+        "unit_weight": 19.6,
+        "load": 0.588
+      }
+    ],
+    "live_load": 2.0
+  },
+  {
+    "name": "거실/석재",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "thickness",
+        "thickness": 210,
+        "unit_weight": 24,
+        "load": 5.04
+      },
+      {
+        "name": "폴리에틸렌 폼 보온재",
+        "type": "thickness",
+        "thickness": 30.0,
+        "unit_weight": 0.29,
+        "load": 0.0087
+      },
+      {
+        "name": "자갈(건조)",
+        "type": "thickness",
+        "thickness": 60.0,
+        "unit_weight": 16.66,
+        "load": 0.9996
+      },
+      {
+        "name": "보통 모르터",
+        "type": "thickness",
+        "thickness": 36.0,
+        "unit_weight": 19.6,
+        "load": 0.7056
+      },
+      {
+        "name": "화강암",
+        "type": "thickness",
+        "thickness": 24.0,
+        "unit_weight": 26.95,
+        "load": 0.6468
+      }
+    ],
+    "live_load": 2.0
+  },
+  {
+    "name": "욕실",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "thickness",
+        "thickness": 210,
+        "unit_weight": 24,
+        "load": 5.04
+      },
+      {
+        "name": "액체방수 2차",
+        "type": "thickness",
+        "thickness": 30.0,
+        "unit_weight": 21.56,
+        "load": 0.6468
+      },
+      {
+        "name": "보통 콘크리트",
+        "type": "thickness",
+        "thickness": 60.0,
+        "unit_weight": 22.54,
+        "load": 1.3524
+      },
+      {
+        "name": "보통 모르터",
+        "type": "thickness",
+        "thickness": 23.0,
+        "unit_weight": 19.6,
+        "load": 0.4508
+      },
+      {
+        "name": "자기질 타일",
+        "type": "thickness",
+        "thickness": 7.0,
+        "unit_weight": 22.54,
+        "load": 0.1578
+      }
+    ],
+    "live_load": 2.0
+  },
+  {
+    "name": "현관",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "thickness",
+        "thickness": 210,
+        "unit_weight": 24,
+        "load": 5.04
+      },
+      {
+        "name": "보통 모르터",
+        "type": "thickness",
+        "thickness": 30.0,
+        "unit_weight": 19.6,
+        "load": 0.588
+      },
+      {
+        "name": "자기질 타일",
+        "type": "thickness",
+        "thickness": 10.0,
+        "unit_weight": 22.54,
+        "load": 0.2254
+      }
+    ],
+    "live_load": 2.0
+  },
+  {
+    "name": "발코니",
+    "dead_load": [
+      {
+        "name": "콘크리트 슬래브",
+        "type": "thickness",
+        "thickness": 210,
+        "unit_weight": 24,
+        "load": 5.04
+      },
+      {
+        "name": "액체방수 2차",
+        "type": "thickness",
+        "thickness": 30.0,
+        "unit_weight": 21.56,
+        "load": 0.6468
+      },
+      {
+        "name": "보통 모르터",
+        "type": "thickness",
+        "thickness": 30.0,
+        "unit_weight": 19.6,
+        "load": 0.588
+      },
+      {
+        "name": "자기질 타일",
+        "type": "thickness",
+        "thickness": 7.0,
+        "unit_weight": 22.54,
+        "load": 0.1578
+      }
+    ],
+    "live_load": 3.0
+  }
+]

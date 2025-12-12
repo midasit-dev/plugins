@@ -95,16 +95,13 @@ export const GetBeamforceData = async ({ part, style, unit, element, lcomName, l
     : await sendData(DBNAME, body, "POST");
   
   if (hasError(rawData)) throw new Error("Cannot generate table data as there is no analysis result.");
-  if (rawData[lcomName] === undefined) return [];
-
-  const data = rawData[lcomName].DATA || [];
+  const data = rawData?.[lcomName]?.DATA || rawData?.DATA || [];
 
   //hasMV = false
   //hasCS = false
 
   if (data.length === 0) return [];
-  
-  
+
   const makeBody = (LCOM) => ({
     "Argument": {
         "TABLE_NAME": `${lcomName}`,
@@ -139,20 +136,18 @@ export const GetBeamforceData = async ({ part, style, unit, element, lcomName, l
 
   for (const requestLcomItem of lcomData) { // [{NAME, FACTOR, }]
     let requestLcomName = [requestLcomItem.NAME];
-    let requestHasMv = false;
-    let requestHasCs = false;
-    let requestHasCb = false;
+    let requestHasMv = requestLcomItem.NAME.includes("(MV)");
+    let requestHasCs = requestLcomItem.NAME.includes("(CS)");
+    let requestHasCb = requestLcomItem.NAME.includes("(CB)");
    
-    if (requestLcomItem.NAME.includes("(MV)")) {
-      requestHasMv = true;
+    if (requestHasMv) {
       requestLcomName = [
         requestLcomItem.NAME,
         requestLcomItem.NAME.replace("(MV)", "(MV:max)"),
         requestLcomItem.NAME.replace("(MV)", "(MV:min)"),
       ];
     }
-    if (requestLcomItem.NAME.includes("(CB)")) { 
-      requestHasCb = true; 
+    if (requestHasCb) {
       requestLcomName = [
         requestLcomItem.NAME,
         requestLcomItem.NAME.replace("(CB)", "(CB:max)"),
@@ -160,48 +155,40 @@ export const GetBeamforceData = async ({ part, style, unit, element, lcomName, l
       ]
     }
 
-    let opt = { Argument : {} };
-    if (requestLcomItem.NAME.includes("(CS)")) {
-
+    let requestBody = makeBody(requestLcomName);
+    if (requestHasCs) {
       const stagData = await loadData(DBVARIANT.PATH + DBVARIANT.STAGE);
       if (hasError(stagData)) continue;
 
       const stageData = stagData[DBVARIANT.STAGE];
 
-      const tempStages = Object.keys(stageData);
-      const lastStageKey = tempStages[tempStages.length - 1];
-      const currentStageName = stageData[lastStageKey].NAME;
-      const currentStageAddSteps = 2 + (stageData[lastStageKey]?.ADD_STEP?.length | 0);
+      const sortedStageData = Object.entries(stageData).sort((a, b) => a[1]?.NO - b[1]?.NO);
+      const lastStage = sortedStageData[sortedStageData.length - 1][1];
+      const currentStageName = lastStage.NAME;
+      let lastStageSteps = 0;
 
-      let currentStagePostfix = "";
-      if (currentStageAddSteps >= 100) {
-        currentStagePostfix = currentStageAddSteps;
-        } else if (currentStageAddSteps >= 10) {
-        currentStagePostfix = `0${currentStageAddSteps}`;
-        } else {
-        currentStagePostfix = `00${currentStageAddSteps}`;
+      if (lastStage?.bSV_STEP) {
+          //bSV_STEP이 true인 경우 : first, last로 데이터가 최소 두 개 이상 존재
+          lastStageSteps += 2 + (lastStage?.ADD_STEP?.length || 0);
+      } else {
+          //bSV_STEP이 false인 경우 last + ADD_STEP수만큼 데이터가 한 개 이상 존재
+          lastStageSteps += 1 + (lastStage?.ADD_STEP?.length || 0);
       }
 
-      opt.Argument.OPT_CS = true;
-      opt.Argument.STAGE_STEP = [
-        `${currentStageName}:${currentStagePostfix}(last)`
-      ];
+      let currentStagePostfix = lastStageSteps.toString().padStart(3, "0");
 
-      requestHasCs = true;
-    }
-
-    let requestBody = makeBody(requestLcomName);
-    if (requestHasCs) {
       requestBody.Argument.OPT_CS = true;
-      requestBody.Argument.STAGE_STEP = opt.Argument.STAGE_STEP;
+      requestBody.Argument.STAGE_STEP = [
+          `${currentStageName}:${currentStagePostfix}(last)`,
+          `${currentStageName}:${currentStagePostfix}(最終)`,
+      ]
     }
 
     const result = await sendData(DBNAME, requestBody, "POST");
     
     if (hasError(result)) continue;
-    if (result[lcomName] === undefined) continue;
 
-    const resultData = result[lcomName].DATA || [];
+    const resultData = result?.[lcomName]?.DATA || result?.DATA || [];
 
     if (resultData.length === 0) continue;
     console.log("resultData is:",resultData);

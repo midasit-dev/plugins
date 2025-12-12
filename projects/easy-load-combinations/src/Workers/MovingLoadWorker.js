@@ -25,6 +25,8 @@ export const DataLoader = async () => {
       }
     : await loadData(DBVARIANT.PATH + DBCODE);
   if (hasError(natlCodeData)) return [];
+  ////// 예외처리 코드 추가
+  if (natlCodeData[DBCODE] === undefined) return [];
 
   const natlCode = natlCodeData[DBCODE][1]["CODE"];
 

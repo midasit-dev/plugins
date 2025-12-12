@@ -1,8 +1,11 @@
 import React from 'react'; 
-import { Dialog, Button, Typography, Stack, IconButton, Icon } from "@midasit-dev/moaui";
+import { Dialog, IconButton, Icon } from "@midasit-dev/moaui";
 
-const ComponentsDialogHelpIconButton = () => {
-  const [open, setOpen] = React.useState(false);
+const ComponentsDialogHelpIconButton = ({ open, setOpen }) => {
+ const handleIconClick = (event) => {
+    event.preventDefault();
+    setOpen(true);
+  };
 
   const HelpDialog = (props) => {
     return (
@@ -68,7 +71,7 @@ const ComponentsDialogHelpIconButton = () => {
 
   return (
     <>
-      <IconButton transparent onClick={() => setOpen(true)}>
+      <IconButton transparent type="button" onClick={handleIconClick}>
         <Icon iconName="Help" />
       </IconButton>
       <HelpDialog open={open} setOpen={setOpen} />

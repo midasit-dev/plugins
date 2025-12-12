@@ -5,3 +5,4 @@
 # Ignore all .zip files in the docs directory
 /docs/**/*.zip
 /test/build/**
+projects/pile-spring/node_modules

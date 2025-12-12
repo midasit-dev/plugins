@@ -6,7 +6,7 @@ import { midasAPI } from "./Function/Common";
 import { VerifyUtil, VerifyDialog } from "@midasit-dev/moaui";
 import { Check,Typography,Scrollbars,Stack,TextField } from "@midasit-dev/moaui";
 import { Button } from "@midasit-dev/moaui";
-import { useEffect } from "react";
+import { useEffect,useRef } from "react";
 import { useState } from "react";
 import * as XLSX from 'xlsx';
 import ComponentsDialogHelpIconButton from "./Function/ComponentsDialogHelpIconButton";
@@ -29,6 +29,8 @@ function App() {
   const [isSwitchChecked,setIsSwitchChecked] = useState(false); // State variable to disable dropdown
   const [fileContent, setFileContent] = useState(null);
   const [cellRange, setCellRange] = useState("A1");
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const messageShownRef = useRef(false); 
   const handleCheckboxChange = (name) => {
     if (selectedCheckboxes.includes(name)) {
       setSelectedCheckboxes(
@@ -119,7 +121,7 @@ function App() {
       console.error("Max retries reached. Unable to fetch elements.");
     }
   };
-  let messageShown = false;
+  // let messageShown = false;
   async function fetchElement() {
     try {
       const response = await midasAPI("GET", "/view/select");
@@ -132,7 +134,7 @@ function App() {
       const elements = response["SELECT"]["ELEM_LIST"];
       console.log("Elements:", elements);
       if (elements.length === 0) {
-        if (!messageShown) {
+        if (!messageShownRef.current) {
           enqueueSnackbar("Please Select an Element", {
             variant: "error",
             anchorOrigin: {
@@ -141,11 +143,12 @@ function App() {
             },
             autoHideDuration: 5000,
           });
-          messageShown = true;
+          messageShownRef.current = true;
         }
-        setelement([" "]);
+        setelement(prev => (prev.length === 1 && prev[0] === " ") ? prev : [" "]);
         return [];
       }
+      messageShownRef.current = false; // Reset when elements are found
       setelement(elements);
       return elements;
     } catch (error) {
@@ -453,13 +456,20 @@ function App() {
       },
     });
   
-    // Call importLoadCombinations and dismiss the loading message once complete
-    importLoadCombinations().finally(() => {
-      // Dismiss the loading message
-       closeSnackbar(loadingMessage);
-    });
-    startPolling(1000);
-  }, []);
+   importLoadCombinations().finally(() => {
+    closeSnackbar(loadingMessage);
+  });
+
+   let intervalId;
+  if (!helpDialogOpen) {
+    intervalId = setInterval(() => {
+      fetchElement();
+    }, 1000);
+  }
+ return () => {
+    if (intervalId) clearInterval(intervalId);
+  };
+}, [helpDialogOpen]);
   const combArray = Object.values(comb);
   console.log(comb);
   console.log(combArray);
@@ -664,7 +674,7 @@ onChange={() => handleCheckboxPartsChange("J")}
   Get Forces
 </Button>
 <div style={{ width:"120px" }}></div>
-<ComponentsDialogHelpIconButton />
+<ComponentsDialogHelpIconButton open={helpDialogOpen} setOpen={setHelpDialogOpen} />
         </Panel>
        </GuideBox>
       </GuideBox>
