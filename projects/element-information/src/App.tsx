@@ -3,8 +3,10 @@ import m from "@midasit-dev/moaui";
 import HelpButton from "./Help";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSnackbar } from "notistack";
 
 const queryClient = new QueryClient();
+
 const WrappingReactQuery = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -15,6 +17,9 @@ const WrappingReactQuery = () => {
 
 export default WrappingReactQuery;
 
+/** ---------------------------------------------
+ *  API: /view/select
+ * --------------------------------------------- */
 const fetchData = async () => {
   const url = await m.VerifyUtil.getBaseUrlAsync();
   const endpoint = url + "/view/select";
@@ -25,17 +30,37 @@ const fetchData = async () => {
   };
 
   const resGet = await fetch(endpoint, { method: "GET", headers });
-  if (resGet.ok) {
-    const data = await resGet.json();
-    return data;
-  } else {
-    console.error("error", resGet.statusText);
-  }
+  if (resGet.ok) return await resGet.json();
+
+  console.error("error", resGet.statusText);
+  return undefined;
+};
+
+/** ---------------------------------------------
+ *  Excel Copy Helpers (TSV with HEADER)
+ * --------------------------------------------- */
+const sanitizeForTSV = (v: any) => {
+  if (v === null || v === undefined) return "";
+  return String(v).replace(/\t/g, " ").replace(/\r?\n/g, " ");
+};
+
+const buildTSVWithHeader = (rows: any[], columnNames: string[]) => {
+  const header = columnNames.join("\t");
+  const body = rows
+    .map((r) =>
+      columnNames
+        .map((_, i) => sanitizeForTSV(r?.[`Col${i + 1}`]))
+        .join("\t")
+    )
+    .join("\n");
+  return `${header}\n${body}`;
 };
 
 const App = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const { data, refetch } = useQuery("getSelect", fetchData, {
-    enabled: false, // 컴포넌트가 마운트될 때 자동으로 실행되지 않도록 설정
+    enabled: false,
   });
 
   const [selectedElems, setSelectedElems] = React.useState<string>("");
@@ -50,32 +75,24 @@ const App = () => {
   React.useEffect(() => {
     const handleFocus = () => refetch();
     window.addEventListener("focus", handleFocus);
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-    };
+    return () => window.removeEventListener("focus", handleFocus);
   }, [refetch]);
 
   React.useEffect(() => {
-    if (data) {
-      setLoading(true);
-    }
+    if (data) setLoading(true);
   }, [data]);
 
-  // refetch에 의해 data 변경 시 마다 선택 ELEM 상태 업데이트
   React.useEffect(() => {
     const init = async () => {
-      const getFetching = async (path: string): Promise<object> => {
+      const getFetching = async (path: string): Promise<any> => {
         const url = await m.VerifyUtil.getBaseUrlAsync();
         const mapiKey = m.VerifyUtil.getMapiKey();
         const res = await fetch(`${url}${path}`, {
           headers: { "Content-Type": "application/json", "MAPI-Key": mapiKey },
         });
-        if (res.ok) {
-          return await res.json();
-        } else {
-          console.error("fetching error", path, res.statusText);
-          return {};
-        }
+        if (res.ok) return await res.json();
+        console.error("fetching error", path, res.statusText);
+        return {};
       };
 
       const postFetching = async (path: string, body: any): Promise<any> => {
@@ -86,99 +103,90 @@ const App = () => {
           headers: { "Content-Type": "application/json", "MAPI-Key": mapiKey },
           body: JSON.stringify(body),
         });
-        if (res.ok) {
-          return await res.json();
-        } else {
-          console.error("fetching error", path, res.statusText);
-          return {};
-        }
+        if (res.ok) return await res.json();
+        console.error("fetching error", path, res.statusText);
+        return {};
       };
 
       try {
-        const selElemArr = data["SELECT"]["ELEM_LIST"] as number[];
+        const selElemArr = (data?.["SELECT"]?.["ELEM_LIST"] ?? []) as number[];
         setSelectedElems(selElemArr.join(",").toString());
         setSelElemCounts(selElemArr.length);
 
-        const allElemData = ((await getFetching("/db/elem")) as any)["ELEM"];
-        const allMatlData = ((await getFetching("/db/matl")) as any)["MATL"];
-        const allSectData = ((await getFetching("/db/sect")) as any)["SECT"];
-        const allElemWeightData = (
-          await postFetching("/post/table", {
-            Argument: {
-              TABLE_NAME: "EWT",
-              TABLE_TYPE: "ELEMENTWEIGHT",
-            },
-          })
-        )["EWT"];
-        setUnits(`${allElemWeightData["FORCE"]} ${allElemWeightData["DIST"]}`);
+        const allElemData = (await getFetching("/db/elem"))?.["ELEM"] ?? {};
+        const allMatlData = (await getFetching("/db/matl"))?.["MATL"] ?? {};
+        const allSectData = (await getFetching("/db/sect"))?.["SECT"] ?? {};
 
-        const headers: string[] = allElemWeightData["HEAD"];
-        const indexElemID = 1; //Header에 "No"가 중복이라, Element ID는 1번 Index로 고정ㅠㅠ
+        const ewtRes = await postFetching("/post/table", {
+          Argument: { TABLE_NAME: "EWT", TABLE_TYPE: "ELEMENTWEIGHT" },
+        });
+        const allElemWeightData = ewtRes?.["EWT"] ?? {};
+        setUnits(
+          `${allElemWeightData?.["FORCE"] ?? ""} ${allElemWeightData?.["DIST"] ?? ""}`
+        );
+
+        const headers: string[] = allElemWeightData?.["HEAD"] ?? [];
+        const indexElemID = 1;
         const indexLAV = headers.indexOf("Value");
         const indexWeightU = headers.indexOf("Unit Weight");
         const indexWeightT = headers.indexOf("Total Weight");
 
-        const allBeamEndRelease =
-          ((await getFetching("/db/frls")) as any)["FRLS"] ?? {};
+        const allBeamEndRelease = (await getFetching("/db/frls"))?.["FRLS"] ?? {};
 
-        const resultRows = selElemArr.map(
-          (elementID: number, index: number) => {
-            const nodeConnectvity =
-              allElemData[elementID]["NODE"]
-                .filter((num: number) => num !== 0)
-                .toString() ?? "-";
-            const elementType = allElemData[elementID]["TYPE"] ?? "-";
-            const matlName = allMatlData[allElemData[elementID]["MATL"]]
-              ? allMatlData[allElemData[elementID]["MATL"]]["NAME"]
-              : "-";
-            const sectName = allSectData[allElemData[elementID]["SECT"]]
-              ? allSectData[allElemData[elementID]["SECT"]]["SECT_NAME"]
-              : "-";
-            const curWeightTBRow = allElemWeightData["DATA"].filter(
-              (row: any) => Number(row[indexElemID]) === elementID
-            )[0];
-            // let beamEndRelease = "-";
-            // if (elementType === "BEAM" && Object.keys(allBeamEndRelease).length !== 0) {
-            // 	const bers = allBeamEndRelease[elementID]["ITEMS"][0];
-            // 	const is_fixed_I = bers["FLAG_I"].split('').every((char: string) => char === '0');
-            // 	const str_i = is_fixed_I ? 'F' : 'P';
-            // 	const is_fixed_J = bers["FLAG_J"].split('').every((char: string) => char === '0');
-            // 	const str_j = is_fixed_J ? 'F' : 'P';
-            // 	beamEndRelease = `${str_i}-${str_j}`;
-            // }
-            // 수정. beam인데 frls 가 없을 경우, F-F로 처리
-            let beamEndRelease = "";
-            if (elementType === "BEAM") {
-              const bers = allBeamEndRelease?.[String(elementID)]?.ITEMS?.[0];
-              if (!bers) {
-                beamEndRelease = "F-F";
-              } else {
-                const is_fixed_I = bers["FLAG_I"]
-                  .split("")
-                  .every((char: string) => char === "0");
-                const str_i = is_fixed_I ? "F" : "P";
-                const is_fixed_J = bers["FLAG_J"]
-                  .split("")
-                  .every((char: string) => char === "0");
-                const str_j = is_fixed_J ? "F" : "P";
-                beamEndRelease = `${str_i}-${str_j}`;
-              }
+        const resultRows = selElemArr.map((elementID: number, index: number) => {
+          const elem = allElemData?.[elementID];
+
+          const nodeConnectvity =
+            elem?.["NODE"]?.filter((num: number) => num !== 0)?.toString() ?? "-";
+
+          const elementType = elem?.["TYPE"] ?? "-";
+
+          const matlName = allMatlData?.[elem?.["MATL"]]
+            ? allMatlData[elem["MATL"]]["NAME"]
+            : "-";
+
+          const sectName = allSectData?.[elem?.["SECT"]]
+            ? allSectData[elem["SECT"]]["SECT_NAME"]
+            : "-";
+
+          const curWeightTBRow = (allElemWeightData?.["DATA"] ?? []).filter(
+            (row: any) => Number(row?.[indexElemID]) === elementID
+          )[0];
+
+          let beamEndRelease = "";
+          if (elementType === "BEAM") {
+            const bers = allBeamEndRelease?.[String(elementID)]?.ITEMS?.[0];
+            if (!bers) {
+              beamEndRelease = "F-F";
+            } else {
+              const is_fixed_I = String(bers["FLAG_I"] ?? "")
+                .split("")
+                .every((char: string) => char === "0");
+              const str_i = is_fixed_I ? "F" : "P";
+
+              const is_fixed_J = String(bers["FLAG_J"] ?? "")
+                .split("")
+                .every((char: string) => char === "0");
+              const str_j = is_fixed_J ? "F" : "P";
+
+              beamEndRelease = `${str_i}-${str_j}`;
             }
-            console.log(beamEndRelease);
-            return {
-              id: index + 1,
-              Col1: elementID,
-              Col2: nodeConnectvity,
-              Col3: elementType,
-              Col4: matlName,
-              Col5: sectName,
-              Col6: curWeightTBRow[indexLAV],
-              Col7: curWeightTBRow[indexWeightU],
-              Col8: curWeightTBRow[indexWeightT],
-              Col9: beamEndRelease,
-            };
           }
-        );
+
+          return {
+            id: index + 1,
+            Col1: elementID,
+            Col2: nodeConnectvity,
+            Col3: elementType,
+            Col4: matlName,
+            Col5: sectName,
+            Col6: curWeightTBRow && indexLAV >= 0 ? curWeightTBRow[indexLAV] : "",
+            Col7: curWeightTBRow && indexWeightU >= 0 ? curWeightTBRow[indexWeightU] : "",
+            Col8: curWeightTBRow && indexWeightT >= 0 ? curWeightTBRow[indexWeightT] : "",
+            Col9: beamEndRelease,
+          };
+        });
+
         setRows(resultRows);
         setOpenDetail(false);
         setSingleRow([]);
@@ -189,10 +197,45 @@ const App = () => {
       }
     };
 
-    if (data && loading) {
-      init();
-    }
+    if (data && loading) init();
   }, [data, loading]);
+
+  /** ---------------------------------------------
+   *  Copy to Excel (HEADER ALWAYS INCLUDED)
+   * --------------------------------------------- */
+  const handleCopyToExcel = async () => {
+    try {
+      if (!rows || rows.length === 0) {
+        enqueueSnackbar("No rows to copy. Please select elements first.", {
+          variant: "warning",
+        });
+        return;
+      }
+
+      const tsv = buildTSVWithHeader(rows, columnNames);
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(tsv);
+      } else {
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = tsv;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+
+      enqueueSnackbar(`Copied (with header) ${rows.length} row(s). Paste into Excel.`, {
+        variant: "success",
+      });
+    } catch (e) {
+      console.error("Copy failed", e);
+      enqueueSnackbar("Copy failed. Please try again.", { variant: "error" });
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -200,20 +243,22 @@ const App = () => {
         <m.VerifyDialog />
 
         <m.GuideBox width="100%" row horSpaceBetween verCenter>
-          {/* {loading ? 'Loading...' : 'done'} */}
           <m.GuideBox row spacing={1} verCenter horSpaceBetween>
             <m.Typography variant="h1">
               Selected Elements ({selElemCounts.toString()})
             </m.Typography>
+
             <div onFocus={() => refetch()}>
               <m.TextField value={selectedElems} disabled />
             </div>
+
             <div style={{ position: "relative", zIndex: 999 }}>
               <m.Switch
                 checked={openDetail}
                 label="Detail"
                 onChange={(e: any, checked: boolean) => setOpenDetail(checked)}
               />
+
               {openDetail && (
                 <motion.div
                   style={{
@@ -235,40 +280,34 @@ const App = () => {
                         Please select a row ...
                       </m.Typography>
                     )}
+
                     {singleRow.length !== 0 && (
                       <m.GuideBox spacing={1}>
-                        {singleRow &&
-                          singleRow.map((row: any, index: number) => {
-                            return (
-                              <m.GuideBox
-                                row
-                                horSpaceBetween
-                                verCenter
-                                width={200}
+                        {singleRow.map((row: any, index: number) => (
+                          <m.GuideBox
+                            key={`${index}`}
+                            row
+                            horSpaceBetween
+                            verCenter
+                            width={200}
+                          >
+                            <m.Typography variant="h1" color={m.Color.primary.white}>
+                              {row[0]}
+                            </m.Typography>
+
+                            {row[1] !== undefined && row[1] !== null && (
+                              <motion.div
+                                initial={{ opacity: 0, x: -100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.05 * index }}
                               >
-                                <m.Typography
-                                  variant="h1"
-                                  color={m.Color.primary.white}
-                                >
-                                  {row[0]}
+                                <m.Typography color={m.Color.primary.white}>
+                                  {String(row[1])}
                                 </m.Typography>
-                                {row[1] && (
-                                  <motion.div
-                                    initial={{ opacity: 0, x: -100 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.05 * index }}
-                                    key={
-                                      index.toString() + new Date().getTime()
-                                    }
-                                  >
-                                    <m.Typography color={m.Color.primary.white}>
-                                      {row[1]}
-                                    </m.Typography>
-                                  </motion.div>
-                                )}
-                              </m.GuideBox>
-                            );
-                          })}
+                              </motion.div>
+                            )}
+                          </m.GuideBox>
+                        ))}
                       </m.GuideBox>
                     )}
                   </m.Panel>
@@ -276,42 +315,57 @@ const App = () => {
               )}
             </div>
           </m.GuideBox>
+
           <m.GuideBox row spacing={1} verCenter>
             <m.Typography>{units}</m.Typography>
             <HelpButton />
           </m.GuideBox>
         </m.GuideBox>
+
         <m.GuideBox width="100%" height="auto" spacing={1}>
           <m.Panel width="100%" height={280} padding={0}>
             <m.DataGrid
               hideFooter
               rows={rows}
-              columns={columnNames.map((colName: string, index: number) => {
-                return column(`Col${index + 1}`, colName);
-              })}
+              columns={columnNames.map((colName: string, index: number) =>
+                column(`Col${index + 1}`, colName)
+              )}
               onCellClick={(params: any) => {
-                const rowData = columnNames.map(
-                  (colName: string, index: number) => {
-                    return [colName, params["row"][`Col${index + 1}`]];
-                  }
-                );
+                const rowData = columnNames.map((colName: string, index: number) => {
+                  return [colName, params["row"][`Col${index + 1}`]];
+                });
                 setSingleRow(rowData);
               }}
             />
           </m.Panel>
         </m.GuideBox>
+
+        {/* ✅ Copy to Excel */}
+        <m.GuideBox width="100%" row horSpaceBetween verCenter>
+          <m.GuideBox row spacing={1} verCenter>
+            <m.Typography variant="body2">
+              {`Rows: ${rows.length}`}
+            </m.Typography>
+          </m.GuideBox>
+          
+          <m.GuideBox row spacing={1} verCenter>
+            <m.Button
+              onClick={handleCopyToExcel}
+              disabled={loading || rows.length === 0}
+            >
+              Copy to Excel
+            </m.Button>
+          </m.GuideBox>
+
+        </m.GuideBox>
+
       </m.GuideBox>
     </AnimatePresence>
   );
 };
 
 const column = (field: string, headerName: string, width = 80) => {
-  return {
-    field: field,
-    headerName: headerName,
-    width: width,
-    sortable: false,
-  };
+  return { field, headerName, width, sortable: false };
 };
 
 const columnNames: string[] = [

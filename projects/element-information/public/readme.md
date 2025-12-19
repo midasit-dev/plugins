@@ -5,8 +5,6 @@ It is used when quickly checking and reviewing specific element details.
 
 ## Details
 
-### version 1.0.0
-
 #### Element Information
 
 - **Elem ID**: Element ID
@@ -20,6 +18,10 @@ It is used when quickly checking and reviewing specific element details.
 - **BER (Beam End Release)**: Displays release information at the I/J End.
   - **Hyphen (-)**: If there is no Beam End Release information
   - **F**: Fixed / **P**: Pinned
+
+### version 1.2.0
+
+- We have added a Copy button to enable easy copy-and-paste of data into Excel.
 
 ### version 1.1.0
 
