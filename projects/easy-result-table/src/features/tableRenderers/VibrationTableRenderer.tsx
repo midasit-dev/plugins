@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
+import { truncateText, calculateMaxChars } from "./textUtils";
 
 class VibrationTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {

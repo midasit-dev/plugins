@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
+import { truncateText, calculateMaxChars } from "./textUtils";
 
 class StoryShearForceRatioTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -103,15 +104,20 @@ class StoryShearForceRatioTableRenderer implements TableRenderer {
 
   // SUB_TABLES 데이터 렌더링 (첫 번째 인덱스 무시하지 않음)
   private renderSubTableRow(row: any[], rowIndex: number): JSX.Element[] {
+    const config = this.getConfig();
     return row.map((cell, index) => {
       const actualIndex = index + 1;
+      const cellWidth = config.columnWidths[actualIndex];
+      const maxChars = calculateMaxChars(cellWidth, 7, config.isLandscape);
+      const truncatedCell = truncateText(cell, maxChars);
+      
       return (
         <View
           key={actualIndex}
           style={[
             styles.tableCell,
             {
-              width: this.getConfig().columnWidths[actualIndex],
+              width: cellWidth,
               // 1열, 3열, 4열은 중앙 정렬, 나머지는 우측 정렬
               alignItems:
                 actualIndex === 1 || actualIndex === 3 || actualIndex === 4
@@ -121,7 +127,7 @@ class StoryShearForceRatioTableRenderer implements TableRenderer {
             },
           ]}
         >
-          <Text style={styles.tableCellFont}>{cell}</Text>
+          <Text style={styles.tableCellFont}>{truncatedCell}</Text>
         </View>
       );
     });

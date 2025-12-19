@@ -51,11 +51,13 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 11, // 폰트 크기(8pt) + 패딩(0pt) + 여유 공간(2pt) = 10pt
+    overflow: "hidden", // 텍스트 넘침 방지
   },
   // 데이터 폰트 스타일
   tableCellFont: {
     fontSize: 7,
     textAlign: "center",
+    overflow: "hidden", // 텍스트 넘침 방지
   },
   // 헤더 셀 스타일 (4줄 헤더)
   tableHeaderQuadruple: {

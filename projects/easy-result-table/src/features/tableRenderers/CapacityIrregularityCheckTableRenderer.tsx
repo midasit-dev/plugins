@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
+import { truncateText, calculateMaxChars } from "./textUtils";
 
 class CapacityIrregularityCheckTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -80,17 +81,22 @@ class CapacityIrregularityCheckTableRenderer implements TableRenderer {
 
   // 본문 데이터 렌더링
   private renderRow(row: any[], rowIndex: number): JSX.Element[] {
+    const config = this.getConfig();
     return row
       .filter((_, index) => index !== 0)
       .map((cell, index) => {
         const actualIndex = index + 1; // 첫 번째 열 제외하고 2부터 시작
+        const cellWidth = config.columnWidths[actualIndex];
+        const maxChars = calculateMaxChars(cellWidth, 7, config.isLandscape);
+        const truncatedCell = truncateText(cell, maxChars);
+        
         return (
           <View
             key={actualIndex}
             style={[
               styles.tableCell,
               {
-                width: this.getConfig().columnWidths[actualIndex],
+                width: cellWidth,
                 // 1, 8, 13 열은 중앙 정렬, 나머지는 우측 정렬
                 alignItems:
                   actualIndex === 1 || actualIndex === 8 || actualIndex === 13
@@ -100,7 +106,7 @@ class CapacityIrregularityCheckTableRenderer implements TableRenderer {
               },
             ]}
           >
-            <Text style={styles.tableCellFont}>{cell}</Text>
+            <Text style={styles.tableCellFont}>{truncatedCell}</Text>
           </View>
         );
       });

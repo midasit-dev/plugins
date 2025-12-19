@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
+import { truncateText, calculateMaxChars } from "./textUtils";
 
 class TorsionalAmplificationFactorTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -173,17 +174,22 @@ class TorsionalAmplificationFactorTableRenderer implements TableRenderer {
 
   // 본문 데이터 렌더링
   private renderRow(row: any[], rowIndex: number): JSX.Element[] {
+    const config = this.getConfig();
     return row
       .filter((_, index) => index !== 0)
       .map((cell, index) => {
         const actualIndex = index + 1;
+        const cellWidth = config.columnWidths[actualIndex];
+        const maxChars = calculateMaxChars(cellWidth, 7, config.isLandscape);
+        const truncatedCell = truncateText(cell, maxChars);
+        
         return (
           <View
             key={actualIndex}
             style={[
               styles.tableCell,
               {
-                width: this.getConfig().columnWidths[actualIndex],
+                width: cellWidth,
                 // 1,2,9열 중앙정렬, 나머지 우측정렬
                 alignItems:
                   actualIndex === 1 || actualIndex === 2 || actualIndex === 9
@@ -193,7 +199,7 @@ class TorsionalAmplificationFactorTableRenderer implements TableRenderer {
               },
             ]}
           >
-            <Text style={styles.tableCellFont}>{cell}</Text>
+            <Text style={styles.tableCellFont}>{truncatedCell}</Text>
           </View>
         );
       });

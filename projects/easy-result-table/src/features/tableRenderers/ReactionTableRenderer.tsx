@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
+import { truncateText, calculateMaxChars } from "./textUtils";
 
 class ReactionTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -64,11 +65,15 @@ class ReactionTableRenderer implements TableRenderer {
 
   // 본문 데이터 렌더링
   private renderRow(row: any[], rowIndex: number): JSX.Element[] {
+    const config = this.getConfig();
     return row
       .filter((_, index) => index !== 0)
       .map((cell, index) => {
         const actualIndex = index + 1;
+        const cellWidth = config.columnWidths[actualIndex];
+        const maxChars = calculateMaxChars(cellWidth, 7, config.isLandscape);
         const value = actualIndex > 2 ? Number(cell).toFixed(3) : cell;
+        const truncatedValue = truncateText(value, maxChars);
 
         return (
           <View
@@ -76,13 +81,13 @@ class ReactionTableRenderer implements TableRenderer {
             style={[
               styles.tableCell,
               {
-                width: this.getConfig().columnWidths[actualIndex],
+                width: cellWidth,
                 alignItems: actualIndex >= 3 ? "flex-end" : "center",
                 borderRightWidth: actualIndex === 8 ? 0 : 1,
               },
             ]}
           >
-            <Text style={styles.tableCellFont}>{value}</Text>
+            <Text style={styles.tableCellFont}>{truncatedValue}</Text>
           </View>
         );
       });

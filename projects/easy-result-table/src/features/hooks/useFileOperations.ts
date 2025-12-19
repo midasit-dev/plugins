@@ -504,7 +504,7 @@ export const useFileOperations = () => {
           if (
             projectInfoResponse &&
             (!projectInfoResponse.error || projectInfoResponse.error === false)
-          ) {
+          ) {   
             projectInfo = {
               author: projectInfoResponse.PJCF["1"].USER || "User",
               filename: "-",
@@ -512,7 +512,7 @@ export const useFileOperations = () => {
               company: "-",
               project_title: projectInfoResponse.PJCF["1"].PROJECT || "Project",
               certified_by: "-",
-            };
+            };           
           }
 
           if (

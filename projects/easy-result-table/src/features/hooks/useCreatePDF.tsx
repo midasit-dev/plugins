@@ -1,11 +1,17 @@
 import React, { useMemo } from "react";
-import { View, Text, Document, Page, pdf } from "@react-pdf/renderer";
+import { View, Text, Document, Page, pdf, Font } from "@react-pdf/renderer";
 import { useRecoilState } from "recoil";
 import { tableDataState, TableData } from "../states/stateTableData";
 import { useSnackbarMessage } from "./useSnackbarMessage";
 import { getTableRenderer } from "../tableRenderers";
 import { PDFCommonHeader } from "../tableRenderers/CommonHeader";
 import { PDFCommonFooter } from "../tableRenderers/CommonFooter";
+
+// 다국어 지원 폰트 등록 (Noto Sans CJK - 한글, 일본어, 중국어 등 지원)
+Font.register({
+  family: "NotoSans",
+  src: "/fonts/NotoSansCJK-Regular.ttf",
+});
 
 // PDF 테이블 관련 타입 정의
 interface TableProps {

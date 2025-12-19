@@ -4,7 +4,13 @@ const pdfStyles = StyleSheet.create({
   // PDF 헤더 스타일
   headerMainfont: { fontSize: 12 },
   headerSubfont: { fontSize: 10 },
+  headerSubfontMultilang: { fontSize: 10, fontFamily: "NotoSans" },
 });
+
+// 영어(ASCII) 문자만 포함되어 있는지 확인하는 함수
+const isAsciiOnly = (str: string): boolean => {
+  return /^[\x00-\x7F]*$/.test(str);
+};
 
 // PDF 공통 헤더 컴포넌트
 export const PDFCommonHeader: React.FC<{
@@ -20,6 +26,31 @@ export const PDFCommonHeader: React.FC<{
 }> = ({ tableName, projectInfo }) => {
   console.log(projectInfo);
   console.log(tableName);
+  
+  // 각 필드별로 영어인지 확인
+  const certifiedByText = projectInfo?.certified_by || "-";
+  const projectTitleText = projectInfo?.project_title || "-";
+  const companyText = projectInfo?.company || "-";
+  const clientText = projectInfo?.client || "-";
+  const authorText = projectInfo?.author || "-";
+  const tableText = tableName.split("_")[0];
+  
+  const isCertifiedByAscii = isAsciiOnly(certifiedByText);
+  const isProjectTitleAscii = isAsciiOnly(projectTitleText);
+  const isCompanyAscii = isAsciiOnly(companyText);
+  const isClientAscii = isAsciiOnly(clientText);
+  const isAuthorAscii = isAsciiOnly(authorText);
+  const isTableAscii = isAsciiOnly(tableText);
+  
+  console.log("Text encoding check:", {
+    certifiedBy: { text: certifiedByText, isAscii: isCertifiedByAscii },
+    projectTitle: { text: projectTitleText, isAscii: isProjectTitleAscii },
+    company: { text: companyText, isAscii: isCompanyAscii },
+    client: { text: clientText, isAscii: isClientAscii },
+    author: { text: authorText, isAscii: isAuthorAscii },
+    table: { text: tableText, isAscii: isTableAscii }
+  });
+  
   return (
     <View style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       <View style={{ marginBottom: 4 }}>
@@ -28,11 +59,13 @@ export const PDFCommonHeader: React.FC<{
         </Text>
       </View>
       <View style={{ padding: 2, borderTop: "2px solid #000" }}>
-        <Text style={pdfStyles.headerSubfont}>Certified by:</Text>
+        <Text style={isCertifiedByAscii ? pdfStyles.headerSubfont : pdfStyles.headerSubfontMultilang}>
+          Certified by: {certifiedByText}
+        </Text>
       </View>
       <View style={{ padding: 2, borderTop: "1px solid #000" }}>
-        <Text style={pdfStyles.headerSubfont}>
-          Project Title: {projectInfo?.project_title || "-"}
+        <Text style={isProjectTitleAscii ? pdfStyles.headerSubfont : pdfStyles.headerSubfontMultilang}>
+          Project Title: {projectTitleText}
         </Text>
       </View>
 
@@ -90,8 +123,8 @@ export const PDFCommonHeader: React.FC<{
                 borderBottom: "1px solid #000",
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>
-                {projectInfo?.company || "-"}
+              <Text style={isCompanyAscii ? pdfStyles.headerSubfont : pdfStyles.headerSubfontMultilang}>
+                {companyText}
               </Text>
             </View>
             <View
@@ -118,8 +151,8 @@ export const PDFCommonHeader: React.FC<{
                 borderBottom: "1px solid #000",
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>
-                {projectInfo?.client || "-"}
+              <Text style={isClientAscii ? pdfStyles.headerSubfont : pdfStyles.headerSubfontMultilang}>
+                {clientText}
               </Text>
             </View>
           </View>
@@ -149,8 +182,8 @@ export const PDFCommonHeader: React.FC<{
                 paddingLeft: 10,
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>
-                {projectInfo?.author || "-"}
+              <Text style={pdfStyles.headerSubfontMultilang}>
+                {authorText}
               </Text>
             </View>
             <View
@@ -175,8 +208,8 @@ export const PDFCommonHeader: React.FC<{
                 paddingLeft: 10,
               }}
             >
-              <Text style={pdfStyles.headerSubfont}>
-                {tableName.split("_")[0]}
+              <Text style={isTableAscii ? pdfStyles.headerSubfont : pdfStyles.headerSubfontMultilang}>
+                {tableText}
               </Text>
             </View>
           </View>
