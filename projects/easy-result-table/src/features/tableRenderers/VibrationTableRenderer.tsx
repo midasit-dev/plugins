@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
-import { truncateText, calculateMaxChars } from "./textUtils";
+import { truncateText, calculateMaxChars, isAsciiOnly } from "./textUtils";
 
 class VibrationTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -204,6 +204,8 @@ class VibrationTableRenderer implements TableRenderer {
       return row.map((cellObj: any, cellIndex: number) => {
         let value = cellObj.cell ?? cellObj;
         if (cellIndex === 0) value = parseInt(value, 10);
+        const isAscii = isAsciiOnly(String(value));
+        
         return (
           <View
             key={cellIndex}
@@ -216,7 +218,9 @@ class VibrationTableRenderer implements TableRenderer {
               },
             ]}
           >
-            <Text style={styles.tableCellFont}>{value}</Text>
+            <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+              {value}
+            </Text>
           </View>
         );
       });
@@ -293,6 +297,8 @@ class VibrationTableRenderer implements TableRenderer {
       return row.map((cellObj: any, cellIndex: number) => {
         let value = cellObj.cell ?? cellObj;
         if (cellIndex === 0) value = parseInt(value, 10);
+        const isAscii = isAsciiOnly(String(value));
+        
         return (
           <View
             key={cellIndex}
@@ -305,7 +311,9 @@ class VibrationTableRenderer implements TableRenderer {
               },
             ]}
           >
-            <Text style={styles.tableCellFont}>{value}</Text>
+            <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+              {value}
+            </Text>
           </View>
         );
       });
@@ -363,6 +371,8 @@ class VibrationTableRenderer implements TableRenderer {
         if (!isHeaderRow && cellIndex === 0) {
           value = parseInt(value, 10);
         }
+        const isAscii = isAsciiOnly(String(value));
+        
         return (
           <View
             key={cellIndex}
@@ -377,7 +387,7 @@ class VibrationTableRenderer implements TableRenderer {
           >
             <Text
               style={
-                isHeaderRow ? styles.tableHeaderFont : styles.tableCellFont
+                isHeaderRow ? styles.tableHeaderFont : (isAscii ? styles.tableCellFont : styles.tableCellFontMultilang)
               }
             >
               {value}
@@ -390,6 +400,7 @@ class VibrationTableRenderer implements TableRenderer {
     // 기본 렌더링 (다른 서브테이블에 공통 적용)
     return row.map((cellObj: any, cellIndex: number) => {
       const value = cellObj.cell ?? cellObj;
+      const isAscii = isAsciiOnly(String(value));
 
       return (
         <View
@@ -409,7 +420,7 @@ class VibrationTableRenderer implements TableRenderer {
           ]}
         >
           <Text
-            style={isHeaderRow ? styles.tableHeaderFont : styles.tableCellFont}
+            style={isHeaderRow ? styles.tableHeaderFont : (isAscii ? styles.tableCellFont : styles.tableCellFontMultilang)}
           >
             {value}
           </Text>

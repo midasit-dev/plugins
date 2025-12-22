@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
-import { truncateText, calculateMaxChars } from "./textUtils";
+import { truncateText, calculateMaxChars, isAsciiOnly } from "./textUtils";
 
 class ReactionTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -74,6 +74,7 @@ class ReactionTableRenderer implements TableRenderer {
         const maxChars = calculateMaxChars(cellWidth, 7, config.isLandscape);
         const value = actualIndex > 2 ? Number(cell).toFixed(3) : cell;
         const truncatedValue = truncateText(value, maxChars);
+        const isAscii = isAsciiOnly(truncatedValue);
 
         return (
           <View
@@ -87,7 +88,9 @@ class ReactionTableRenderer implements TableRenderer {
               },
             ]}
           >
-            <Text style={styles.tableCellFont}>{truncatedValue}</Text>
+            <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+              {truncatedValue}
+            </Text>
           </View>
         );
       });
@@ -298,21 +301,28 @@ class ReactionTableRenderer implements TableRenderer {
             <Text style={styles.tableCellFont}></Text>
           </View>,
           // 실제 데이터
-          ...row.map((cell, cellIndex) => (
-            <View
-              key={cellIndex}
-              style={[
-                styles.tableCell,
-                {
-                  width: "13%",
-                  alignItems: cellIndex >= 1 ? "flex-end" : "center",
-                  borderRightWidth: 1,
-                },
-              ]}
-            >
-              <Text style={styles.tableCellFont}>{cell}</Text>
-            </View>
-          )),
+          ...row.map((cell, cellIndex) => {
+            const cellValue = cellIndex >= 1 ? Number(cell).toFixed(3) : cell;
+            const isAscii = isAsciiOnly(String(cellValue));
+            
+            return (
+              <View
+                key={cellIndex}
+                style={[
+                  styles.tableCell,
+                  {
+                    width: "13%",
+                    alignItems: cellIndex >= 1 ? "flex-end" : "center",
+                    borderRightWidth: 1,
+                  },
+                ]}
+              >
+                <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+                  {cellValue}
+                </Text>
+              </View>
+            );
+          }),
         ];
       }
     }

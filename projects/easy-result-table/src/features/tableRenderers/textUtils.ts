@@ -17,6 +17,16 @@ export const truncateText = (text: string | number, maxLength: number): string =
 };
 
 /**
+ * 영어(ASCII) 문자만 포함되어 있는지 확인하는 함수
+ * @param str 확인할 문자열
+ * @returns ASCII만 포함하면 true, 그 외(한글, 일본어, 중국어 등) false
+ */
+export const isAsciiOnly = (str: string): boolean => {
+  if (!str) return true;
+  return /^[\x00-\x7F]*$/.test(str);
+};
+
+/**
  * 셀 너비에 따라 적절한 최대 문자 수를 계산하는 함수
  * @param widthPercent 셀 너비 (퍼센트 문자열, 예: "10%")
  * @param fontSize 폰트 크기

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
-import { truncateText, calculateMaxChars } from "./textUtils";
+import { truncateText, calculateMaxChars, isAsciiOnly } from "./textUtils";
 
 class OverturningMomentTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -429,6 +429,8 @@ class OverturningMomentTableRenderer implements TableRenderer {
 
     return filteredRow.map((cell, index) => {
       const actualIndex = index + 1;
+      const isAscii = isAsciiOnly(String(cell));
+      
       return (
         <View
           key={actualIndex}
@@ -442,7 +444,9 @@ class OverturningMomentTableRenderer implements TableRenderer {
             },
           ]}
         >
-          <Text style={styles.tableCellFont}>{cell}</Text>
+          <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+            {cell}
+          </Text>
         </View>
       );
     });
@@ -460,6 +464,8 @@ class OverturningMomentTableRenderer implements TableRenderer {
     // 1~5열 셀
     firstCells.forEach((cell, index) => {
       const actualIndex = index + 1;
+      const isAscii = isAsciiOnly(String(cell));
+      
       result.push(
         <View
           key={actualIndex}
@@ -473,7 +479,9 @@ class OverturningMomentTableRenderer implements TableRenderer {
             },
           ]}
         >
-          <Text style={styles.tableCellFont}>{cell}</Text>
+          <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+            {cell}
+          </Text>
         </View>
       );
     });
@@ -481,6 +489,8 @@ class OverturningMomentTableRenderer implements TableRenderer {
     // 13~19열 셀
     secondCells.forEach((cell, index) => {
       const actualIndex = index + 13;
+      const isAscii = isAsciiOnly(String(cell));
+      
       result.push(
         <View
           key={actualIndex}
@@ -494,7 +504,9 @@ class OverturningMomentTableRenderer implements TableRenderer {
             },
           ]}
         >
-          <Text style={styles.tableCellFont}>{cell}</Text>
+          <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+            {cell}
+          </Text>
         </View>
       );
     });

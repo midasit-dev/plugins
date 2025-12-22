@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
 import { TableData } from "../states/stateTableData";
 import { TableRenderer, TableRenderConfig, styles } from "./types";
-import { truncateText, calculateMaxChars } from "./textUtils";
+import { truncateText, calculateMaxChars, isAsciiOnly } from "./textUtils";
 
 class StoryDriftTableRenderer implements TableRenderer {
   getConfig(): TableRenderConfig {
@@ -323,6 +323,7 @@ class StoryDriftTableRenderer implements TableRenderer {
         const cellWidth = config.columnWidths[actualIndex];
         const maxChars = calculateMaxChars(cellWidth, 7, config.isLandscape);
         const truncatedCell = truncateText(cell, maxChars);
+        const isAscii = isAsciiOnly(truncatedCell);
         
         return (
           <View
@@ -343,7 +344,9 @@ class StoryDriftTableRenderer implements TableRenderer {
               },
             ]}
           >
-            <Text style={styles.tableCellFont}>{truncatedCell}</Text>
+            <Text style={isAscii ? styles.tableCellFont : styles.tableCellFontMultilang}>
+              {truncatedCell}
+            </Text>
           </View>
         );
       });

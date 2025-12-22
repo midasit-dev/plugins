@@ -59,6 +59,13 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     overflow: "hidden", // 텍스트 넘침 방지
   },
+  // 데이터 폰트 스타일 (다국어 - 한글, 일본어, 중국어 등)
+  tableCellFontMultilang: {
+    fontSize: 7,
+    textAlign: "center",
+    overflow: "hidden",
+    fontFamily: "NotoSans",
+  },
   // 헤더 셀 스타일 (4줄 헤더)
   tableHeaderQuadruple: {
     padding: 2,
