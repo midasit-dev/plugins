@@ -7,6 +7,12 @@ const pdfStyles = StyleSheet.create({
   headerSubfontMultilang: { fontSize: 10, fontFamily: "NotoSans" },
 });
 
+// 이미지 URL 생성 함수 (빌드 환경에서도 작동)
+const getImageUrl = (path: string) => {
+  const baseUrl = process.env.PUBLIC_URL || window.location.origin;
+  return `${baseUrl}${path}`;
+};
+
 // 영어(ASCII) 문자만 포함되어 있는지 확인하는 함수
 const isAsciiOnly = (str: string): boolean => {
   return /^[\x00-\x7F]*$/.test(str);
@@ -87,7 +93,10 @@ export const PDFCommonHeader: React.FC<{
             alignItems: "center",
           }}
         >
-          <Image style={{ width: "80px" }} src="/images/MIDAS_logo_color.png" />
+          <Image 
+            style={{ width: "80px" }} 
+            src={getImageUrl("/images/MIDAS_logo_color.png")} 
+          />
         </View>
         <View
           style={{

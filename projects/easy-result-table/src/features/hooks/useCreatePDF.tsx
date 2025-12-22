@@ -8,10 +8,15 @@ import { PDFCommonHeader } from "../tableRenderers/CommonHeader";
 import { PDFCommonFooter } from "../tableRenderers/CommonFooter";
 
 // 다국어 지원 폰트 등록 (Noto Sans CJK - 한글, 일본어, 중국어 등 지원)
-// PUBLIC_URL을 사용하여 빌드 환경에서도 안정적으로 로드
+// 절대 경로로 폰트 로드 (빌드 환경에서도 작동)
+const getFontUrl = () => {
+  const baseUrl = process.env.PUBLIC_URL || window.location.origin;
+  return `${baseUrl}/fonts/NotoSansCJK-Regular.ttf`;
+};
+
 Font.register({
   family: "NotoSans",
-  src: `${process.env.PUBLIC_URL || ""}/fonts/NotoSansCJK-Regular.ttf`,
+  src: getFontUrl(),
 });
 
 // PDF 테이블 관련 타입 정의
