@@ -10,24 +10,24 @@ class OverturningMomentTableRenderer implements TableRenderer {
       isLandscape: true, // 가로 모드
       columnWidths: {
         // 첫 번째 테이블: 1~12열
-        1: "7.0%",
-        2: "7.0%",
+        1: "12.0%",
+        2: "6.0%",
         3: "7.0%",
         4: "7.0%",
         5: "7.0%",
         6: "5.0%",
         7: "10.0%",
-        8: "10.0%",
+        8: "8.0%",
         9: "10.0%",
-        10: "10.0%",
+        10: "8.0%",
         11: "10.0%",
         12: "10.0%",
         // 두 번째 테이블: 1~5, 13~19열
         13: "5.0%",
         14: "10.0%",
-        15: "10.0%",
+        15: "8.0%",
         16: "10.0%",
-        17: "10.0%",
+        17: "8.0%",
         18: "10.0%",
         19: "10.0%",
       },
@@ -439,7 +439,7 @@ class OverturningMomentTableRenderer implements TableRenderer {
             {
               width: columnWidths[actualIndex],
               // 1, 2열을 제외하고 모두 우측 정렬
-              alignItems: "flex-end",
+              alignItems: actualIndex === 1 || actualIndex === 2 ? "center" : "flex-end",
               borderRightWidth: actualIndex === 12 ? 0 : 1,
             },
           ]}
@@ -474,7 +474,7 @@ class OverturningMomentTableRenderer implements TableRenderer {
             {
               width: columnWidths[actualIndex],
               // 1, 2열을 제외하고 모두 우측 정렬
-              alignItems: "flex-end",
+              alignItems: actualIndex === 1 || actualIndex === 2 ? "center" : "flex-end",
               borderRightWidth: 1,
             },
           ]}
@@ -499,7 +499,7 @@ class OverturningMomentTableRenderer implements TableRenderer {
             {
               width: columnWidths[actualIndex],
               // 1, 2열을 제외하고 모두 우측 정렬
-              alignItems: "flex-end",
+              alignItems: actualIndex === 1 || actualIndex === 2 ? "center" : "flex-end",
               borderRightWidth: actualIndex === 19 ? 0 : 1,
             },
           ]}

@@ -9,7 +9,7 @@ class WeightIrregularityCheckTableRenderer implements TableRenderer {
     return {
       isLandscape: true, // 가로 모드
       columnWidths: {
-        1: "10%",
+        1: "12%",
         2: "10%",
         3: "10%",
         4: "10%",
@@ -18,7 +18,7 @@ class WeightIrregularityCheckTableRenderer implements TableRenderer {
         7: "10%",
         8: "10%",
         9: "10%",
-        10: "10%",
+        10: "8%",
       },
       styles,
       repeatHeader: true, // 페이지마다 헤더 반복

@@ -9,14 +9,14 @@ class StoryDisplacementTableRenderer implements TableRenderer {
     return {
       isLandscape: false, // 세로 모드
       columnWidths: {
-        1: "9%",
-        2: "10%",
-        3: "10%",
-        4: "13%",
+        1: "15%",
+        2: "9%",
+        3: "9%",
+        4: "12%",
         5: "13%",
-        6: "15%",
-        7: "15%",
-        8: "15%",
+        6: "14%",
+        7: "14%",
+        8: "14%",
       },
       styles,
       repeatHeader: true, // 페이지마다 헤더 반복

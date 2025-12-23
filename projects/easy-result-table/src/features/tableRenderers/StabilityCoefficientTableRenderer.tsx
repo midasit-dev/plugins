@@ -9,7 +9,7 @@ class StabilityCoefficientTableRenderer implements TableRenderer {
     return {
       isLandscape: true, // 가로 모드
       columnWidths: {
-        1: "8%",
+        1: "12%",
         2: "8%",
         3: "8%",
         4: "10%",
@@ -18,7 +18,7 @@ class StabilityCoefficientTableRenderer implements TableRenderer {
         7: "8%",
         8: "10%",
         9: "10%",
-        10: "8%",
+        10: "6%",
         11: "10%",
       },
       styles,

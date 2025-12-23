@@ -9,15 +9,15 @@ class TorsionalAmplificationFactorTableRenderer implements TableRenderer {
     return {
       isLandscape: false, // 세로 모드
       columnWidths: {
-        1: "9%",
-        2: "9%",
+        1: "13.5%",
+        2: "7.5%",
         3: "11.0%",
         4: "11.0%",
         5: "13.5%",
-        6: "10.0%",
-        7: "13.5%",
+        6: "8%",
+        7: "12%",
         8: "13.5%",
-        9: "13.5%",
+        9: "12%",
       },
       styles,
       repeatHeader: true, // 페이지마다 헤더 반복

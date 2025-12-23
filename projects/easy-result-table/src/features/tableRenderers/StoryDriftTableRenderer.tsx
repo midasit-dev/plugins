@@ -9,21 +9,21 @@ class StoryDriftTableRenderer implements TableRenderer {
     return {
       isLandscape: true, // 가로 모드
       columnWidths: {
-        1: "6.0%",
-        2: "6.0%",
-        3: "7.6%",
-        4: "6.7%",
-        5: "6.7%",
-        6: "7.0%",
+        1: "10%",
+        2: "5%",
+        3: "7%",
+        4: "7%",
+        5: "7%",
+        6: "5%",
         7: "7.0%",
         8: "7.0%",
         9: "7.0%",
-        10: "5.5%",
+        10: "5.0%",
         11: "7.0%",
         12: "7.0%",
         13: "7.0%",
         14: "7.0%",
-        15: "5.5%",
+        15: "5.0%",
       },
       styles,
       repeatHeader: true, // 페이지마다 헤더 반복
@@ -41,7 +41,7 @@ class StoryDriftTableRenderer implements TableRenderer {
 
     // 데이터를 활용한 하드코딩 헤더 구현
     return [
-      <View key="header-row" style={styles.mainTableRow}>
+      <View key="header-row" style={[styles.mainTableRow, {borderTopWidth: 1}]}>
         <View
           style={[
             styles.tableHeaderQuadruple,
@@ -372,7 +372,7 @@ class StoryDriftTableRenderer implements TableRenderer {
       console.log("추가할 ADDTIONAL 문자열:", additionalString);
 
       result.push(
-        <View key="additional-row" style={styles.mainTableRow}>
+        <View key="additional-row" style={[styles.mainTableRow, {borderTopWidth: 1}]}>
           <View
             style={[
               styles.tableHeaderSingle,

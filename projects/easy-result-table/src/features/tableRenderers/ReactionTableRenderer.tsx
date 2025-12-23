@@ -9,8 +9,8 @@ class ReactionTableRenderer implements TableRenderer {
     return {
       isLandscape: false,
       columnWidths: {
-        1: "9%",
-        2: "13%",
+        1: "7%",
+        2: "15%",
         3: "13%",
         4: "13%",
         5: "13%",
@@ -22,6 +22,10 @@ class ReactionTableRenderer implements TableRenderer {
       repeatHeader: true, // 페이지마다 헤더 반복
       pageHeight: 562, // 세로모드: 562pt
     };
+  }
+
+  private cw(index: number): string {
+    return this.getConfig().columnWidths[index] ?? "0%";
   }
 
   // 공통 헤더 랜더링
@@ -228,14 +232,18 @@ class ReactionTableRenderer implements TableRenderer {
     const isSummaryRow = rowIndex >= mainDataLength;
 
     if (isSummaryRow) {
+      const columnWidths = this.getConfig().columnWidths;
       // 요약 테이블 제목 다음 행은 헤더
       const isSummaryHeader = rowIndex === mainDataLength + 1;
 
       if (isSummaryHeader) {
+
         // 요약 테이블 헤더는 공통 헤더의 2,3,4,5열 값을 사용
         const commonHeaders =
           originalData.HEAD?.filter((_, index) => index >= 2 && index <= 5) ||
           [];
+
+        let force = (originalData.FORCE || "").replace(/[^N]/g, (m) => m.toLowerCase());
 
         return [
           // 왼쪽 빈칸
@@ -244,7 +252,7 @@ class ReactionTableRenderer implements TableRenderer {
             style={[
               styles.tableHeaderDouble,
               {
-                width: "9%",
+                width: columnWidths[1],
                 borderRightWidth: 1,
                 backgroundColor: "#fff",
               },
@@ -252,16 +260,13 @@ class ReactionTableRenderer implements TableRenderer {
           >
             <Text style={styles.tableHeaderFont}></Text>
           </View>,
+
           // 공통 헤더의 2,3,4,5열 값 사용
           ...commonHeaders.map((header, cellIndex) => {
             const actualIndex = cellIndex + 2; // 2,3,4,5열
-            let force = originalData.FORCE || "";
-
-            force = force.replace(/[^N]/g, (match) => match.toLowerCase());
-
             let main = header;
             let sub = "";
-
+            
             if (actualIndex >= 3 && actualIndex <= 5) {
               main = header.split("(")[0];
               sub = `(${force})`;
@@ -269,11 +274,11 @@ class ReactionTableRenderer implements TableRenderer {
 
             return (
               <View
-                key={cellIndex}
+                key={`summary-header-${actualIndex}`}
                 style={[
                   styles.tableHeaderDouble,
                   {
-                    width: "13%",
+                    width: columnWidths[actualIndex],
                     borderRightWidth: 1,
                   },
                 ]}
@@ -293,7 +298,7 @@ class ReactionTableRenderer implements TableRenderer {
             style={[
               styles.tableCell,
               {
-                width: "9%",
+                width: columnWidths[1],
                 borderRightWidth: 1,
               },
             ]}
@@ -302,16 +307,17 @@ class ReactionTableRenderer implements TableRenderer {
           </View>,
           // 실제 데이터
           ...row.map((cell, cellIndex) => {
+            const actualIndex = cellIndex + 2; // 데이터가 4개면 2~5로 매핑
             const cellValue = cellIndex >= 1 ? Number(cell).toFixed(3) : cell;
             const isAscii = isAsciiOnly(String(cellValue));
             
             return (
               <View
-                key={cellIndex}
+                key={`summary-data-${rowIndex}-${actualIndex}`}
                 style={[
                   styles.tableCell,
                   {
-                    width: "13%",
+                    width: columnWidths[actualIndex],
                     alignItems: cellIndex >= 1 ? "flex-end" : "center",
                     borderRightWidth: 1,
                   },

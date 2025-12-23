@@ -9,18 +9,18 @@ class StiffnessIrregularityCheckTableRenderer implements TableRenderer {
     return {
       isLandscape: true, // 가로 모드
       columnWidths: {
-        1: "5%",
+        1: "10%",
         2: "5%",
-        3: "9%",
-        4: "9%",
-        5: "9%",
-        6: "9%",
-        7: "9%",
+        3: "6%",
+        4: "8%",
+        5: "8%",
+        6: "10%",
+        7: "10%",
         8: "9%",
         9: "9%",
         10: "9%",
         11: "9%",
-        12: "9%",
+        12: "7%",
       },
       styles,
       repeatHeader: true, // 페이지마다 헤더 반복
@@ -114,7 +114,7 @@ class StiffnessIrregularityCheckTableRenderer implements TableRenderer {
                     styles.tableHeaderDoubleType2,
                     {
                       width: this.convertWidth(
-                        columnWidths[7 + index * 2],
+                        columnWidths[9 + index * 2],
                         this.sumWidth(
                           columnWidths,
                           8 + index * 2,

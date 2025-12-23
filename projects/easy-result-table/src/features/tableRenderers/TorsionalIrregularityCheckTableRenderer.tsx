@@ -9,14 +9,14 @@ class TorsionalIrregularityCheckTableRenderer implements TableRenderer {
     return {
       isLandscape: false, // 세로 모드
       columnWidths: {
-        1: "9%",
-        2: "9%",
+        1: "15%",
+        2: "8%",
         3: "12%",
         4: "12%",
         5: "12%",
         6: "12%",
-        7: "12%",
-        8: "12%",
+        7: "9%",
+        8: "10%",
         9: "10%",
       },
       styles,
