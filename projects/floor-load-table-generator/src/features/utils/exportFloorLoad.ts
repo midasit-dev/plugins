@@ -1,4 +1,5 @@
 import { FloorLoadState } from "../states/stateFloorLoad";
+import { calculateLoad } from "./loadCalculation";
 import { midasAPI } from "./common";
 import { validateAndShowMessage } from "./inputValidation";
 
@@ -231,7 +232,7 @@ export const exportFloorLoad = async (
 
         // dead_load의 합 계산
         const deadLoadSum = tableSetting.dead_load.reduce(
-          (sum, load) => sum + load.load,
+          (sum, item) => sum + calculateLoad(item),
           0
         );
 
