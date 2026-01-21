@@ -4,6 +4,11 @@
 
 ## Details
 
+### Version 1.1.0
+
+- An issue where Mode Numbers were not displayed has been fixed.
+- An issue causing broken icons has been fixed.
+
 ### Version 1.0.0
 
 - This plugin helps you **automatically generate multiple prints** by **saving the settings information** of the Result Graphic and using the saved files.

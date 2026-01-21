@@ -32,7 +32,7 @@ export const PrintSize = () => {
                     <ImageTextButton iconSrc="svg/A4.svg" text="3508x2480" isActive={printSize == "A4"} onClick={() => { setPrintSize("A4"); setPrintSizeH(3508); setPrintSizeV(2480); setPrintSizeUser(false); }} />
                     <ImageTextButton iconSrc="svg/FHD.svg" text="1920x1080" isActive={printSize == "FHD"} onClick={() => { setPrintSize("FHD"); setPrintSizeH(1920); setPrintSizeV(1080); setPrintSizeUser(false); }} />
                     <ImageTextButton iconSrc="svg/HD.svg" text="1366x768" isActive={printSize == "HD"} onClick={() => { setPrintSize("HD"); setPrintSizeH(1366); setPrintSizeV(768); setPrintSizeUser(false); }} />
-                    <ImageTextButton iconSrc="svg/user.svg" text="HxV" isActive={printSize == "USER"} onClick={() => { setPrintSize("USER"); setPrintSizeUser(true); }} />
+                    <ImageTextButton iconSrc="svg/User.svg" text="HxV" isActive={printSize == "USER"} onClick={() => { setPrintSize("USER"); setPrintSizeUser(true); }} />
                 </GuideBox>
                 <GuideBox horSpaceBetween row spacing={0.25}>
                     <TextField value={printSizeH} disabled={!printSizeUser} onChange={(e) => setPrintSizeH(e.target.value)} />
