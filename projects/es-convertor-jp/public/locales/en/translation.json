@@ -1,6 +1,69 @@
 {
-  "welcome_midas_plugin": "Welcome, This is a MIDAS Plug-in CRA Template!",
-  "dev_mode_developing": "We are currently developing the dev mode to make the plug-in item more convenient",
-  "turn_on_development_mode": "To turn on the development mode, open the windows terminal.",
-  "type_command_below": "And type the command below."
+  "app": {
+    "title": "ES Convertor",
+    "subtitle": "ES to MIDAS Civil NX Converter",
+    "footer": "ES Convertor - MIDAS IT",
+    "nodeCount": "Nodes",
+    "elementCount": "Elements",
+    "converting": "Converting...",
+    "convertToMCT": "Convert to MCT",
+    "noDataHint": "Enter data or import an Excel file to start",
+    "conversionError": "Conversion error"
+  },
+  "sheets": {
+    "node": "Nodes",
+    "frame": "Frames",
+    "planeElement": "Planes",
+    "rigid": "Rigid",
+    "material": "Materials",
+    "numbSect": "Num.Sect",
+    "sectElem": "Sect.Elem",
+    "section": "Sections",
+    "plnSect": "Pln.Sect",
+    "hingeProp": "Hinge.Prop",
+    "hingeAss": "Hinge.Ass",
+    "spring": "Springs",
+    "spg6Comp": "Spg.6Comp",
+    "spgAllSym": "Spg.Sym",
+    "spgAllASym": "Spg.ASym",
+    "spgAllOther": "Spg.Other",
+    "fulcrum": "Supports",
+    "fulcrumDetail": "Supp.Detail",
+    "nodalMass": "Mass",
+    "load": "Loads",
+    "internalForce": "Int.Force"
+  },
+  "sheetTabs": {
+    "importExcel": "Import Excel",
+    "loading": "Loading...",
+    "rowCount": "{{count}} rows",
+    "dataHint": "Paste data or import an Excel file",
+    "reset": "Reset",
+    "resetTitle": "Reset All Data",
+    "resetMessage": "Are you sure you want to reset all data? This action cannot be undone.",
+    "resetConfirm": "Reset",
+    "cancel": "Cancel"
+  },
+  "conversionModal": {
+    "title": "Conversion Result",
+    "errorTitle": "Conversion Failed",
+    "preview": "MCT Preview:",
+    "errors": "Errors:",
+    "warnings": "Warnings:",
+    "download": "Download",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close",
+    "sendToCivilNX": "Send to Civil NX",
+    "tabHint": "All actions below apply to the selected version tab."
+  },
+  "spreadsheet": {
+    "pasteHere": "Paste here",
+    "insert": "Insert",
+    "delete": "Delete",
+    "insertRow": "Insert row",
+    "deleteRow": "Delete row",
+    "reset": "Reset",
+    "rowCount": "{{count}} rows"
+  }
 }

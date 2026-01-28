@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GuideBox, Panel, MidasController } from "@midasit-dev/moaui";
 import { default as ToolsHome } from "./PanelRight";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const App = (props: any) => {
   const { children, title, setTitle, containerSize, setContainerSize, bgColor, setBgColor } = props;

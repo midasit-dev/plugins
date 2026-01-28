@@ -75,8 +75,16 @@ const ValidWrapper = (props: any) => {
 }, [isInitialized, isValid]);
 
 React.useEffect(() => {
-	if (window.location.pathname === "/") window.location.pathname = "/en";
-	i18n.changeLanguage(window.location.pathname.split("/")[1]);
+	if (window.location.pathname === "/") {
+		window.location.pathname = "/ja";  // Default to Japanese
+		return;  // Don't call changeLanguage, will re-run after redirect
+	}
+	const lang = window.location.pathname.split("/")[1];
+	if (lang === 'ja' || lang === 'en') {
+		i18n.changeLanguage(lang);
+	} else {
+		i18n.changeLanguage('ja');  // Default to Japanese
+	}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [window.location.pathname]);
 

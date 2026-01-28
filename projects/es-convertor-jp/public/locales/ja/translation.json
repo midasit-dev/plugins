@@ -1,6 +1,69 @@
 {
-  "welcome_midas_plugin": "ようこそ、これはMIDASプラグインCRAテンプレートです！",
-  "dev_mode_developing": "現在、プラグインアイテムをより便利にするために開発モードを開発中です",
-  "turn_on_development_mode": "開発モードをオンにするには、Windowsターミナルを開いてください。",
-  "type_command_below": "そして、以下のコマンドを入力してください。"
+  "app": {
+    "title": "ES Convertor",
+    "subtitle": "ES to MIDAS Civil NX 変換ツール",
+    "footer": "ES Convertor - MIDAS IT",
+    "nodeCount": "節点数",
+    "elementCount": "要素数",
+    "converting": "変換中...",
+    "convertToMCT": "MCTに変換",
+    "noDataHint": "データを入力するか、Excelファイルをインポートしてください",
+    "conversionError": "変換エラー"
+  },
+  "sheets": {
+    "node": "節点座標",
+    "frame": "フレーム",
+    "planeElement": "面要素",
+    "rigid": "剛体",
+    "material": "材料",
+    "numbSect": "数値断面",
+    "sectElem": "断面要素",
+    "section": "断面特性",
+    "plnSect": "面断面",
+    "hingeProp": "M-φ詳細",
+    "hingeAss": "M-φ入力",
+    "spring": "ばね要素",
+    "spg6Comp": "ばね6成分",
+    "spgAllSym": "ばね対称",
+    "spgAllASym": "ばね非対称",
+    "spgAllOther": "ばね他",
+    "fulcrum": "支点",
+    "fulcrumDetail": "支点詳細",
+    "nodalMass": "節点質量",
+    "load": "荷重仕様",
+    "internalForce": "内力"
+  },
+  "sheetTabs": {
+    "importExcel": "Excelインポート",
+    "loading": "読み込み中...",
+    "rowCount": "{{count}} 行",
+    "dataHint": "データを貼り付けるか、Excelファイルをインポートしてください",
+    "reset": "リセット",
+    "resetTitle": "データの初期化",
+    "resetMessage": "すべてのデータを初期化しますか？この操作は元に戻せません。",
+    "resetConfirm": "初期化",
+    "cancel": "キャンセル"
+  },
+  "conversionModal": {
+    "title": "変換結果",
+    "errorTitle": "変換失敗",
+    "preview": "MCTプレビュー:",
+    "errors": "エラー:",
+    "warnings": "警告:",
+    "download": "ダウンロード",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "close": "閉じる",
+    "sendToCivilNX": "Civil NXに送信",
+    "tabHint": "以下のすべての操作は、選択中のバージョンタブに適用されます。"
+  },
+  "spreadsheet": {
+    "pasteHere": "ここに貼り付け",
+    "insert": "挿入",
+    "delete": "削除",
+    "insertRow": "行を挿入",
+    "deleteRow": "行を削除",
+    "reset": "リセット",
+    "rowCount": "{{count}} 行"
+  }
 }
