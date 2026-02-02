@@ -9,7 +9,7 @@ import {
   Button,
   Typography,
 } from '@midasit-dev/moaui';
-import { Tabs, Tab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { Tabs, Tab, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Backdrop, CircularProgress } from '@mui/material';
 import SpreadsheetEditor, { SpreadsheetColumn } from './SpreadsheetEditor';
 import { SHEET_NAMES, SHEET_CONFIGS } from '../constants/sheetNames';
 import { parseExcelFile } from '../parsers/ExcelParser';
@@ -592,7 +592,7 @@ const SheetTabs = forwardRef<SheetTabsRef, SheetTabsProps>(({ onDataChanged }, r
                 borderRadius: '4px 4px 0 0',
               }}
             >
-              軸zp
+              {t('subTabs.axisZp')}
               {hingePropZpData.length > 0 && (
                 <span style={{ marginLeft: '4px', fontSize: '11px', color: '#999' }}>
                   ({hingePropZpData.length})
@@ -613,7 +613,7 @@ const SheetTabs = forwardRef<SheetTabsRef, SheetTabsProps>(({ onDataChanged }, r
                 borderRadius: '4px 4px 0 0',
               }}
             >
-              軸yp
+              {t('subTabs.axisYp')}
               {hingePropYpData.length > 0 && (
                 <span style={{ marginLeft: '4px', fontSize: '11px', color: '#999' }}>
                   ({hingePropYpData.length})
@@ -658,10 +658,10 @@ const SheetTabs = forwardRef<SheetTabsRef, SheetTabsProps>(({ onDataChanged }, r
           {/* Sub-tabs */}
           <div style={{ display: 'flex', gap: '4px', height: SUB_TAB_HEIGHT, alignItems: 'center' }}>
             {[
-              { key: 'linear', label: '①線形', data: spgAllSymLinearData },
-              { key: 'bilinear', label: '②バイリニア', data: spgAllSymBilinearData },
-              { key: 'trilinear', label: '③トリリニア', data: spgAllSymTrilinearData },
-              { key: 'tetralinear', label: '④テトラリニア', data: spgAllSymTetralinearData },
+              { key: 'linear', label: t('subTabs.linear'), data: spgAllSymLinearData },
+              { key: 'bilinear', label: t('subTabs.bilinear'), data: spgAllSymBilinearData },
+              { key: 'trilinear', label: t('subTabs.trilinear'), data: spgAllSymTrilinearData },
+              { key: 'tetralinear', label: t('subTabs.tetralinear'), data: spgAllSymTetralinearData },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -748,9 +748,9 @@ const SheetTabs = forwardRef<SheetTabsRef, SheetTabsProps>(({ onDataChanged }, r
           {/* Sub-tabs */}
           <div style={{ display: 'flex', gap: '4px', height: SUB_TAB_HEIGHT, alignItems: 'center' }}>
             {[
-              { key: 'bilinear', label: '①バイリニア', data: spgAllASymBilinearData },
-              { key: 'trilinear', label: '②トリリニア', data: spgAllASymTrilinearData },
-              { key: 'tetralinear', label: '③テトラリニア', data: spgAllASymTetralinearData },
+              { key: 'bilinear', label: t('subTabs.bilinear'), data: spgAllASymBilinearData },
+              { key: 'trilinear', label: t('subTabs.trilinear'), data: spgAllASymTrilinearData },
+              { key: 'tetralinear', label: t('subTabs.tetralinear'), data: spgAllASymTetralinearData },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -818,14 +818,14 @@ const SheetTabs = forwardRef<SheetTabsRef, SheetTabsProps>(({ onDataChanged }, r
         </div>
       )}
 
-      {/* SPGAllOther - Sub-tabs for 2 tables: 名古屋高速ゴム支承, BMR(CD)ダンパー */}
+      {/* SPGAllOther - Sub-tabs for 2 tables: Nagoya Rubber Bearing, BMR(CD) Damper */}
       {activeTab === 'spgAllOther' && (
         <div style={{ height: SPREADSHEET_CONTAINER_HEIGHT, width: '100%' }}>
           {/* Sub-tabs */}
           <div style={{ display: 'flex', gap: '4px', height: SUB_TAB_HEIGHT, alignItems: 'center' }}>
             {[
-              { key: 'nagoya', label: '①名古屋高速ゴム支承', data: spgAllOtherNagoyaData },
-              { key: 'bmr', label: '②BMR(CD)ダンパー', data: spgAllOtherBmrData },
+              { key: 'nagoya', label: t('subTabs.nagoya'), data: spgAllOtherNagoyaData },
+              { key: 'bmr', label: t('subTabs.bmr'), data: spgAllOtherBmrData },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -900,6 +900,27 @@ const SheetTabs = forwardRef<SheetTabsRef, SheetTabsProps>(({ onDataChanged }, r
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Loading Overlay */}
+      <Backdrop
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+        open={isLoading}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+          <CircularProgress color="inherit" size={48} />
+          <span style={{ color: '#fff', fontSize: 14 }}>
+            {t('sheetTabs.loading')}
+          </span>
+        </div>
+      </Backdrop>
     </GuideBox>
   );
 });

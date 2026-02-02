@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\" /s)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(dir \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\\\\src\")",
+      "Bash(dir /s \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\\\\src\\\\basicVBA\")",
+      "Bash(dir \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\\\\src\\\\basicVBA\\\\Class\")",
+      "Bash(wc:*)",
+      "WebSearch",
+      "Bash(timeout 15 npm start)",
+      "Bash(node:*)",
+      "Bash(grep:*)",
+      "Bash(iconv:*)",
+      "Bash(xxd:*)",
+      "Bash(if not exist \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\\\\src\\\\basicVBA\" mkdir \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\\\\src\\\\basicVBA\")",
+      "Bash(dir /s \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\")",
+      "Bash(findstr:*)",
+      "Bash(npm ls:*)",
+      "Bash(dir \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\\\\examples\")",
+      "Bash(dir \"C:\\\\MIDAS\\\\plugins\\\\projects\\\\es-convertor-jp\")",
+      "Bash(npx ts-node:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

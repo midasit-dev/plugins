@@ -77,15 +77,22 @@ export function readFrameSectionNames(
     const row = rawData[i];
     if (!row[0] || String(row[0]).trim() === '') continue;
 
+    const elemId = String(row[0]);
     const node1 = String(row[1]);
     const node2 = String(row[2]);
     const iSectName = String(row[4] || '');
     const jSectName = String(row[5] || '');
 
-    // Store element nodes mapping
-    context.elementNodes.set(parseInt(String(row[0]), 10) || i + 1, {
+    // Store element nodes mapping (by element number)
+    context.elementNodes.set(parseInt(elemId, 10) || i + 1, {
       node1: context.nodeMapping.get(node1) || 0,
       node2: context.nodeMapping.get(node2) || 0,
+    });
+
+    // Store element node names mapping (by element ID string) - for LoadConverter
+    context.elemNodeNames.set(elemId, {
+      nodeI: node1,
+      nodeJ: node2,
     });
 
     // Collect section names

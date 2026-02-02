@@ -86,6 +86,13 @@ export function convertNodes(
   for (const node of nodes) {
     const nodeNo = context.nodeMapping.get(node.id)!;
 
+    // Store original coordinates for reference (needed by LoadConverter)
+    context.originalNodeCoords.set(node.id, {
+      x: node.x,
+      y: node.y,
+      z: node.z,
+    });
+
     // Transform coordinates: ES (X, Y, Z) → MIDAS (X, -Z, Y)
     let transformed = transformCoordinate({
       x: node.x,

@@ -8,7 +8,9 @@
     "converting": "Converting...",
     "convertToMCT": "Convert to MCT",
     "noDataHint": "Enter data or import an Excel file to start",
-    "conversionError": "Conversion error"
+    "conversionError": "Conversion error",
+    "exampleData": "Examples",
+    "exportExcel": "Export Excel"
   },
   "sheets": {
     "node": "Nodes",
@@ -32,6 +34,16 @@
     "nodalMass": "Mass",
     "load": "Loads",
     "internalForce": "Int.Force"
+  },
+  "subTabs": {
+    "axisZp": "zp",
+    "axisYp": "yp",
+    "linear": "Linear",
+    "bilinear": "Bilinear",
+    "trilinear": "Trilinear",
+    "tetralinear": "Tetralinear",
+    "nagoya": "Nagoya Rubber",
+    "bmr": "BMR(CD) Damper"
   },
   "sheetTabs": {
     "importExcel": "Import Excel",

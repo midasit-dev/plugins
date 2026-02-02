@@ -23,9 +23,9 @@ import { convertHingeProperties, readHingeProperties } from '../converters/Hinge
 import { convertHingeAssignments } from '../converters/HingeAssConverter';
 import { convertSpringElements, getSpringDoublePoints } from '../converters/ElemSpringConverter';
 import { parseSPG6CompData } from '../converters/SPG6CompConverter';
-import { convertSymmetricSprings } from '../converters/SPGAllSymConverter';
-import { convertAsymmetricSprings } from '../converters/SPGAllASymConverter';
-import { convertOtherSprings } from '../converters/SPGAllOtherConverter';
+import { convertSymmetricSprings, convertSymmetricSpringsWithTables, parseSymmetricSpringTables } from '../converters/SPGAllSymConverter';
+import { convertAsymmetricSprings, convertAsymmetricSpringsWithTables, parseAsymmetricSpringTables } from '../converters/SPGAllASymConverter';
+import { convertOtherSprings, convertOtherSpringsWithTables } from '../converters/SPGAllOtherConverter';
 import { convertFulcrum } from '../converters/FulcrumConverter';
 import { convertFulcrumDetail } from '../converters/FulcDetailConverter';
 import { convertNodalMass } from '../converters/NodalMassConverter';
@@ -55,6 +55,17 @@ export async function generateMCT(
     };
 
     report(0, '変換を開始します...');
+
+    // Debug: Log sheet data counts
+    console.log('=== MCT Generator Debug ===');
+    console.log('--- Sheets ---');
+    for (const [name, sheet] of sheets) {
+      console.log(`Sheet "${name}": ${sheet.data.length} rows`);
+    }
+    console.log('--- SubTables ---');
+    for (const [name, data] of parseResult.subTables) {
+      console.log(`SubTable "${name}": ${data.length} rows`);
+    }
 
     // Add header with version info
     mctLines.push(`; MIDAS/CIVIL NX ${version} Text Data File`);
@@ -176,10 +187,14 @@ export async function generateMCT(
     }
 
     // Step 8: Convert plane sections
+    let plnSectMapping = new Map<string, { sectNo: number; materialName: string }>();
     if (hasSheet(sheets, SHEET_NAMES.PLN_SECT)) {
       const plnSectData = getSheetDataForConversion(sheets, SHEET_NAMES.PLN_SECT);
+      console.log('PLN_SECT data rows:', plnSectData.length);
       const plnSectResult = convertPlnSections(plnSectData, context);
-      if (plnSectResult.mctLines.length > 2) {
+      plnSectMapping = plnSectResult.plnSectMapping;
+      // PlnSectConverter adds 1 comment line, so check > 1 for data
+      if (plnSectResult.mctLines.length > 1) {
         mctLines.push(...plnSectResult.mctLines);
         mctLines.push('');
       }
@@ -197,8 +212,10 @@ export async function generateMCT(
 
     // Step 10: Convert frame elements
     report(45, 'フレーム要素を変換中...');
+    console.log('Frame data rows:', frameData.length);
     if (frameData.length > 0) {
       const frameResult = convertFrames(frameData, context);
+      console.log('Frame result mctLines:', frameResult.mctLines.length);
       mctLines.push(...frameResult.mctLines);
       mctLines.push('');
     }
@@ -206,10 +223,11 @@ export async function generateMCT(
     // Step 11: Convert plane elements
     if (hasSheet(sheets, SHEET_NAMES.PLANE_ELEMENT)) {
       const plnElmData = getSheetDataForConversion(sheets, SHEET_NAMES.PLANE_ELEMENT);
+      console.log('PLANE_ELEMENT data rows:', plnElmData.length);
       const plnElmResult = convertPlaneElements(
         plnElmData,
         context,
-        new Map() // plnSectMapping - would need to pass from PlnSect conversion
+        plnSectMapping
       );
       if (plnElmResult.mctLines.length > 2) {
         mctLines.push(...plnElmResult.mctLines);
@@ -219,8 +237,11 @@ export async function generateMCT(
 
     // Step 12: Convert rigid elements
     report(50, '剛体要素を変換中...');
+    console.log('Rigid data rows:', rigidData.length);
     if (rigidData.length > 0) {
       const rigidResult = convertRigid(rigidData, context);
+      console.log('Rigid result mctLinesRigid:', rigidResult.mctLinesRigid.length);
+      // RigidConverter adds 2 comment lines, so check > 2 for data
       if (rigidResult.mctLinesRigid.length > 2) {
         mctLines.push(...rigidResult.mctLinesRigid);
         mctLines.push('');
@@ -269,6 +290,61 @@ export async function generateMCT(
       const spg6Data = getSheetDataForConversion(sheets, SHEET_NAMES.SPG_6COMP);
       const spg6Result = parseSPG6CompData(spg6Data, context);
 
+      // Get all spring subTable data
+      const spgSymLinear = parseResult.subTables.get('SPG_ALL_SYM_LINEAR') || [];
+      const spgSymBilinear = parseResult.subTables.get('SPG_ALL_SYM_BILINEAR') || [];
+      const spgSymTrilinear = parseResult.subTables.get('SPG_ALL_SYM_TRILINEAR') || [];
+      const spgSymTetralinear = parseResult.subTables.get('SPG_ALL_SYM_TETRALINEAR') || [];
+      const spgAsymBilinear = parseResult.subTables.get('SPG_ALL_ASYM_BILINEAR') || [];
+      const spgAsymTrilinear = parseResult.subTables.get('SPG_ALL_ASYM_TRILINEAR') || [];
+      const spgAsymTetralinear = parseResult.subTables.get('SPG_ALL_ASYM_TETRALINEAR') || [];
+
+      // Debug: Log subTable sizes
+      console.log('=== SPG_ALL_SYM subTables ===');
+      console.log('SYM LINEAR rows:', spgSymLinear.length);
+      console.log('SYM BILINEAR rows:', spgSymBilinear.length);
+      console.log('SYM TRILINEAR rows:', spgSymTrilinear.length);
+      console.log('SYM TETRALINEAR rows:', spgSymTetralinear.length);
+      console.log('ASYM BILINEAR rows:', spgAsymBilinear.length);
+      console.log('ASYM TRILINEAR rows:', spgAsymTrilinear.length);
+      console.log('ASYM TETRALINEAR rows:', spgAsymTetralinear.length);
+
+      // STEP 1: Parse ALL detail tables FIRST to populate springCompData with stiffness values
+      // This must happen BEFORE ElemSpring conversion so that ~1, ~2 properties can copy data
+      //
+      // IMPORTANT: VBA parsing order is SYMMETRIC first, ASYMMETRIC second!
+      // VBA: vCls(0)=SPGAllSym, vCls(1)=SPGAllASym, vCls(2)=SPGAllOther
+      // When same property exists in both sheets, ASYMMETRIC data OVERWRITES symmetric data.
+
+      // Parse SYMMETRIC data FIRST (VBA i=0)
+      if (spgSymLinear.length > 0 || spgSymBilinear.length > 0 ||
+          spgSymTrilinear.length > 0 || spgSymTetralinear.length > 0) {
+        parseSymmetricSpringTables(
+          {
+            linearData: spgSymLinear,
+            bilinearData: spgSymBilinear,
+            trilinearData: spgSymTrilinear,
+            tetralinearData: spgSymTetralinear,
+          },
+          context
+        );
+      }
+
+      // Parse ASYMMETRIC data SECOND (VBA i=1) - OVERWRITES symmetric data if exists
+      if (spgAsymBilinear.length > 0 || spgAsymTrilinear.length > 0 ||
+          spgAsymTetralinear.length > 0) {
+        parseAsymmetricSpringTables(
+          {
+            bilinearData: spgAsymBilinear,
+            trilinearData: spgAsymTrilinear,
+            tetralinearData: spgAsymTetralinear,
+          },
+          context
+        );
+      }
+
+      // STEP 2: Now convert ElemSpring - at this point springCompData has full data
+      // so ~1, ~2 properties will have complete data copied from originals
       if (hasSheet(sheets, SHEET_NAMES.ELEM_SPRING)) {
         const springElmData = getSheetDataForConversion(sheets, SHEET_NAMES.ELEM_SPRING);
         const springResult = convertSpringElements(springElmData, context, spg6Result.spg6CompMapping);
@@ -278,10 +354,14 @@ export async function generateMCT(
         }
       }
 
-      // Convert symmetric springs
-      if (hasSheet(sheets, SHEET_NAMES.SPG_ALL_SYM)) {
-        const symData = getSheetDataForConversion(sheets, SHEET_NAMES.SPG_ALL_SYM);
-        const symResult = convertSymmetricSprings(symData, context, spg6Result.spg6CompMapping);
+      // STEP 3: Generate NL-PROP output using ALL properties (including ~1, ~2)
+      if (spgSymLinear.length > 0 || spgSymBilinear.length > 0 ||
+          spgSymTrilinear.length > 0 || spgSymTetralinear.length > 0 ||
+          spgAsymBilinear.length > 0 || spgAsymTrilinear.length > 0 ||
+          spgAsymTetralinear.length > 0 ||
+          context.springCompData.size > 0) {
+        // Generate NL-PROP without re-parsing (data already in springCompData)
+        const symResult = convertSymmetricSprings([], context, spg6Result.spg6CompMapping);
         if (symResult.mctLines.length > 2) {
           mctLines.push(...symResult.mctLines);
           mctLines.push('');
@@ -293,20 +373,35 @@ export async function generateMCT(
         }
       }
 
-      // Convert asymmetric springs
-      if (hasSheet(sheets, SHEET_NAMES.SPG_ALL_ASYM)) {
-        const asymData = getSheetDataForConversion(sheets, SHEET_NAMES.SPG_ALL_ASYM);
-        const asymResult = convertAsymmetricSprings(asymData, context, spg6Result.spg6CompMapping);
-        if (asymResult.mctLines.length > 2) {
+      // Generate IHINGE-PROP for spring properties
+      // Note: This is separate from NL-PROP and uses a different MCT format
+      // IMPORTANT: Use convertAsymmetricSprings with empty array to avoid re-parsing
+      // The data is already in springCompData from earlier parsing steps
+      // This includes BOTH symmetric and asymmetric component data
+      if (context.springCompData.size > 0) {
+        const asymResult = convertAsymmetricSprings(
+          [],  // Don't re-parse, use existing springCompData
+          context,
+          spg6Result.spg6CompMapping
+        );
+        if (asymResult.mctLines.length > 13) {  // More than just comments
           mctLines.push(...asymResult.mctLines);
           mctLines.push('');
         }
       }
 
-      // Convert other springs
-      if (hasSheet(sheets, SHEET_NAMES.SPG_ALL_OTHER)) {
-        const otherData = getSheetDataForConversion(sheets, SHEET_NAMES.SPG_ALL_OTHER);
-        const otherResult = convertOtherSprings(otherData, context, spg6Result.spg6CompMapping);
+      // Convert other springs - use subTables for individual table data
+      const spgOtherNagoya = parseResult.subTables.get('SPG_ALL_OTHER_NAGOYA') || [];
+      const spgOtherBmr = parseResult.subTables.get('SPG_ALL_OTHER_BMR') || [];
+      if (spgOtherNagoya.length > 0 || spgOtherBmr.length > 0) {
+        const otherResult = convertOtherSpringsWithTables(
+          {
+            nagoyaData: spgOtherNagoya,
+            bmrData: spgOtherBmr,
+          },
+          context,
+          spg6Result.spg6CompMapping
+        );
         if (otherResult.mctLines.length > 0) {
           mctLines.push(...otherResult.mctLines);
           mctLines.push('');

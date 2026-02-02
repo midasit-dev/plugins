@@ -261,12 +261,12 @@ export function convertHingeProperties(
     const matNo = elemNo > 0 ? (context.elemNo2MaterialNo.get(elemNo) || 0) : 0;
     const matType = matNo > 0 ? (context.matNo2SorRC.get(matNo) || 'CONC') : 'CONC';
 
-    // Truncate property name
+    // Truncate property name (VBA ChgCamma: replace comma with dash)
     const mctPropName = truncateHingeName(
       propName,
       context.longHingeNameUsed,
       context.longHingeNames
-    ).replace(/,/g, '');
+    ).replace(/,/g, '-');
 
     // Line 1: NAME, MTYPE, HTYPE, MCODE, ELPOS, ITYPE, DEF, FIBER, DESC
     mctLines.push(`MLHP=${mctPropName},${matType},DIST,NONE, I, SKEL,,`);

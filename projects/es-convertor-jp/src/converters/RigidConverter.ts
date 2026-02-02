@@ -81,6 +81,10 @@ export function convertRigid(
   mctLinesRigid.push('*RIGIDLINK    ; Rigid Link');
   mctLinesRigid.push('; M-NODE, DOF, S-NODE LIST, GROUP');
 
+  console.log('=== RigidConverter Debug ===');
+  console.log('rawData rows:', rawData.length);
+  console.log('nodeMapping size:', context.nodeMapping.size);
+
   for (let i = 0; i < rawData.length; i++) {
     const row = rawData[i];
     if (!row[0] || String(row[0]).trim() === '') continue;
@@ -89,15 +93,23 @@ export function convertRigid(
     const masterNodeId = String(row[1] || '');
     const slaveNodesStr = String(row[2] || '');
 
+    console.log(`Row ${i}: elemId=${elemId}, masterNodeId=${masterNodeId}, slaveNodesStr=${slaveNodesStr}`);
+
     // VBA line 92: m_dicRigidElem.Add strData(0, j), strData(1, j)
     // Store element-master mapping
 
     // VBA line 93: If Len(strData(2, j)) > 0 Then
-    if (slaveNodesStr.length === 0) continue;
+    if (slaveNodesStr.length === 0) {
+      console.log(`  -> Skipped: no slave nodes`);
+      continue;
+    }
 
     // VBA line 97: strBuf(i) = m_NodeData(strData(1, j))
     const masterNodeNo = context.nodeMapping.get(masterNodeId) || 0;
-    if (masterNodeNo === 0) continue;
+    if (masterNodeNo === 0) {
+      console.log(`  -> Skipped: masterNodeId "${masterNodeId}" not found in nodeMapping`);
+      continue;
+    }
 
     // VBA line 98: strBuf(i) = "111111"
     const dofString = '111111';
@@ -110,10 +122,17 @@ export function convertRigid(
       const slaveNo = context.nodeMapping.get(slaveId) || 0;
       if (slaveNo > 0) {
         slaveNodeNos.push(slaveNo);
+      } else {
+        console.log(`  -> Slave node "${slaveId}" not found in nodeMapping`);
       }
     }
 
-    if (slaveNodeNos.length === 0) continue;
+    if (slaveNodeNos.length === 0) {
+      console.log(`  -> Skipped: no valid slave nodes found`);
+      continue;
+    }
+
+    console.log(`  -> OK: masterNo=${masterNodeNo}, slaveNos=[${slaveNodeNos.join(',')}]`);
 
     // VBA line 101-104: Join slaves with space
     const slaveListStr = slaveNodeNos.join(' ');
@@ -130,6 +149,9 @@ export function convertRigid(
       masterNode: masterNodeNo,
       slaveNodes: slaveNodeNos,
     });
+
+    // Store element ID to master node ID mapping (for LoadConverter)
+    context.rigidMasterNode.set(elemId, masterNodeId);
 
     rigidLinks.push({
       no: rigidLinks.length + 1,

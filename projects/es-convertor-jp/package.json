@@ -8,6 +8,7 @@
     "ag-grid-community": "^35.0.1",
     "ag-grid-react": "^35.0.1",
     "cors": "^2.8.6",
+    "encoding-japanese": "^2.2.0",
     "i18next": "^23.16.8",
     "i18next-browser-languagedetector": "^7.2.2",
     "i18next-http-backend": "^2.7.3",
@@ -55,6 +56,7 @@
   },
   "homepage": ".",
   "devDependencies": {
+    "@types/encoding-japanese": "^2.2.1",
     "@types/jsoneditor": "^9.9.6",
     "@types/lodash": "^4.17.23",
     "@types/node": "^16.18.126",

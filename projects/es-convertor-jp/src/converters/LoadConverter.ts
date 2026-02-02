@@ -38,16 +38,63 @@ const COL = {
 };
 
 // Load type dictionary (VBA lines 106-113)
+// Uses normalized strings - all dash/hyphen and parentheses variants converted to standard form
+// VBA uses: 節点, （全角括弧）, 射影長荷重
+// Excel might use: ノード, (半角括弧), 射影面荷重
 const LOAD_TYPES: Record<string, number> = {
-  'ノード-集中荷重': 1,
+  // Type 1: Node concentrated load
+  '節点-集中荷重': 1,             // VBA original
+  'ノード-集中荷重': 1,           // katakana variant
+  // Type 2: Rigid element load
   '剛体要素荷重': 2,
-  'ノード-強制変位': 3,
+  // Type 3: Node forced displacement
+  '節点-強制変位': 3,             // VBA original
+  'ノード-強制変位': 3,           // katakana variant
+  // Type 4: Frame element concentrated load
   'フレーム要素-集中荷重': 4,
+  // Type 5: Frame element distributed load (single)
   'フレーム要素-分布荷重(単独)': 5,
+  // Type 6: Frame element distributed load (continuous)
   'フレーム要素-分布荷重(連続)': 6,
-  'フレーム要素-射影面荷重': 7,
+  // Type 7: Frame element projected load
+  'フレーム要素-射影長荷重': 7,   // VBA original (射影長)
+  'フレーム要素-射影面荷重': 7,   // variant (射影面)
+  // Type 8: Temperature load
   '温度荷重': 8,
 };
+
+/**
+ * Normalize Japanese text by converting various dash/hyphen and parenthesis characters
+ * to standard ASCII equivalents for consistent matching
+ *
+ * Dash/Hyphen variants:
+ * - U+002D: - (hyphen-minus) [standard]
+ * - U+2010: ‐ (hyphen)
+ * - U+2012: ‒ (figure dash)
+ * - U+2013: – (en dash)
+ * - U+2014: — (em dash)
+ * - U+2212: − (minus sign)
+ * - U+30FC: ー (katakana prolonged sound mark)
+ * - U+FF0D: ー (fullwidth hyphen-minus)
+ *
+ * Parentheses variants:
+ * - U+0028/U+0029: () [standard]
+ * - U+FF08/U+FF09: （）(fullwidth)
+ */
+function normalizeJapaneseText(text: string): string {
+  return text
+    // Normalize dashes/hyphens to standard hyphen (U+002D)
+    // NOTE: U+30FC (ー, katakana prolonged sound mark) is NOT included
+    //       because it's part of Japanese words like "フレーム"
+    .replace(/[\u2010\u2012\u2013\u2014\u2212\uFF0D]/g, '-')
+    // Normalize fullwidth parentheses to ASCII
+    .replace(/\uFF08/g, '(')
+    .replace(/\uFF09/g, ')')
+    // Normalize fullwidth space (U+3000) to ASCII space
+    .replace(/\u3000/g, ' ')
+    // Trim whitespace
+    .trim();
+}
 
 // Direction mapping (VBA lines 654-659) - with Y-Z swap
 const DIR_MAP: Record<string, string> = {
@@ -96,7 +143,7 @@ function calcVecter(
   vBuf[2] = safeParseNumber(row[COL.VECTOR_Z]);
 
   // Check for angle-based direction (VBA lines 371-378)
-  const coordType = String(row[COL.COORD_TYPE] || '');
+  const coordType = normalizeJapaneseText(String(row[COL.COORD_TYPE] || ''));
   if (coordType === '座標指定') {
     const dAlpha = safeParseNumber(row[COL.ALPHA]) * Math.PI / 180;
     const dBeta = safeParseNumber(row[COL.BETA]) * Math.PI / 180;
@@ -123,7 +170,7 @@ function calcVecter(
   let strLoad: string;
   let strFlag: string;
 
-  const vectorX = String(row[COL.VECTOR_X] || '');
+  const vectorX = normalizeJapaneseText(String(row[COL.VECTOR_X] || ''));
   if (vectorX === 'モーメント') {
     // Moment: coordinate swap (x, -z, y)
     strLoad = `${strNoData},${vBuf[0]},${-1 * vBuf[2]},${vBuf[1]}`;
@@ -328,7 +375,13 @@ export function convertLoads(
   const mctLinesBeamLoad: string[] = [];
   const mctLinesElTemper: string[] = [];
 
+  console.log('=== LoadConverter Debug ===');
+  console.log('rawData rows:', rawData.length);
+  console.log('nodeMapping size:', context.nodeMapping.size);
+  console.log('elementMapping size:', context.elementMapping.size);
+
   if (rawData.length === 0) {
+    console.log('No load data - returning empty');
     return { mctLinesLoadCase, mctLinesConLoad, mctLinesSpDisp, mctLinesBeamLoad, mctLinesElTemper };
   }
 
@@ -360,13 +413,23 @@ export function convertLoads(
     if (!row[COL.LOAD_TYPE] || String(row[COL.LOAD_TYPE]).trim() === '') continue;
 
     const loadTypeStr = String(row[COL.LOAD_TYPE]);
-    const n = LOAD_TYPES[loadTypeStr] || 0;
+    const normalizedLoadType = normalizeJapaneseText(loadTypeStr);
+    const n = LOAD_TYPES[normalizedLoadType] || 0;
+
+    if (n === 0) {
+      // Log unknown load types with character codes for debugging
+      const charCodes = loadTypeStr.split('').map(c => c.charCodeAt(0).toString(16)).join(',');
+      console.log(`Row ${i}: UNKNOWN loadType="${loadTypeStr}" normalized="${normalizedLoadType}" (charCodes: ${charCodes})`);
+    } else {
+      console.log(`Row ${i}: loadType="${loadTypeStr}" normalized="${normalizedLoadType}" -> n=${n}`);
+    }
 
     // Get node numbers for node-based loads (VBA lines 192-216)
     let strNode = '';
     if (n === 1 || n === 2 || n === 3) {
       const targetStr = String(row[COL.TARGET] || '');
       const vNode = targetStr.split(',');
+      console.log(`  -> Target: "${targetStr}", parsed nodes: [${vNode.join(', ')}]`);
 
       if (n === 2) {
         // Rigid element load - get master node from rigid element
@@ -389,16 +452,27 @@ export function convertLoads(
             }
           }
         }
-        if (nodeNos.length === 0) continue;
+        if (nodeNos.length === 0) {
+          console.log(`  -> Skipped: no rigid element nodes found`);
+          continue;
+        }
         strNode = nodeNos.join(',');
       } else {
         // Regular node load
         const nodeNos: number[] = [];
         for (const nodeName of vNode) {
-          const nodeNo = context.nodeMapping.get(nodeName.trim());
-          if (nodeNo) nodeNos.push(nodeNo);
+          const trimmedName = nodeName.trim();
+          const nodeNo = context.nodeMapping.get(trimmedName);
+          if (nodeNo) {
+            nodeNos.push(nodeNo);
+          } else {
+            console.log(`  -> Node "${trimmedName}" not found in nodeMapping`);
+          }
         }
-        if (nodeNos.length === 0) continue;
+        if (nodeNos.length === 0) {
+          console.log(`  -> Skipped: no valid nodes found`);
+          continue;
+        }
         strNode = nodeNos.join(',');
       }
     }
@@ -408,14 +482,22 @@ export function convertLoads(
     switch (n) {
       case 1: // ノード-集中荷重
       case 2: // 剛体要素荷重
+        console.log(`  -> Case ${n}: strNode="${strNode}", value1=${value1}`);
         if (value1 !== 0) {
           setConLoad(tConLoad, row, strNode);
+          console.log(`  -> Added to CONLOAD`);
+        } else {
+          console.log(`  -> Skipped: value1 is 0`);
         }
         break;
 
       case 3: // ノード-強制変位
+        console.log(`  -> Case 3: strNode="${strNode}", value1=${value1}`);
         if (value1 !== 0) {
           setSpDisp(tSpDisp, row, strNode);
+          console.log(`  -> Added to SPDISP`);
+        } else {
+          console.log(`  -> Skipped: value1 is 0`);
         }
         break;
 
@@ -423,6 +505,7 @@ export function convertLoads(
       case 5: // フレーム要素-分布荷重(単独)
       case 6: // フレーム要素-分布荷重(連続)
       case 7: // フレーム要素-射影面荷重
+        console.log(`  -> Case ${n}: calling setBeamLoad`);
         setBeamLoad(tBeamLoad, row, n, context);
         break;
 
@@ -532,6 +615,15 @@ export function convertLoads(
     }
   }
 
+  console.log('=== LoadConverter Summary ===');
+  console.log(`tConLoad.dicName.size: ${tConLoad.dicName.size}`);
+  console.log(`tSpDisp.dicName.size: ${tSpDisp.dicName.size}`);
+  console.log(`tBeamLoad.dicName.size: ${tBeamLoad.dicName.size}`);
+  console.log(`tElTemper.dicName.size: ${tElTemper.dicName.size}`);
+  console.log(`mctLinesLoadCase.length: ${mctLinesLoadCase.length}`);
+  console.log(`mctLinesConLoad.length: ${mctLinesConLoad.length}`);
+  console.log(`mctLinesBeamLoad.length: ${mctLinesBeamLoad.length}`);
+
   return { mctLinesLoadCase, mctLinesConLoad, mctLinesSpDisp, mctLinesBeamLoad, mctLinesElTemper };
 }
 
@@ -587,7 +679,8 @@ function setSpDisp(
     j = 0;
   }
 
-  const strVecterType = String(row[COL.COORD_TYPE] || '');
+  // VBA line 466: strVecterType = strData(13, nCnt) - uses DIRECTION column, not COORD_TYPE
+  const strVecterType = normalizeJapaneseText(String(row[COL.DIRECTION] || ''));
   let strFlag = '';
   let strLoad = '';
 
@@ -599,7 +692,8 @@ function setSpDisp(
   } else {
     // Direction-based (VBA lines 477-490)
     const vVect = [0, 0, 0, 0, 0, 0];
-    const actionDir = String(row[COL.ACTION_TYPE] || '') + strVecterType;
+    const actionType = normalizeJapaneseText(String(row[COL.ACTION_TYPE] || ''));
+    const actionDir = actionType + strVecterType;
     const vecTypeIdx = SPDISP_VECTOR_TYPE[actionDir];
 
     if (vecTypeIdx !== undefined) {
@@ -653,7 +747,7 @@ function setBeamLoad(
   if (nType === 7) strPROJ = ',YES,';
 
   // Action and type (VBA lines 648-674)
-  const actionType = String(row[COL.ACTION_TYPE] || '');
+  const actionType = normalizeJapaneseText(String(row[COL.ACTION_TYPE] || ''));
   const dicAction: Record<string, number> = { '並進荷重': 0, 'モーメント': 1 };
   const vType = ['UNILOAD,', 'UNIMOMENT,'];
   const nAction = dicAction[actionType] || 0;
@@ -668,6 +762,8 @@ function setBeamLoad(
   // Get elements and values (VBA lines 683-739)
   const targetStr = String(row[COL.TARGET] || '');
   const vElem = targetStr.split(',').map(s => s.trim()).filter(s => s);
+
+  console.log(`  setBeamLoad: loadCase="${loadCase}", target="${targetStr}"`);
 
   const dP1: number[] = [];
   const dP2: number[] = [];
@@ -685,7 +781,8 @@ function setBeamLoad(
   const p2Num = safeParseNumber(row[COL.VALUE2]);
 
   // Handle triangular load (P1=0, P2≠0) - VBA lines 700-739
-  const direction = String(row[COL.DIRECTION] || '');
+  const direction = normalizeJapaneseText(String(row[COL.DIRECTION] || ''));
+  console.log(`  direction="${direction}", DIR_MAP[direction]="${DIR_MAP[direction]}"`);
   let useVectorLoad = false;
   const dBaseLoads: number[] = [0, 0, 0, 0, 0, 0];
   const dLoads: number[] = [0, 0, 0, 0, 0, 0];
@@ -737,9 +834,13 @@ function setBeamLoad(
   const vLoadDir = ['GX', 'GZ', 'GY', 'GX', 'GZ', 'GY']; // With Y-Z swap
 
   // Generate output for each element (VBA lines 747-794)
+  console.log(`  vElemNode.length=${vElemNode.length}`);
   for (let k = 0; k < vElemNode.length; k++) {
     const elemNo = context.elementMapping.get(vElemNode[k].vElem);
-    if (!elemNo) continue;
+    if (!elemNo) {
+      console.log(`  -> Element "${vElemNode[k].vElem}" not found in elementMapping`);
+      continue;
+    }
 
     if (DIR_MAP[direction]) {
       // Coordinate direction (VBA lines 749-766)

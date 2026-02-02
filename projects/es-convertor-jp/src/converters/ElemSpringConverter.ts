@@ -538,14 +538,17 @@ function calcVectorCross(v1: number[], v2: number[]): string {
     v2[0] * v1[1] - v1[0] * (-v2[1])
   ];
 
-  return `${ret[0]},-${ret[2]},${ret[1]}`;
+  // VBA: Calc_Vecter = vRet(0) & "," & -vRet(2) & "," & vRet(1)
+  // Use numeric negation (not string concatenation) to avoid --1 issue
+  return `${ret[0]},${-ret[2]},${ret[1]}`;
 }
 
 /**
- * Escape comma in property name (VBA ChgCamma)
+ * Replace comma with dash in property name (VBA ChgCamma)
+ * VBA: ChgCamma = Replace(strORG, ",", "-")
  */
-function escapeComma(str: string): string {
-  return str.replace(/,/g, '');
+function chgComma(str: string): string {
+  return str.replace(/,/g, '-');
 }
 
 /**
@@ -594,6 +597,12 @@ export function convertSpringElements(
     }
   }
 
+  // VBA dicComponent (line 149, 221-254): tracks propName -> (coordSys + samePoint)
+  // Used to detect when same propName has different coordinate systems
+  const dicComponent = new Map<string, string>();
+  // Track all used property names (including ones with ~1, ~2 suffixes)
+  const usedPropNames = new Set<string>();
+
   // Generate MCT lines (VBA 153-184)
   const refElementPrefix = '参照要素';
 
@@ -604,7 +613,7 @@ export function convertSpringElements(
     const elemId = String(row[0]);
     const node1Id = String(row[1] || '');
     const node2Id = String(row[2] || '');
-    const propName = String(row[3] || '');
+    const origPropName = String(row[3] || '');  // Original property name (for spg6CompMapping lookup)
     const coordSysStr = String(row[4] || '');
 
     const elemNo = elemIdMapping.get(elemId) || 1;
@@ -613,6 +622,69 @@ export function convertSpringElements(
 
     if (node1No === 0 || node2No === 0) continue;
 
+    // VBA CalcAngle line 215-218: Determine if same point (2重節点)
+    // Check if original node coordinates are the same
+    const origNode1 = context.originalNodeCoords.get(node1Id);
+    const origNode2 = context.originalNodeCoords.get(node2Id);
+    let strSprPnt = '_NotSame';
+    if (origNode1 && origNode2 &&
+        origNode1.x === origNode2.x &&
+        origNode1.y === origNode2.y &&
+        origNode1.z === origNode2.z) {
+      strSprPnt = '_Same';
+    }
+
+    // VBA CalcAngle line 221-254: dicComponent logic for ~1, ~2 suffix
+    let propName = origPropName;
+    const componentKey = coordSysStr + strSprPnt;
+
+    if (dicComponent.has(propName)) {
+      // Already exists, check if coordinate system is different
+      if (dicComponent.get(propName) !== componentKey) {
+        // Different coordinate system - need to add ~1, ~2, etc. suffix
+        let suffixNum = 1;
+        let newName = `${propName}~${suffixNum}`;
+        while (usedPropNames.has(newName)) {
+          suffixNum++;
+          newName = `${propName}~${suffixNum}`;
+        }
+        // Register the new name with its coordinate system
+        dicComponent.set(newName, componentKey);
+        usedPropNames.add(newName);
+
+        // Copy spg6CompMapping for the new name if original exists
+        if (spg6CompMapping.has(origPropName)) {
+          spg6CompMapping.set(newName, spg6CompMapping.get(origPropName)!);
+        }
+
+        // CRITICAL: Copy springCompData for the new name (VBA line 239-240)
+        // VBA: m_SprCompORG(n) = m_SprCompORG(k); m_SprComp(n) = m_SprCompORG(k)
+        const origSprData = context.springCompData.get(origPropName);
+        if (origSprData) {
+          // Deep copy the component data
+          const newSprData = {
+            angle: origSprData.angle,
+            components: origSprData.components.map(comp => ({
+              ...comp,
+              propertyName: newName,
+              // VBA sets different vAngle for reference element:
+              // Array(Dx, Dz, -Dy, Rx, Rz, -Ry) instead of Array(Dx, Dy, Dz, Rx, Ry, Rz)
+              tensionData: comp.tensionData ? comp.tensionData.map(arr =>
+                arr ? arr.map(pt => ({ ...pt })) : []
+              ) : undefined,
+            })),
+          };
+          context.springCompData.set(newName, newSprData);
+        }
+
+        propName = newName;
+      }
+    } else {
+      // First occurrence - register it
+      dicComponent.set(propName, componentKey);
+      usedPropNames.add(propName);
+    }
+
     // Check if reference element type
     const isRefElement = coordSysStr.startsWith(refElementPrefix);
 
@@ -620,8 +692,10 @@ export function convertSpringElements(
     const angleStr = calcAngleString(coordSysStr, context, isRefElement);
 
     // Build MCT line (VBA 162-181)
-    const gprop = escapeComma(propName);
-    const ieprop = spg6CompMapping.has(propName) ? `NL_${propName}` : '';
+    // GPROP uses modified propName (with ~1 suffix if applicable)
+    const gprop = chgComma(propName);
+    // IEPROP: check with ORIGINAL name, but output with modified name
+    const ieprop = spg6CompMapping.has(origPropName) ? `NL_${propName}` : '';
 
     const mctLine = `${elemNo},${node1No},${node2No},${gprop},${ieprop},${angleStr},`;
     mctLines.push(mctLine);
@@ -631,7 +705,7 @@ export function convertSpringElements(
       type: 'NLLINK',
       node1: node1No,
       node2: node2No,
-      propertyNo: spg6CompMapping.get(propName) || 1,
+      propertyNo: spg6CompMapping.get(origPropName) || 1,
       angle: 0,  // angle is now in the string
     });
   }

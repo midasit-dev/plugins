@@ -1,6 +1,81 @@
 {
-  "welcome_midas_plugin": "환영합니다, MIDAS 플러그인 CRA 템플릿입니다!",
-  "dev_mode_developing": "현재 플러그인 아이템을 더 편리하게 만들기 위해 개발 모드를 제작중입니다.",
-  "turn_on_development_mode": "개발 모드를 켜려면 윈도우 터미널을 켜세요",
-  "type_command_below": "그리고 아래의 명령어를 입력하세요."
+  "app": {
+    "title": "ES Convertor",
+    "subtitle": "ES to MIDAS Civil NX 변환기",
+    "footer": "ES Convertor - MIDAS IT",
+    "nodeCount": "절점 수",
+    "elementCount": "요소 수",
+    "converting": "변환 중...",
+    "convertToMCT": "MCT로 변환",
+    "noDataHint": "데이터를 입력하거나 Excel 파일을 가져오세요",
+    "conversionError": "변환 오류",
+    "exampleData": "예제",
+    "exportExcel": "Excel 내보내기"
+  },
+  "sheets": {
+    "node": "절점좌표",
+    "frame": "프레임요소",
+    "planeElement": "평판요소",
+    "rigid": "강체요소",
+    "material": "재료",
+    "numbSect": "수치단면",
+    "sectElem": "단면요소",
+    "section": "단면특성옵션",
+    "plnSect": "평판단면",
+    "hingeProp": "M-φ요소상세",
+    "hingeAss": "M-φ특성표",
+    "spring": "스프링요소",
+    "spg6Comp": "스프링특성표_6성분개요",
+    "spgAllSym": "스프링특성표_성분일람(대칭)",
+    "spgAllASym": "스프링특성표_성분일람(비대칭)",
+    "spgAllOther": "스프링특성표_성분일람(기타)",
+    "fulcrum": "지점",
+    "fulcrumDetail": "지점상세",
+    "nodalMass": "절점질량",
+    "load": "하중값",
+    "internalForce": "내력"
+  },
+  "subTabs": {
+    "axisZp": "zp",
+    "axisYp": "yp",
+    "linear": "선형",
+    "bilinear": "바이리니어",
+    "trilinear": "트리리니어",
+    "tetralinear": "테트라리니어",
+    "nagoya": "나고야 고속 고무지승",
+    "bmr": "BMR(CD) 댐퍼"
+  },
+  "sheetTabs": {
+    "importExcel": "Excel 가져오기",
+    "loading": "로딩 중...",
+    "rowCount": "{{count}}행",
+    "dataHint": "데이터를 붙여넣거나 Excel 파일을 가져오세요",
+    "reset": "초기화",
+    "resetTitle": "데이터 초기화",
+    "resetMessage": "모든 데이터를 초기화하시겠습니까? 이 작업은 취소할 수 없습니다.",
+    "resetConfirm": "초기화",
+    "cancel": "취소"
+  },
+  "conversionModal": {
+    "title": "변환 결과",
+    "errorTitle": "변환 실패",
+    "preview": "MCT 미리보기:",
+    "errors": "오류:",
+    "warnings": "경고:",
+    "download": "다운로드",
+    "copy": "복사",
+    "copied": "복사됨!",
+    "close": "닫기",
+    "sendToCivilNX": "Civil NX로 보내기",
+    "tabHint": "아래의 모든 작업은 선택한 버전 탭에 적용됩니다."
+  },
+  "spreadsheet": {
+    "pasteHere": "여기에 붙여넣기",
+    "insert": "삽입",
+    "delete": "삭제",
+    "insertRow": "행 삽입",
+    "deleteRow": "행 삭제",
+    "reset": "초기화",
+    "rowCount": "{{count}}행"
+  }
 }

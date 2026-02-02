@@ -138,15 +138,32 @@ function parseBmrTable(data: (string | number)[][], context: ConversionContext):
 
 /**
  * Get component index from string (1-6)
+ * VBA dicComponent mapping:
+ *   "xl" -> 1, "yl" -> 2, "zl" -> 3
+ *   "θxl" -> 4, "θyl" -> 5, "θzl" -> 6
+ *
+ * CRITICAL: Must check rotational DOFs first because 'θxl'.includes('xl') is true!
  */
 function getComponentIndex(componentStr: string): number {
-  const str = componentStr.toLowerCase().trim();
-  if (str.includes('xl') && !str.includes('回')) return 1;
-  if (str.includes('yl') && !str.includes('回')) return 2;
-  if (str.includes('zl') && !str.includes('回')) return 3;
-  if (str.includes('回xl') || str.includes('rxl')) return 4;
-  if (str.includes('回yl') || str.includes('ryl')) return 5;
-  if (str.includes('回zl') || str.includes('rzl')) return 6;
+  const str = componentStr.trim();
+  const strLower = str.toLowerCase();
+
+  // Check for rotational DOFs FIRST (order matters!)
+  // VBA uses θ (theta) character, also check for common variations
+  if (str.includes('θxl') || str.includes('θXl') || str.includes('ΘXL') ||
+      strLower.includes('θxl') || str.includes('回xl') || strLower.includes('rxl') ||
+      str.includes('θx') || str.includes('Θx')) return 4;
+  if (str.includes('θyl') || str.includes('θYl') || str.includes('ΘYL') ||
+      strLower.includes('θyl') || str.includes('回yl') || strLower.includes('ryl') ||
+      str.includes('θy') || str.includes('Θy')) return 5;
+  if (str.includes('θzl') || str.includes('θZl') || str.includes('ΘZL') ||
+      strLower.includes('θzl') || str.includes('回zl') || strLower.includes('rzl') ||
+      str.includes('θz') || str.includes('Θz')) return 6;
+
+  // Check for linear DOFs (after rotational to avoid false matches)
+  if (strLower.includes('xl')) return 1;
+  if (strLower.includes('yl')) return 2;
+  if (strLower.includes('zl')) return 3;
 
   const num = parseInt(str, 10);
   if (num >= 1 && num <= 6) return num;

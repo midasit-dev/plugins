@@ -28,7 +28,7 @@ Public Sub GetNumbSect()
   Dim NewSheet As Worksheet
   Set NewSheet = AddSheet(strName)
   
-  ' ”’l’f–Ê‚©‚ç‚àæ“¾
+  ' ?????????
   Dim i As Long
   Dim nCnt As Long
   Dim strData() As String

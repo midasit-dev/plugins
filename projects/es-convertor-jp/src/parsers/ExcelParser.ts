@@ -205,8 +205,9 @@ export function getSheetData(
 }
 
 /**
- * Get sheet data without header rows (for conversion)
- * Uses SHEET_CONFIGS to determine how many header rows to skip
+ * Get sheet data for conversion
+ * Note: Header rows are already skipped during parsing (parseWorksheetData)
+ * and UI data from App.tsx also doesn't include headers
  */
 export function getSheetDataForConversion(
   sheets: Map<string, ParsedSheet>,
@@ -215,15 +216,9 @@ export function getSheetDataForConversion(
   const sheet = sheets.get(sheetName);
   if (!sheet) return [];
 
-  // Get config for this sheet
-  const configKey = Object.keys(SHEET_CONFIGS).find(
-    key => SHEET_CONFIGS[key].name === sheetName
-  );
-  const config = configKey ? SHEET_CONFIGS[configKey] : null;
-  const headerRows = config?.headerRows || 1;
-
-  // Skip header rows
-  return sheet.data.slice(headerRows);
+  // Return data directly - headers are already excluded
+  // (Excel parsing skips headers, UI data doesn't include headers)
+  return sheet.data;
 }
 
 /**

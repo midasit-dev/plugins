@@ -14,7 +14,7 @@ Private Const nReadSTCol = 2
 Private Const nReadEDCol = 13
 
 Public m_ElemSprData As Dictionary
-Private Const strSpring = "‚Î‚Ë"
+Private Const strSpring = "ã°ã­"
 
 Public strName As String
 
@@ -28,7 +28,7 @@ If m_ResumeNext Then
   On Error Resume Next
 End If
 
-  ' x“_
+  ' æ”¯ç‚¹
   Dim i As Long, j As Long, k As Long
   Set m_ElemSprData = New Dictionary
 
@@ -47,16 +47,16 @@ End If
   
   Dim dicFreeFixt As Dictionary
   Set dicFreeFixt = New Dictionary
-  dicFreeFixt.Add "©—R", 0
-  dicFreeFixt.Add "ŒÅ’è", 1
+  dicFreeFixt.Add "è‡ªç”±", 0
+  dicFreeFixt.Add "å›ºå®š", 1
   
   Dim vWriteData() As String
-  ReDim vWriteData(nCnt + 2, m_nInterval)  ' “ñŸŒ³”z—ñ‚Å‚È‚¢‚Æƒ_ƒI
+  ReDim vWriteData(nCnt + 2, m_nInterval)  ' äºŒæ¬¡å…ƒé…åˆ—ã§ãªã„ã¨ãƒ€ãƒ¡ï¼
   Dim nRowCnt(1) As Long
   nRowCnt(0) = 0
   nRowCnt(1) = 0
 
-  ' ƒRƒƒ“ƒg
+  ' ã‚³ãƒ¡ãƒ³ãƒˆ
   Dim nWriteType As Long
   
   nWriteType = 0

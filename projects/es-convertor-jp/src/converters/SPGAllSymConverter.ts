@@ -44,10 +44,11 @@ const V_SORT = [
 ];
 
 /**
- * Escape comma in property name (VBA ChgCamma)
+ * Replace comma with dash in property name (VBA ChgCamma)
+ * VBA: ChgCamma = Replace(strORG, ",", "-")
  */
-function escapeComma(str: string): string {
-  return str.replace(/,/g, '');
+function chgComma(str: string): string {
+  return str.replace(/,/g, '-');
 }
 
 /**
@@ -115,7 +116,7 @@ function parseSymmetricSpringFromRawData(
  * Parse symmetric spring data from 4 tables and populate context.springCompData
  * This fills in the strProp (stiffness) values for each component
  */
-function parseSymmetricSpringTables(
+export function parseSymmetricSpringTables(
   tableData: SymmetricSpringTableData,
   context: ConversionContext
 ): void {
@@ -137,12 +138,19 @@ function parseSymmetricSpringTables(
  * Parse Linear table data (Table 1: 12 columns B~M)
  * VBA Class130_SPGAllSym.cls nRead1STCol=2, nRead1EDCol=13
  *
+ * VBA main.bas GetSpringData - symmetric linear (i=0, j=0):
  * Column structure:
- * 0 (B): Property name (ばね特性表示名)
- * 1 (C): Component (xl, yl, zl, rxl, ryl, rzl)
- * 2-11 (D-M): Linear stiffness data (single point K value)
+ * 0: Property name
+ * 1: Component (xl, yl, zl, θxl, θyl, θzl)
+ * 2: d-K or d-F type
+ * 3: d (displacement in mm)
+ * 4: K (stiffness) - used when d-K mode
+ * 5: F (force) - used when d-F mode, then K = F/d
  */
 function parseLinearTable(data: (string | number)[][], context: ConversionContext): void {
+  console.log('=== parseLinearTable ===');
+  console.log('Input data rows:', data.length);
+
   for (const row of data) {
     if (!row[0] || String(row[0]).trim() === '') continue;
 
@@ -150,13 +158,30 @@ function parseLinearTable(data: (string | number)[][], context: ConversionContex
     const componentStr = String(row[1] || '');
     const componentIdx = getComponentIndex(componentStr);
 
-    // Get stiffness value from column 2 (first numeric value)
-    const stiffness = safeParseNumber(row[2]);
+    console.log(`  Linear: propName="${propName}", componentStr="${componentStr}", componentIdx=${componentIdx}`);
 
-    // Store all data points for potential multi-point output
-    const dataPoints: { d: number; k: number }[] = [];
-    // For linear, column 2 is the stiffness value, no displacement specified
-    dataPoints.push({ d: 0, k: stiffness });
+    // VBA: strData(2) = "d-K" or "d-F"
+    const typeStr = String(row[2] || '').toLowerCase();
+    const isDF = typeStr.includes('d-f') || typeStr.includes('f');
+
+    // VBA: dValue = ChangeMM_M(strData(3))
+    const d = safeParseNumber(row[3]) / 1000; // mm to m
+
+    let stiffness: number;
+    if (isDF && d !== 0) {
+      // d-F mode: K = F / d
+      const f = safeParseNumber(row[5]);
+      stiffness = f / d;
+    } else {
+      // d-K mode: use K directly
+      stiffness = safeParseNumber(row[4]);
+    }
+
+    console.log(`    type="${typeStr}", isDF=${isDF}, d=${d}, stiffness=${stiffness}`);
+
+    // Store data point
+    const dataPoints: { d: number; k: number; f: number }[] = [];
+    dataPoints.push({ d, k: stiffness, f: stiffness * d });
 
     updateSpringCompData(context, propName, componentIdx, stiffness, 'LINEAR', dataPoints);
   }
@@ -166,16 +191,22 @@ function parseLinearTable(data: (string | number)[][], context: ConversionContex
  * Parse Bilinear table data (Table 2: 16 columns O~AD)
  * VBA Class130_SPGAllSym.cls nRead2STCol=15, nRead2EDCol=30
  *
+ * VBA main.bas GetSpringData - symmetric bilinear (i=0, j=1):
  * Column structure:
- * 0 (O): Property name
- * 1 (P): Component
- * 2 (Q): d1 - Point 1 displacement
- * 3 (R): K1/F1 - Point 1 stiffness/force
- * 4 (S): d2 - Point 2 displacement
- * 5 (T): K2/F2 - Point 2 stiffness/force
- * 6-15: Additional points if extended
+ * 0: Property name
+ * 1: Component (xl, yl, zl, θxl, θyl, θzl)
+ * 2: d-K or d-F type
+ * 3: d1 (displacement point 1)
+ * 4: d2 (displacement point 2)
+ * 5: K1 (stiffness point 1)
+ * 6: K2 (stiffness point 2)
+ * 7: F1 (force point 1)
+ * 8: F2 (force point 2)
  */
 function parseBilinearTable(data: (string | number)[][], context: ConversionContext): void {
+  console.log('=== parseBilinearTable ===');
+  console.log('Input data rows:', data.length);
+
   for (const row of data) {
     if (!row[0] || String(row[0]).trim() === '') continue;
 
@@ -183,17 +214,27 @@ function parseBilinearTable(data: (string | number)[][], context: ConversionCont
     const componentStr = String(row[1] || '');
     const componentIdx = getComponentIndex(componentStr);
 
-    // Parse 2 points: (d1,K1), (d2,K2)
-    const dataPoints: { d: number; k: number }[] = [];
-    const d1 = safeParseNumber(row[2]);
-    const k1 = safeParseNumber(row[3]);
+    console.log(`  Bilinear: propName="${propName}", componentStr="${componentStr}", componentIdx=${componentIdx}`);
+
+    // VBA structure: strTENS(0, m) for symmetric (direction 0)
+    // m = 0, 1 for bilinear (2 points)
+    const dataPoints: { d: number; k: number; f: number }[] = [];
+
+    // VBA: d values at columns 3,4 / K values at columns 5,6 / F values at columns 7,8
+    const d1 = safeParseNumber(row[3]);
     const d2 = safeParseNumber(row[4]);
-    const k2 = safeParseNumber(row[5]);
+    const k1 = safeParseNumber(row[5]);
+    const k2 = safeParseNumber(row[6]);
+    const f1 = safeParseNumber(row[7]);
+    const f2 = safeParseNumber(row[8]);
 
-    dataPoints.push({ d: d1, k: k1 });
-    dataPoints.push({ d: d2, k: k2 });
+    console.log(`    k1=${k1}, k2=${k2}, d1=${d1}, d2=${d2}`);
 
-    // First point stiffness for MCT output
+    // Convert mm to m for displacement (VBA ChangeMM_M)
+    dataPoints.push({ d: d1 / 1000, k: k1, f: f1 });
+    dataPoints.push({ d: d2 / 1000, k: k2, f: f2 });
+
+    // First point stiffness for MCT output (k1)
     updateSpringCompData(context, propName, componentIdx, k1, 'NBI', dataPoints);
   }
 }
@@ -202,16 +243,14 @@ function parseBilinearTable(data: (string | number)[][], context: ConversionCont
  * Parse Trilinear table data (Table 3: 19 columns AF~AX)
  * VBA Class130_SPGAllSym.cls nRead3STCol=32, nRead3EDCol=50
  *
+ * VBA main.bas GetSpringData - symmetric trilinear (i=0, j=2):
  * Column structure:
- * 0 (AF): Property name
- * 1 (AG): Component
- * 2 (AH): d1 - Point 1 displacement
- * 3 (AI): K1/F1 - Point 1 stiffness/force
- * 4 (AJ): d2 - Point 2 displacement
- * 5 (AK): K2/F2 - Point 2 stiffness/force
- * 6 (AL): d3 - Point 3 displacement
- * 7 (AM): K3/F3 - Point 3 stiffness/force
- * 8-18: Additional data
+ * 0: Property name
+ * 1: Component
+ * 2: d-K or d-F type
+ * 3,4,5: d1,d2,d3 (displacement)
+ * 6,7,8: K1,K2,K3 (stiffness)
+ * 9,10,11: F1,F2,F3 (force)
  */
 function parseTrilinearTable(data: (string | number)[][], context: ConversionContext): void {
   for (const row of data) {
@@ -221,21 +260,19 @@ function parseTrilinearTable(data: (string | number)[][], context: ConversionCon
     const componentStr = String(row[1] || '');
     const componentIdx = getComponentIndex(componentStr);
 
-    // Parse 3 points: (d1,K1), (d2,K2), (d3,K3)
-    const dataPoints: { d: number; k: number }[] = [];
-    const d1 = safeParseNumber(row[2]);
-    const k1 = safeParseNumber(row[3]);
-    const d2 = safeParseNumber(row[4]);
-    const k2 = safeParseNumber(row[5]);
-    const d3 = safeParseNumber(row[6]);
-    const k3 = safeParseNumber(row[7]);
+    // VBA: strTENS(0, m) for m = 0,1,2 (3 points)
+    const dataPoints: { d: number; k: number; f: number }[] = [];
 
-    dataPoints.push({ d: d1, k: k1 });
-    dataPoints.push({ d: d2, k: k2 });
-    dataPoints.push({ d: d3, k: k3 });
+    // VBA: D at col 3,4,5 / K at col 6,7,8 / F at col 9,10,11
+    for (let m = 0; m < 3; m++) {
+      const d = safeParseNumber(row[3 + m]);
+      const k = safeParseNumber(row[6 + m]);
+      const f = safeParseNumber(row[9 + m]);
+      dataPoints.push({ d: d / 1000, k, f }); // mm to m
+    }
 
-    // First point stiffness for MCT output (hysteresis type: KIN for trilinear)
-    updateSpringCompData(context, propName, componentIdx, k1, 'KIN', dataPoints);
+    // First point stiffness for MCT output
+    updateSpringCompData(context, propName, componentIdx, dataPoints[0]?.k || 0, 'KIN', dataPoints);
   }
 }
 
@@ -243,18 +280,16 @@ function parseTrilinearTable(data: (string | number)[][], context: ConversionCon
  * Parse Tetralinear table data (Table 4: 27 columns AZ~CA)
  * VBA Class130_SPGAllSym.cls nRead4STCol=52, nRead4EDCol=78
  *
+ * VBA main.bas GetSpringData - symmetric tetralinear (i=0, j=3):
  * Column structure:
- * 0 (AZ): Property name
- * 1 (BA): Component
- * 2 (BB): d1 - Point 1 displacement
- * 3 (BC): K1/F1 - Point 1 stiffness/force
- * 4 (BD): d2 - Point 2 displacement
- * 5 (BE): K2/F2 - Point 2 stiffness/force
- * 6 (BF): d3 - Point 3 displacement
- * 7 (BG): K3/F3 - Point 3 stiffness/force
- * 8 (BH): d4 - Point 4 displacement
- * 9 (BI): K4/F4 - Point 4 stiffness/force
- * 10-26: Additional/extended data
+ * 0: Property name
+ * 1: Component
+ * 2: d-K or d-F type
+ * 3: unused
+ * 4: unused
+ * 5,6,7,8: d1,d2,d3,d4 (displacement)
+ * 9,10,11,12: K1,K2,K3,K4 (stiffness)
+ * 16,17,18,19: F1,F2,F3,F4 (force)
  */
 function parseTetralinearTable(data: (string | number)[][], context: ConversionContext): void {
   for (const row of data) {
@@ -264,38 +299,50 @@ function parseTetralinearTable(data: (string | number)[][], context: ConversionC
     const componentStr = String(row[1] || '');
     const componentIdx = getComponentIndex(componentStr);
 
-    // Parse 4 points: (d1,K1), (d2,K2), (d3,K3), (d4,K4)
-    const dataPoints: { d: number; k: number }[] = [];
-    const d1 = safeParseNumber(row[2]);
-    const k1 = safeParseNumber(row[3]);
-    const d2 = safeParseNumber(row[4]);
-    const k2 = safeParseNumber(row[5]);
-    const d3 = safeParseNumber(row[6]);
-    const k3 = safeParseNumber(row[7]);
-    const d4 = safeParseNumber(row[8]);
-    const k4 = safeParseNumber(row[9]);
+    // VBA: strTENS(0, m) for m = 0,1,2,3 (4 points)
+    const dataPoints: { d: number; k: number; f: number }[] = [];
 
-    dataPoints.push({ d: d1, k: k1 });
-    dataPoints.push({ d: d2, k: k2 });
-    dataPoints.push({ d: d3, k: k3 });
-    dataPoints.push({ d: d4, k: k4 });
+    // VBA: D at col 5-8 / K at col 9-12 / F at col 16-19
+    for (let m = 0; m < 4; m++) {
+      const d = safeParseNumber(row[5 + m]);
+      const k = safeParseNumber(row[9 + m]);
+      const f = safeParseNumber(row[16 + m]);
+      dataPoints.push({ d: d / 1000, k, f }); // mm to m
+    }
 
-    // First point stiffness for MCT output (hysteresis type: TTE for tetralinear)
-    updateSpringCompData(context, propName, componentIdx, k1, 'TTE', dataPoints);
+    // First point stiffness for MCT output
+    updateSpringCompData(context, propName, componentIdx, dataPoints[0]?.k || 0, 'TTE', dataPoints);
   }
 }
 
 /**
  * Get component index from string (1-6)
+ * VBA dicComponent mapping:
+ *   "xl" -> 1, "yl" -> 2, "zl" -> 3
+ *   "θxl" -> 4, "θyl" -> 5, "θzl" -> 6
+ *
+ * CRITICAL: Must check rotational DOFs first because 'θxl'.includes('xl') is true!
  */
 function getComponentIndex(componentStr: string): number {
-  const str = componentStr.toLowerCase().trim();
-  if (str.includes('xl') && !str.includes('回')) return 1;
-  if (str.includes('yl') && !str.includes('回')) return 2;
-  if (str.includes('zl') && !str.includes('回')) return 3;
-  if (str.includes('回xl') || str.includes('rxl')) return 4;
-  if (str.includes('回yl') || str.includes('ryl')) return 5;
-  if (str.includes('回zl') || str.includes('rzl')) return 6;
+  const str = componentStr.trim();
+  const strLower = str.toLowerCase();
+
+  // Check for rotational DOFs FIRST (order matters!)
+  // VBA uses θ (theta) character, also check for common variations
+  if (str.includes('θxl') || str.includes('θXl') || str.includes('ΘXL') ||
+      strLower.includes('θxl') || str.includes('回xl') || strLower.includes('rxl') ||
+      str.includes('θx') || str.includes('Θx')) return 4;
+  if (str.includes('θyl') || str.includes('θYl') || str.includes('ΘYL') ||
+      strLower.includes('θyl') || str.includes('回yl') || strLower.includes('ryl') ||
+      str.includes('θy') || str.includes('Θy')) return 5;
+  if (str.includes('θzl') || str.includes('θZl') || str.includes('ΘZL') ||
+      strLower.includes('θzl') || str.includes('回zl') || strLower.includes('rzl') ||
+      str.includes('θz') || str.includes('Θz')) return 6;
+
+  // Check for linear DOFs (after rotational to avoid false matches)
+  if (strLower.includes('xl')) return 1;
+  if (strLower.includes('yl')) return 2;
+  if (strLower.includes('zl')) return 3;
 
   // Try numeric
   const num = parseInt(str, 10);
@@ -306,6 +353,7 @@ function getComponentIndex(componentStr: string): number {
 
 /**
  * Update springCompData with stiffness value and data points
+ * VBA: m_SprCompORG(nCnt).SprCompData(n).strTENS(0, m) = {strD, strK, strF}
  */
 function updateSpringCompData(
   context: ConversionContext,
@@ -313,7 +361,7 @@ function updateSpringCompData(
   componentIdx: number,
   stiffness: number,
   hystType: string,
-  dataPoints?: { d: number; k: number }[]
+  dataPoints?: { d: number; k: number; f: number }[]
 ): void {
   let sprData = context.springCompData.get(propName);
 
@@ -334,28 +382,36 @@ function updateSpringCompData(
       mctHyst: hystType,
       mctHyst2: '',
       mctSym: 0,
-      mctType: 0,
-      mctSFType: 0,
+      mctType: 1,      // VBA: mct_iTYPE = 1 (d-F mode fixed)
+      mctSFType: 5,    // VBA: mct_SFType = 3 + mct_iTYPE * 2 = 5
       mctStiff: stiffness,
       category: [hystType],
       data: [],
     };
     sprData.components.push(comp);
   } else {
-    // Update existing component
+    // Update existing component with stiffness from detail table
     comp.mctStiff = stiffness;
-    if (!comp.mctHyst || comp.mctHyst === '') {
+    // Keep mctHyst from SPG6Comp if already set
+    if (!comp.mctHyst || comp.mctHyst === '' || comp.mctHyst === 'LINEAR') {
       comp.mctHyst = hystType;
     }
   }
 
-  // Store data points for multi-point curves
+  // Store data points as tensionData (VBA strTENS structure)
+  // tensionData[0] = positive direction, tensionData[1] = negative direction (for symmetric, both same)
+  //
+  // VBA behavior: Always overwrite existing data (no skip logic)
+  // VBA parsing order: SYMMETRIC first, ASYMMETRIC second
+  // So SYMMETRIC data is written first, then ASYMMETRIC data overwrites it if exists
   if (dataPoints && dataPoints.length > 0) {
-    // Store as tensionData for potential asymmetric/detailed output
     if (!comp.tensionData) {
       comp.tensionData = [];
     }
-    comp.tensionData.push(dataPoints.map(pt => ({ d: pt.d, k: pt.k, f: pt.d * pt.k })));
+    // Store as direction 0 (positive)
+    comp.tensionData[0] = dataPoints;
+    // For symmetric, direction 1 is same as direction 0
+    comp.tensionData[1] = dataPoints.map(pt => ({ ...pt }));
   }
 }
 
@@ -374,6 +430,18 @@ export function convertSymmetricSprings(
   // Parse raw data into context.springCompData if provided
   if (rawData && rawData.length > 0) {
     parseSymmetricSpringFromRawData(rawData, context);
+  }
+
+  // Debug: Dump springCompData summary
+  console.log('=== convertSymmetricSprings: springCompData summary ===');
+  console.log(`Total properties: ${context.springCompData.size}`);
+  for (const [propName, sprData] of context.springCompData) {
+    const compSummary = sprData.components.map(c => {
+      const stiff = c.tensionData?.[0]?.[0]?.k ?? c.mctStiff ?? 0;
+      const compStiff = c.tensionData?.[1]?.[0]?.k ?? 0;
+      return `${c.componentIndex}:${c.mctHyst}(k=${stiff},ck=${compStiff})`;
+    }).join(', ');
+    console.log(`  "${propName}": [${compSummary}]`);
   }
 
   // Damper tracking (VBA dicDamper)
@@ -423,7 +491,7 @@ export function convertSymmetricSprings(
     }
 
     // Build line 1 (VBA 131-140)
-    const line1 = `${escapeComma(sprName)},ELEMENT,${strType},0, 0.5, NO,0, 0.5, NO,0.5, 0.5, 0,${nDamper},`;
+    const line1 = `${chgComma(sprName)},ELEMENT,${strType},0, 0.5, NO,0, 0.5, NO,0.5, 0.5, 0,${nDamper},`;
     mctLines.push(line1);
 
     // Lines 2-7: 6 DOF lines (VBA 143-193)
@@ -463,10 +531,34 @@ export function convertSymmetricSprings(
         } else {
           dofLine = 'YES,0, 0, NO';
         }
-      } else if (compData && compData.mctStiff !== undefined && compData.mctStiff !== 0) {
+      } else if (compData && ((compData.mctStiff !== undefined && compData.mctStiff !== 0) ||
+                 (compData.tensionData && compData.tensionData.length > 0))) {
         // Has stiffness data (VBA 164-182)
         bAllFree = false;
-        const stiffValue = compData.mctStiff;
+
+        // VBA logic: If strProp is not numeric, get from strTENS
+        // mct_iTYPE = 1 (d-F mode) → use strK (stiffness)
+        // mct_iTYPE = 0 (d-K mode) → use strF (force)
+        let stiffValue = compData.mctStiff || 0;
+
+        // Check if tensionData exists and has values (VBA strTENS)
+        if (compData.tensionData && compData.tensionData.length > 0) {
+          // VBA indexing: strTENS(0) = COMPRESSION, strTENS(1) = TENSION
+          // VBA: If mct_HYST = "SLBC" Then o = 1 → use compression direction
+          // SLBC is compression-only bilinear, so use tensionData[0] (COMPRESSION)
+          const directionIdx = (compData.mctHyst === 'SLBC') ? 0 : 1;
+          const tensData = compData.tensionData[directionIdx];
+
+          if (tensData && tensData.length > 0) {
+            // VBA: mct_iTYPE = 1 → use strK, else use strF
+            // Since mct_iTYPE is fixed to 1 (d-F), use strK
+            const firstPoint = tensData[0];
+            if (firstPoint && firstPoint.k !== undefined && firstPoint.k !== 0) {
+              stiffValue = firstPoint.k;
+            }
+          }
+        }
+
         dofLine = `YES,${stiffValue},0,NO`;
       } else {
         // No data - free DOF (VBA 183-185)
@@ -500,7 +592,7 @@ export function convertSymmetricSprings(
 
     for (const [damperName, damperNo] of dicDamper) {
       // Line 1: Damper header (VBA 221-230)
-      oilDamperLines.push(`${damperNo},${escapeComma(damperName)}, , 0, , , , , 0, 2, 0, 1`);
+      oilDamperLines.push(`${damperNo},${chgComma(damperName)}, , 0, , , , , 0, 2, 0, 1`);
 
       // Lines 2-7: 6 DOF damper lines (VBA 232-236)
       let firstDof = 'YES';

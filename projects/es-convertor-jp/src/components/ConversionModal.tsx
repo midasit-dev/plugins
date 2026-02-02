@@ -12,6 +12,7 @@ import {
 } from '@midasit-dev/moaui';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Encoding from 'encoding-japanese';
 
 interface ConversionModalProps {
   isOpen: boolean;
@@ -48,9 +49,17 @@ const ConversionModal: React.FC<ConversionModalProps> = ({
     setCopied(false); // Reset copied state when switching tabs
   }, []);
 
-  // Handle download
+  // Handle download with Shift_JIS encoding
   const handleDownload = useCallback(() => {
-    const blob = new Blob([currentMctText], { type: 'text/plain;charset=utf-8' });
+    // Convert text to Shift_JIS encoding
+    const unicodeArray = Encoding.stringToCode(currentMctText);
+    const sjisArray = Encoding.convert(unicodeArray, {
+      to: 'SJIS',
+      from: 'UNICODE',
+    });
+    const uint8Array = new Uint8Array(sjisArray);
+
+    const blob = new Blob([uint8Array], { type: 'text/plain;charset=shift_jis' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -207,13 +216,14 @@ const ConversionModal: React.FC<ConversionModalProps> = ({
               {/* MCT Content */}
               <div
                 style={{
-                  flex: 1,
+                  width: '100%',
                   minHeight: 200,
                   maxHeight: 300,
                   overflowY: 'auto',
                   backgroundColor: '#1e1e1e',
                   borderRadius: 4,
                   padding: 12,
+                  boxSizing: 'border-box',
                 }}
               >
                 <pre
