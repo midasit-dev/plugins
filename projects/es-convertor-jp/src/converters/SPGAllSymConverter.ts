@@ -536,27 +536,48 @@ export function convertSymmetricSprings(
         // Has stiffness data (VBA 164-182)
         bAllFree = false;
 
-        // VBA logic: If strProp is not numeric, get from strTENS
-        // mct_iTYPE = 1 (d-F mode) → use strK (stiffness)
-        // mct_iTYPE = 0 (d-K mode) → use strF (force)
-        let stiffValue = compData.mctStiff || 0;
+        // VBA logic (Class130_SPGAllSym.cls 164-180):
+        // If Not IsNumeric(strProp) Then
+        //   o = 0
+        //   k = mct_iTYPE
+        //   If mct_HYST = "SLBC" Then o = 1    ' 負方向
+        //   If k = 1 Then strProp = strTENS(o, 0).strK
+        //   Else strProp = strTENS(o, 0).strF
+        // End If
+
+        let stiffValue = 0;
 
         // Check if tensionData exists and has values (VBA strTENS)
         if (compData.tensionData && compData.tensionData.length > 0) {
-          // VBA indexing: strTENS(0) = COMPRESSION, strTENS(1) = TENSION
-          // VBA: If mct_HYST = "SLBC" Then o = 1 → use compression direction
-          // SLBC is compression-only bilinear, so use tensionData[0] (COMPRESSION)
-          const directionIdx = (compData.mctHyst === 'SLBC') ? 0 : 1;
-          const tensData = compData.tensionData[directionIdx];
+          // VBA indexing: o = 0 (default), o = 1 if SLBC
+          // strTENS(0) = direction 0, strTENS(1) = direction 1
+          // For symmetric: both directions have same data
+          // For SLBC (負方向): use direction 1
+          const o = (compData.mctHyst === 'SLBC') ? 1 : 0;
+          const tensData = compData.tensionData[o];
 
           if (tensData && tensData.length > 0) {
-            // VBA: mct_iTYPE = 1 → use strK, else use strF
-            // Since mct_iTYPE is fixed to 1 (d-F), use strK
             const firstPoint = tensData[0];
-            if (firstPoint && firstPoint.k !== undefined && firstPoint.k !== 0) {
-              stiffValue = firstPoint.k;
+            // VBA: mct_iTYPE = 1 (d-F mode fixed) → use strK
+            // VBA: mct_iTYPE = 0 (d-K mode) → use strF
+            const iType = compData.mctType ?? 1;  // Default to 1 (d-F mode)
+            if (iType === 1) {
+              // d-F mode: use K value
+              if (firstPoint && firstPoint.k !== undefined) {
+                stiffValue = firstPoint.k;
+              }
+            } else {
+              // d-K mode: use F value
+              if (firstPoint && firstPoint.f !== undefined) {
+                stiffValue = firstPoint.f;
+              }
             }
           }
+        }
+
+        // Fallback to mctStiff if tensionData didn't provide a value
+        if (stiffValue === 0 && compData.mctStiff !== undefined && compData.mctStiff !== 0) {
+          stiffValue = compData.mctStiff;
         }
 
         dofLine = `YES,${stiffValue},0,NO`;
