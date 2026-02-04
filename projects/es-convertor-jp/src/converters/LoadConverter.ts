@@ -4,6 +4,7 @@
 
 import { ConversionContext } from '../types/converter.types';
 import { safeParseNumber } from '../utils/unitConversion';
+import { generateNumberRangeString } from '../utils/stringUtils';
 
 export interface LoadConversionResult {
   mctLinesLoadCase: string[];
@@ -145,8 +146,8 @@ function calcVecter(
   // Check for angle-based direction (VBA lines 371-378)
   const coordType = normalizeJapaneseText(String(row[COL.COORD_TYPE] || ''));
   if (coordType === '球座標指定') {
-    const dAlpha = safeParseNumber(row[COL.ALPHA]) * Math.PI / 180;
-    const dBeta = safeParseNumber(row[COL.BETA]) * Math.PI / 180;
+    const dAlpha = safeParseNumber(row[COL.ALPHA]);
+    const dBeta = safeParseNumber(row[COL.BETA]);
 
     vBuf[0] = Math.cos(dBeta) * Math.cos(dAlpha);
     vBuf[1] = Math.cos(dBeta) * Math.sin(dAlpha);
@@ -351,14 +352,16 @@ function getECCEN(
 
 /**
  * Get string with node number generation for multiple nodes
+ * Parses comma-separated numbers and generates range string (e.g. "'1to3 5to7 10")
  */
 function getStringGen(nodeList: string): string {
   // If single node, return as-is
   if (!nodeList.includes(',')) {
     return nodeList;
   }
-  // Multiple nodes - wrap in quotes for MCT format
-  return `'${nodeList}'`;
+  // Parse numbers and generate range string
+  const numbers = nodeList.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+  return generateNumberRangeString(numbers);
 }
 
 /**
@@ -531,7 +534,7 @@ export function convertLoads(
   mctLinesLoadCase.push('*STLDCASE    ; Static Load Cases');
   mctLinesLoadCase.push('; LCNAME, LCTYPE, DESC');
   for (const [lcName] of dicLoadName) {
-    mctLinesLoadCase.push(`   ${lcName},USER,`);
+    mctLinesLoadCase.push(`${lcName},USER,`);
   }
 
   // Generate *CONLOAD with *USE-STLD wrapper (VBA lines 271-288)
@@ -544,7 +547,7 @@ export function convertLoads(
 
       const datLines = tConLoad.strDat[idx] || [];
       for (const line of datLines) {
-        mctLinesConLoad.push(`   ${line}`);
+        mctLinesConLoad.push(`${line}`);
       }
 
       mctLinesConLoad.push('');
@@ -563,7 +566,7 @@ export function convertLoads(
 
       const datLines = tSpDisp.strDat[idx] || [];
       for (const line of datLines) {
-        mctLinesSpDisp.push(`   ${line}`);
+        mctLinesSpDisp.push(`${line}`);
       }
 
       mctLinesSpDisp.push('');
@@ -587,7 +590,7 @@ export function convertLoads(
 
       const datLines = tBeamLoad.strDat[idx] || [];
       for (const line of datLines) {
-        mctLinesBeamLoad.push(`   ${line}`);
+        mctLinesBeamLoad.push(`${line}`);
       }
 
       mctLinesBeamLoad.push('');
@@ -606,7 +609,7 @@ export function convertLoads(
 
       const datLines = tElTemper.strDat[idx] || [];
       for (const line of datLines) {
-        mctLinesElTemper.push(`   ${line}`);
+        mctLinesElTemper.push(`${line}`);
       }
 
       mctLinesElTemper.push('');
@@ -744,7 +747,7 @@ function setBeamLoad(
   let strCMD = ',BEAM,';
   let strPROJ = ',NO,';
   if (nType > 4) strCMD = ',LINE,';
-  if (nType === 7) strPROJ = ',YES,';
+  if (nType === 6) strPROJ = ',YES,';
 
   // Action and type (VBA lines 648-674)
   const actionType = normalizeJapaneseText(String(row[COL.ACTION_TYPE] || ''));
@@ -752,12 +755,7 @@ function setBeamLoad(
   const vType = ['UNILOAD,', 'UNIMOMENT,'];
   const nAction = dicAction[actionType] || 0;
 
-  let strType: string;
-  if (nType === 4) {
-    strType = nAction === 1 ? 'CONMOMENT,' : 'CONLOAD,';
-  } else {
-    strType = vType[nAction];
-  }
+  const strType = vType[nAction];
 
   // Get elements and values (VBA lines 683-739)
   const targetStr = String(row[COL.TARGET] || '');
@@ -831,7 +829,7 @@ function setBeamLoad(
   const eccentricity = safeParseNumber(row[COL.ECCENTRICITY]);
 
   // Direction items for vector load
-  const vLoadDir = ['GX', 'GZ', 'GY', 'GX', 'GZ', 'GY']; // With Y-Z swap
+  const vLoadDir = ['GX', 'GZ', 'GY', 'LX', 'LZ', 'LY']; // With Y-Z swap
 
   // Generate output for each element (VBA lines 747-794)
   console.log(`  vElemNode.length=${vElemNode.length}`);
