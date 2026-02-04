@@ -105,6 +105,9 @@ function preprocessData(
 
   const maxLen = Math.max(rawDataZp.length, rawDataYp.length);
 
+  let lastValidName = '';
+  let lastValidProp = '';
+
   for (let i = 0; i < maxLen; i++) {
     const rowZp = rawDataZp[i] || [];
     const rowYp = rawDataYp[i] || [];
@@ -115,15 +118,19 @@ function preprocessData(
     let name = String(rowZp[0] || '').trim();
     let prop = String(rowZp[1] || '').trim();
 
-    // If name is empty, try to use previous name (VBA behavior)
-    if (!name && i > 0 && rawDataZp[i - 1]) {
-      name = String(rawDataZp[i - 1][0] || '').trim();
+    // If name is empty, use last valid name (VBA carry-forward behavior)
+    if (!name) {
+      name = lastValidName;
     }
-    if (!prop && i > 0 && rawDataZp[i - 1]) {
-      prop = String(rawDataZp[i - 1][1] || '').trim();
+    if (!prop) {
+      prop = lastValidProp;
     }
 
     if (!name) continue;
+
+    // Update last valid values
+    lastValidName = name;
+    lastValidProp = prop;
 
     let n: number;
     if (elemDetail.has(name)) {
@@ -240,10 +247,10 @@ export function convertHingeProperties(
 
     // Ensure numeric values (VBA lines 208-233)
     for (let i = 2; i <= 21; i++) {
-      if (typeof rowZp[i] !== 'number' || isNaN(Number(rowZp[i]))) {
+      if (isNaN(Number(rowZp[i]))) {
         rowZp[i] = 0;
       }
-      if (typeof rowYp[i] !== 'number' || isNaN(Number(rowYp[i]))) {
+      if (isNaN(Number(rowYp[i]))) {
         rowYp[i] = 0;
       }
     }
