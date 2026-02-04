@@ -1,190 +1,128 @@
-# \*NODE MCT 변환 분석
+# *NODE 変환 검증
 
-## 개요
+## 1. VBA 흐름
 
-ES(Engineer Studio) 엑셀의 `節点座標` 시트를 MIDAS Civil NX의 `*NODE` 섹션으로 변환
+### 1.1 호출 위치 (main.bas)
+- `mct作成` 서브루틴 내에서 호출
+- Line 277: `Set clsNode = New Class010_Node` (초기화)
+- Line 396: `Call clsNode.GetNode(dicDblNode_Z)` (데이터 읽기 - 2중 노드 Z좌표 감지용)
+- Line 427: `Call clsNode.ChangeNode(dicDblPnt)` (MCT 변환 출력)
+- `dicDblPnt`는 `clsElmSpr.GetSpringElem()`에서 채워진 스프링 요소 2중 노드 집합
 
-## 1. 필요한 데이터 시트
+### 1.2 데이터 읽기 (GetNode)
+- 시트명: `"節点座標"` (Class_Initialize에서 설정)
+- 읽기 범위: Row 3부터, Col 2~6 (즉, B3:F열)
+  - strData(0,i) = 노드명(ID)
+  - strData(1,i) = X좌표
+  - strData(2,i) = Y좌표
+  - strData(3,i) = Z좌표
+- `dicDblNode_Z`에 노드명 → Array(X&"_"&Z, Y) 형태로 저장 (스프링 2중노드 검출용)
 
-| 항목    | VBA            | TypeScript | 상태 |
-| ------- | -------------- | ---------- | ---- |
-| 시트명  | `m_Sheet_Node` | `節点座標` | ✓    |
-| 시작 행 | 3 (nReadSTRow) | 3          | ✓    |
-| 열 범위 | B~F (2~6)      | B~F (2~6)  | ✓    |
+### 1.3 데이터 가공 (ChangeNode)
 
-### 열 구조
+#### 노드 번호 매핑
+1. 최대 숫자 번호(`nMax`) 검출 - 숫자형 ID만 대상
+2. 숫자가 아닌 노드 ID에는 `nMax+1`부터 순번 부여
+3. `m_NodeData` 딕셔너리에 노드명 → 노드번호 매핑
 
-| 열  | 인덱스 | VBA 변수      | 설명    |
-| --- | ------ | ------------- | ------- |
-| B   | row[0] | strData(0, i) | 노드 ID |
-| C   | row[1] | strData(1, i) | X 좌표  |
-| D   | row[2] | strData(2, i) | Y 좌표  |
-| E   | row[3] | strData(3, i) | Z 좌표  |
-| F   | row[4] | strData(4, i) | 미사용  |
-
-## 2. 처리 경로
-
-### VBA (Class010_Node.cls)
-
+#### 좌표 변환 (ES → MIDAS)
 ```
-1. GetData() → 시트에서 B3:F~ 데이터 읽기
-2. 최대 노드 번호 검출 (IsNumeric 체크)
-3. 비숫자 ID에 번호 할당 (nMax + 1부터)
-4. 좌표 변환: ES(X,Y,Z) → MIDAS(X,-Z,Y)
-5. Double point 처리: Y좌표 0.001씩 감소
-6. MCT 출력
+MIDAS_X = ES_X          (strData(1,i))
+MIDAS_Y = -1 * ES_Z     (-1# * strData(3,i))
+MIDAS_Z = ES_Y          (strData(2,i))
 ```
 
-### TypeScript (NodeConverter.ts)
+#### 2중 노드 처리 (좌표 중복 방지)
+- `dicDblPnt`에 포함된 노드의 경우, 좌표가 이미 존재하면 Y좌표(ES 기준)를 -0.001씩 감소시켜 중복 해소
+- 좌표 키: `"X-Y-Z"` (ES 좌표 기준)
 
-```
-1. getSheetDataForConversion() → 시트 데이터 가져오기
-2. 최대 노드 번호 검출 (isNumeric 체크)
-3. 비숫자 ID에 번호 할당 (nextNo = maxNo + 1)
-4. 좌표 변환: transformCoordinate()
-5. Double point 처리: adjustedY -= 0.001
-6. 노드 번호순 정렬
-7. MCT 출력
-```
+#### ES 노드 좌표 저장
+- `m_dicESNode`에 노드번호 → BufP(3) 배열로 변환된 MIDAS 좌표 저장
+  - BufP(0) = X, BufP(1) = -Z, BufP(2) = Y
 
-### 처리 경로 비교
-
-| 단계                | VBA                     | TypeScript                | 상태 |
-| ------------------- | ----------------------- | ------------------------- | ---- |
-| 데이터 읽기         | GetData                 | getSheetDataForConversion | ✓    |
-| 최대 번호 검출      | IsNumeric 체크          | isNumeric 체크            | ✓    |
-| 비숫자 ID 번호 할당 | nMax + 1                | nextNo = maxNo + 1        | ✓    |
-| 좌표 변환           | X, -Z, Y                | transformCoordinate       | ✓    |
-| Double point 처리   | Y -= 0.001              | adjustedY -= 0.001        | ✓    |
-| 결과 저장           | m_NodeData, m_dicESNode | nodeMapping, esNodeCoords | ✓    |
-
-## 3. 좌표 변환
-
-ES와 MIDAS의 좌표계가 다름:
-
-```
-ES:    (X, Y, Z)
-MIDAS: (X, -Z, Y)
-```
-
-### VBA 코드 (lines 78-80)
-
-```vba
-BufP(0) = CDbl(strData(1, i))          ' X → X
-BufP(1) = -1# * CDbl(strData(3, i))    ' Z → -Z (MIDAS Y)
-BufP(2) = CDbl(strData(2, i))          ' Y → Y (MIDAS Z)
-```
-
-### TypeScript 코드 (coordinateSystem.ts)
-
-```typescript
-export function transformCoordinate(es: Point3D): Point3D {
-  return {
-    x: es.x,
-    y: -es.z,
-    z: es.y,
-  };
-}
-```
-
-## 4. VBA와 차이점
-
-| 항목           | VBA                    | TypeScript                | 영향      |
-| -------------- | ---------------------- | ------------------------- | --------- |
-| 출력 정렬      | 입력 순서 유지         | 노드 번호순 정렬          | 개선      |
-| 원본 좌표 저장 | m_DicOrgNode ("X_Y_Z") | originalNodeCoords (객체) | 동일 기능 |
-| 변환 좌표 저장 | m_dicESNode            | esNodeCoords              | 동일 기능 |
-| 노드 매핑 저장 | m_NodeData             | nodeMapping               | 동일 기능 |
-
-## 5. MCT 출력 형식
-
+### 1.4 MCT 출력
 ```
 *NODE    ; Nodes
 ; iNO, X, Y, Z
-1,0,0,0
-2,10,0,0
-3,10,-5,3
+{노드번호},{X},{-Z},{Y}
 ```
-
-## 6. Context에 저장되는 데이터
-
-| Map                | Key                | Value                 | 용도                           |
-| ------------------ | ------------------ | --------------------- | ------------------------------ |
-| nodeMapping        | 노드 ID (string)   | 노드 번호 (number)    | 다른 변환기에서 노드 번호 조회 |
-| esNodeCoords       | 노드 번호 (number) | Point3D (변환된 좌표) | 요소 각도 계산 등              |
-| originalNodeCoords | 노드 ID (string)   | Point3D (원본 좌표)   | 하중 거리 계산 등              |
-
-## 7. 결론
-
-**✓ \*NODE 변환은 VBA와 완전히 일치합니다.**
-
-- 필요한 시트: `節点座標`
-- 처리 경로: 문제 없음
-- 누락된 기능: 없음
-
-> **중요**: `節点座標` 시트는 MCT 변환의 **필수 기반 시트**입니다. 다른 모든 변환기(MATERIAL, FRAME, LOAD 등)는 노드 매핑 정보를 참조하므로, MCT 파일 생성 시 반드시 NODE 데이터가 필요합니다.
+- 출력 순서: 원본 데이터 순서 그대로 (정렬 없음)
 
 ---
 
-## 데이터 입력 예제
+## 2. TypeScript 흐름
 
-### Excel 시트 (`節点座標`)
+### 2.1 호출 위치 (MCTGenerator.ts)
+- Line 86-90: `getSpringDoublePoints()`로 2중 노드 Set 생성
+- Line 94-106: `convertNodes()` 호출
+  - nodeData를 `{id, x, y, z}` 객체 배열로 변환하여 전달
+  - `doublePointNodes` Set 전달
 
-|     | B        | C      | D      | E      | F    |
-| --- | -------- | ------ | ------ | ------ | ---- |
-| 2   | 節点名称 | X: (m) | Y: (m) | Z: (m) | 従属 |
-| 3   | N1       | 0      | 0      | 0      | 1    |
-| 4   | N2       | 10     | 0      | 0      | 1    |
-| 5   | N3       | 10     | 5      | 0      | 1    |
-| 6   | N4       | 10     | 5      | -3     | 1    |
-| 7   | N5       | 0      | 8      | 4      | 1    |
+### 2.2 데이터 읽기
+- `getSheetDataForConversion(sheets, SHEET_NAMES.NODE)`로 데이터 획득
+- MCTGenerator에서 row 배열을 NodeData 형태로 매핑:
+  - row[0] → id, row[1] → x, row[2] → y, row[3] → z
 
-### 설명
+### 2.3 데이터 가공
 
-- 행 2: 헤더 (변환 시 무시됨)
-- 행 3~: 데이터 시작 (nReadSTRow = 3)
-- 열 범위: B~F (nReadSTCol=2, nReadEDCol=6)
-- 노드 ID: 문자열(N1, NG1 등) 또는 숫자 가능
-- 좌표: ES 좌표계 (X, Y, Z) 단위: m
-- 従属: 종속 노드 플래그 (미사용)
+#### 노드 번호 매핑 (convertNodes)
+1. 숫자형 ID의 최대값(`maxNo`) 검출
+2. 비숫자형 ID에 `nextNo = maxNo + 1`부터 순번 부여
+3. `context.nodeMapping`에 저장
 
-### MCT 출력 결과
+#### 좌표 변환
+- `transformCoordinate()` 함수 사용:
+```typescript
+MIDAS_X = ES_X
+MIDAS_Y = -ES_Z
+MIDAS_Z = ES_Y
+```
 
+#### 2중 노드 처리
+- `doublePointNodes` Set에 포함된 노드의 경우:
+  - ES 좌표 기준 `"X-Y-Z"` 키로 중복 검사
+  - 중복 시 `adjustedY -= 0.001` (ES Y좌표 감소)
+  - 조정된 좌표로 `transformCoordinate()` 재호출
+
+#### 변환 좌표 저장
+- `context.esNodeCoords`에 노드번호 → Point3D 저장
+
+### 2.4 MCT 출력
 ```
 *NODE    ; Nodes
 ; iNO, X, Y, Z
-1,0,0,0
-2,10,0,0
-3,10,0,5
-4,10,3,5
-5,0,-4,8
+{노드번호},{X},{Y},{Z}
 ```
+- 출력 순서: **노드 번호 순으로 정렬** (`mctNodes.sort((a, b) => a.no - b.no)`)
 
-### 비숫자 노드 ID 처리
+---
 
-문자열 노드 ID는 자동으로 숫자 ID로 변환됨:
-- N1 → 1, N2 → 2, N3 → 3, N4 → 4, N5 → 5
+## 3. 비교 분석
 
-숫자 ID가 섞여 있는 경우:
-- 숫자 ID 최대값을 찾음 (예: 100)
-- 문자열 ID는 최대값+1부터 순차 할당 (N1 → 101, N2 → 102)
+### 3.1 동일한 부분
+| 항목 | VBA | TypeScript | 일치 |
+|------|-----|-----------|------|
+| 좌표 변환 공식 | X, -Z, Y | X, -Z, Y | O |
+| 노드 번호 매핑 | 숫자형 유지, 비숫자형 maxNo+1부터 | 동일 | O |
+| MCT 헤더 | `*NODE    ; Nodes` | 동일 | O |
+| MCT 코멘트 | `; iNO, X, Y, Z` | 동일 | O |
+| MCT 데이터 형식 | `번호,X,Y,Z` | 동일 | O |
+| 2중 노드 Y 조정 | -0.001씩 감소 | -0.001씩 감소 | O |
 
-### 좌표 변환 상세
+### 3.2 차이점
+| 항목 | VBA | TypeScript | 영향 |
+|------|-----|-----------|------|
+| 출력 순서 | 원본 데이터 순서 | 노드 번호 오름차순 정렬 | **낮음** - MCT 파서는 순서 무관 |
+| 숫자형 판별 시 매핑 타이밍 | 첫 번째 루프에서 m_NodeData에 동일값 저장 후 두 번째 루프에서 번호 할당 | 첫 번째 루프에서 바로 nodeMapping에 저장 | **없음** - 결과 동일 |
+| 2중 노드 조건 분기 | `dicDblPnt.Exists(strData(0,i))` 체크 후 While 루프 | `doublePointNodes?.has(node.id)` 체크 후 While 루프 | **없음** - 로직 동일 |
+| 2중 노드 아닌 경우 | `dicNodeData.Exists(s)` 체크 없이 바로 추가 | `usedCoords.add(coordKey)` 무조건 추가 | **없음** - VBA도 While Not으로 추가 |
+| originalNodeCoords 저장 | 없음 (m_DicOrgNode에 문자열로 저장) | `context.originalNodeCoords`에 Point3D로 저장 | **없음** - 내부 참조용 |
 
-| 노드   | ES (X,Y,Z)   | MIDAS (X,-Z,Y) | 설명                     |
-| ------ | ------------ | -------------- | ------------------------ |
-| N1 → 1 | (0, 0, 0)    | (0, 0, 0)      | 원점                     |
-| N2 → 2 | (10, 0, 0)   | (10, 0, 0)     | X만 있음                 |
-| N3 → 3 | (10, 5, 0)   | (10, 0, 5)     | Y=5 → Z=5                |
-| N4 → 4 | (10, 5, -3)  | (10, 3, 5)     | Y=5→Z=5, Z=-3→Y=3        |
-| N5 → 5 | (0, 8, 4)    | (0, -4, 8)     | Y=8→Z=8, Z=4→Y=-4        |
+### 3.3 차이로 인한 MCT 결과 영향
+- **출력 순서 차이**: TypeScript는 노드 번호 순으로 정렬하여 출력하지만, VBA는 원본 순서대로 출력. MIDAS Civil NX의 MCT 파서는 노드 순서에 의존하지 않으므로 기능적 차이 없음.
+- 좌표 값, 노드 번호 할당, 2중 노드 처리 로직은 완전히 일치.
 
-### 좌표 변환 공식
+---
 
-```
-MIDAS.X = ES.X
-MIDAS.Y = -ES.Z
-MIDAS.Z = ES.Y
-```
-
-예: ES(10, 5, -3) → MIDAS(10, -(-3), 5) = MIDAS(10, 3, 5)
+## 4. 결론
+**PASS** - *NODE 변환 로직은 VBA와 TypeScript가 기능적으로 완전히 동일. 출력 순서만 다르나 MCT 결과에 영향 없음.

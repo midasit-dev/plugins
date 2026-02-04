@@ -343,6 +343,21 @@ export async function generateMCT(
         );
       }
 
+      // Parse OTHER spring data THIRD (VBA i=2) - must be before NL-PROP generation
+      // so that LITR/VISCOUS-OIL-DAMPER data is included in NL-PROP output
+      const spgOtherNagoya = parseResult.subTables.get('SPG_ALL_OTHER_NAGOYA') || [];
+      const spgOtherBmr = parseResult.subTables.get('SPG_ALL_OTHER_BMR') || [];
+      if (spgOtherNagoya.length > 0 || spgOtherBmr.length > 0) {
+        convertOtherSpringsWithTables(
+          {
+            nagoyaData: spgOtherNagoya,
+            bmrData: spgOtherBmr,
+          },
+          context,
+          spg6Result.spg6CompMapping
+        );
+      }
+
       // STEP 2: Now convert ElemSpring - at this point springCompData has full data
       // so ~1, ~2 properties will have complete data copied from originals
       if (hasSheet(sheets, SHEET_NAMES.ELEM_SPRING)) {
@@ -390,25 +405,9 @@ export async function generateMCT(
         }
       }
 
-      // Convert other springs - use subTables for individual table data
-      const spgOtherNagoya = parseResult.subTables.get('SPG_ALL_OTHER_NAGOYA') || [];
-      const spgOtherBmr = parseResult.subTables.get('SPG_ALL_OTHER_BMR') || [];
-      if (spgOtherNagoya.length > 0 || spgOtherBmr.length > 0) {
-        const otherResult = convertOtherSpringsWithTables(
-          {
-            nagoyaData: spgOtherNagoya,
-            bmrData: spgOtherBmr,
-          },
-          context,
-          spg6Result.spg6CompMapping
-        );
-        if (otherResult.mctLines.length > 0) {
-          mctLines.push(...otherResult.mctLines);
-          mctLines.push('');
-          if (otherResult.hasDamper) {
-            warnings.push('BMR(CD)ダンパーはCIVIL NXの粘性ダンパーに変換されます。プロパティはデータ変換後に手動で変更してください。');
-          }
-        }
+      // Other springs warning (parsing already done above, before NL-PROP generation)
+      if (spgOtherBmr.length > 0) {
+        warnings.push('BMR(CD)ダンパーはCIVIL NXの粘性ダンパーに変換されます。プロパティはデータ変換後に手動で変更してください。');
       }
     }
 

@@ -152,6 +152,20 @@ function parseBilinearTable(data: (string | number)[][], context: ConversionCont
     console.log(`    tensionData: ${JSON.stringify(tensionData)}`);
     console.log(`    compressionData: ${JSON.stringify(compressionData)}`);
 
+    // TAK extension: If existing component has TAK hyst type (set by SPG6Comp),
+    // extend 2-point data to 3-point by duplicating first point (VBA: ReDim Preserve + shift)
+    // VBA logic: [p0, p1] → [p0, p0, p1]
+    const existingSprData = context.springCompData.get(propName);
+    const existingComp = existingSprData?.components.find(c => c.componentIndex === componentIdx);
+    if (existingComp && existingComp.mctHyst === 'TAK') {
+      if (tensionData.length === 2) {
+        tensionData.unshift({ ...tensionData[0] });
+      }
+      if (compressionData.length === 2) {
+        compressionData.unshift({ ...compressionData[0] });
+      }
+    }
+
     const stiffness = tensionData.length > 0 ? tensionData[0].k : 0;
     updateSpringCompData(context, propName, componentIdx, stiffness, 'NBI', 1, tensionData, compressionData);
   }
@@ -586,6 +600,9 @@ export function convertAsymmetricSprings(
 
     // Empty line (VBA line 218-219)
     mctLines.push('');
+
+    // J-end DOF existence flags (VBA line 100 repeated for J-end)
+    mctLines.push('NO , NO, NO, NO, NO, NO, NO');
 
     // Duplicate DOF lines for J-end (VBA lines 221-224)
     for (const line of dofLines) {

@@ -144,7 +144,7 @@ function calcVecter(
 
   // Check for angle-based direction (VBA lines 371-378)
   const coordType = normalizeJapaneseText(String(row[COL.COORD_TYPE] || ''));
-  if (coordType === '座標指定') {
+  if (coordType === '球座標指定') {
     const dAlpha = safeParseNumber(row[COL.ALPHA]) * Math.PI / 180;
     const dBeta = safeParseNumber(row[COL.BETA]) * Math.PI / 180;
 
@@ -684,7 +684,7 @@ function setSpDisp(
   let strFlag = '';
   let strLoad = '';
 
-  if (strVecterType === 'ベクトル指定' || strVecterType === '座標指定') {
+  if (strVecterType === 'ベクトル指定' || strVecterType === '球座標指定') {
     // Vector or coordinate specification (VBA lines 474-476)
     const result = calcVecter(row, COL.VALUE1);
     strLoad = result.strLoad + ',';

@@ -79,10 +79,10 @@ function parseNagoyaTable(data: (string | number)[][], context: ConversionContex
     const componentStr = String(row[1] || '');
     const componentIdx = getComponentIndex(componentStr);
 
-    // Get bearing data
+    // Get bearing data - convert units to match VBA GetSpringData
     const bearingType = String(row[2] || '');
-    const rubberHeight = safeParseNumber(row[3]);
-    const area = safeParseNumber(row[4]);
+    const rubberHeight = safeParseNumber(row[3]) / 1000;      // mm → m (VBA ChangeMM_M)
+    const area = safeParseNumber(row[4]) / 1000000;           // mm² → m² (VBA ChangeMM2_M2)
 
     // Store as LITR type in springCompData
     updateSpringCompData(

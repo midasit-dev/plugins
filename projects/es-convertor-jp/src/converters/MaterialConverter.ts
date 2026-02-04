@@ -111,7 +111,7 @@ export function convertMaterials(
 
     // Check if strength exists in database
     let hasDbMatch = false;
-    if ((isDatabase || isReinforcement) && mat.category !== MATERIAL_CATEGORIES.FRP) {
+    if ((isDatabase || isReinforcement || mat.category === MATERIAL_CATEGORIES.STEEL) && mat.category !== MATERIAL_CATEGORIES.FRP) {
       hasDbMatch = CONCRETE_STRENGTH_MAP[strengthKey] !== undefined ||
                    STEEL_STRENGTH_MAP[strengthKey] !== undefined;
     }

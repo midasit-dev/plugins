@@ -526,7 +526,10 @@ export function convertSymmetricSprings(
 
           const bearingRatio = NAGOYA_BEARING_RATIOS[bearingType] || 1;
           // VBA: dValue = dicNAGOYA(...) * strData(1) / ChangeN_kN(Change_par_MM2_M2(strData(2)))
-          const dValue = bearingRatio * rubberHeight / changeN_kN(changeMM2_M2(area));
+          // strData(1) is already in m (ChangeMM_M applied at parse time)
+          // strData(2) is already in m² (ChangeMM2_M2 applied at parse time)
+          // Change_par_MM2_M2 reverses m²→mm², then ChangeN_kN divides by 1000
+          const dValue = bearingRatio * rubberHeight / changeN_kN(area * 1000000);
           dofLine = `YES,${dValue}, 0, NO`;
         } else {
           dofLine = 'YES,0, 0, NO';

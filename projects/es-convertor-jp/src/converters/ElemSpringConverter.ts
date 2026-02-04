@@ -87,10 +87,10 @@ export function getSpringDoublePoints(rawData: (string | number)[][]): Set<strin
 
     const node1 = String(row[1] || '');
     const node2 = String(row[2] || '');
-    const refType = String(row[5] || '');
+    const refType = String(row[4] || '');
 
-    // Check if reference type is "セル:セル" (same location)
-    if (refType.includes('セル:セル') || refType.includes('参照方向:セル')) {
+    // Check if reference type starts with "参照要素" (VBA: Left(strData(4,i), Len("参照要素")) = "参照要素")
+    if (refType.startsWith('参照要素')) {
       // Add both nodes as potential double points
       if (node1) doublePoints.add(node1);
       if (node2) doublePoints.add(node2);
