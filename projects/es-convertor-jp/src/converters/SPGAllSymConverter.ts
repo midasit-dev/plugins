@@ -505,8 +505,9 @@ export function convertSymmetricSprings(
 
     for (let m = 0; m < 6; m++) {
       // Get component index using vSort and vSPG (VBA 150-156)
+      // If sprData.vAngle exists, use identity mapping; otherwise use V_SPG
       const sortedIdx = V_SORT[nSort][m];
-      let compIdx = V_SPG[sortedIdx];
+      let compIdx = sprData.vAngle ? sprData.vAngle[sortedIdx] : V_SPG[sortedIdx];
       compIdx = Math.abs(compIdx);
 
       // Find component data for this index

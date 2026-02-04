@@ -643,10 +643,10 @@ export function convertSpringElements(
       if (dicComponent.get(propName) !== componentKey) {
         // Different coordinate system - need to add ~1, ~2, etc. suffix
         let suffixNum = 1;
-        let newName = `${propName}~${suffixNum}`;
+        let newName = `${propName}‾${suffixNum}`;
         while (usedPropNames.has(newName)) {
           suffixNum++;
-          newName = `${propName}~${suffixNum}`;
+          newName = `${propName}‾${suffixNum}`;
         }
         // Register the new name with its coordinate system
         dicComponent.set(newName, componentKey);
@@ -664,11 +664,10 @@ export function convertSpringElements(
           // Deep copy the component data
           const newSprData = {
             angle: origSprData.angle,
+            vAngle: [1, 3, -2, 4, 6, -5] as number[],
             components: origSprData.components.map(comp => ({
               ...comp,
               propertyName: newName,
-              // VBA sets different vAngle for reference element:
-              // Array(Dx, Dz, -Dy, Rx, Rz, -Ry) instead of Array(Dx, Dy, Dz, Rx, Ry, Rz)
               tensionData: comp.tensionData ? comp.tensionData.map(arr =>
                 arr ? arr.map(pt => ({ ...pt })) : []
               ) : undefined,

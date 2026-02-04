@@ -40,8 +40,8 @@ const BEARING_TYPE_MAP: Record<string, number> = {
 //   - indices 1-5 match VBA array values at those positions
 //   - index 6 is set to 6 to properly check component 6
 const V_SORT = [
-  [0, 1, 2, 3, 4, 5, 6],  // Default: components 1,2,3,4,5,6 in order
-  [0, 2, 1, 3, 5, 4, 6],  // Reference element: swap (1,2) and (4,5), keep 6
+  [0, 1, 2, 3, 4, 5, 5],  // Default: components 1,2,3,4,5; k=6 OOB → 5
+  [0, 2, 1, 3, 5, 4, 4],  // Reference element: swap (1,2) and (4,5); k=6 OOB → 4
 ];
 
 // Column offsets for each table (relative to main SPG_ALL_ASYM startCol=2)
@@ -597,18 +597,6 @@ export function convertAsymmetricSprings(
       dofLines.push(dofLine);
       mctLines.push(dofLine);
     }
-
-    // Empty line (VBA line 218-219)
-    mctLines.push('');
-
-    // J-end DOF existence flags (VBA line 100 repeated for J-end)
-    mctLines.push('NO , NO, NO, NO, NO, NO, NO');
-
-    // Duplicate DOF lines for J-end (VBA lines 221-224)
-    for (const line of dofLines) {
-      mctLines.push(line);
-    }
-    mctLines.push('');
 
     // Final padding line (VBA line 225)
     mctLines.push('0, 0, 0, 0, 0, 0');

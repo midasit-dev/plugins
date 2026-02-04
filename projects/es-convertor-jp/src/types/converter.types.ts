@@ -77,6 +77,7 @@ export interface ConversionContext {
 
 export interface SpringCompData {
   angle?: number;
+  vAngle?: number[];
   components: SpringComponentData[];
 }
 
