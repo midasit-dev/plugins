@@ -139,8 +139,8 @@ export function convertPlaneElements(
     // VBA line 79: If j < 8 Then j = j + 1 (pad for triangle)
     // j starts at 4 (after sectNo), adds up to 4 nodes = 8
     // If less than 4 nodes, need padding
-    while (parts.length < 8) {
-      parts.push(0);
+    if (parts.length < 8) {
+      parts.push('');
     }
 
     // VBA line 81: strBuf(j) = "1, 0" (iSUB, iWID/LCAXIS)
