@@ -169,15 +169,15 @@ export function convertSections(
 
   // Comments for TAPERED sections
   mctLinesTapered.push('*SECTION    ; Section');
-  mctLinesTapered.push('; iSEC, TYPE, SNAME, [OFFSET], bSD, bWE, SHAPE, BLT, D1, ..., D8, iCEL              ; 1st line - TAPERED');
-  mctLinesTapered.push(';       D11, D12, D13, D14, D15, D16, D17, D18                                      ; 2nd line');
-  mctLinesTapered.push(';       AREA1, ASy1, ASz1, Ixx1, Iyy1, Izz1                                         ; 3rd line');
-  mctLinesTapered.push(';       CyP1, CyM1, CzP1, CzM1, QyB1, QzB1, PERI_OUT1, PERI_IN1, Cy1, Cz1           ; 4th line');
-  mctLinesTapered.push(';       Y11, Y12, Y13, Y14, Z11, Z12, Z13, Z14, Zyy1, Zzz1                          ; 5th line');
-  mctLinesTapered.push(';       D21, D22, D23, D24, D25, D26, D27, D28                                      ; 6th line');
-  mctLinesTapered.push(';       AREA2, ASy2, ASz2, Ixx2, Iyy2, Izz2                                         ; 7th line');
-  mctLinesTapered.push(';       CyP2, CyM2, CzP2, CzM2, QyB2, QzB2, PERI_OUT2, PERI_IN2, Cy2, Cz2           ; 8th line');
-  mctLinesTapered.push(';       Y21, Y22, Y23, Y24, Z21, Z22, Z23, Z24, Zyy2, Zzz2                          ; 9th line');
+  mctLinesTapered.push('; iSEC, TYPE, SNAME, [OFFSET], bSD, bWE, SHAPE, BLT, D1, ..., D8, iCEL              ; 1st line - VALUE');
+  mctLinesTapered.push(';       D11, D12, D13, D14, D15, D16, D17, D18                                      ; 2nd line (STYPE=VALUE)');
+  mctLinesTapered.push(';       AREA1, ASy1, ASz1, Ixx1, Iyy1, Izz1                                         ; 3rd line (STYPE=VALUE)');
+  mctLinesTapered.push(';       CyP1, CyM1, CzP1, CzM1, QyB1, QzB1, PERI_OUT1, PERI_IN1, Cy1, Cz1           ; 4th line (STYPE=VALUE)');
+  mctLinesTapered.push(';       Y11, Y12, Y13, Y14, Z11, Z12, Z13, Z14, Zyy1, Zzz1                          ; 5th line (STYPE=VALUE)');
+  mctLinesTapered.push(';       D21, D22, D23, D24, D25, D26, D27, D28                                      ; 6th line (STYPE=VALUE)');
+  mctLinesTapered.push(';       AREA2, ASy2, ASz2, Ixx2, Iyy2, Izz2                                         ; 7th line (STYPE=VALUE)');
+  mctLinesTapered.push(';       CyP2, CyM2, CzP2, CzM2, QyB2, QzB2, PERI_OUT2, PERI_IN2, Cy2, Cz2           ; 8th line (STYPE=VALUE)');
+  mctLinesTapered.push(';       Y21, Y22, Y23, Y24, Z21, Z22, Z23, Z24, Zyy2, Zzz2                          ; 9th line (STYPE=VALUE)');
   mctLinesTapered.push('; [OFFSET2]: OFFSET, iCENT, iREF, iHORZ, HUSERI, HUSERJ, iVERT, VUSERI, VUSERJ');
 
   let sectNo = 0;
@@ -243,7 +243,7 @@ function generateValueSection(
   // Check for offset
   let offsetStr = 'CC,0,0,0,0,0,0';
   if (String(row[17]) === 'TRUE') {
-    offsetStr = `LT,0,0,1,${row[18]},1,${row[19]}`;
+    offsetStr = `LT,0,0,1,,${row[18]},1,,${row[19]}`;
   }
 
   // Line 1
@@ -297,7 +297,7 @@ function generateTaperedSection(
   // Check for offset
   let offsetStr = 'CC,0,0,0,0,0,0,0,0';
   if (String(iRow[17]) === 'TRUE') {
-    offsetStr = `LT,0,0,1,${iRow[18]},${jRow[18]},1,${iRow[19]},${jRow[19]}`;
+    offsetStr = `LT,0,0,1,,${iRow[18]},${jRow[18]},1,,${iRow[19]},${jRow[19]}`;
   }
 
   // Line 1
