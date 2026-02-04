@@ -88,16 +88,16 @@ export const STEEL_STRENGTH_MAP: Record<number, string> = {
 export const POISSON_RATIO_MAP: Record<string, number> = {
   'コンクリート材料': 0.167,
   '鉄筋材料': 0.3,
-  '鋼材料': 0.3,
-  '炭素繊維シート（FRP）材料': 0.46,
+  '鋼板材料': 0.3,
+  '炭素繊維シート（FRP） 材料': 0.46,
 };
 
 // Material category types
 export const MATERIAL_CATEGORIES = {
   CONCRETE: 'コンクリート材料',
   REINFORCEMENT: '鉄筋材料',
-  STEEL: '鋼材料',
-  FRP: '炭素繊維シート（FRP）材料',
+  STEEL: '鋼板材料',
+  FRP: '炭素繊維シート（FRP） 材料',
 } as const;
 
 // Input types

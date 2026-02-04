@@ -91,7 +91,7 @@ export function convertMaterials(
 
     // Determine material type (S or RC)
     // VBA line 117-121: 鋼材料 = STEEL, others = RC
-    const isSteel = mat.category === MATERIAL_CATEGORIES.STEEL || mat.category === MATERIAL_CATEGORIES.REINFORCEMENT;
+    const isSteel = mat.category === MATERIAL_CATEGORIES.REINFORCEMENT;
     context.matNo2SorRC.set(matNo, isSteel ? 'STEEL' : 'RC');
 
     // Truncate material name if needed
@@ -105,13 +105,13 @@ export function convertMaterials(
 
     // VBA line 87-90: Check if using database or user-defined
     // "データベース" OR "鉄筋材料" triggers DB check
-    const isDatabase = mat.type === INPUT_TYPES.DATABASE;
+    const isDatabase = mat.category === MATERIAL_CATEGORIES.STEEL;
     const isReinforcement = mat.category === MATERIAL_CATEGORIES.REINFORCEMENT;
     const strengthKey = mat.strength;
 
     // Check if strength exists in database
     let hasDbMatch = false;
-    if ((isDatabase || isReinforcement || mat.category === MATERIAL_CATEGORIES.STEEL) && mat.category !== MATERIAL_CATEGORIES.FRP) {
+    if ((isDatabase || isReinforcement) && mat.category !== MATERIAL_CATEGORIES.FRP) {
       hasDbMatch = CONCRETE_STRENGTH_MAP[strengthKey] !== undefined ||
                    STEEL_STRENGTH_MAP[strengthKey] !== undefined;
     }
@@ -131,12 +131,7 @@ export function convertMaterials(
       mctLine = `${matNo},${mctType},${mctName},0,0,,C,NO,0.0,1,${standard},,${strengthName},NO,${mat.elasticModulus}`;
     } else {
       // User-defined material
-      let poissonRatio = mat.poissonRatio || 0;
-
-      // Default Poisson ratio based on category
-      if (poissonRatio === 0) {
-        poissonRatio = POISSON_RATIO_MAP[mat.category] || 0.3;
-      }
+      const poissonRatio = POISSON_RATIO_MAP[mat.category] || 0.3;
 
       mctLine = `${matNo},USER,${mctName},0,0,,C,NO,0.0,2,${elasticModulus},${poissonRatio},${mat.thermalCoeff},${mat.density},0`;
     }
