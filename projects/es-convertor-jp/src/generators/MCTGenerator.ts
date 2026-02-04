@@ -133,8 +133,9 @@ export async function generateMCT(
       }
     }
 
-    // Step 6: Convert materials
+    // Step 6: Convert materials (data preparation)
     report(20, '材料を変換中...');
+    let matResultLines: string[] = [];
     if (hasSheet(sheets, SHEET_NAMES.MATERIAL)) {
       const materialData = getSheetDataForConversion(sheets, SHEET_NAMES.MATERIAL);
       const matResult = convertMaterials(
@@ -149,12 +150,13 @@ export async function generateMCT(
         })),
         context
       );
-      mctLines.push(...matResult.mctLines);
-      mctLines.push('');
+      matResultLines = matResult.mctLines;
     }
 
-    // Step 7: Convert sections
+    // Step 7: Convert sections (data preparation)
     report(30, '断面を変換中...');
+    let sectResultValue: string[] = [];
+    let sectResultTapered: string[] = [];
     if (hasSheet(sheets, SHEET_NAMES.SECT)) {
       const sectData = getSheetDataForConversion(sheets, SHEET_NAMES.SECT);
       const sectYoung = new Map<string, number>();
@@ -176,28 +178,19 @@ export async function generateMCT(
       }
 
       const sectResult = convertSections(sectData, context, sectionPairs, sectYoung);
-      if (sectResult.mctLinesValue.length > 6) {
-        mctLines.push(...sectResult.mctLinesValue);
-        mctLines.push('');
-      }
-      if (sectResult.mctLinesTapered.length > 10) {
-        mctLines.push(...sectResult.mctLinesTapered);
-        mctLines.push('');
-      }
+      sectResultValue = sectResult.mctLinesValue;
+      sectResultTapered = sectResult.mctLinesTapered;
     }
 
-    // Step 8: Convert plane sections
+    // Step 8: Convert plane sections (data preparation)
     let plnSectMapping = new Map<string, { sectNo: number; materialName: string }>();
+    let plnSectLines: string[] = [];
     if (hasSheet(sheets, SHEET_NAMES.PLN_SECT)) {
       const plnSectData = getSheetDataForConversion(sheets, SHEET_NAMES.PLN_SECT);
       console.log('PLN_SECT data rows:', plnSectData.length);
       const plnSectResult = convertPlnSections(plnSectData, context);
       plnSectMapping = plnSectResult.plnSectMapping;
-      // PlnSectConverter adds 1 comment line, so check > 1 for data
-      if (plnSectResult.mctLines.length > 1) {
-        mctLines.push(...plnSectResult.mctLines);
-        mctLines.push('');
-      }
+      plnSectLines = plnSectResult.mctLines;
     }
 
     // Step 9: Set element numbers (including rigid elements)
@@ -213,14 +206,15 @@ export async function generateMCT(
     // Step 10: Convert frame elements
     report(45, 'フレーム要素を変換中...');
     console.log('Frame data rows:', frameData.length);
+    let frameResultLines: string[] = [];
     if (frameData.length > 0) {
       const frameResult = convertFrames(frameData, context);
       console.log('Frame result mctLines:', frameResult.mctLines.length);
-      mctLines.push(...frameResult.mctLines);
-      mctLines.push('');
+      frameResultLines = frameResult.mctLines;
     }
 
     // Step 11: Convert plane elements
+    let plnElmResultLines: string[] = [];
     if (hasSheet(sheets, SHEET_NAMES.PLANE_ELEMENT)) {
       const plnElmData = getSheetDataForConversion(sheets, SHEET_NAMES.PLANE_ELEMENT);
       console.log('PLANE_ELEMENT data rows:', plnElmData.length);
@@ -229,23 +223,63 @@ export async function generateMCT(
         context,
         plnSectMapping
       );
-      if (plnElmResult.mctLines.length > 2) {
-        mctLines.push(...plnElmResult.mctLines);
-        mctLines.push('');
-      }
+      plnElmResultLines = plnElmResult.mctLines;
     }
 
     // Step 12: Convert rigid elements
     report(50, '剛体要素を変換中...');
     console.log('Rigid data rows:', rigidData.length);
+    let rigidResultLines: string[] = [];
+    let rigidResultConstraintLines: string[] = [];
     if (rigidData.length > 0) {
       const rigidResult = convertRigid(rigidData, context);
       console.log('Rigid result mctLinesRigid:', rigidResult.mctLinesRigid.length);
-      // RigidConverter adds 2 comment lines, so check > 2 for data
-      if (rigidResult.mctLinesRigid.length > 2) {
-        mctLines.push(...rigidResult.mctLinesRigid);
-        mctLines.push('');
-      }
+      rigidResultLines = rigidResult.mctLinesRigid;
+      rigidResultConstraintLines = rigidResult.mctLinesConstraint || [];
+    }
+
+    // === Output order: ELEMENT → MATERIAL → SECTION/THICKNESS (VBA order) ===
+
+    // Output FRAME elements
+    if (frameResultLines.length > 0) {
+      mctLines.push(...frameResultLines);
+      mctLines.push('');
+    }
+
+    // Output PLANE elements
+    if (plnElmResultLines.length > 2) {
+      mctLines.push(...plnElmResultLines);
+      mctLines.push('');
+    }
+
+    // Output RIGID elements
+    if (rigidResultLines.length > 2) {
+      mctLines.push(...rigidResultLines);
+      mctLines.push('');
+    }
+
+    // Output MATERIAL
+    if (matResultLines.length > 0) {
+      mctLines.push(...matResultLines);
+      mctLines.push('');
+    }
+
+    // Output SECTION (VALUE)
+    if (sectResultValue.length > 6) {
+      mctLines.push(...sectResultValue);
+      mctLines.push('');
+    }
+
+    // Output SECTION (TAPERED)
+    if (sectResultTapered.length > 11) {
+      mctLines.push(...sectResultTapered);
+      mctLines.push('');
+    }
+
+    // Output THICKNESS (plane sections)
+    if (plnSectLines.length > 1) {
+      mctLines.push(...plnSectLines);
+      mctLines.push('');
     }
 
     // Step 13: Convert hinge properties and assignments
@@ -417,11 +451,6 @@ export async function generateMCT(
       const fulcrumData = getSheetDataForConversion(sheets, SHEET_NAMES.FULCRUM);
       const fulcrumResult = convertFulcrum(fulcrumData, context);
 
-      if (fulcrumResult.mctLinesConstraint.length > 2) {
-        mctLines.push(...fulcrumResult.mctLinesConstraint);
-        mctLines.push('');
-      }
-
       if (fulcrumResult.mctLinesGSpring.length > 2) {
         mctLines.push(...fulcrumResult.mctLinesGSpring);
         mctLines.push('');
@@ -436,6 +465,11 @@ export async function generateMCT(
           }
         }
       }
+
+      if (fulcrumResult.mctLinesConstraint.length > 2) {
+        mctLines.push(...fulcrumResult.mctLinesConstraint);
+        mctLines.push('');
+      }
     }
 
     // Step 16: Convert nodal masses
@@ -449,8 +483,19 @@ export async function generateMCT(
       }
     }
 
-    // Step 17: Convert loads
-    report(90, '荷重を変換中...');
+    // Step 17: Convert internal forces (INI-EFORCE before LOAD)
+    report(90, '内力を変換中...');
+    if (hasSheet(sheets, SHEET_NAMES.INTERNAL_FORCE)) {
+      const forceData = getSheetDataForConversion(sheets, SHEET_NAMES.INTERNAL_FORCE);
+      const forceResult = convertInternalForce(forceData, context);
+      if (forceResult.mctLines.length > 2) {
+        mctLines.push(...forceResult.mctLines);
+        mctLines.push('');
+      }
+    }
+
+    // Step 18: Convert loads
+    report(95, '荷重を変換中...');
     if (hasSheet(sheets, SHEET_NAMES.LOAD)) {
       const loadData = getSheetDataForConversion(sheets, SHEET_NAMES.LOAD);
       const loadResult = convertLoads(loadData, context);
@@ -477,15 +522,10 @@ export async function generateMCT(
       }
     }
 
-    // Step 18: Convert internal forces
-    report(95, '内力を変換中...');
-    if (hasSheet(sheets, SHEET_NAMES.INTERNAL_FORCE)) {
-      const forceData = getSheetDataForConversion(sheets, SHEET_NAMES.INTERNAL_FORCE);
-      const forceResult = convertInternalForce(forceData, context);
-      if (forceResult.mctLines.length > 2) {
-        mctLines.push(...forceResult.mctLines);
-        mctLines.push('');
-      }
+    // Rigid CONSTRAINT output (after LOAD/ELTEMPER section)
+    if (rigidResultConstraintLines.length > 0) {
+      mctLines.push(...rigidResultConstraintLines);
+      mctLines.push('');
     }
 
     // Add end marker
