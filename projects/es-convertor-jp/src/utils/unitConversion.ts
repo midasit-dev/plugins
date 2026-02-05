@@ -147,8 +147,9 @@ export const isNumeric = (value: unknown): boolean => {
 
 /**
  * Format a number like VBA's implicit CStr(Double) conversion.
- * VBA uses E-notation for small numbers (abs < 0.1) that have many significant digits,
- * keeping 15 significant digits total. Format: X.XXXXXXXXXXXXXXE±DD
+ * VBA uses E-notation for small numbers (abs < 0.1) when the decimal string
+ * would be too long (> 17 characters). Uses the shortest unique representation
+ * (no trailing zero padding). Format: X.XXXXXXXXXXXXXXE±DD
  * For larger numbers or short decimals, uses JavaScript's default String() format.
  */
 export const vbaFormatNumber = (value: string | number): string => {
@@ -161,14 +162,15 @@ export const vbaFormatNumber = (value: string | number): string => {
   // For numbers >= 0.1, use default JS formatting (matches VBA behavior)
   if (abs >= 0.1) return defaultStr;
 
-  // For small numbers (abs < 0.1), check if the decimal representation is long.
-  // VBA uses E-notation when there are many significant digits.
-  // Short decimals like "0.0108" stay in decimal form.
-  if (defaultStr.length <= 7) return defaultStr;
+  // For small numbers (abs < 0.1), check if the decimal representation is short enough.
+  // VBA keeps decimal notation when the absolute value string is ≤ 17 characters.
+  // e.g. "0.01902733188529" (16 chars) → decimal, "0.0191004727476889" (18 chars) → E-notation
+  const absStr = String(abs);
+  if (absStr.length <= 17 && !absStr.includes('e')) return defaultStr;
 
-  // Use VBA-style E-notation: X.XXXXXXXXXXXXXXE±DD (15 significant digits)
-  // JavaScript's toExponential(14) gives 14 decimal places in mantissa = 15 sig digits
-  const expStr = num.toExponential(14);
+  // Use VBA-style E-notation with shortest unique representation (no trailing zeros).
+  // toExponential() without argument gives minimum digits needed to uniquely identify the float64.
+  const expStr = num.toExponential();
   // Convert lowercase 'e' to uppercase 'E' and pad exponent to 2 digits
   return expStr.replace(/e([+-])(\d+)$/, (_, sign, digits) => {
     return 'E' + sign + digits.padStart(2, '0');
