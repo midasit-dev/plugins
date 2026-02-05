@@ -116,8 +116,9 @@ export function convertMaterials(
                    STEEL_STRENGTH_MAP[strengthKey] !== undefined;
     }
 
-    // VBA line 88: If Not dicConc.Exists Then type = "ユーザー"
-    const useDatabase = shouldTryDatabase && hasDbMatch;
+    // VBA line 88-90: Only stays database if strength IS in dicConc AND original type was "データベース".
+    // If original type was "ユーザー" (even with category "鋼板材料"), VBA outputs USER.
+    const useDatabase = shouldTryDatabase && hasDbMatch && mat.type === INPUT_TYPES.DATABASE;
 
     if (useDatabase) {
       // Database material
@@ -149,13 +150,15 @@ export function convertMaterials(
   }
 
   // Add additional materials for sections without material assignment
+  // VBA: ChangeMaterial creates "Material", "Material~2", etc. for dicSectName entries
+  // VBA then overwrites dicSect(vKeys(i)) = strMatlName, so sect → materialName
   if (additionalMaterials) {
     let nextMatNo = maxMatNo + 1;
 
     for (const [sectName, data] of additionalMaterials) {
       let materialName = 'Material';
 
-      // Generate unique material name
+      // Generate unique material name (VBA: "Material", "Material~2", "Material~3", etc.)
       if (context.materialMapping.has(materialName)) {
         let counter = 2;
         while (context.materialMapping.has(`${materialName}~${counter}`)) {
@@ -178,8 +181,12 @@ export function convertMaterials(
         data: mctLine,
       });
 
-      // Update additional materials map with the material name for section reference
-      additionalMaterials.set(sectName, { ...data, young: nextMatNo } as any);
+      // VBA: dicSect(vKeys(i)) = strMatlName — overwrite with material name
+      // Store section → material name mapping directly in sect2Material
+      // This matches VBA's ReadSectElem adding dicSect entries to m_Sect2Material
+      if (!context.sect2Material.has(sectName)) {
+        context.sect2Material.set(sectName, materialName);
+      }
 
       nextMatNo++;
     }

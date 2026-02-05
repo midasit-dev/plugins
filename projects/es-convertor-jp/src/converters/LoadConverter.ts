@@ -39,9 +39,13 @@ const COL = {
 };
 
 // Load type dictionary (VBA lines 106-113)
-// Uses normalized strings - all dash/hyphen and parentheses variants converted to standard form
-// VBA uses: 節点, （全角括弧）, 射影長荷重
-// Excel might use: ノード, (半角括弧), 射影面荷重
+// IMPORTANT: VBA uses exact string matching (Dictionary lookup).
+// Keys must use the EXACT same characters as VBA's dicType:
+//   - Dash: U+002D (ASCII hyphen-minus)
+//   - Parentheses: U+FF08/U+FF09 (full-width) for types 5 and 6
+// If the Excel data uses different characters (e.g., U+2212 minus sign),
+// VBA's lookup fails silently (returns 0) and the row is skipped.
+// TypeScript must match this exact behavior.
 const LOAD_TYPES: Record<string, number> = {
   // Type 1: Node concentrated load
   '節点-集中荷重': 1,             // VBA original
@@ -53,13 +57,12 @@ const LOAD_TYPES: Record<string, number> = {
   'ノード-強制変位': 3,           // katakana variant
   // Type 4: Frame element concentrated load
   'フレーム要素-集中荷重': 4,
-  // Type 5: Frame element distributed load (single)
-  'フレーム要素-分布荷重(単独)': 5,
-  // Type 6: Frame element distributed load (continuous)
-  'フレーム要素-分布荷重(連続)': 6,
+  // Type 5: Frame element distributed load (single) - FULL-WIDTH parens （）
+  'フレーム要素-分布荷重（単独）': 5,
+  // Type 6: Frame element distributed load (continuous) - FULL-WIDTH parens （）
+  'フレーム要素-分布荷重（連続）': 6,
   // Type 7: Frame element projected load
   'フレーム要素-射影長荷重': 7,   // VBA original (射影長)
-  'フレーム要素-射影面荷重': 7,   // variant (射影面)
   // Type 8: Temperature load
   '温度荷重': 8,
 };
@@ -420,15 +423,17 @@ export function convertLoads(
     if (!row[COL.LOAD_TYPE] || String(row[COL.LOAD_TYPE]).trim() === '') continue;
 
     const loadTypeStr = String(row[COL.LOAD_TYPE]);
-    const normalizedLoadType = normalizeJapaneseText(loadTypeStr);
-    const n = LOAD_TYPES[normalizedLoadType] || 0;
+    // VBA uses exact string matching (Dictionary lookup). Do NOT normalize.
+    // If the raw load type doesn't match any key, n=0 and the row is skipped,
+    // matching VBA's On Error Resume Next + Dictionary auto-create behavior.
+    const n = LOAD_TYPES[loadTypeStr] || 0;
 
     if (n === 0) {
       // Log unknown load types with character codes for debugging
       const charCodes = loadTypeStr.split('').map(c => c.charCodeAt(0).toString(16)).join(',');
-      console.log(`Row ${i}: UNKNOWN loadType="${loadTypeStr}" normalized="${normalizedLoadType}" (charCodes: ${charCodes})`);
+      console.log(`Row ${i}: UNKNOWN loadType="${loadTypeStr}" (charCodes: ${charCodes})`);
     } else {
-      console.log(`Row ${i}: loadType="${loadTypeStr}" normalized="${normalizedLoadType}" -> n=${n}`);
+      console.log(`Row ${i}: loadType="${loadTypeStr}" -> n=${n}`);
     }
 
     // Get node numbers for node-based loads (VBA lines 192-216)

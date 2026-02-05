@@ -9,6 +9,8 @@ import {
 import { SHEET_NAMES } from '../constants/sheetNames';
 import { UNIT_SETTINGS } from '../constants/mctKeywords';
 import { ParseResult, getSheetDataForConversion, hasSheet } from '../parsers/ExcelParser';
+import { safeParseNumber } from '../utils/unitConversion';
+import { truncateMaterialName } from '../utils/stringUtils';
 
 // Import converters
 import { convertNodes } from '../converters/NodeConverter';
@@ -110,30 +112,71 @@ export async function generateMCT(
       return { success: false, mctData: null, mctText: '', errors, warnings };
     }
 
-    // Step 4: Collect section names from frame elements
+    // Step 4: Collect section names from frame elements (VBA: ReadFrame_Sectname → dicSectName)
     report(15, 'フレーム要素の断面を解析中...');
     const sectionNames = new Map<string, boolean>();
+    // dicSectName: sections that may need auto-generated materials
+    // VBA: dicSectName starts with all section names from frames
+    const dicSectName = new Map<string, { young: number; thermal: number }>();
     let frameData: (string | number)[][] = [];
     if (hasSheet(sheets, SHEET_NAMES.FRAME)) {
       frameData = getSheetDataForConversion(sheets, SHEET_NAMES.FRAME);
       readFrameSectionNames(frameData, context);
 
-      // Collect section names
+      // Collect section names (VBA: dicSectName = all section names from frames)
       for (const row of frameData) {
-        if (row[4]) sectionNames.set(String(row[4]), true);
-        if (row[5]) sectionNames.set(String(row[5]), true);
+        if (row[4]) {
+          const name = String(row[4]);
+          sectionNames.set(name, true);
+          dicSectName.set(name, { young: 0, thermal: 0 });
+        }
+        if (row[5]) {
+          const name = String(row[5]);
+          sectionNames.set(name, true);
+          dicSectName.set(name, { young: 0, thermal: 0 });
+        }
       }
     }
 
-    // Step 5: Read section element names
+    // Step 4a: Remove from dicSectName sections that are in SectElem sheet
+    // VBA: clsSectElem.ReadSectElem_SectName(dicSectName) removes from dicSectName
     if (hasSheet(sheets, SHEET_NAMES.SECT_ELEM)) {
       const sectElemData = getSheetDataForConversion(sheets, SHEET_NAMES.SECT_ELEM);
       for (const row of sectElemData) {
-        if (row[0]) context.sect2Material.set(String(row[0]), String(row[1] || ''));
+        const sectName = String(row[0] || '').trim();
+        if (sectName && dicSectName.has(sectName)) {
+          dicSectName.delete(sectName);
+        }
       }
     }
 
-    // Step 6: Convert materials (data preparation)
+    // Step 4b: Remove from dicSectName sections already in sect2Material (from NumbSect)
+    // VBA lines 413-418: also removes sections that m_Sect2Material already has
+    if (dicSectName.size > 0) {
+      for (const [sectName] of context.sect2Material) {
+        if (dicSectName.has(sectName)) {
+          dicSectName.delete(sectName);
+        }
+      }
+    }
+
+    // Step 4c: For remaining dicSectName, get Young's modulus and thermal from Sect data
+    // VBA: clsSect.ReadSect_SectName(dicSectName) → strData(2)=Young, strData(21)=thermal
+    if (dicSectName.size > 0 && hasSheet(sheets, SHEET_NAMES.SECT)) {
+      const sectDataForYoung = getSheetDataForConversion(sheets, SHEET_NAMES.SECT);
+      for (const row of sectDataForYoung) {
+        const sectName = String(row[0] || '').trim();
+        if (sectName && dicSectName.has(sectName)) {
+          dicSectName.set(sectName, {
+            young: safeParseNumber(row[2]),
+            thermal: safeParseNumber(row[21]),
+          });
+        }
+      }
+    }
+
+    // Step 6: Convert materials with additional auto-generated materials
+    // VBA: ChangeMaterial(dicMatlYoung, dicSectName)
     report(20, '材料を変換中...');
     let matResultLines: string[] = [];
     if (hasSheet(sheets, SHEET_NAMES.MATERIAL)) {
@@ -148,10 +191,34 @@ export async function generateMCT(
           density: Number(row[5]) || 0,
           thermalCoeff: Number(row[6]) || 0,
         })),
-        context
+        context,
+        dicSectName.size > 0 ? dicSectName : undefined
       );
       matResultLines = matResult.mctLines;
     }
+
+    // Step 6a: Read SectElem for sect2Material mapping
+    // VBA: clsSectElem.ReadSectElem(dicMatlYoung, dicSectYoung, dicSectName, bSectElem)
+    // VBA: m_Sect2Material.Add strData(0, i), strData(3, i) — note: strData(3)=material name
+    if (hasSheet(sheets, SHEET_NAMES.SECT_ELEM)) {
+      const sectElemData = getSheetDataForConversion(sheets, SHEET_NAMES.SECT_ELEM);
+      for (const row of sectElemData) {
+        const sectName = String(row[0] || '').trim();
+        const materialName = String(row[3] || '').trim();
+        // VBA: ChangeMatlName(strData(3, i)) — apply material name truncation
+        const truncatedMatName = truncateMaterialName(
+          materialName,
+          context.longMaterialNameUsed,
+          context.longMaterialNames
+        );
+        if (sectName && truncatedMatName && !context.sect2Material.has(sectName)) {
+          context.sect2Material.set(sectName, truncatedMatName);
+        }
+      }
+    }
+
+    // Step 6b: dicSectName → sect2Material mapping is now handled by convertMaterials
+    // which stores sect → materialName directly in context.sect2Material
 
     // Step 7: Convert sections (data preparation)
     report(30, '断面を変換中...');
@@ -506,19 +573,15 @@ export async function generateMCT(
       }
       if (loadResult.mctLinesConLoad.length > 2) {
         mctLines.push(...loadResult.mctLinesConLoad);
-        mctLines.push('');
       }
       if (loadResult.mctLinesSpDisp.length > 2) {
         mctLines.push(...loadResult.mctLinesSpDisp);
-        mctLines.push('');
       }
       if (loadResult.mctLinesBeamLoad.length > 2) {
         mctLines.push(...loadResult.mctLinesBeamLoad);
-        mctLines.push('');
       }
       if (loadResult.mctLinesElTemper.length > 2) {
         mctLines.push(...loadResult.mctLinesElTemper);
-        mctLines.push('');
       }
     }
 

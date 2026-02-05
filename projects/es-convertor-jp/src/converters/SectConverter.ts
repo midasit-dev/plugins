@@ -264,6 +264,8 @@ function generateValueSection(
   lines.push(`${cyP},${cyM},${czP},${czM},0,0,0,0,${cyM},${czM}`);
 
   // Line 4: Y1, Y2, Y3, Y4, Z1, Z2, Z3, Z4, Zyy, Zzz
+  // VBA preserves -0 sign; JavaScript's String(-0) returns "0".
+  const fmtVal = (v: number): string => Object.is(v, -0) ? '-0' : String(v);
   const y1 = -cyM;
   const y2 = cyP;
   const y3 = cyP;
@@ -272,7 +274,7 @@ function generateValueSection(
   const z2 = czP;
   const z3 = -czM;
   const z4 = -czM;
-  lines.push(`${y1},${y2},${y3},${y4},${z1},${z2},${z3},${z4},0,0`);
+  lines.push(`${fmtVal(y1)},${fmtVal(y2)},${fmtVal(y3)},${fmtVal(y4)},${fmtVal(z1)},${fmtVal(z2)},${fmtVal(z3)},${fmtVal(z4)},0,0`);
 
   return lines;
 }
@@ -321,7 +323,9 @@ function generateTaperedSection(
   lines.push(`${iCyP},${iCyM},${iCzP},${iCzM},0,0,0,0,0,0`);
 
   // Line 5: i-section Y, Z values
-  lines.push(`${-iCyM},${iCyP},${iCyP},${-iCyM},${iCzP},${iCzP},${-iCzM},${-iCzM},0,0`);
+  // VBA preserves -0 sign; JavaScript's String(-0) returns "0".
+  const fmtVal = (v: number): string => Object.is(v, -0) ? '-0' : String(v);
+  lines.push(`${fmtVal(-iCyM)},${fmtVal(iCyP)},${fmtVal(iCyP)},${fmtVal(-iCyM)},${fmtVal(iCzP)},${fmtVal(iCzP)},${fmtVal(-iCzM)},${fmtVal(-iCzM)},0,0`);
 
   // Line 6: D21-D28 (all zeros for VALUE type)
   lines.push('0,0,0,0,0,0,0,0');
@@ -341,7 +345,7 @@ function generateTaperedSection(
   lines.push(`${jCyP},${jCyM},${jCzP},${jCzM},0,0,0,0,0,0`);
 
   // Line 9: j-section Y, Z values
-  lines.push(`${-jCyM},${jCyP},${jCyP},${-jCyM},${jCzP},${jCzP},${-jCzM},${-jCzM},0,0`);
+  lines.push(`${fmtVal(-jCyM)},${fmtVal(jCyP)},${fmtVal(jCyP)},${fmtVal(-jCyM)},${fmtVal(jCzP)},${fmtVal(jCzP)},${fmtVal(-jCzM)},${fmtVal(-jCzM)},0,0`);
 
   return lines;
 }
