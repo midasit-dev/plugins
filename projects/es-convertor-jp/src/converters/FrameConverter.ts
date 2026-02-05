@@ -280,10 +280,10 @@ export function convertFrames(
     const sectNo = context.sectionMapping.get(sectKey) || 1;
 
     // Calculate angle
-    const { angle } = calcAngle(node1No, node2No, coordStr, context);
+    const { angle, isHorizontal } = calcAngle(node1No, node2No, coordStr, context);
 
-    // Store element angle
-    context.elementAngles.set(elemNo, angle);
+    // Store element angle (VBA: vAngle(0)=angle, vAngle(1)=nHor)
+    context.elementAngles.set(elemNo, [angle, isHorizontal]);
 
     // Store element-material mapping
     context.elemNo2MaterialNo.set(elemNo, matNo);

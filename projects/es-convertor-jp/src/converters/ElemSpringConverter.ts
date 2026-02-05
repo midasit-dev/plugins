@@ -412,7 +412,9 @@ function calcAngleString(
       if (refElemNo !== undefined) {
         const refAngle = context.elementAngles?.get(refElemNo);
         if (refAngle !== undefined) {
-          return `0,${refAngle}`;
+          // VBA: m_ElemAngle(vBuf(1))(0) — only the angle value, not nHor
+          const angleVal = Array.isArray(refAngle) ? refAngle[0] : refAngle;
+          return `0,${angleVal}`;
         }
       }
     }
