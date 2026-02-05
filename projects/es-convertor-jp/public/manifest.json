@@ -1,6 +1,6 @@
 {
-  "short_name": "Plug-in Title",
-  "name": "Plug-in Title",
+  "short_name": "ES Convertor",
+  "name": "ES Convertor",
   "icons": [
     {
       "src": "favicon.ico",
@@ -12,6 +12,6 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#fff",
-  "width": 600,
-  "height": 600
+  "width": 750,
+  "height": 674
 }

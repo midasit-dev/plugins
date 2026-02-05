@@ -9,8 +9,8 @@ i18n
   .use(LanguageDetector) // 브라우저 언어 설정 감지
   .use(initReactI18next) // react-i18next 바인딩
   .init({
-    lng: "en",
-    fallbackLng: "en", // 기본 언어 설정
+    lng: "ja",
+    fallbackLng: "ja", // 기본 언어 설정
     debug: true, // 개발 중 true로 설정하여 디버깅 정보를 볼 수 있음
     interpolation: {
       escapeValue: false, // React에서는 이미 안전함
