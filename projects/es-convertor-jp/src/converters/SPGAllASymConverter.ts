@@ -598,7 +598,21 @@ export function convertAsymmetricSprings(
       mctLines.push(dofLine);
     }
 
-    // Final padding line (VBA line 225)
+    // VBA lines 217-225: Blank line + J-end block duplication
+    // 空行
+    mctLines.push('');
+
+    // Copy I-end lines to J-end (7 lines: NO,NO,NO... header + 6 DOF lines)
+    // VBA: For k = 0 To 6: vWriteData(nRowCnt + k, 0) = vWriteData(nRepeat + k, 0): Next k
+    // nRepeat points to line 2 (NO , NO, NO...), so we need:
+    // - dofLines[0..5] = 6 DOF lines (lines 3-8)
+    // We need to also include line 2 (NO , NO, NO...) as the first copied line
+    mctLines.push('NO , NO, NO, NO, NO, NO, NO');  // Line 2 copy
+    for (let k = 0; k < 6; k++) {
+      mctLines.push(dofLines[k] || 'NO');
+    }
+
+    // Final padding line (VBA line 224)
     mctLines.push('0, 0, 0, 0, 0, 0');
   }
 

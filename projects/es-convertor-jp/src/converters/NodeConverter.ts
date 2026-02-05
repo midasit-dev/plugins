@@ -6,6 +6,7 @@ import { MCTNode } from '../types/mct.types';
 import { ConversionContext, Point3D } from '../types/converter.types';
 import { transformCoordinate } from '../utils/coordinateSystem';
 import { isNumeric, safeParseNumber } from '../utils/unitConversion';
+import { formatNumber } from '../utils/formatUtils';
 
 export interface NodeConversionResult {
   nodes: MCTNode[];
@@ -145,7 +146,8 @@ export function convertNodes(
   mctLines.push('; iNO, X, Y, Z');
 
   for (const node of mctNodes) {
-    mctLines.push(`${node.no},${node.x},${node.y},${node.z}`);
+    // Use formatNumber to preserve -0 (VBA outputs -0 when z=0 → y=-z=-0)
+    mctLines.push(`${node.no},${formatNumber(node.x)},${formatNumber(node.y)},${formatNumber(node.z)}`);
   }
 
   return { nodes: mctNodes, mctLines };

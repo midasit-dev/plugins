@@ -36,7 +36,7 @@ export function truncateMaterialName(
   }
 
   // Create truncated name with suffix
-  const baseName = cleanName.substring(0, maxLength) + '‾';
+  const baseName = cleanName.substring(0, maxLength) + '~';
   let counter = 1;
   let newName = baseName + counter;
 
@@ -74,7 +74,7 @@ export function truncateHingeName(
   }
 
   // Create truncated name with suffix
-  const baseName = name.substring(0, 15) + '‾';
+  const baseName = name.substring(0, 15) + '~';
   let counter = 1;
   let newName = baseName + counter;
 

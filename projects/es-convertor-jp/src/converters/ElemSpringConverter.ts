@@ -5,6 +5,7 @@ import { SpringElementData } from '../types/excel.types';
 import { MCTNLLink } from '../types/mct.types';
 import { ConversionContext, Point3D } from '../types/converter.types';
 import { calculateElementAngle, crossProduct, normalizeVector, vectorMagnitude, subtractVectors } from '../utils/coordinateSystem';
+import { formatNumber } from '../utils/formatUtils';
 
 export interface ElemSpringConversionResult {
   nlLinks: MCTNLLink[];
@@ -462,14 +463,15 @@ function calcAngleString(
 
     if (v1 && v2) {
       // Calculate based on Align/Axis (VBA 400-407)
+      // Use formatNumber to preserve -0 (VBA outputs -0 when result is negative zero)
       if (alignAxis.includes('v1,xl') || alignAxis.includes('v2,yl')) {
         const cross = calcVectorCross(v1, v2);
-        return anglePrefix + `${v1[0]},-${v1[2]},${v1[1]},${cross}`;
+        return anglePrefix + `${formatNumber(v1[0])},${formatNumber(-v1[2])},${formatNumber(v1[1])},${cross}`;
       } else if (alignAxis.includes('v1,yl') || alignAxis.includes('v2,zl')) {
         const cross = calcVectorCross(v1, v2);
-        return anglePrefix + `${cross},${v2[0]},-${v2[2]},${v2[1]}`;
+        return anglePrefix + `${cross},${formatNumber(v2[0])},${formatNumber(-v2[2])},${formatNumber(v2[1])}`;
       } else if (alignAxis.includes('v1,zl') || alignAxis.includes('v2,xl')) {
-        return anglePrefix + `${v1[0]},-${v1[2]},${v1[1]},${v2[0]},-${v2[2]},${v2[1]}`;
+        return anglePrefix + `${formatNumber(v1[0])},${formatNumber(-v1[2])},${formatNumber(v1[1])},${formatNumber(v2[0])},${formatNumber(-v2[2])},${formatNumber(v2[1])}`;
       }
     }
   }
@@ -539,8 +541,8 @@ function calcVectorCross(v1: number[], v2: number[]): string {
   ];
 
   // VBA: Calc_Vecter = vRet(0) & "," & -vRet(2) & "," & vRet(1)
-  // Use numeric negation (not string concatenation) to avoid --1 issue
-  return `${ret[0]},${-ret[2]},${ret[1]}`;
+  // Use formatNumber to preserve -0 (VBA outputs -0 when result is negative zero)
+  return `${formatNumber(ret[0])},${formatNumber(-ret[2])},${formatNumber(ret[1])}`;
 }
 
 /**
@@ -643,10 +645,10 @@ export function convertSpringElements(
       if (dicComponent.get(propName) !== componentKey) {
         // Different coordinate system - need to add ~1, ~2, etc. suffix
         let suffixNum = 1;
-        let newName = `${propName}‾${suffixNum}`;
+        let newName = `${propName}~${suffixNum}`;
         while (usedPropNames.has(newName)) {
           suffixNum++;
-          newName = `${propName}‾${suffixNum}`;
+          newName = `${propName}~${suffixNum}`;
         }
         // Register the new name with its coordinate system
         dicComponent.set(newName, componentKey);
