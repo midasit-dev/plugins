@@ -3,6 +3,7 @@
 // MCT *IHINGE-ASSIGN output is generated in HingePropConverter
 
 import { ConversionContext } from '../types/converter.types';
+import { truncateHingeName } from '../utils/stringUtils';
 
 export interface HingeAssConversionResult {
   hystYp: Map<string, string>;
@@ -47,6 +48,11 @@ export function convertHingeAssignments(
 
     // Track property names that have hinges
     hingeElements.add(propName);
+
+    // VBA: ChangeHinge_Ass calls HingeName(strData(0, i)) for each row (line 62),
+    // pre-populating m_LongHingeNameBuf before ChangeHinge_Prop runs.
+    // This ensures ChangeHinge_Prop's HingeName calls generate ~1, ~2, etc.
+    truncateHingeName(propName, context.longHingeNameUsed, context.longHingeNames);
   }
 
   return { hystYp, hystZp, hingeElements };

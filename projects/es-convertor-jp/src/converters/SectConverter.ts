@@ -4,7 +4,7 @@
 import { SectionData } from '../types/excel.types';
 import { MCTSectionProp } from '../types/mct.types';
 import { ConversionContext } from '../types/converter.types';
-import { changeN_kN, changeMM2_M2, safeParseNumber } from '../utils/unitConversion';
+import { changeN_kN, changeMM2_M2, safeParseNumber, vbaFormatNumber } from '../utils/unitConversion';
 import { replaceComma } from '../utils/stringUtils';
 
 export interface SectionConversionResult {
@@ -254,7 +254,7 @@ function generateValueSection(
   const ixx = safeParseNumber(row[24]);
   const iyy = safeParseNumber(row[5]);
   const izz = safeParseNumber(row[6]);
-  lines.push(`${area},0,0,${ixx},${iyy},${izz}`);
+  lines.push(`${vbaFormatNumber(area)},0,0,${vbaFormatNumber(ixx)},${vbaFormatNumber(iyy)},${vbaFormatNumber(izz)}`);
 
   // Line 3: CyP, CyM, CzP, CzM, QyB, QzB, PERI_OUT, PERI_IN, Cy, Cz
   const cyP = safeParseNumber(row[13]);
@@ -311,7 +311,7 @@ function generateTaperedSection(
   const iIxx = safeParseNumber(iRow[24]);
   const iIyy = safeParseNumber(iRow[5]);
   const iIzz = safeParseNumber(iRow[6]);
-  lines.push(`${iArea},0,0,${iIxx},${iIyy},${iIzz}`);
+  lines.push(`${vbaFormatNumber(iArea)},0,0,${vbaFormatNumber(iIxx)},${vbaFormatNumber(iIyy)},${vbaFormatNumber(iIzz)}`);
 
   // Line 4: i-section C values
   const iCyP = safeParseNumber(iRow[13]);
@@ -331,7 +331,7 @@ function generateTaperedSection(
   const jIxx = safeParseNumber(jRow[24]);
   const jIyy = safeParseNumber(jRow[5]);
   const jIzz = safeParseNumber(jRow[6]);
-  lines.push(`${jArea},0,0,${jIxx},${jIyy},${jIzz}`);
+  lines.push(`${vbaFormatNumber(jArea)},0,0,${vbaFormatNumber(jIxx)},${vbaFormatNumber(jIyy)},${vbaFormatNumber(jIzz)}`);
 
   // Line 8: j-section C values
   const jCyP = safeParseNumber(jRow[13]);

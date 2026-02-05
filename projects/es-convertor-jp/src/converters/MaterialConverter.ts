@@ -104,25 +104,27 @@ export function convertMaterials(
     let mctLine: string;
 
     // VBA line 87-90: Check if using database or user-defined
-    // "データベース" OR "鉄筋材料" triggers DB check
-    const isDatabase = mat.category === MATERIAL_CATEGORIES.STEEL;
-    const isReinforcement = mat.category === MATERIAL_CATEGORIES.REINFORCEMENT;
+    // VBA: If strData(1, i) = "データベース" Or strData(2, i) = "鋼板材料" Then
+    //        If Not dicConc.Exists(CInt(strData(3, i))) Then strData(1, i) = "ユーザー"
+    const shouldTryDatabase = mat.type === INPUT_TYPES.DATABASE || mat.category === MATERIAL_CATEGORIES.STEEL;
     const strengthKey = mat.strength;
 
-    // Check if strength exists in database
+    // Check if strength exists in database (dicConc)
     let hasDbMatch = false;
-    if ((isDatabase || isReinforcement) && mat.category !== MATERIAL_CATEGORIES.FRP) {
+    if (shouldTryDatabase && mat.category !== MATERIAL_CATEGORIES.FRP) {
       hasDbMatch = CONCRETE_STRENGTH_MAP[strengthKey] !== undefined ||
                    STEEL_STRENGTH_MAP[strengthKey] !== undefined;
     }
 
     // VBA line 88: If Not dicConc.Exists Then type = "ユーザー"
-    const useDatabase = (isDatabase || isReinforcement) && hasDbMatch;
+    const useDatabase = shouldTryDatabase && hasDbMatch;
 
     if (useDatabase) {
       // Database material
-      const standard = isSteel ? MATERIAL_STANDARDS.STEEL : MATERIAL_STANDARDS.CONCRETE;
-      const mctType = isSteel ? MATERIAL_TYPES.STEEL : MATERIAL_TYPES.CONC;
+      // VBA dicStandard: コンクリート材料 → (JIS-Civil(RC), CONC), 鋼板材料 → (JIS-Civil(S), STEEL), 鉄筋材料 → (JIS-Civil(S), STEEL)
+      const isSteelCategory = mat.category === MATERIAL_CATEGORIES.REINFORCEMENT || mat.category === MATERIAL_CATEGORIES.STEEL;
+      const standard = isSteelCategory ? MATERIAL_STANDARDS.STEEL : MATERIAL_STANDARDS.CONCRETE;
+      const mctType = isSteelCategory ? MATERIAL_TYPES.STEEL : MATERIAL_TYPES.CONC;
 
       const strengthName = CONCRETE_STRENGTH_MAP[strengthKey] ||
                           STEEL_STRENGTH_MAP[strengthKey] ||

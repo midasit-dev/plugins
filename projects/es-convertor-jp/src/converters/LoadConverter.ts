@@ -171,14 +171,18 @@ function calcVecter(
   let strLoad: string;
   let strFlag: string;
 
+  // VBA preserves -0 sign in string output; JavaScript's String(-0) returns "0".
+  // Use helper to match VBA behavior.
+  const fmtVal = (v: number): string => Object.is(v, -0) ? '-0' : String(v);
+
   const vectorX = normalizeJapaneseText(String(row[COL.VECTOR_X] || ''));
   if (vectorX === 'モーメント') {
     // Moment: coordinate swap (x, -z, y)
-    strLoad = `${strNoData},${vBuf[0]},${-1 * vBuf[2]},${vBuf[1]}`;
+    strLoad = `${strNoData},${fmtVal(vBuf[0])},${fmtVal(-1 * vBuf[2])},${fmtVal(vBuf[1])}`;
     strFlag = `000${vFlagBuf[0]}${vFlagBuf[2]}${vFlagBuf[1]}`;
   } else {
     // Force: coordinate swap (x, -z, y)
-    strLoad = `${vBuf[0]},${-1 * vBuf[2]},${vBuf[1]},${strNoData}`;
+    strLoad = `${fmtVal(vBuf[0])},${fmtVal(-1 * vBuf[2])},${fmtVal(vBuf[1])},${strNoData}`;
     strFlag = `${vFlagBuf[0]}${vFlagBuf[2]}${vFlagBuf[1]}000`;
   }
 

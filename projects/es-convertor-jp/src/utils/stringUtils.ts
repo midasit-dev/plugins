@@ -53,8 +53,13 @@ export function truncateMaterialName(
 
 /**
  * Truncate hinge name to maximum length
- * If name exceeds max length (20), append ~1, ~2, etc.
+ * If name exceeds max length (20) or already used, append ~1, ~2, etc.
  * Based on main.bas HingeName function (lines 881-908)
+ *
+ * VBA logic: m_LongHingeNameBuf is a set of used names.
+ * Each call checks if name is short enough AND not yet used.
+ * If already used or too long, generates a NEW unique name with counter.
+ * VBA does NOT cache the mapping - each duplicate call gets a new unique name.
  */
 export function truncateHingeName(
   name: string,
@@ -62,18 +67,14 @@ export function truncateHingeName(
   nameMapping: Map<string, string>,
   maxLength: number = MAX_LENGTHS.HINGE_NAME
 ): string {
-  // If within limit and not used, just register and return
+  // VBA: If Len(strHinge) < 20 And Not m_LongHingeNameBuf.Exists(strHinge) Then
   if (name.length < maxLength && !usedNames.has(name)) {
     usedNames.add(name);
     return name;
   }
 
-  // Check if already mapped
-  if (nameMapping.has(name)) {
-    return nameMapping.get(name)!;
-  }
-
-  // Create truncated name with suffix
+  // VBA: always generate a new unique name (no caching)
+  // strBuf = Left(strHinge, 15) & "‾"
   const baseName = name.substring(0, 15) + '~';
   let counter = 1;
   let newName = baseName + counter;
@@ -84,7 +85,6 @@ export function truncateHingeName(
   }
 
   usedNames.add(newName);
-  nameMapping.set(name, newName);
 
   return newName;
 }

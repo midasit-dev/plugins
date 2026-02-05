@@ -2,7 +2,7 @@
 // Converts ES M-φ element detail data to MCT *IHINGE-PROP format
 
 import { ConversionContext } from '../types/converter.types';
-import { safeParseNumber } from '../utils/unitConversion';
+import { safeParseNumber, vbaFormatNumber } from '../utils/unitConversion';
 import { truncateHingeName } from '../utils/stringUtils';
 
 export interface HingePropConversionResult {
@@ -148,12 +148,13 @@ function preprocessData(
     dataZp[n][1] = prop;
     dataYp[n][1] = prop;
 
-    // VBA: strDataZp(j, n) = strBufZp(j + 1, i) -- zp shifts +1
-    // For j = 2 to end, dataZp[j] = rowZp[j + 1]
+    // VBA: strDataZp(j, n) = strBufZp(j + 1, i) -- zp shifts +1 in VBA
+    // BUT: VBA's strBufZp includes an extra column at index 0 (Excel col 1)
+    // that TS's rawDataZp doesn't have (TS starts from col 2 = element name).
+    // So the +1 shift in VBA compensates for the extra column, and TS should NOT shift.
     for (let j = 2; j < 23; j++) {
-      const srcIdx = j + 1;  // +1 shift for zp
-      if (srcIdx < rowZp.length) {
-        dataZp[n][j] = rowZp[srcIdx] !== undefined ? rowZp[srcIdx] : 0;
+      if (j < rowZp.length) {
+        dataZp[n][j] = rowZp[j] !== undefined ? rowZp[j] : 0;
       }
     }
 
@@ -322,14 +323,14 @@ export function convertHingeProperties(
       symZp,
       '0,1,5,1,1',
       // Moment positive side (本体)
-      rowZp[8], rowZp[9], rowZp[10], rowZp[11],
+      vbaFormatNumber(rowZp[8]), vbaFormatNumber(rowZp[9]), vbaFormatNumber(rowZp[10]), vbaFormatNumber(rowZp[11]),
       // Curvature positive side (本体)
-      rowZp[3], rowZp[4], rowZp[5], rowZp[6],
+      vbaFormatNumber(rowZp[3]), vbaFormatNumber(rowZp[4]), vbaFormatNumber(rowZp[5]), vbaFormatNumber(rowZp[6]),
       '0.5, 1, 2, 4, 8',
       // Moment negative side (負側)
-      rowZp[18], rowZp[19], rowZp[20], rowZp[21],
+      vbaFormatNumber(rowZp[18]), vbaFormatNumber(rowZp[19]), vbaFormatNumber(rowZp[20]), vbaFormatNumber(rowZp[21]),
       // Curvature negative side (負側)
-      rowZp[13], rowZp[14], rowZp[15], rowZp[16],
+      vbaFormatNumber(rowZp[13]), vbaFormatNumber(rowZp[14]), vbaFormatNumber(rowZp[15]), vbaFormatNumber(rowZp[16]),
       '0.5, 1, 2, 4, 8',
     ];
 
@@ -368,11 +369,11 @@ export function convertHingeProperties(
       hingeTypeYp,
       symYp,
       '0,1,5,1,1',
-      rowYp[8], rowYp[9], rowYp[10], rowYp[11],
-      rowYp[3], rowYp[4], rowYp[5], rowYp[6],
+      vbaFormatNumber(rowYp[8]), vbaFormatNumber(rowYp[9]), vbaFormatNumber(rowYp[10]), vbaFormatNumber(rowYp[11]),
+      vbaFormatNumber(rowYp[3]), vbaFormatNumber(rowYp[4]), vbaFormatNumber(rowYp[5]), vbaFormatNumber(rowYp[6]),
       '0.5, 1, 2, 4, 8',
-      rowYp[18], rowYp[19], rowYp[20], rowYp[21],
-      rowYp[13], rowYp[14], rowYp[15], rowYp[16],
+      vbaFormatNumber(rowYp[18]), vbaFormatNumber(rowYp[19]), vbaFormatNumber(rowYp[20]), vbaFormatNumber(rowYp[21]),
+      vbaFormatNumber(rowYp[13]), vbaFormatNumber(rowYp[14]), vbaFormatNumber(rowYp[15]), vbaFormatNumber(rowYp[16]),
       '0.5, 1, 2, 4, 8',
     ];
 

@@ -144,3 +144,33 @@ export const isNumeric = (value: unknown): boolean => {
   if (typeof value === 'string') return !isNaN(parseFloat(value)) && isFinite(parseFloat(value));
   return false;
 };
+
+/**
+ * Format a number like VBA's implicit CStr(Double) conversion.
+ * VBA uses E-notation for small numbers (abs < 0.1) that have many significant digits,
+ * keeping 15 significant digits total. Format: X.XXXXXXXXXXXXXXE±DD
+ * For larger numbers or short decimals, uses JavaScript's default String() format.
+ */
+export const vbaFormatNumber = (value: string | number): string => {
+  const num = typeof value === 'string' ? Number(value) : value;
+  if (isNaN(num) || num === 0) return String(value);
+
+  const abs = Math.abs(num);
+  const defaultStr = String(num);
+
+  // For numbers >= 0.1, use default JS formatting (matches VBA behavior)
+  if (abs >= 0.1) return defaultStr;
+
+  // For small numbers (abs < 0.1), check if the decimal representation is long.
+  // VBA uses E-notation when there are many significant digits.
+  // Short decimals like "0.0108" stay in decimal form.
+  if (defaultStr.length <= 7) return defaultStr;
+
+  // Use VBA-style E-notation: X.XXXXXXXXXXXXXXE±DD (15 significant digits)
+  // JavaScript's toExponential(14) gives 14 decimal places in mantissa = 15 sig digits
+  const expStr = num.toExponential(14);
+  // Convert lowercase 'e' to uppercase 'E' and pad exponent to 2 digits
+  return expStr.replace(/e([+-])(\d+)$/, (_, sign, digits) => {
+    return 'E' + sign + digits.padStart(2, '0');
+  });
+};
