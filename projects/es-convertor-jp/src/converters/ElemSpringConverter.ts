@@ -464,14 +464,17 @@ function calcAngleString(
     if (v1 && v2) {
       // Calculate based on Align/Axis (VBA 400-407)
       // Use formatNumber to preserve -0 (VBA outputs -0 when result is negative zero)
+      // VBA uses string concatenation: ",-" & value
+      // When value is -1, this produces ",--1" (not ",-1" from -(-1)=1)
+      // This is intentional VBA behavior that we must replicate
       if (alignAxis.includes('v1,xl') || alignAxis.includes('v2,yl')) {
         const cross = calcVectorCross(v1, v2);
-        return anglePrefix + `${formatNumber(v1[0])},${formatNumber(-v1[2])},${formatNumber(v1[1])},${cross}`;
+        return anglePrefix + `${formatNumber(v1[0])},-${v1[2]},${formatNumber(v1[1])},${cross}`;
       } else if (alignAxis.includes('v1,yl') || alignAxis.includes('v2,zl')) {
         const cross = calcVectorCross(v1, v2);
-        return anglePrefix + `${cross},${formatNumber(v2[0])},${formatNumber(-v2[2])},${formatNumber(v2[1])}`;
+        return anglePrefix + `${cross},${formatNumber(v2[0])},-${v2[2]},${formatNumber(v2[1])}`;
       } else if (alignAxis.includes('v1,zl') || alignAxis.includes('v2,xl')) {
-        return anglePrefix + `${formatNumber(v1[0])},${formatNumber(-v1[2])},${formatNumber(v1[1])},${formatNumber(v2[0])},${formatNumber(-v2[2])},${formatNumber(v2[1])}`;
+        return anglePrefix + `${formatNumber(v1[0])},-${v1[2]},${formatNumber(v1[1])},${formatNumber(v2[0])},-${v2[2]},${formatNumber(v2[1])}`;
       }
     }
   }
