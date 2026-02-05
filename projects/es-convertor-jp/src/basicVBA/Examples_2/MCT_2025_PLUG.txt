@@ -10642,7 +10642,6 @@ YES,1,TAK,0,0,1,5,1,1,103.924232797034,475.069237247846,574.21808909678,0,2.4568
 
 ; End of data for load case [死荷重 (St.)] -------------------------
 
-
 *USE-STLD, 死荷重 (St.)
 
 *BEAMLOAD    ; Element Beam Loads

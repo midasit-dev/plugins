@@ -1233,7 +1233,7 @@ CT,USER,
 ; [VALUE]       : D1, P1, D2, P2, D3, P3, D4, P4
 ; [ECCEN]       : bECCEN, ECCDIR, I-END, J-END, bJ-END
 ; [ADDITIONAL]  : bADDITIONAL, ADDITIONAL_I-END, ADDITIONAL_J-END, bADDITIONAL_J-END
-12,BEAM,UNILOAD,GZ,NO,YES,0,,5.7,5.7,NO,0,-1078,1,0, 0, 0, 0, 0,, NO, 0, 0, NO,
+12,BEAM,UNILOAD,GZ,NO,YES,0,LY,5.7,5.7,NO,0,-1078,1,0, 0, 0, 0, 0,, NO, 0, 0, NO,
 
 ; End of data for load case [CT] -------------------------
 
