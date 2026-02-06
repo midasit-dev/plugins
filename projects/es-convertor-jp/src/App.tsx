@@ -5,7 +5,7 @@
  */
 
 import React, { useCallback, useState, useRef } from 'react';
-import { RecoilRoot, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useTranslation } from 'react-i18next';
 import {
   GuideBox,
@@ -633,13 +633,9 @@ const AppContent: React.FC = () => {
   );
 };
 
-// Root component with Recoil provider
+// Root component - RecoilRoot is provided by Wrapper.tsx
 const App: React.FC = () => {
-  return (
-    <RecoilRoot>
-      <AppContent />
-    </RecoilRoot>
-  );
+  return <AppContent />;
 };
 
 export default App;

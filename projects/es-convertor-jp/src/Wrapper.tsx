@@ -11,18 +11,18 @@
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 import App from './App';
-import { 
- GuideBox, 
- Panel, 
- Typography, 
- IconButton, 
+import {
+ GuideBox,
+ Panel,
+ Typography,
+ IconButton,
  Icon,
  Signature as SignatureMoaui,
 } from '@midasit-dev/moaui';
 import Signature from './Signature';
-import { 
- SnackbarProvider, 
- closeSnackbar 
+import {
+ SnackbarProvider,
+ closeSnackbar
 } from 'notistack';
 import { isDevServerListening } from './DevTools/ServerListening';
 import DevKit from './DevTools/Kit';
@@ -50,7 +50,7 @@ const ValidWrapper = (props: any) => {
 	 return (
 		 <GuideBox row horSpaceBetween width={350}>
 			 <Typography variant="body1">{title}: </Typography>
-			 {checkIf ? ( 
+			 {checkIf ? (
 				 <Typography variant="h1" color="#1f78b4">{strValid}</Typography>
 			 ) : (
 				 <Typography variant="h1" color="#D32F2F">{strInvalid}</Typography>
@@ -75,16 +75,8 @@ const ValidWrapper = (props: any) => {
 }, [isInitialized, isValid]);
 
 React.useEffect(() => {
-	if (window.location.pathname === "/") {
-		window.location.pathname = "/ja";  // Default to Japanese
-		return;  // Don't call changeLanguage, will re-run after redirect
-	}
-	const lang = window.location.pathname.split("/")[1];
-	if (lang === 'ja' || lang === 'en') {
-		i18n.changeLanguage(lang);
-	} else {
-		i18n.changeLanguage('ja');  // Default to Japanese
-	}
+	if (window.location.pathname === "/") window.location.pathname = "/en";
+	i18n.changeLanguage(window.location.pathname.split("/")[1]);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [window.location.pathname]);
 
@@ -92,8 +84,8 @@ React.useEffect(() => {
 	 <>
 		 {isInitialized && isValid && (
 			 <RecoilRoot>
-				 <SnackbarProvider 
-					 maxSnack={3} 
+				 <SnackbarProvider
+					 maxSnack={3}
 					 anchorOrigin={{
 						 vertical: 'bottom',
 						 horizontal: 'center',
@@ -120,7 +112,7 @@ React.useEffect(() => {
 				 </SnackbarProvider>
 			 </RecoilRoot>
 		 )}
-			 
+
 		 {isInitialized && !isValid && (
 			 <GuideBox width="100%" height="100vh" center>
 				 <Panel variant="shadow2" padding={3} margin={3}>
