@@ -15,13 +15,3 @@ export const AppSchemaStateForExport = atom<Schema>({
 	key: 'AppSchemaStateForExport',
 	default: {},
 });
-
-export const InnerContentSizeAutoState = atom<boolean>({
-	key: 'InnerContentSizeAutoState',
-	default: true,
-});
-
-export const InnerContentSizeState = atom<{ width: number; height: number }>({
-	key: 'InnerContentSizeState',
-	default: { width: 600, height: 622 },
-});
