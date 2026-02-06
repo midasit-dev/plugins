@@ -14,6 +14,7 @@ import {
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Encoding from "encoding-japanese";
+import { enqueueSnackbar } from "notistack";
 
 interface ConversionModalProps {
   isOpen: boolean;
@@ -94,23 +95,33 @@ const ConversionModal: React.FC<ConversionModalProps> = ({
     try {
       const baseUrl = VerifyUtil.getProtocolDomainPort();
       const mapiKey = VerifyUtil.getMapiKey();
-      const response = await fetch(`${baseUrl}/ope/MXTCMDSHELL`, {
+
+      // Decode JWT to get product type (pg)
+      let pg = "";
+      try {
+        const payload = JSON.parse(atob(mapiKey.split(".")[1]));
+        pg = payload.pg || "";
+      } catch (e) {
+        console.error("Failed to decode mapiKey JWT:", e);
+      }
+
+      const response = await fetch(`${baseUrl}/${pg}/ope/MXTCMDSHELL`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "MAPI-Key": mapiKey,
+          "mapi-key": mapiKey,
         },
         body: JSON.stringify({ Argument: currentMctText }),
       });
-      console.log(JSON.stringify({ Argument: currentMctText }));
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
-      alert(t("conversionModal.sendSuccess", "Civil NX에 전송 완료"));
+      enqueueSnackbar(t("conversionModal.sendSuccess", "Civil NX에 전송 완료"), { variant: "success" });
     } catch (error) {
       console.error("Failed to send to Civil NX:", error);
-      alert(
+      enqueueSnackbar(
         t("conversionModal.sendError", "Civil NX 전송 실패") + `: ${error}`,
+        { variant: "error" },
       );
     } finally {
       setIsSending(false);
