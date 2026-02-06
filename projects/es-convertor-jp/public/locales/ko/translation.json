@@ -10,7 +10,25 @@
     "noDataHint": "데이터를 입력하거나 Excel 파일을 가져오세요",
     "conversionError": "변환 오류",
     "exampleData": "예제",
-    "exportExcel": "Excel 내보내기"
+    "exportExcel": "Excel 내보내기",
+    "exampleBasic": "기본",
+    "exampleNode": "NODE (절점)",
+    "exampleMaterial": "MATERIAL (재료)",
+    "exampleSectionGroup": "단면",
+    "exampleSection": "SECTION (단면특성)",
+    "exampleThickness": "THICKNESS (평판단면)",
+    "exampleElementGroup": "요소",
+    "exampleElement": "ELEMENT (전체요소)",
+    "exampleRigidlink": "RIGIDLINK (강체)",
+    "exampleSupportGroup": "지점",
+    "exampleSupport": "SUPPORT (지점)",
+    "exampleSpringGroup": "스프링",
+    "exampleSpring": "SPRING (스프링요소)",
+    "exampleHingeGroup": "힌지",
+    "exampleHinge": "HINGE (M-φ)",
+    "exampleLoadGroup": "하중",
+    "exampleLoad": "LOAD (하중)",
+    "exampleLoadMass": "LOAD+MASS (하중+질량)"
   },
   "sheets": {
     "node": "절점좌표",
@@ -67,6 +85,11 @@
     "copied": "복사됨!",
     "close": "닫기",
     "sendToCivilNX": "Civil NX로 보내기",
+    "sendSuccess": "Civil NX에 전송 완료",
+    "sendError": "Civil NX 전송 실패",
+    "sending": "전송 중...",
+    "civilNX2025": "Civil NX 2025 (v1.1)",
+    "civilNX2026": "Civil NX 2026 (v1.1)",
     "tabHint": "아래의 모든 작업은 선택한 버전 탭에 적용됩니다."
   },
   "spreadsheet": {

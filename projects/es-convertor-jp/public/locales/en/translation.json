@@ -10,7 +10,25 @@
     "noDataHint": "Enter data or import an Excel file to start",
     "conversionError": "Conversion error",
     "exampleData": "Examples",
-    "exportExcel": "Export Excel"
+    "exportExcel": "Export Excel",
+    "exampleBasic": "Basic",
+    "exampleNode": "NODE (Nodes)",
+    "exampleMaterial": "MATERIAL (Materials)",
+    "exampleSectionGroup": "Section",
+    "exampleSection": "SECTION (Section Props)",
+    "exampleThickness": "THICKNESS (Plate Section)",
+    "exampleElementGroup": "Element",
+    "exampleElement": "ELEMENT (All Elements)",
+    "exampleRigidlink": "RIGIDLINK (Rigid)",
+    "exampleSupportGroup": "Support",
+    "exampleSupport": "SUPPORT (Support)",
+    "exampleSpringGroup": "Spring",
+    "exampleSpring": "SPRING (Spring Element)",
+    "exampleHingeGroup": "Hinge",
+    "exampleHinge": "HINGE (M-φ)",
+    "exampleLoadGroup": "Load",
+    "exampleLoad": "LOAD (Load)",
+    "exampleLoadMass": "LOAD+MASS (Load+Mass)"
   },
   "sheets": {
     "node": "Nodes",
@@ -67,6 +85,11 @@
     "copied": "Copied!",
     "close": "Close",
     "sendToCivilNX": "Send to Civil NX",
+    "sendSuccess": "Sent to Civil NX successfully",
+    "sendError": "Failed to send to Civil NX",
+    "sending": "Sending...",
+    "civilNX2025": "Civil NX 2025 (v1.1)",
+    "civilNX2026": "Civil NX 2026 (v1.1)",
     "tabHint": "All actions below apply to the selected version tab."
   },
   "spreadsheet": {

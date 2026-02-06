@@ -10,7 +10,25 @@
     "noDataHint": "データを入力するか、Excelファイルをインポートしてください",
     "conversionError": "変換エラー",
     "exampleData": "例題",
-    "exportExcel": "Excelエクスポート"
+    "exportExcel": "Excelエクスポート",
+    "exampleBasic": "基本",
+    "exampleNode": "NODE (節点)",
+    "exampleMaterial": "MATERIAL (材料)",
+    "exampleSectionGroup": "断面",
+    "exampleSection": "SECTION (断面特性)",
+    "exampleThickness": "THICKNESS (平板断面)",
+    "exampleElementGroup": "要素",
+    "exampleElement": "ELEMENT (全要素)",
+    "exampleRigidlink": "RIGIDLINK (剛体)",
+    "exampleSupportGroup": "支点",
+    "exampleSupport": "SUPPORT (支点)",
+    "exampleSpringGroup": "ばね",
+    "exampleSpring": "SPRING (ばね要素)",
+    "exampleHingeGroup": "ヒンジ",
+    "exampleHinge": "HINGE (M-φ)",
+    "exampleLoadGroup": "荷重",
+    "exampleLoad": "LOAD (荷重)",
+    "exampleLoadMass": "LOAD+MASS (荷重+質量)"
   },
   "sheets": {
     "node": "節点座標",
@@ -67,6 +85,11 @@
     "copied": "コピーしました",
     "close": "閉じる",
     "sendToCivilNX": "Civil NXに送信",
+    "sendSuccess": "Civil NXに送信完了",
+    "sendError": "Civil NX送信失敗",
+    "sending": "送信中...",
+    "civilNX2025": "Civil NX 2025 (v1.1)",
+    "civilNX2026": "Civil NX 2026 (v1.1)",
     "tabHint": "以下のすべての操作は、選択中のバージョンタブに適用されます。"
   },
   "spreadsheet": {

@@ -563,7 +563,7 @@ const AppContent: React.FC = () => {
             onClick={handleExportExcel}
             disabled={!hasAnyData}
           >
-            {t('app.exportExcel', 'Export Excel')}
+            {t('app.exportExcel')}
           </Button>
         </GuideBox>
 
@@ -574,38 +574,31 @@ const AppContent: React.FC = () => {
               variant="outlined"
               onClick={handleExampleMenuOpen}
             >
-              {t('app.exampleData', '例題')}
+              {t('app.exampleData')}
             </Button>
             <Menu
               anchorEl={exampleMenuAnchor}
               open={isExampleMenuOpen}
               onClose={handleExampleMenuClose}
             >
-              {/* 基本 (Basic) */}
-              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- 基本 ---</MenuItem>
-              <MenuItem onClick={handleLoadNodeExample}>NODE (節点)</MenuItem>
-              <MenuItem onClick={handleLoadMaterialExample}>MATERIAL (材料)</MenuItem>
-              {/* 断面 (Section) */}
-              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- 断面 ---</MenuItem>
-              <MenuItem onClick={handleLoadSectionExample}>SECTION (断面特性)</MenuItem>
-              <MenuItem onClick={handleLoadThicknessExample}>THICKNESS (平板断面)</MenuItem>
-              {/* 要素 (Element) */}
-              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- 要素 ---</MenuItem>
-              <MenuItem onClick={handleLoadElementExample}>ELEMENT (全要素)</MenuItem>
-              <MenuItem onClick={handleLoadRigidLinkExample}>RIGIDLINK (剛体)</MenuItem>
-              {/* 支点 (Support) */}
-              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- 支点 ---</MenuItem>
-              <MenuItem onClick={handleLoadSupportExample}>SUPPORT (支点)</MenuItem>
-              {/* ばね (Spring) */}
-              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- ばね ---</MenuItem>
-              <MenuItem onClick={handleLoadSpringExample}>SPRING (ばね要素)</MenuItem>
-              {/* ヒンジ (Hinge) */}
-              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- ヒンジ ---</MenuItem>
-              <MenuItem onClick={handleLoadHingeExample}>HINGE (M-φ)</MenuItem>
-              {/* 荷重 (Load) */}
-              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- 荷重 ---</MenuItem>
-              <MenuItem onClick={handleLoadStldCaseExample}>LOAD (荷重)</MenuItem>
-              <MenuItem onClick={handleLoadLoadExample}>LOAD+MASS (荷重+質量)</MenuItem>
+              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- {t('app.exampleBasic')} ---</MenuItem>
+              <MenuItem onClick={handleLoadNodeExample}>{t('app.exampleNode')}</MenuItem>
+              <MenuItem onClick={handleLoadMaterialExample}>{t('app.exampleMaterial')}</MenuItem>
+              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- {t('app.exampleSectionGroup')} ---</MenuItem>
+              <MenuItem onClick={handleLoadSectionExample}>{t('app.exampleSection')}</MenuItem>
+              <MenuItem onClick={handleLoadThicknessExample}>{t('app.exampleThickness')}</MenuItem>
+              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- {t('app.exampleElementGroup')} ---</MenuItem>
+              <MenuItem onClick={handleLoadElementExample}>{t('app.exampleElement')}</MenuItem>
+              <MenuItem onClick={handleLoadRigidLinkExample}>{t('app.exampleRigidlink')}</MenuItem>
+              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- {t('app.exampleSupportGroup')} ---</MenuItem>
+              <MenuItem onClick={handleLoadSupportExample}>{t('app.exampleSupport')}</MenuItem>
+              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- {t('app.exampleSpringGroup')} ---</MenuItem>
+              <MenuItem onClick={handleLoadSpringExample}>{t('app.exampleSpring')}</MenuItem>
+              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- {t('app.exampleHingeGroup')} ---</MenuItem>
+              <MenuItem onClick={handleLoadHingeExample}>{t('app.exampleHinge')}</MenuItem>
+              <MenuItem disabled style={{ opacity: 0.7, fontSize: 12 }}>--- {t('app.exampleLoadGroup')} ---</MenuItem>
+              <MenuItem onClick={handleLoadStldCaseExample}>{t('app.exampleLoad')}</MenuItem>
+              <MenuItem onClick={handleLoadLoadExample}>{t('app.exampleLoadMass')}</MenuItem>
             </Menu>
           </>
         )}

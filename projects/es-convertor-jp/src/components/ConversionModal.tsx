@@ -118,11 +118,11 @@ const ConversionModal: React.FC<ConversionModalProps> = ({
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
-      enqueueSnackbar(t("conversionModal.sendSuccess", "Civil NX에 전송 완료"), { variant: "success" });
+      enqueueSnackbar(t("conversionModal.sendSuccess"), { variant: "success" });
     } catch (error) {
       console.error("Failed to send to Civil NX:", error);
       enqueueSnackbar(
-        t("conversionModal.sendError", "Civil NX 전송 실패") + `: ${error}`,
+        t("conversionModal.sendError") + `: ${error}`,
         { variant: "error" },
       );
     } finally {
@@ -255,8 +255,8 @@ const ConversionModal: React.FC<ConversionModalProps> = ({
                       },
                     }}
                   >
-                    <Tab label="Civil NX 2025 (v1.1)" />
-                    <Tab label="Civil NX 2026 (v1.1)" />
+                    <Tab label={t("conversionModal.civilNX2025")} />
+                    <Tab label={t("conversionModal.civilNX2026")} />
                   </Tabs>
                 </GuideBox>
 
@@ -323,7 +323,7 @@ const ConversionModal: React.FC<ConversionModalProps> = ({
                 disabled={isSending}
               >
                 {isSending
-                  ? t("conversionModal.sending", "Sending...")
+                  ? t("conversionModal.sending")
                   : t("conversionModal.sendToCivilNX")}
               </Button>
             </GuideBox>
