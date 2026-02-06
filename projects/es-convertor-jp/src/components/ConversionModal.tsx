@@ -96,10 +96,14 @@ const ConversionModal: React.FC<ConversionModalProps> = ({
       const baseUrl = VerifyUtil.getProtocolDomainPort();
       const mapiKey = VerifyUtil.getMapiKey();
 
-      // Decode JWT to get product type (pg)
+      // Decode JWT (base64url) to get product type (pg)
       let pg = "";
       try {
-        const payload = JSON.parse(atob(mapiKey.split(".")[1]));
+        const base64Url = mapiKey.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const payload = JSON.parse(decodeURIComponent(atob(base64).split("").map(
+          (c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join("")));
         pg = payload.pg || "";
       } catch (e) {
         console.error("Failed to decode mapiKey JWT:", e);
