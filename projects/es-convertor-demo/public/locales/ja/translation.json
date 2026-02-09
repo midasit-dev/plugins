@@ -2,5 +2,62 @@
   "welcome_midas_plugin": "ようこそ、これはMIDASプラグインCRAテンプレートです！",
   "dev_mode_developing": "現在、プラグインアイテムをより便利にするために開発モードを開発中です",
   "turn_on_development_mode": "開発モードをオンにするには、Windowsターミナルを開いてください。",
-  "type_command_below": "そして、以下のコマンドを入力してください。"
+  "type_command_below": "そして、以下のコマンドを入力してください。",
+  "groups": {
+    "geometry": "幾何",
+    "elements": "要素",
+    "materialSection": "材料/断面",
+    "nonlinear": "非線形",
+    "spring": "ばね",
+    "boundary": "境界条件",
+    "massLoad": "質量/荷重",
+    "results": "結果"
+  },
+  "tabs": {
+    "node": "節点座標",
+    "frame": "フレーム要素",
+    "plnelm": "平板要素",
+    "rigid": "剛体要素",
+    "material": "材料",
+    "numbsect": "数値断面",
+    "sectelem": "断面要素",
+    "sect": "断面特性ｵﾌﾟｼｮﾝ",
+    "plnsect": "平板断面",
+    "hinge_zp": "M-φ詳細(zp)",
+    "hinge_yp": "M-φ詳細(yp)",
+    "hinge_ass": "M-φ特性表",
+    "spring_elem": "ばね要素",
+    "spg6comp": "6成分概要",
+    "spg_sym_lin": "対称:線形",
+    "spg_sym_bi": "対称:ﾊﾞｲﾘﾆｱ",
+    "spg_sym_tri": "対称:ﾄﾘﾘﾆｱ",
+    "spg_sym_tet": "対称:ﾃﾄﾗﾘﾆｱ",
+    "spg_asym_bi": "非対称:ﾊﾞｲﾘﾆｱ",
+    "spg_asym_tri": "非対称:ﾄﾘﾘﾆｱ",
+    "spg_asym_tet": "非対称:ﾃﾄﾗﾘﾆｱ",
+    "spg_other_rub": "ゴム支承",
+    "spg_other_bmr": "BMRﾀﾞﾝﾊﾟー",
+    "fulcrum": "支点",
+    "fulcdetail": "支点詳細",
+    "nodalmass": "節点質量",
+    "load": "荷重値",
+    "intforce": "内力"
+  },
+  "buttons": {
+    "excelImport": "Excel Import",
+    "excelExport": "Excel Export",
+    "mctConvert": "MCT Convert",
+    "saveAsMct": ".mctとして保存",
+    "sendToApi": "MIDAS APIに送信"
+  },
+  "modal": {
+    "mctResultTitle": "MCT変換結果",
+    "close": "閉じる",
+    "midas2025": "MIDAS 2025",
+    "midas2026": "MIDAS 2026"
+  },
+  "topbar": {
+    "esRange": "ES範囲",
+    "rows": "行数"
+  }
 }

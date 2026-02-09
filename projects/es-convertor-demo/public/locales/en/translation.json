@@ -2,5 +2,62 @@
   "welcome_midas_plugin": "Welcome, This is a MIDAS Plug-in CRA Template!",
   "dev_mode_developing": "We are currently developing the dev mode to make the plug-in item more convenient",
   "turn_on_development_mode": "To turn on the development mode, open the windows terminal.",
-  "type_command_below": "And type the command below."
+  "type_command_below": "And type the command below.",
+  "groups": {
+    "geometry": "Geometry",
+    "elements": "Elements",
+    "materialSection": "Material/Section",
+    "nonlinear": "Nonlinear",
+    "spring": "Spring",
+    "boundary": "Boundary",
+    "massLoad": "Mass/Load",
+    "results": "Results"
+  },
+  "tabs": {
+    "node": "Node Coordinates",
+    "frame": "Frame Elements",
+    "plnelm": "Plate Elements",
+    "rigid": "Rigid Elements",
+    "material": "Material",
+    "numbsect": "Numerical Section",
+    "sectelem": "Section Element",
+    "sect": "Section Property Option",
+    "plnsect": "Plate Section",
+    "hinge_zp": "M-φ Detail (zp)",
+    "hinge_yp": "M-φ Detail (yp)",
+    "hinge_ass": "M-φ Property Table",
+    "spring_elem": "Spring Element",
+    "spg6comp": "6-Component Summary",
+    "spg_sym_lin": "Sym: Linear",
+    "spg_sym_bi": "Sym: Bilinear",
+    "spg_sym_tri": "Sym: Trilinear",
+    "spg_sym_tet": "Sym: Tetralinear",
+    "spg_asym_bi": "Asym: Bilinear",
+    "spg_asym_tri": "Asym: Trilinear",
+    "spg_asym_tet": "Asym: Tetralinear",
+    "spg_other_rub": "Rubber Bearing",
+    "spg_other_bmr": "BMR Damper",
+    "fulcrum": "Support",
+    "fulcdetail": "Support Detail",
+    "nodalmass": "Nodal Mass",
+    "load": "Load Values",
+    "intforce": "Internal Force"
+  },
+  "buttons": {
+    "excelImport": "Excel Import",
+    "excelExport": "Excel Export",
+    "mctConvert": "MCT Convert",
+    "saveAsMct": "Save as .mct",
+    "sendToApi": "Send to MIDAS API"
+  },
+  "modal": {
+    "mctResultTitle": "MCT Convert Result",
+    "close": "Close",
+    "midas2025": "MIDAS 2025",
+    "midas2026": "MIDAS 2026"
+  },
+  "topbar": {
+    "esRange": "ES Range",
+    "rows": "Rows"
+  }
 }

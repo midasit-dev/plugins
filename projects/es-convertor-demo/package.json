@@ -5,7 +5,10 @@
   "dependencies": {
     "@midasit-dev/moaui": "^0.1.137",
     "@midasit-dev/playground": "^0.0.30",
+    "ag-grid-community": "^35.0.1",
+    "ag-grid-react": "^35.0.1",
     "cors": "^2.8.6",
+    "file-saver": "^2.0.5",
     "i18next": "^23.16.8",
     "i18next-browser-languagedetector": "^7.2.2",
     "i18next-http-backend": "^2.7.3",
@@ -19,7 +22,9 @@
     "react-rnd": "^10.5.2",
     "react-router-dom": "^6.30.3",
     "recoil": "^0.7.7",
-    "uuid": "^9.0.1"
+    "scheduler": "^0.27.0",
+    "uuid": "^9.0.1",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -49,6 +54,7 @@
   },
   "homepage": ".",
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/jsoneditor": "^9.9.6",
     "@types/lodash": "^4.17.23",
     "@types/node": "^16.18.126",
