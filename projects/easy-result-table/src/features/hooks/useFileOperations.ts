@@ -12,6 +12,7 @@ import {
   categoriesState,
   expandedCategoriesState,
   selectedItemState,
+  pendingItemSettingsState,
 } from "../states/stateCategories";
 import { Category, TableItem } from "../types/category";
 import { useSnackbarMessage } from "./useSnackbarMessage";
@@ -28,6 +29,27 @@ import {
   StyleSheet,
   pdf,
 } from "@react-pdf/renderer";
+
+/** pending 설정을 categories에 병합 (CREATE TABLE 시 사용) */
+function mergePendingIntoCategories(
+  categories: Category[],
+  pending: { itemKey: string; settings: Record<string, unknown> } | null
+): Category[] {
+  if (!pending?.itemKey || !pending.settings) return categories;
+  const sepIdx = pending.itemKey.indexOf("-");
+  const categoryId = pending.itemKey.slice(0, sepIdx);
+  const itemId = pending.itemKey.slice(sepIdx + 1);
+  return categories.map((cat) => {
+    if (cat.id !== categoryId) return cat;
+    return {
+      ...cat,
+      items: cat.items.map((it) => {
+        if (it.id !== itemId) return it;
+        return { ...it, settings: { ...it.settings, ...pending.settings } };
+      }),
+    };
+  });
+}
 
 // Date 객체를 포함한 Item을 직렬화하기 위한 인터페이스
 interface SerializedTodoItem extends Omit<TableItem, "createdAt"> {
@@ -62,6 +84,8 @@ interface ProcessingStatus {
 export const useFileOperations = () => {
   // Recoil 상태 관리
   const [categories, setCategories] = useRecoilState(categoriesState);
+  const [pendingItemSettings, setPendingItemSettings] =
+    useRecoilState(pendingItemSettingsState);
   const [expandedCategories, setExpandedCategories] = useRecoilState(
     expandedCategoriesState
   );
@@ -317,7 +341,11 @@ export const useFileOperations = () => {
       return;
     }
 
-    const tableNumber = getTableNumber(categories);
+    const effectiveCategories = mergePendingIntoCategories(
+      categories,
+      pendingItemSettings
+    );
+    const tableNumber = getTableNumber(effectiveCategories);
     if (tableNumber === 0) {
       setSnackbar({
         open: true,
@@ -327,14 +355,17 @@ export const useFileOperations = () => {
       return;
     }
 
-    const validationResult = ValidationInput(categories);
+    const validationResult = ValidationInput(effectiveCategories);
     if (validationResult.severity === "success") {
       setSnackbar({
         open: true,
         message: validationResult.message,
         severity: validationResult.severity,
       });
-      const tableArguments = getTableArgument(categories);
+      // 병합된 설정을 categories에 반영해 왼쪽 모든 항목(Reaction, Story Displacement 등) 설정 저장
+      setCategories(effectiveCategories);
+      setPendingItemSettings(null);
+      const tableArguments = getTableArgument(effectiveCategories);
 
       console.log("Table Arguments");
       console.log(tableArguments);

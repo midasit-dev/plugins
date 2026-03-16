@@ -9,6 +9,27 @@ type SPLCData = Record<string, { NAME: string; bACCECC: boolean }>;
 type LCOMData = Record<string, { NAME: string; ACTIVE: string; iTYPE: number }>;
 
 /**
+ * 응답이 { message: "" }만 오거나 데이터 키가 없을 때 빈 객체로 취급 (에러 아님)
+ */
+function getStldMap(res: unknown): STLDData {
+  const r = res as { STLD?: STLDData } | null | undefined;
+  if (!r?.STLD || typeof r.STLD !== "object") return {};
+  return r.STLD;
+}
+
+function getSplcMap(res: unknown): SPLCData {
+  const r = res as { SPLC?: SPLCData } | null | undefined;
+  if (!r?.SPLC || typeof r.SPLC !== "object") return {};
+  return r.SPLC;
+}
+
+function getLcomGenMap(res: unknown): LCOMData {
+  const r = res as { "LCOM-GEN"?: LCOMData } | null | undefined;
+  if (!r?.["LCOM-GEN"] || typeof r["LCOM-GEN"] !== "object") return {};
+  return r["LCOM-GEN"];
+}
+
+/**
  * @description GET LOAD CASE (Default)
  */
 export async function getLoadCase() {
@@ -17,29 +38,19 @@ export async function getLoadCase() {
     const res_splc = await midasAPI("GET", "/db/splc", {});
     const res_lcom = await midasAPI("GET", "/db/lcom-gen", {});
 
-    if (!res_stld || !res_stld.STLD) {
-      throw new Error("Invalid STLD response from server");
-    }
-    if (!res_splc || !res_splc.SPLC) {
-      throw new Error("Invalid SPLC response from server");
-    }
-    if (!res_lcom || !res_lcom["LCOM-GEN"]) {
-      throw new Error("Invalid LCOM-GEN response from server");
-    }
-
-    const st_list = Object.values(res_stld.STLD as STLDData).map(
+    const st_list = Object.values(getStldMap(res_stld)).map(
       (item) => `${item.NAME}(ST)`
     );
 
-    const rs_list = Object.values(res_splc.SPLC as SPLCData).map(
+    const rs_list = Object.values(getSplcMap(res_splc)).map(
       (item) => `${item.NAME}(RS)`
     );
 
-    const es_list = Object.values(res_splc.SPLC as SPLCData)
+    const es_list = Object.values(getSplcMap(res_splc))
       .filter((item) => item.bACCECC)
       .map((item) => `${item.NAME}(ES)`);
 
-    const cb_list = Object.values(res_lcom["LCOM-GEN"] as LCOMData)
+    const cb_list = Object.values(getLcomGenMap(res_lcom))
       .filter((item) => item.iTYPE === 0 && item.ACTIVE === "ACTIVE")
       .map((item) => `${item.NAME}(CB)`);
 
@@ -57,11 +68,7 @@ export async function getStaticLoadCase() {
   try {
     const res_stld = await midasAPI("GET", "/db/stld", {});
 
-    if (!res_stld || !res_stld.STLD) {
-      throw new Error("Invalid STLD response from server");
-    }
-
-    const st_list = Object.values(res_stld.STLD as STLDData).map(
+    const st_list = Object.values(getStldMap(res_stld)).map(
       (item) => `${item.NAME}(ST)`
     );
 
@@ -79,11 +86,7 @@ export async function getDynamicLoadCase() {
   try {
     const res_splc = await midasAPI("GET", "/db/splc", {});
 
-    if (!res_splc || !res_splc.SPLC) {
-      throw new Error("Invalid SPLC response from server");
-    }
-
-    const rs_list = Object.values(res_splc.SPLC as SPLCData).map(
+    const rs_list = Object.values(getSplcMap(res_splc)).map(
       (item) => `${item.NAME}(RS)`
     );
 
@@ -102,17 +105,10 @@ export async function getStaticDynamicLoadCase() {
     const res_stld = await midasAPI("GET", "/db/stld", {});
     const res_splc = await midasAPI("GET", "/db/splc", {});
 
-    if (!res_stld || !res_stld.STLD) {
-      throw new Error("Invalid STLD response from server");
-    }
-    if (!res_splc || !res_splc.SPLC) {
-      throw new Error("Invalid SPLC response from server");
-    }
-
-    const st_list = Object.values(res_stld.STLD as STLDData).map(
+    const st_list = Object.values(getStldMap(res_stld)).map(
       (item) => `${item.NAME}(ST)`
     );
-    const rs_list = Object.values(res_splc.SPLC as SPLCData).map(
+    const rs_list = Object.values(getSplcMap(res_splc)).map(
       (item) => `${item.NAME}(RS)`
     );
 
@@ -130,11 +126,7 @@ export async function getStaticLoadNameCase() {
   try {
     const res_stld = await midasAPI("GET", "/db/stld", {});
 
-    if (!res_stld || !res_stld.STLD) {
-      throw new Error("Invalid response from server");
-    }
-
-    const st_list = Object.values(res_stld.STLD as STLDData).map(
+    const st_list = Object.values(getStldMap(res_stld)).map(
       (item) => `${item.NAME}`
     );
 

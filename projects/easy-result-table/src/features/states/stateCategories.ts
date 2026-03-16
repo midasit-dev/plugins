@@ -8,7 +8,17 @@
 
 import { atom } from "recoil";
 import { Category } from "../types/category";
+import { PanelType } from "../types/category";
 import { PREDEFINED_CATEGORIES } from "../types/category";
+
+// 편집 중인 아이템의 임시 설정 (UI 반응용, categories는 자주 갱신하지 않음)
+export const pendingItemSettingsState = atom<{
+  itemKey: string;
+  settings: Partial<Record<PanelType, unknown>>;
+} | null>({
+  key: "pendingItemSettingsState",
+  default: null,
+});
 
 // 카테고리 목록 상태
 export const categoriesState = atom<Category[]>({

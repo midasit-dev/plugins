@@ -13,6 +13,7 @@
 
 import React from "react";
 import FloorLoadContainer from "./features/containers/FloorLoadContainer";
+import { VerifyDialog } from "@midasit-dev/moaui";
 
 /**
  * You can modify the code here and test.
@@ -25,7 +26,12 @@ import FloorLoadContainer from "./features/containers/FloorLoadContainer";
  * @see https://midasit-dev.github.io/moaui
  */
 const App = () => {
-  return <FloorLoadContainer />;
+  return (
+    <>
+      <VerifyDialog />
+      <FloorLoadContainer />
+    </>
+  );
 };
 
 export default App;

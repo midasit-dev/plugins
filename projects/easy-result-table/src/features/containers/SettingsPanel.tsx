@@ -2,19 +2,11 @@
  * @fileoverview
  * 설정 패널 컨테이너 컴포넌트.
  * 선택된 아이템의 설정을 관리하는 UI를 제공합니다.
- * 패널 컴포넌트를 동적으로 렌더링하며, 설정 값의 임시 저장 및
- * 최종 저장 기능을 제공합니다.
+ * 패널 컴포넌트를 동적으로 렌더링하며, 설정 변경 시 실시간으로 반영합니다.
  */
 
-import React, { Suspense, useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import React, { Suspense } from "react";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import { useItemSettings } from "../hooks/useItemSettings";
 import { PanelType, PanelTypes } from "../types/category";
 import { PANEL_COMPONENTS } from "../registry/panelRegistry";
@@ -32,38 +24,9 @@ const SettingsPanel: React.FC = () => {
     getSelectedItemInfo,
     getCurrentSettings,
     updateTempSettings,
-    handleSave,
-    handleCancel,
   } = useItemSettings();
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success" as "success" | "error",
-  });
-
   const selectedInfo = getSelectedItemInfo();
-
-  const handleSnackbarClose = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
-
-  const onSave = async () => {
-    try {
-      await handleSave();
-      setSnackbar({
-        open: true,
-        message: "Settings saved successfully.",
-        severity: "success",
-      });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Failed to save settings.",
-        severity: "error",
-      });
-    }
-  };
 
   // 패널 컴포넌트 생성
   const createPanelComponent = (panelType: PanelType) => {
@@ -162,44 +125,6 @@ const SettingsPanel: React.FC = () => {
           <Typography variant="body1">Please select an item.</Typography>
         </Box>
       )}
-      {/* 저장/취소 버튼 영역 */}
-      <Box
-        sx={{
-          mt: 3,
-          pt: 2,
-          borderTop: 1,
-          borderColor: "divider",
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: 1,
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onSave}
-          disabled={!selectedInfo}
-        >
-          Save
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleCancel}
-          disabled={!selectedInfo}
-        >
-          Cancel
-        </Button>
-      </Box>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

@@ -16,6 +16,7 @@ import { CssBaseline } from "@mui/material";
 import ResultTable from "./features/containers/ResultTable";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./features/theme";
+import { VerifyDialog } from "@midasit-dev/moaui";
 
 const opacity = 0.5;
 //If you want to test, try using the GuideApp component.
@@ -34,6 +35,7 @@ const opacity = 0.5;
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
+      <VerifyDialog/>
       <CssBaseline />
       <ResultTable />
     </ThemeProvider>
