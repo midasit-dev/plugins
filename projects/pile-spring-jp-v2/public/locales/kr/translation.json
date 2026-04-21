@@ -14,6 +14,15 @@
   "MAIN_LAYOUT":"MAIN_LAYOUT",
   "TabName_Pile": "말뚝 정보",
   "TabName_Soil": "지반 정보",
+  "TabName_Import": "IMPORT",
+
+  "IMPORT_CONTAINER": "IMPORT_CONTAINER",
+  "Import_GeneralSpring_Title": "General Spring 입력",
+  "Select_Import_Type": "Import Type : ",
+  "Type1": "Type1",
+  "Type2": "Type2",
+  "Success_Import_GeneralSpring": "General Spring 생성이 완료되었습니다.",
+  "Fail_Import_GeneralSpring": "General Spring 생성에 실패했습니다.",
 
   "EXPORT_DATA_DIALOG": "EXPORT_DATA_DIALOG",
   "Download_Data_Button": "파일 저장",
@@ -29,6 +38,11 @@
 
   "MAIN_CALCULATOR": "MAIN_CALCULATOR",
   "Calculate_Button": "계산",
+  "Success_Calculation": "계산이 완료되었습니다.",
+  "Fail_Calculation": "계산에 실패했습니다.",
+  "SoilData_Error": "지층 데이터(ED, Vsi)를 확인해주세요.",
+  "NoPile_Error": "1개 이상의 말뚝을 입력해주세요.",
+  "PyscriptNotReady_Error": "계산 엔진을 준비 중입니다. 잠시 후 다시 시도해주세요.",
 
   "PILE_EDITOR_DIALOG": "PILE_EDITOR_DIALOG",
   "Pile_Add_Button": "추가",
@@ -36,9 +50,12 @@
 
   "DOWN_LOAD_SHEETS": "DOWN_LOAD_SHEETS",
   "Down_Load_Sheets_Button": "계산서 출력",
+  "Success_Calculation_Sheet_Download": "계산서 다운로드가 완료되었습니다.",
+  "Fail_Calculation_Sheet_Download": "계산서 다운로드에 실패했습니다.",
+  "NotCalculated_Error": "먼저 [계산]을 실행해 주세요.",
 
   "CREATE_SPRING": "CREATE_SPRING",
-  "Create_Spring_Button": "스프링 생성",
+  "Create_Spring_Button": "Import General Spring",
 
   "PILE_TYPES": "PILE_TYPES",
   "Cast_In_Situ": "현장타설말뚝",

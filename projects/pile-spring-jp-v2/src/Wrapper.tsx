@@ -5,6 +5,16 @@
  * ┬┌┐┌   ┌─┐┌─┐┌┬┐┬┬  ┬┌─┐
  * ││││───├─┤│   │ │└┐┌┘├┤ 	🌑🌑🌑🌑🌑
  * ┴┘└┘   ┴ ┴└─┘ ┴ ┴ └┘ └─┘
+ *
+ * 구성:
+ *  1) PyscriptWrapper (default export)
+ *     - pyscript 로드 대기
+ *     - 로드되면 전역 변수(MAPI-Key, Base URI, Port) 주입
+ *     - VerifyDialog 노출 → 사용자가 Base URI / MAPI-Key 입력 후 "continue"
+ *     - mapiKey 쿼리스트링 존재 시 ValidWrapper 진입
+ *  2) ValidWrapper
+ *     - /health 체크 및 MAPI-Key 검증
+ *     - 통과 시 App 렌더, 실패 시 Validation Check 패널 표시
  */
 
 import React from "react";
@@ -14,6 +24,8 @@ import {
   GuideBox,
   Panel,
   Typography,
+  VerifyDialog,
+  VerifyUtil,
   IconButton,
   Icon,
   Signature as SignatureMoaui,
@@ -23,6 +35,10 @@ import { SnackbarProvider, closeSnackbar } from "notistack";
 import { isDevServerListening } from "./DevTools/ServerListening";
 import DevKit from "./DevTools/Kit";
 import CustomSnackbar from "./components/CustomSnackbar";
+import {
+  setGlobalVariable,
+  getGlobalVariable,
+} from "./utils_pyscript";
 
 import { useTranslation } from "react-i18next";
 
@@ -31,12 +47,61 @@ import InnerContentSize from "./InnerContentSize";
 const ValidWrapper = (props: any) => {
   const { isIntalledPyscript } = props;
 
-  const [isInitialized] = React.useState(true);
-  const [isValid] = React.useState(true);
-  const [checkUri] = React.useState(false);
-  const [checkMapiKey] = React.useState(false);
-  const [checkMapiKeyMsg] = React.useState("");
+  const [isInitialized, setIsInitialized] = React.useState(false);
+  const [isValid, setIsValid] = React.useState(false);
+  const [checkUri, setCheckUri] = React.useState(false);
+  const [checkMapiKey, setCheckMapiKey] = React.useState(false);
+  const [checkMapiKeyMsg, setCheckMapiKeyMsg] = React.useState("");
   const { i18n } = useTranslation();
+
+  // Base URI(/health) + MAPI-Key 비동기 검증
+  React.useEffect(() => {
+    const callback = async () => {
+      let _checkUri = true;
+      let _checkMapiKey = true;
+
+      try {
+        const url = VerifyUtil.getProtocolDomainPort();
+        const resUrl = await fetch(`${url}/health`);
+        if (resUrl.status !== 200) {
+          _checkUri = false;
+        }
+      } catch {
+        _checkUri = false;
+      }
+      setCheckUri(_checkUri);
+
+      try {
+        const mapiKey = VerifyUtil.getMapiKey();
+        const verifyMapiKey = await VerifyUtil.getVerifyInfoAsync(mapiKey);
+        if ("error" in verifyMapiKey && "message" in verifyMapiKey.error) {
+          _checkMapiKey = false;
+          setCheckMapiKeyMsg(verifyMapiKey.error.message);
+        }
+        if ("keyVerified" in verifyMapiKey) {
+          if (!verifyMapiKey["keyVerified"]) {
+            _checkMapiKey = false;
+            setCheckMapiKeyMsg("keyVerified");
+          }
+        }
+        if ("status" in verifyMapiKey) {
+          if (verifyMapiKey["status"] !== "connected") {
+            _checkMapiKey = false;
+            setCheckMapiKeyMsg(verifyMapiKey["status"]);
+          }
+        }
+      } catch (error: any) {
+        _checkMapiKey = false;
+        setCheckMapiKeyMsg(error?.message ?? "unknown error");
+      }
+      setCheckMapiKey(_checkMapiKey);
+
+      setIsValid(_checkUri && _checkMapiKey);
+      setIsInitialized(true);
+    };
+
+    callback();
+  }, []);
 
   const ValidationComponent = ({
     title = "undefiend",
@@ -171,5 +236,35 @@ const ValidWrapper = (props: any) => {
   );
 };
 
-//변경
-export default ValidWrapper;
+/**
+ * pyscript 로드 → 전역 변수 주입 → VerifyDialog 노출 →
+ * mapiKey 쿼리스트링 도착 시 ValidWrapper 진입
+ */
+const PyscriptWrapper = () => {
+  const [installed, setInstalled] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkPyScriptReady = (callback: () => void) => {
+      if (typeof pyscript !== "undefined" && pyscript?.interpreter) {
+        setGlobalVariable();
+        getGlobalVariable();
+        setInstalled(true);
+      } else {
+        setTimeout(() => checkPyScriptReady(callback), 100);
+      }
+    };
+
+    checkPyScriptReady(() => {});
+  }, []);
+
+  return (
+    <>
+      <VerifyDialog loading={!installed} />
+      {installed && VerifyUtil.isExistQueryStrings("mapiKey") && (
+        <ValidWrapper isIntalledPyscript={installed} />
+      )}
+    </>
+  );
+};
+
+export default PyscriptWrapper;

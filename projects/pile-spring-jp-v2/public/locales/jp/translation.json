@@ -14,6 +14,15 @@
   "MAIN_LAYOUT": "MAIN_LAYOUT",
   "TabName_Pile": "杭情報",
   "TabName_Soil": "地盤情報",
+  "TabName_Import": "配置方向",
+
+  "IMPORT_CONTAINER": "IMPORT_CONTAINER",
+  "Import_GeneralSpring_Title": "汎用ばね支持の入力",
+  "Select_Import_Type": "配置方向 : ",
+  "Type1": "タイプ1",
+  "Type2": "タイプ2",
+  "Success_Import_GeneralSpring": "汎用ばね支持の作成が完了しました。",
+  "Fail_Import_GeneralSpring": "汎用ばね支持の作成に失敗しました。",
 
   "EXPORT_DATA_DIALOG": "EXPORT_DATA_DIALOG",
   "Download_Data_Button": "ファイル保存",
@@ -28,6 +37,11 @@
 
   "MAIN_CALCULATOR": "MAIN_CALCULATOR",
   "Calculate_Button": "計算",
+  "Success_Calculation": "計算が完了しました。",
+  "Fail_Calculation": "計算に失敗しました。",
+  "SoilData_Error": "地層データ(ED, Vsi)を確認してください。",
+  "NoPile_Error": "少なくとも1本以上の杭を入力してください。",
+  "PyscriptNotReady_Error": "計算エンジンの準備中です。しばらくしてからもう一度お試しください。",
 
   "PILE_EDITOR_DIALOG": "PILE_EDITOR_DIALOG",
   "Pile_Add_Button": "追加",
@@ -35,9 +49,12 @@
 
   "DOWN_LOAD_SHEETS": "DOWN_LOAD_SHEETS",
   "Down_Load_Sheets_Button": "計算書出力",
+  "Success_Calculation_Sheet_Download": "計算書のダウンロードが完了しました。",
+  "Fail_Calculation_Sheet_Download": "計算書のダウンロードに失敗しました。",
+  "NotCalculated_Error": "先に[計算]を実行してください。",
 
   "CREATE_SPRING": "CREATE_SPRING",
-  "Create_Spring_Button": "ばね作成",
+  "Create_Spring_Button": "汎用ばね支持の作成",
 
   "PILE_TYPES": "PILE_TYPES",
   "Cast_In_Situ": "場所打ち杭",

@@ -16,3 +16,13 @@ export const projectData = atom<ProjectData>({
     projectName: "",
   },
 });
+
+// Civil NX 좌표계 기반 읽기 타입 (Type1 / Type2)
+// - Type1: 축 순서 X → Z 기준으로 매트릭스를 조합 (CenterX / CenterZ 의미)
+// - Type2: 축 순서를 뒤집어 Z → X 기준으로 조합
+export type CivilImportType = "Type1" | "Type2";
+
+export const importTypeState = atom<CivilImportType>({
+  key: "importTypeState",
+  default: "Type1",
+});

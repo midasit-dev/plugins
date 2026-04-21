@@ -163,3 +163,154 @@ export function dbDelete(itemName: string, item_id: string | number) {
     return JSON.parse(result);
   });
 }
+
+/**
+ * @description max id getter for Civil DB entries
+ */
+export function py_db_get_maxid(itemName: string) {
+  return checkPyScriptReady(() => {
+    const fn = pyscript.interpreter.globals.get("py_db_get_maxid");
+    const result = fn(itemName);
+    return JSON.parse(result);
+  });
+}
+
+// --------------------------------------------------------------------------------
+// Calculation wrappers (py_main.py)
+// --------------------------------------------------------------------------------
+
+export function CalculateBeta(
+  SoilData: any,
+  PileTableData: any,
+  Condition: "normal" | "seismic" | "period",
+  SlopeEffectState: boolean,
+  GroupEffectValue: number,
+  TopLevel: number,
+  GroundLevel: number
+) {
+  return checkPyScriptReady(() => {
+    const fn = pyscript.interpreter.globals.get("Cal_Beta");
+    const result = fn(
+      JSON.stringify(SoilData),
+      JSON.stringify(PileTableData),
+      Condition,
+      SlopeEffectState,
+      GroupEffectValue,
+      TopLevel,
+      GroundLevel
+    );
+    return JSON.parse(result);
+  });
+}
+
+export function CalAlphaHTheta(
+  SoilData: any,
+  SlopeEffectState: boolean,
+  PileTableData: any
+) {
+  return checkPyScriptReady(() => {
+    const fn = pyscript.interpreter.globals.get("CalAlphaTheta");
+    const result = fn(
+      JSON.stringify(SoilData),
+      SlopeEffectState,
+      JSON.stringify(PileTableData)
+    );
+    return JSON.parse(result);
+  });
+}
+
+export function CalculateKv(
+  PileTableData: any,
+  groundLevel: number,
+  topLevel: number
+) {
+  return checkPyScriptReady(() => {
+    const fn = pyscript.interpreter.globals.get("CalKv");
+    const result = fn(JSON.stringify(PileTableData), groundLevel, topLevel);
+    return JSON.parse(result);
+  });
+}
+
+export function CalculateKvalue(
+  PileTableData: any,
+  GroundLevel: number,
+  TopLevel: number,
+  SoilData: any,
+  Condition: "normal" | "seismic" | "period",
+  HeadCondition: string,
+  BottomCondition: string,
+  AlphaThetaResult: any,
+  Beta_Normal: any,
+  Beta_Seismic: any,
+  Beta_Period: any,
+  liquefactionState: "yes" | "no"
+) {
+  return checkPyScriptReady(() => {
+    const fn = pyscript.interpreter.globals.get("CalKValue");
+    const result = fn(
+      JSON.stringify(PileTableData),
+      GroundLevel,
+      TopLevel,
+      JSON.stringify(SoilData),
+      Condition,
+      HeadCondition,
+      BottomCondition,
+      AlphaThetaResult,
+      Beta_Normal,
+      Beta_Seismic,
+      Beta_Period,
+      liquefactionState
+    );
+    return JSON.parse(result);
+  });
+}
+
+export function CalculateProperties(
+  PileData: any,
+  Position: "top" | "bottom",
+  ReinforcedState: "reinforced" | "unreinforced"
+) {
+  return checkPyScriptReady(() => {
+    const fn = pyscript.interpreter.globals.get("Cal_Property");
+    const result = fn(JSON.stringify(PileData), Position, ReinforcedState);
+    return JSON.parse(result);
+  });
+}
+
+export function CalculateMatrix(
+  PileTableData: any,
+  FoundationWidth: number,
+  SideLength: number,
+  SoilData: any,
+  ResultType: "normal" | "seismic" | "period",
+  Direction: "X" | "Z",
+  KvResult: any,
+  KValue_Normal: any,
+  KValue_Seismic: any,
+  KValue_Seismic_Liq: any,
+  KValue_Period: any,
+  Force_Point_X: number,
+  Force_Point_Y: number,
+  liquifactionstate: "yes" | "no"
+) {
+  return checkPyScriptReady(() => {
+    const fn = pyscript.interpreter.globals.get("CalMatrix");
+    const result = fn(
+      JSON.stringify(PileTableData),
+      JSON.stringify(FoundationWidth),
+      JSON.stringify(SideLength),
+      JSON.stringify(SoilData),
+      ResultType,
+      Direction,
+      JSON.stringify(KvResult),
+      JSON.stringify(KValue_Normal),
+      JSON.stringify(KValue_Seismic),
+      JSON.stringify(KValue_Seismic_Liq),
+      JSON.stringify(KValue_Period),
+      Force_Point_X,
+      Force_Point_Y,
+      liquifactionstate
+    );
+    return JSON.parse(result);
+  });
+}

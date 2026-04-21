@@ -8,6 +8,7 @@ import React from "react";
 import PileMain from "./PileContainer";
 import SoilMain from "./SoilContainer";
 import OpeMain from "./OperationContainer";
+import { ImportSpring } from "../panels";
 import { TabGroup, Tab, CustomBox } from "../../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,6 +17,7 @@ import { MAIN_LAYOUT } from "../../constants/common/translations";
 const MemoizedPileMain = React.memo(PileMain);
 const MemoizedSoilMain = React.memo(SoilMain);
 const MemoizedOpeMain = React.memo(OpeMain);
+const MemoizedImportMain = React.memo(ImportSpring);
 
 const Main = () => {
   const [tabValue, setTabValue] = useState<number>(1);
@@ -34,6 +36,7 @@ const Main = () => {
       >
         <Tab label={t(MAIN_LAYOUT.PILE_TAB)} value={1} />
         <Tab label={t(MAIN_LAYOUT.SOIL_TAB)} value={2} />
+        <Tab label={t(MAIN_LAYOUT.IMPORT_TAB)} value={3} />
       </TabGroup>
       <CustomBox
         sx={{
@@ -58,6 +61,13 @@ const Main = () => {
           }}
         >
           <MemoizedSoilMain />
+        </CustomBox>
+        <CustomBox
+          sx={{
+            display: tabValue === 3 ? "block" : "none",
+          }}
+        >
+          <MemoizedImportMain />
         </CustomBox>
         <MemoizedOpeMain />
       </CustomBox>
