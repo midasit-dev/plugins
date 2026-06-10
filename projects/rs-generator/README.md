@@ -1,10 +1,15 @@
-<!-- markdownlint-disable-next-line -->
-<br />
-<p align="center">
-  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui/main/logo_circle.svg" alt="moaui logo"></a>
-</p>
+# Response Spectrum Generator
 
-<h1 align="center">cra-template-moaui (for code)</h1>
+- This plugin generates **Design Response Spectrum Data** based on the national code.
 
-<p align="center">To upload the created code to a version control repository like GitHub and provide explanations, <br />
-you can modify this README.md file.</p>
+## Details
+
+### version 1.0.0
+
+- According to the Spanish National Annex to the Eurocode 8 Seismic Design Standard (UNE EN 1998-1:2011), users can define variables, and based on those, the plugin generates spectral data for different periods.
+
+- According to the French National Annex to the Eurocode 8 Seismic Design Standard (NF EN 1998-1:2008), users can define variables, and based on those, the plugin generates spectral data for different periods.
+- According to the Saudi Arabian Seismic Load Standard (SBC301-CR:2018), users can define variables, and based on those, the plugin generates spectral data for different periods.
+
+
+- Users can preview the graph for the data to be generated through the **PREVIEW** image.
