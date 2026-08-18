@@ -17,14 +17,14 @@ import {
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
-import {
-  GridCallbackDetails,
-  GridColumnGroup,
-  GridEventListener,
-  GridRowModesModel,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridColumnGroup } from "@mui/x-data-grid";
 import { Alert } from "@mui/material";
-import { DataGridPremium, GridColDef } from "@mui/x-data-grid-premium";
+import useGridCursor from "./hooks/useGridCursor";
+import useGridAlert from "./hooks/useGridAlert";
+import useGridEditing from "./hooks/useGridEditing";
+import { DataGridStyle } from "./shared/gridStyle";
+import { formatSmallNumber } from "./shared/format";
+import { numberColumn, textColumn } from "./shared/columns";
 
 const MultiDataGrid = () => {
   const RequestBtn = useRecoilValue(RequestBtnState);
@@ -33,22 +33,24 @@ const MultiDataGrid = () => {
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
   const filterList = useRecoilValue(filteredTableListState);
-  const [CheckBox, setCheckBox] = useRecoilState(CheckBoxState);
+  const CheckBox = useRecoilValue(CheckBoxState);
   const hidden = useRecoilValue(HiddenBtnState);
   const lan = useRecoilValue(LanguageState);
 
-  const [bError, setbError] = useState(false);
-  const [alertMsg, setAlertMsg] = useState("");
   // const [PnD_size, setPnD_size] = useState(1);
-  const [cursur, setCursur] = useState<number>(0);
-  const [field, setField] = useState<string>("");
-  const [bEnter, setbEnter] = useState(false);
 
   const { t: translate, i18n: internationalization } = useTranslation();
 
   const [columns, setColumns] = useState<GridColDef<any>[]>([]);
   const [groupColumns, setGroupColumns] = useState<GridColumnGroup[]>([]);
   const [rows, setRows] = useState<any[]>([]);
+
+  const { cursur, field, onClickCell } = useGridCursor();
+  const { alertMsg, AlertFunc, alertToolbar } = useGridAlert({
+    rows,
+    columns,
+    cursur,
+  });
 
   useEffect(() => {
     initRows();
@@ -123,120 +125,25 @@ const MultiDataGrid = () => {
     setColumns([]);
     // colums
     const baseColumns = [
-      {
-        field: "NAME",
-        headerName: translate("Name"),
-        editable: true,
-        width: 68,
-      },
-      {
-        field: "MATERIAL_TYPE",
-        headerName: translate("Material"),
-        editable: true,
-        width: 68,
-      },
-      {
-        field: "HISTORY_MODEL",
-        headerName: translate("Hysteresis_model"),
-        editable: true,
-        width: 160,
-      },
-      {
-        field: "Type",
-        headerName: translate("Type"),
-        editable: true,
-        width: 130,
-      },
+      textColumn("NAME", translate("Name"), 68),
+      textColumn("MATERIAL_TYPE", translate("Material"), 68),
+      textColumn("HISTORY_MODEL", translate("Hysteresis_model"), 160),
+      textColumn("Type", translate("Type"), 130),
     ];
     for (let i = 1; i < PointValue + 1; i++) {
-      const columnP = {
-        field: `P${i}`,
-        headerName: `P${i}`,
-        editable: true,
-        width: 90,
-        align: "right",
-      };
-      const columnD = {
-        field: `D${i}`,
-        headerName: `D${i}`,
-        editable: true,
-        width: 90,
-        align: "right",
-      };
-      baseColumns.push(columnP);
-      baseColumns.push(columnD);
+      baseColumns.push(numberColumn(`P${i}`, `P${i}`));
+      baseColumns.push(numberColumn(`D${i}`, `D${i}`));
     }
     const remainColumns = [
-      {
-        field: "B",
-        headerName: "β",
-        editable: true,
-        width: 68,
-        align: "right",
-        cellClassName: (params: any) => {
-          const bDisable = disableCell(params);
-          return bDisable ? "enable-cell" : "disable-cell";
-        },
-      },
-      {
-        field: "a1",
-        headerName: "α1",
-        editable: true,
-        width: 68,
-        align: "right",
-        cellClassName: (params: any) => {
-          const bDisable = disableCell(params);
-          return bDisable ? "enable-cell" : "disable-cell";
-        },
-      },
-      {
-        field: "a2",
-        headerName: "α2",
-        editable: true,
-        width: 68,
-        align: "right",
-        cellClassName: (params: any) => {
-          const bDisable = disableCell(params);
-          return bDisable ? "enable-cell" : "disable-cell";
-        },
-      },
-      {
-        field: "B1",
-        headerName: "β1",
-        editable: true,
-        width: 68,
-        align: "right",
-        cellClassName: (params: any) => {
-          const bDisable = disableCell(params);
-          return bDisable ? "enable-cell" : "disable-cell";
-        },
-      },
-      {
-        field: "B2",
-        headerName: "β2",
-        editable: true,
-        width: 68,
-        align: "right",
-        cellClassName: (params: any) => {
-          const bDisable = disableCell(params);
-          return bDisable ? "enable-cell" : "disable-cell";
-        },
-      },
-      {
-        field: "n",
-        headerName: "η",
-        editable: true,
-        width: 68,
-        align: "right",
-        cellClassName: (params: any) => {
-          const bDisable = disableCell(params);
-          return bDisable ? "enable-cell" : "disable-cell";
-        },
-      },
+      numberColumn("B", "β", isCellEnabled, 68),
+      numberColumn("a1", "α1", isCellEnabled, 68),
+      numberColumn("a2", "α2", isCellEnabled, 68),
+      numberColumn("B1", "β1", isCellEnabled, 68),
+      numberColumn("B2", "β2", isCellEnabled, 68),
+      numberColumn("n", "η", isCellEnabled, 68),
     ];
     setColumns(baseColumns.concat(remainColumns));
   };
-
   const initGroupColumns = () => {
     setGroupColumns([]);
     const ForceChildren = [];
@@ -273,7 +180,7 @@ const MultiDataGrid = () => {
     setGroupColumns(groupColumn);
   };
 
-  const disableCell = (params: any) => {
+  const isCellEnabled = (params: any) => {
     const disableField = params.field;
     const disableCase = ["B", "a1", "a2", "B1", "B2", "n"];
     switch (params.row.disable) {
@@ -734,196 +641,18 @@ const MultiDataGrid = () => {
   };
 
   // alert
-  useEffect(() => {
-    // 5초 후에 Alert를 숨기기
-    const timer = setTimeout(() => {
-      setAlertMsg("");
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [alertMsg]);
-
-  const AlertFunc = (
-    bSuccess: boolean,
-    rowID: number = -1,
-    colFild: string = "",
-    msg: string = ""
-  ) => {
-    if (bSuccess) {
-      const succesMsg = translate("success_change_data");
-      setbError(false);
-      setAlertMsg(succesMsg);
-    } else {
-      const rowIdx = rowID === -1 ? cursur : rowID;
-      const colIdx = columns.findIndex((col) => col.field === colFild);
-      if (colIdx !== -1) {
-        const errMsg =
-          translate("row_col_valid_error") +
-          `: [Name : ${rows[rowIdx].NAME}, Header : ${columns[colIdx].headerName}] -> Input : ${msg}`;
-        setbError(true);
-        setAlertMsg(errMsg);
-      }
-    }
-  };
-
-  const alertToolbar = () => {
-    return (
-      <Grid width={"100%"}>
-        {bError ? (
-          <Alert
-            style={{
-              transition: "opacity 0.5s ease-out",
-              opacity: alertMsg === "" ? 0 : 1,
-            }}
-            severity="error"
-          >
-            {alertMsg}
-          </Alert>
-        ) : (
-          <Alert
-            style={{
-              transition: "opacity 0.5s ease-out",
-              opacity: alertMsg === "" ? 0 : 1,
-            }}
-            severity="success"
-          >
-            {alertMsg}
-          </Alert>
-        )}
-      </Grid>
-    );
-  };
-
-  const checkboxSet = (selectedID: number[]) => {
-    const checkBox = selectedID.filter((id) => !isEmpty(rows[id].NAME));
-    setCheckBox(checkBox);
-  };
-
-  // event func
-  const onClickCell: GridEventListener<"cellClick"> = (
-    params,
-    event: any,
-    details
-  ) => {
-    const rowID = params.id as number;
-    const field = params.field;
-    setCursur(rowID);
-    setField(field);
-  };
-
-  const onKeyDown: GridEventListener<"cellKeyDown"> = (
-    params,
-    event: any,
-    details
-  ) => {
-    const InputValue = event.target.value;
-    if (InputValue === undefined) return;
-    setRows((preRows) =>
-      preRows.map((Item: any) =>
-        Item.id === params.row.id
-          ? {
-              ...Item,
-              [params.field]: InputValue,
-            }
-          : Item
-      )
-    );
-    if (event.key === "Enter") {
-      setbEnter(true);
-    }
-    if (event.keyCode === 46) {
-      // del button
-      if (isEmpty(CheckBox)) return;
-      let existedList: any[] = [];
-      for (let i = 0; i < filterList.length; i++) {
-        if (CheckBox.includes(i)) continue;
-        existedList.push(filterList[i]);
-      }
-      setTableList((preTable: any) => ({
-        ...preTable,
-        [TableType]: existedList,
-      }));
-      setCheckBox([]);
-    }
-  };
-
-  const onRowChange = (
-    rowModesModel: GridRowModesModel,
-    details: GridCallbackDetails
-  ) => {
-    const rowID = Object.keys(rowModesModel)[0];
-    const mode = rowModesModel[rowID]?.mode;
-    if (bEnter && mode === undefined) {
-      const newDataList = Object.values(
-        details.api.state.rows.dataRowIdToModelLookup
-      ).filter((row) => row.id === cursur)[0];
-
-      const bErr = Object.entries(newDataList).some(([key, value], idx) => {
-        if (DataValid(newDataList, key, value)) return false; // no err
-        else return true; // err
-      });
-
-      if (bErr) {
-        initRows();
-      } else {
-        setRows((preRows) =>
-          preRows.map((row) => (row.id === newDataList.id ? newDataList : row))
-        );
-        setbChange(true);
-      }
-    } else initRows();
-  };
-
-  const onClipboardPaste = async (params: { data: string[][] }) => {
-    const startRowId: number = cursur;
-    const paramsData = params.data;
-    let paramsDataCount: number = params.data.length;
-    // start Columns
-    const index = columns.findIndex((col) => col.field === field);
-    const startColumns = index !== -1 ? columns.slice(index) : [];
-    let rowLength = rows.length;
-    if (rowLength < startRowId + paramsDataCount) {
-      const count = startRowId + paramsDataCount - rowLength;
-      // for (let i = 0; i < count; i++) AddBlankRow();
-      paramsDataCount += count;
-      rowLength += count;
-    }
-
-    const copyErrMsg = "Paste operation cancelled";
-    for (let i = startRowId; i < startRowId + paramsDataCount; i++) {
-      let data = paramsData[i - startRowId];
-      if (data.length < startColumns.length)
-        data = data.concat(Array(startColumns.length - data.length).fill(""));
-
-      let dataObj: { [key: string]: any } = { id: i };
-      startColumns.forEach((column: any, idx) => {
-        const bCheck = DataValid(dataObj, column.field, data[idx]);
-        if (bCheck) dataObj[column.field] = data[idx];
-        else {
-          AlertFunc(false, idx, column.field, copyErrMsg);
-          throw new Error(copyErrMsg);
-        }
-      });
-
-      let errCol = "";
-      if (isEmpty(dataObj["MATERIAL_TYPE"])) errCol = "MATERIAL_TYPE";
-      else if (isEmpty(dataObj["HISTORY_MODEL"])) errCol = "HISTORY_MODEL";
-      else if (isEmpty(dataObj["Type"])) errCol = "Type";
-
-      if (!isEmpty(errCol)) {
-        const msg = `no data column [${errCol}]`;
-        AlertFunc(false, i, errCol, msg);
-        throw new Error(copyErrMsg);
-      } else {
-        if (rows.length - 1 < i) setRows((preRows) => [...preRows, dataObj]);
-        else
-          setRows((preRows) =>
-            preRows.map((row) => (row.id === dataObj.id ? dataObj : row))
-          );
-        setbChange(true);
-      }
-    }
-  };
+  const { checkboxSet, onKeyDown, onRowChange, pasteProps, setbEnter } =
+    useGridEditing({
+      rows,
+      setRows,
+      columns,
+      cursur,
+      field,
+      requiredFields: ["MATERIAL_TYPE", "HISTORY_MODEL", "Type"],
+      dataValid: DataValid,
+      initRows,
+      alert: AlertFunc,
+    });
 
   return (
     <GuideBox
@@ -945,62 +674,44 @@ const MultiDataGrid = () => {
         </Grid>
       )}
       {RequestBtn && (
-        <DataGridPremium
-          rows={rows} // rows
-          columns={columns} // columns
-          columnGroupingModel={groupColumns} // header group text
-          // isCellEditable={
-          //   (params) => disableCell(params) // disable settting
-          // }
-          columnGroupHeaderHeight={56} // header group height
-          rowHeight={30}
-          sx={DataGridStyle} // style
-          editMode="row" // edit mode
-          ignoreValueFormatterDuringExport // copy paste setting
-          disableRowSelectionOnClick // click no row
-          cellSelection // cell focus
-          checkboxSelection // checkbox setting
-          rowSelectionModel={CheckBox} // checkbox value
-          onRowSelectionModelChange={(selectedID: any) => {
-            checkboxSet(selectedID);
-          }} // checkbox 이벤트
-          // pagination // page setting
-          // autoPageSize // auto page
-          onCellClick={onClickCell} // cell click 이벤트
-          onCellKeyDown={(params, event, details) =>
-            onKeyDown(params, event, details)
-          } // enter 이벤트
-          onRowModesModelChange={(rowModesModel, details) =>
-            onRowChange(rowModesModel, details)
-          } // blur 이벤트
-          onBeforeClipboardPasteStart={(params) => onClipboardPaste(params)} // paste 이벤트
-          slots={{
-            toolbar: alertToolbar, // toolbar
-          }}
-          disableColumnSorting // disable sort
-        />
+        <div {...pasteProps}>
+          {/* paste 이벤트는 pasteProps 로 처리 */}
+          <DataGrid
+            rows={rows} // rows
+            columns={columns} // columns
+            columnGroupingModel={groupColumns} // header group text
+            // isCellEditable={
+            //   (params) => isCellEnabled(params) // disable settting
+            // }
+            columnGroupHeaderHeight={56} // header group height
+            rowHeight={30}
+            sx={DataGridStyle} // style
+            editMode="row" // edit mode
+            ignoreValueFormatterDuringExport // copy paste setting
+            disableRowSelectionOnClick // click no row
+            checkboxSelection // checkbox setting
+            rowSelectionModel={CheckBox} // checkbox value
+            onRowSelectionModelChange={(selectedID: any) => {
+              checkboxSet(selectedID);
+            }} // checkbox 이벤트
+            // pagination // page setting
+            // autoPageSize // auto page
+            onCellClick={onClickCell} // cell click 이벤트
+            onCellKeyDown={(params, event, details) =>
+              onKeyDown(params, event, details)
+            } // enter 이벤트
+            onRowModesModelChange={(rowModesModel, details) =>
+              onRowChange(rowModesModel, details)
+            } // blur 이벤트
+            slots={{
+              toolbar: alertToolbar, // toolbar
+            }}
+            disableColumnSorting // disable sort
+          />
+        </div>
       )}
     </GuideBox>
   );
 };
-
-const DataGridStyle = {
-  overflow: "auto",
-  width: "100%",
-  ".disable-cell": {
-    backgroundColor: "#e3e3e3",
-    opacity: 0.4,
-    // pointerEvents: "none", // 클릭 차단
-  },
-  ".enable-cell": {
-    // backgroundColor: "#fff",
-  },
-};
-
-// 소수점 표기
-function formatSmallNumber(value: number) {
-  const formatValue = value.toExponential(4);
-  return formatValue;
-}
 
 export default MultiDataGrid;

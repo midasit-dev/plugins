@@ -19,12 +19,45 @@ py-button:not(:defined) {
 py-box:not(:defined) {
   display: none;
 }
+/*
+ * 일본어 폰트 폴백.
+ *
+ * moaui 는 모든 컴포넌트에 `Pretendard, sans-serif` 를 지정하는데,
+ * Pretendard 에는 가나(かな/カナ)만 있고 한자(漢字) 글리프가 하나도 없다.
+ * 그래서 한자만 generic sans-serif 로 떨어지고, 브라우저 기본 폰트가
+ * 일본어용이 아니면 중국어 자형이나 두부(tofu)로 렌더링된다.
+ *
+ * 아래 스택에서 Pretendard 다음에 일본어 폰트를 명시해 한자를 받게 한다.
+ * (가나·한글·라틴은 그대로 Pretendard 가 그린다)
+ */
+:root {
+  --app-font-stack: Pretendard, "Yu Gothic UI", "Yu Gothic", "Meiryo",
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+    "MS PGothic", "Malgun Gothic", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 html {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--app-font-stack);
   line-height: 1.5;
   overflow: hidden;
+}
+
+/*
+ * moaui/MUI 는 emotion 클래스로 font-family 를 박아 넣기 때문에
+ * 상속만으로는 덮이지 않는다. 아이콘은 @mui/icons-material(SVG)이라
+ * 아이콘 폰트를 깨뜨릴 위험이 없어 전역으로 덮어씌운다.
+ */
+#root,
+#root *,
+.MuiPopover-root,
+.MuiPopover-root *,
+.MuiTooltip-popper,
+.MuiTooltip-popper *,
+.notistack-SnackbarContainer,
+.notistack-SnackbarContainer * {
+  font-family: var(--app-font-stack) !important;
 }
 html,
 body {

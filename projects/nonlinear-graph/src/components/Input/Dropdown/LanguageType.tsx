@@ -20,7 +20,7 @@ const LanguageType = () => {
     <GuideBox horRight margin={2}>
       <DropList
         itemList={items}
-        defaultValue="en"
+        defaultValue="jp"
         value={lan}
         onChange={onChangeHandler}
       />

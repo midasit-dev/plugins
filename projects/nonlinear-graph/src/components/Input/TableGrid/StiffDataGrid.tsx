@@ -34,7 +34,7 @@ import { DataGridStyle } from "./shared/gridStyle";
 import { formatSmallNumber } from "./shared/format";
 import { numberColumn, textColumn } from "./shared/columns";
 
-const DispDataGrid = () => {
+const StiffDataGrid = () => {
   const RequestBtn = useRecoilValue(RequestBtnState);
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
@@ -95,19 +95,17 @@ const DispDataGrid = () => {
         let maxPnd = nPnd;
         Object.entries(ALL_HistoryType_LNG).forEach(([key, value], idx) => {
           if (value === HISTORY_MODEL)
-            maxPnd = Math.max(maxPnd, ALL_Histroy_PND[key]);
+            maxPnd = Math.max(maxPnd, ALL_Histroy_PND[key] - 1);
         });
         const pDataArr = [
           ["Plus_P1", "Minus_P1"],
           ["Plus_P2", "Minus_P2"],
           ["Plus_P3", "Minus_P3"],
-          ["Plus_P4", "Minus_P4"],
         ];
-        const dDataArr = [
-          ["Plus_D1", "Minus_D1"],
-          ["Plus_D2", "Minus_D2"],
-          ["Plus_D3", "Minus_D3"],
-          ["Plus_D4", "Minus_D4"],
+        const aDataArr = [
+          ["Plus_A1", "Minus_A1"],
+          ["Plus_A2", "Minus_A2"],
+          ["Plus_A3", "Minus_A3"],
         ];
         pDataArr.some(([plusField, minusField], idx) => {
           if (nPnd < idx + 1) {
@@ -115,10 +113,26 @@ const DispDataGrid = () => {
             obj[minusField] = "";
           } else {
             const pData = value.DATA.P_DATA?.[idx];
-            obj[plusField] = isEmpty(pData) ? "" : formatSmallNumber(pData[0]);
+            obj[plusField] = isEmpty(pData)
+              ? ""
+              : formatSmallNumber(pData[0], false);
             obj[minusField] = isEmpty(pData)
               ? ""
-              : formatSmallNumber(pData[1] * -1);
+              : formatSmallNumber(pData[1] * -1, false);
+          }
+        });
+        aDataArr.some(([plusField, minusField], idx) => {
+          if (nPnd < idx + 1) {
+            obj[plusField] = "";
+            obj[minusField] = "";
+          } else {
+            const dData = value.DATA.A_DATA?.[idx];
+            obj[plusField] = isEmpty(dData)
+              ? ""
+              : formatSmallNumber(dData[0], true);
+            obj[minusField] = isEmpty(dData)
+              ? ""
+              : formatSmallNumber(dData[1] * -1, true);
           }
         });
 
@@ -131,18 +145,11 @@ const DispDataGrid = () => {
           obj["disable"] = "Plus";
         else obj["disable"] = undefined;
 
-        dDataArr.some(([plusField, minusField], idx) => {
-          if (nPnd < idx + 1) {
-            obj[plusField] = "";
-            obj[minusField] = "";
-          } else {
-            const dData = value.DATA.D_DATA?.[idx];
-            obj[plusField] = isEmpty(dData) ? "" : formatSmallNumber(dData[0]);
-            obj[minusField] = isEmpty(dData)
-              ? ""
-              : formatSmallNumber(dData[1] * -1);
-          }
-        });
+        // Init Stiff
+        obj["INITSTIFFNESS"] =
+          value.DATA.INITSTIFFNESS === 1
+            ? "E"
+            : value.DATA.INITSTIFFNESS.toFixed(1);
 
         // b, a, g
         const HistoryModelLNG = ALL_HistoryType_LNG[value.HISTORY_MODEL];
@@ -174,15 +181,23 @@ const DispDataGrid = () => {
       textColumn("SYMMETRIC", translate("Axisymmetric"), 87),
     ];
 
-    const PnD = ["P1", "D1", "P2", "D2", "P3", "D3", "P4", "D4"];
-    const Plus_Columns = PnD.map((name) =>
-      numberColumn(`Plus_${name}`, name, isCellEnabled)
+    const PnA = [
+      ["P1", "P1"],
+      ["P2", "P2"],
+      ["P3", "P3"],
+      ["A1", "α1"],
+      ["A2", "α2"],
+      ["A3", "α3"],
+    ];
+    const Plus_Columns = PnA.map(([name, header]) =>
+      numberColumn(`Plus_${name}`, header, isCellEnabled)
     );
-    const Minus_Columns = PnD.map((name) =>
-      numberColumn(`Minus_${name}`, name, isCellEnabled)
+    const Minus_Columns = PnA.map(([name, header]) =>
+      numberColumn(`Minus_${name}`, header, isCellEnabled)
     );
 
     const remainColumns = [
+      numberColumn("INITSTIFFNESS", translate("Init_Stiff"), isCellEnabled, 75),
       numberColumn("B", "β", isCellEnabled, 68),
       numberColumn("a", "α", isCellEnabled, 68),
       numberColumn("g", "λ", isCellEnabled, 68),
@@ -195,23 +210,19 @@ const DispDataGrid = () => {
     setGroupColumns([]);
     const Plus_children = [
       { field: "Plus_P1" },
-      { field: "Plus_D1" },
       { field: "Plus_P2" },
-      { field: "Plus_D2" },
       { field: "Plus_P3" },
-      { field: "Plus_D3" },
-      { field: "Plus_P4" },
-      { field: "Plus_D4" },
+      { field: "Plus_A1" },
+      { field: "Plus_A2" },
+      { field: "Plus_A3" },
     ];
     const Minus_children = [
       { field: "Minus_P1" },
-      { field: "Minus_D1" },
       { field: "Minus_P2" },
-      { field: "Minus_D2" },
       { field: "Minus_P3" },
-      { field: "Minus_D3" },
-      { field: "Minus_P4" },
-      { field: "Minus_D4" },
+      { field: "Minus_A1" },
+      { field: "Minus_A2" },
+      { field: "Minus_A3" },
     ];
     const groupColumn = [
       {
@@ -243,11 +254,9 @@ const DispDataGrid = () => {
           case "Plus_P1":
           case "Plus_P2":
           case "Plus_P3":
-          case "Plus_P4":
-          case "Plus_D1":
-          case "Plus_D2":
-          case "Plus_D3":
-          case "Plus_D4":
+          case "Plus_A1":
+          case "Plus_A2":
+          case "Plus_A3":
           case "B":
           case "a":
           case "g":
@@ -261,11 +270,9 @@ const DispDataGrid = () => {
           case "Minus_P1":
           case "Minus_P2":
           case "Minus_P3":
-          case "Minus_P4":
-          case "Minus_D1":
-          case "Minus_D2":
-          case "Minus_D3":
-          case "Minus_D4":
+          case "Minus_A1":
+          case "Minus_A2":
+          case "Minus_A3":
           case "B":
           case "a":
           case "g":
@@ -281,11 +288,9 @@ const DispDataGrid = () => {
           case "Minus_P1":
           case "Minus_P2":
           case "Minus_P3":
-          case "Minus_P4":
-          case "Minus_D1":
-          case "Minus_D2":
-          case "Minus_D3":
-          case "Minus_D4":
+          case "Minus_A1":
+          case "Minus_A2":
+          case "Minus_A3":
           case "Minus_gap":
             return false;
           default:
@@ -322,7 +327,7 @@ const DispDataGrid = () => {
 
       // p_data
       const pData = [];
-      for (let i = 1; i < 5; i++) {
+      for (let i = 1; i < 4; i++) {
         if (
           isEmpty(rows[row][`Plus_P${i}`]) ||
           isEmpty(rows[row][`Minus_P${i}`])
@@ -339,48 +344,49 @@ const DispDataGrid = () => {
           } else if (isEmpty(rows[row][`Minus_P${i}`]) === false)
             AlertFunc(false, -1, `Plus_P${i}`, noData);
           continue;
-        } else
+        } else {
           pData.push([
             parseFloat(rows[row][`Plus_P${i}`]),
             symmetric === 0
               ? parseFloat(rows[row][`Plus_P${i}`])
               : parseFloat(rows[row][`Minus_P${i}`]) * -1,
           ]);
+        }
       }
 
-      // d_data
-      const dData = [];
-      for (let i = 1; i < 5; i++) {
+      // A_data
+      const aData = [];
+      for (let i = 1; i < 4; i++) {
         if (
-          isEmpty(rows[row][`Plus_D${i}`]) ||
-          isEmpty(rows[row][`Minus_D${i}`])
+          isEmpty(rows[row][`Plus_A${i}`]) ||
+          isEmpty(rows[row][`Minus_A${i}`])
         ) {
           const noData = "No Data";
-          if (isEmpty(rows[row][`Plus_D${i}`]) === false) {
+          if (isEmpty(rows[row][`Plus_A${i}`]) === false) {
             if (symmetric === 0) {
-              dData.push([
-                parseFloat(rows[row][`Plus_D${i}`]),
-                parseFloat(rows[row][`Plus_D${i}`]),
+              aData.push([
+                parseFloat(rows[row][`Plus_A${i}`]),
+                parseFloat(rows[row][`Plus_A${i}`]),
               ]);
               continue;
-            } else AlertFunc(false, -1, `Minus_D${i}`, noData);
-          } else if (isEmpty(rows[row][`Minus_D${i}`]) === false)
-            AlertFunc(false, -1, `Plus_D${i}`, noData);
+            } else AlertFunc(false, -1, `Minus_A${i}`, noData);
+          } else if (isEmpty(rows[row][`Minus_A${i}`]) === false)
+            AlertFunc(false, -1, `Plus_A${i}`, noData);
           continue;
         } else
-          dData.push([
-            parseFloat(rows[row][`Plus_D${i}`]),
+          aData.push([
+            parseFloat(rows[row][`Plus_A${i}`]),
             symmetric === 0
-              ? parseFloat(rows[row][`Plus_D${i}`])
-              : parseFloat(rows[row][`Minus_D${i}`]) * -1,
+              ? parseFloat(rows[row][`Plus_A${i}`])
+              : parseFloat(rows[row][`Minus_A${i}`]) * -1,
           ]);
       }
 
-      if (pData.length !== dData.length) {
+      if (pData.length !== aData.length) {
         const noData = "+ or - No Data";
         const col =
-          pData.length > dData.length
-            ? `Plus_D${dData.length + 1}`
+          pData.length > aData.length
+            ? `Plus_A${aData.length + 1}`
             : `Plus_P${pData.length + 1}`;
         AlertFunc(false, -1, col, noData);
         continue;
@@ -391,7 +397,7 @@ const DispDataGrid = () => {
       let HISTORY_MODEL_LNG: string = "";
       Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
         if (translate(value) === rows[row].HISTORY_MODEL) {
-          const getKey = GetKeyFromLNG(value, pData.length);
+          const getKey = GetKeyFromLNG(value, pData.length + 1);
           if (key === getKey) {
             HISTORY_MODEL = key;
             HISTORY_MODEL_LNG = value;
@@ -399,15 +405,22 @@ const DispDataGrid = () => {
         }
       });
       if (HISTORY_MODEL === "") {
-        const noData = `[P or D] Data not match ${translate(
+        const noData = `[P or α] Data don't match ${translate(
           "Hysteresis_model"
         )}`;
         const col = "HISTORY_MODEL";
         AlertFunc(false, row, col, noData);
         continue;
       }
+      // Init Stiff
+      const defaultStiff =
+        rows[row].INITSTIFFNESS === "" || rows[row].INITSTIFFNESS === "E"
+          ? 1
+          : parseFloat(rows[row].INITSTIFFNESS);
+      const InitStiff = defaultStiff;
+
       // PnD err check
-      const [bErr, errCol, errMsg] = pndErrCheck(pData, dData, HISTORY_MODEL);
+      const [bErr, errCol, errMsg] = pndErrCheck(pData, aData, HISTORY_MODEL);
       if (!bErr) {
         AlertFunc(false, row, errCol, errMsg);
         continue;
@@ -428,7 +441,9 @@ const DispDataGrid = () => {
       const MinusGap = isEmpty(rows[row].Minus_gap)
         ? 0.0
         : parseFloat(rows[row].Minus_gap) * -1;
+
       const dValues: any = {
+        INITSTIFFNESS: InitStiff,
         B: bBeta ? Beta : undefined,
         a: bAlpa ? Alpa : undefined,
         g: bGamma ? Gamma : undefined,
@@ -444,7 +459,7 @@ const DispDataGrid = () => {
           HISTORY_MODEL,
           symmetric,
           pData,
-          dData,
+          aData,
           dValues
         );
     }
@@ -461,7 +476,7 @@ const DispDataGrid = () => {
     HISTORY_MODEL: string,
     SYMMETRIC: number,
     pData: Array<Array<number>>,
-    dData: Array<Array<number>>,
+    aData: Array<Array<number>>,
     dValues: any
   ) => {
     if (
@@ -469,7 +484,7 @@ const DispDataGrid = () => {
       isEmpty(MATERIAL_TYPE) ||
       isEmpty(HISTORY_MODEL) ||
       pData.length === 0 ||
-      dData.length === 0
+      aData.length === 0
     )
       return;
     if (filterList === undefined || row > filterList.length - 1) {
@@ -480,7 +495,7 @@ const DispDataGrid = () => {
         HISTORY_MODEL,
         SYMMETRIC,
         pData,
-        dData,
+        aData,
         dValues
       );
     } else {
@@ -492,19 +507,18 @@ const DispDataGrid = () => {
         HISTORY_MODEL,
         SYMMETRIC,
         pData,
-        dData,
+        aData,
         dValues
       );
     }
   };
-
   const addTable = (
     NAME: string,
     MATERIAL_TYPE: string,
     HISTORY_MODEL: string,
     SYMMETRIC: number,
     pData: Array<Array<number>>,
-    dData: Array<Array<number>>,
+    aData: Array<Array<number>>,
     dValues: any
   ) => {
     setTableList((preTable: any) => ({
@@ -524,7 +538,7 @@ const DispDataGrid = () => {
                 GAMMA: dValues.g,
                 INIT_GAP: [dValues.Plus_gap, dValues.Minus_gap],
                 P_DATA: pData,
-                D_DATA: dData,
+                A_DATA: aData,
                 PND: pData.length,
               },
             },
@@ -542,7 +556,7 @@ const DispDataGrid = () => {
                 GAMMA: dValues.g,
                 INIT_GAP: [dValues.Plus_gap, dValues.Minus_gap],
                 P_DATA: pData,
-                D_DATA: dData,
+                A_DATA: aData,
                 PND: pData.length,
               },
             },
@@ -589,7 +603,7 @@ const DispDataGrid = () => {
 
   const DataValid = (row: any, col: string, InputValue: any): boolean => {
     let dbUpdate: boolean = false;
-    if (InputValue === undefined || InputValue === null) dbUpdate = true;
+    if (InputValue === undefined) dbUpdate = true;
 
     switch (col) {
       case "id":
@@ -639,6 +653,12 @@ const DispDataGrid = () => {
           }
         });
         break;
+      case "INITSTIFFNESS":
+        if (InputValue === "E") dbUpdate = true;
+        else if (isNaN(InputValue) === false) {
+          dbUpdate = true;
+        }
+        break;
       case "B": // B
       case "a": // a
       case "g": // a
@@ -659,7 +679,6 @@ const DispDataGrid = () => {
                 break;
             }
           }
-
           let bBeta = false;
           let bAlpa = false;
           let bGamma = false;
@@ -671,19 +690,6 @@ const DispDataGrid = () => {
               bAlpa = getModelAlpa(value);
               bGamma = getModelGamma(value);
               bInitGap = getModelInitGap(value);
-
-              if (
-                value !== "SLIP_Compression" &&
-                col === "Plus_gap" &&
-                parseFloat(InputValue) > parseFloat(row["Plus_D1"])
-              )
-                bInitGap = false;
-              if (
-                value !== "SLIP_Tension" &&
-                col === "Minus_gap" &&
-                parseFloat(InputValue) < parseFloat(row["Minus_D1"])
-              )
-                bInitGap = false;
             }
           });
           if (bInitGap && col === "Plus_gap") dbUpdate = true;
@@ -717,10 +723,10 @@ const DispDataGrid = () => {
         break;
       default: // 4 < ~~ < 4 + PnD_size*2
         if (isEmpty(InputValue) === false && isNaN(InputValue) === false) {
-          // plus, minus check
           const fieldPM = col.split("_")[0];
           if (fieldPM === "Plus" && InputValue <= 0) break;
           if (fieldPM === "Minus" && InputValue >= 0) break;
+
           if (row["disable"] !== undefined) {
             if (row["disable"] === fieldPM && rows[row.id][col] !== InputValue)
               break;
@@ -732,6 +738,7 @@ const DispDataGrid = () => {
             )
               break;
           }
+
           // data check
           const HISTORY_MODEL = row.HISTORY_MODEL;
           Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
@@ -739,7 +746,7 @@ const DispDataGrid = () => {
               const nPnd = ALL_Histroy_PND[key];
               const getKey = GetKeyFromLNG(value, nPnd);
               if (key === getKey) {
-                if (parseInt(col.slice(-1)) <= nPnd) dbUpdate = true;
+                if (parseInt(col.slice(-1)) <= nPnd - 1) dbUpdate = true;
               }
             }
           });
@@ -750,7 +757,7 @@ const DispDataGrid = () => {
           let minPnd = 10;
           Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
             if (translate(value) === HISTORY_MODEL) {
-              const nPnd = ALL_Histroy_PND[key];
+              const nPnd = ALL_Histroy_PND[key] - 1;
               minPnd = Math.min(minPnd, nPnd);
             }
           });
@@ -766,65 +773,19 @@ const DispDataGrid = () => {
 
   const pndErrCheck = (
     pData: number[][],
-    dData: number[][],
+    aData: number[][],
     HISTORY_MODEL: string
   ): any[] => {
     const PnD = pData.length;
     const dTol = 1.0e-9;
     switch (PnD) {
-      case 4:
-        if (pData[2][0] > pData[3][0]) return [false, "Plus_P3", "P3 > P4"];
-        if (pData[2][1] > pData[3][1]) return [false, "Minus_P3", "P3 > P4"];
-        if (dData[2][0] > dData[3][0]) return [false, "Plus_D3", "D3 > D4"];
-        if (dData[2][1] > dData[3][1]) return [false, "Minus_D3", "D3 > D4"];
-
-        if (
-          dData[2][0] === dData[3][0] &&
-          Math.abs(pData[2][0] - pData[3][0]) > dTol
-        )
-          return [false, "Plus_D4", "D4 > D3 (if P4 < P3)"];
-
-        if (
-          dData[2][1] === dData[3][1] &&
-          Math.abs(pData[2][1] - pData[3][1]) > dTol
-        )
-          return [false, "Minus_D4", "D4 > D3 (if P4 < P3)"];
-
       case 3:
         if (pData[1][0] > pData[2][0]) return [false, "Plus_P2", "P2 > P3"];
         if (pData[1][1] > pData[2][1]) return [false, "Minus_P2", "P2 > P3"];
-        if (dData[1][0] > dData[2][0]) return [false, "Plus_D2", "D2 > D3"];
-        if (dData[1][1] > dData[2][1]) return [false, "Minus_D2", "D2 > D3"];
-
-        if (
-          dData[1][0] === dData[2][0] &&
-          Math.abs(pData[1][0] - pData[2][0]) > dTol
-        )
-          return [false, "Plus_D3", "D3 > D2 (if P3 < P2)"];
-
-        if (
-          dData[1][1] === dData[2][1] &&
-          Math.abs(pData[1][1] - pData[2][1]) > dTol
-        )
-          return [false, "Minus_D3", "D3 > D2 (if P3 < P2)"];
 
       case 2:
         if (pData[0][0] > pData[1][0]) return [false, "Plus_P1", "P1 > P2"];
         if (pData[0][1] > pData[1][1]) return [false, "Minus_P1", "P1 > P2"];
-        if (dData[0][0] > dData[1][0]) return [false, "Plus_D1", "D1 > D2"];
-        if (dData[0][1] > dData[1][1]) return [false, "Minus_D1", "D1 > D2"];
-
-        if (
-          dData[0][0] === dData[1][0] &&
-          Math.abs(pData[0][0] - pData[1][0]) > dTol
-        )
-          return [false, "Plus_D2", "D2 > D1 (if P2 < P1)"];
-
-        if (
-          dData[0][1] === dData[1][1] &&
-          Math.abs(pData[0][1] - pData[1][1]) > dTol
-        )
-          return [false, "Minus_D2", "D2 > D1 (if P2 < P1)"];
 
         break;
       default:
@@ -833,6 +794,7 @@ const DispDataGrid = () => {
     return [true, "", ""];
   };
 
+  // alert
   const { checkboxSet, onKeyDown, onRowChange, pasteProps, setbEnter } =
     useGridEditing({
       rows,
@@ -861,7 +823,7 @@ const DispDataGrid = () => {
             }}
             severity="error"
           >
-            {translate("TabDisp") + translate("request_noData")}
+            {translate("TabStiff") + translate("request_noData")}
           </Alert>
         </Grid>
       )}
@@ -906,4 +868,4 @@ const DispDataGrid = () => {
   );
 };
 
-export default DispDataGrid;
+export default StiffDataGrid;

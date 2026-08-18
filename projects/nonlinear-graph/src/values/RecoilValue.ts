@@ -7,7 +7,7 @@ export const UnitState = atom<any>({
 
 export const LanguageState = atom<string>({
   key: "LanguageState",
-  default: "en",
+  default: "jp",
 });
 
 export const TableTypeState = atom<number>({

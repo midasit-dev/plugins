@@ -16,7 +16,7 @@ import {
 } from "../../../values/RecoilValue";
 import MultiDataGrid from "../../Input/TableGrid/MultiDataGrid";
 import DispDataGrid from "../../Input/TableGrid/DispDataGrid";
-import StiffDataGrid from "../../Input/TableGrid/StiffDataGrid copy";
+import StiffDataGrid from "../../Input/TableGrid/StiffDataGrid";
 import PointType from "../../Input/Dropdown/PointType";
 const Contents = () => {
   const [TableType, setTableType] = useRecoilState(TableTypeState);
