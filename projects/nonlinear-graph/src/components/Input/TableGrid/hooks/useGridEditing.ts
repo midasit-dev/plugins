@@ -14,6 +14,7 @@ import {
   TableListState,
   TableTypeState,
 } from "../../../../values/RecoilValue";
+import { RAW_FIELD } from "../shared/format";
 import useGridClipboardPaste from "./useGridClipboardPaste";
 import { GridAlertFunc } from "./useGridAlert";
 
@@ -108,6 +109,8 @@ const useGridEditing = ({
       ).filter((row: any) => row.id === cursur)[0] as any;
 
       const bErr = Object.entries(newDataList).some(([key, value]) => {
+        // 표시 문자열 옆에 원본 숫자를 담아 둔 필드는 사용자 입력이 아니므로 검증하지 않는다.
+        if (key === RAW_FIELD) return false;
         if (dataValid(newDataList, key, value)) return false; // no err
         else return true; // err
       });

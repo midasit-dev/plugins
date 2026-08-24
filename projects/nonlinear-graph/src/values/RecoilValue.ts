@@ -51,6 +51,18 @@ export const RequestBtnState = atom<boolean>({
   default: false,
 });
 
+/**
+ * 요청이 진행 중인지. Request / Change 가 시작할 때 켜고 끝날 때 끈다.
+ *
+ * RequestBtnState 는 "한 번이라도 조회했는가"를 나타내는 1회성 플래그라
+ * 두 번째 이후 요청에는 아무 표시가 없다. 전송 계층이 비동기가 된 뒤에는
+ * 화면이 멈추지도 않으므로, 진행 중임을 알리고 중복 요청을 막는 상태가 따로 필요하다.
+ */
+export const BusyState = atom<boolean>({
+  key: "BusyState",
+  default: false,
+});
+
 export const TableChangeState = atom<boolean>({
   key: "tableChangeState",
   default: false,

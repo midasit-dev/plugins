@@ -22,6 +22,7 @@ import {
   HiddenBtnState,
   LanguageState,
   RequestBtnState,
+  BusyState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -31,11 +32,12 @@ import useGridCursor from "./hooks/useGridCursor";
 import useGridAlert from "./hooks/useGridAlert";
 import useGridEditing from "./hooks/useGridEditing";
 import { DataGridStyle } from "./shared/gridStyle";
-import { formatSmallNumber } from "./shared/format";
+import { setDisplayAndRaw, parseGridNumber } from "./shared/format";
 import { numberColumn, textColumn } from "./shared/columns";
 
 const StiffDataGrid = () => {
   const RequestBtn = useRecoilValue(RequestBtnState);
+  const Busy = useRecoilValue(BusyState);
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
@@ -113,12 +115,13 @@ const StiffDataGrid = () => {
             obj[minusField] = "";
           } else {
             const pData = value.DATA.P_DATA?.[idx];
-            obj[plusField] = isEmpty(pData)
-              ? ""
-              : formatSmallNumber(pData[0], false);
-            obj[minusField] = isEmpty(pData)
-              ? ""
-              : formatSmallNumber(pData[1] * -1, false);
+            if (isEmpty(pData)) {
+              obj[plusField] = "";
+              obj[minusField] = "";
+            } else {
+              setDisplayAndRaw(obj, plusField, pData[0], false);
+              setDisplayAndRaw(obj, minusField, pData[1] * -1, false);
+            }
           }
         });
         aDataArr.some(([plusField, minusField], idx) => {
@@ -127,12 +130,13 @@ const StiffDataGrid = () => {
             obj[minusField] = "";
           } else {
             const dData = value.DATA.A_DATA?.[idx];
-            obj[plusField] = isEmpty(dData)
-              ? ""
-              : formatSmallNumber(dData[0], true);
-            obj[minusField] = isEmpty(dData)
-              ? ""
-              : formatSmallNumber(dData[1] * -1, true);
+            if (isEmpty(dData)) {
+              obj[plusField] = "";
+              obj[minusField] = "";
+            } else {
+              setDisplayAndRaw(obj, plusField, dData[0], true);
+              setDisplayAndRaw(obj, minusField, dData[1] * -1, true);
+            }
           }
         });
 
@@ -336,8 +340,8 @@ const StiffDataGrid = () => {
           if (isEmpty(rows[row][`Plus_P${i}`]) === false) {
             if (symmetric === 0) {
               pData.push([
-                parseFloat(rows[row][`Plus_P${i}`]),
-                parseFloat(rows[row][`Plus_P${i}`]),
+                parseGridNumber(rows[row], `Plus_P${i}`),
+                parseGridNumber(rows[row], `Plus_P${i}`),
               ]);
               continue;
             } else AlertFunc(false, -1, `Minus_P${i}`, noData);
@@ -346,10 +350,10 @@ const StiffDataGrid = () => {
           continue;
         } else {
           pData.push([
-            parseFloat(rows[row][`Plus_P${i}`]),
+            parseGridNumber(rows[row], `Plus_P${i}`),
             symmetric === 0
-              ? parseFloat(rows[row][`Plus_P${i}`])
-              : parseFloat(rows[row][`Minus_P${i}`]) * -1,
+              ? parseGridNumber(rows[row], `Plus_P${i}`)
+              : parseGridNumber(rows[row], `Minus_P${i}`) * -1,
           ]);
         }
       }
@@ -365,8 +369,8 @@ const StiffDataGrid = () => {
           if (isEmpty(rows[row][`Plus_A${i}`]) === false) {
             if (symmetric === 0) {
               aData.push([
-                parseFloat(rows[row][`Plus_A${i}`]),
-                parseFloat(rows[row][`Plus_A${i}`]),
+                parseGridNumber(rows[row], `Plus_A${i}`, true),
+                parseGridNumber(rows[row], `Plus_A${i}`, true),
               ]);
               continue;
             } else AlertFunc(false, -1, `Minus_A${i}`, noData);
@@ -375,10 +379,10 @@ const StiffDataGrid = () => {
           continue;
         } else
           aData.push([
-            parseFloat(rows[row][`Plus_A${i}`]),
+            parseGridNumber(rows[row], `Plus_A${i}`, true),
             symmetric === 0
-              ? parseFloat(rows[row][`Plus_A${i}`])
-              : parseFloat(rows[row][`Minus_A${i}`]) * -1,
+              ? parseGridNumber(rows[row], `Plus_A${i}`, true)
+              : parseGridNumber(rows[row], `Minus_A${i}`, true) * -1,
           ]);
       }
 
@@ -812,7 +816,7 @@ const StiffDataGrid = () => {
     <GuideBox
       height={hidden ? "800px" : "650px"}
       width={"100%"}
-      loading={RequestBtn ? false : true}
+      loading={!RequestBtn || Busy}
     >
       {filterList === undefined && RequestBtn && (
         <Grid width={"100%"}>

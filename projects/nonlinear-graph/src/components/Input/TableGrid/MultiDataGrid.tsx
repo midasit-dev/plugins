@@ -13,6 +13,7 @@ import {
   HiddenBtnState,
   LanguageState,
   RequestBtnState,
+  BusyState,
   PointState,
 } from "../../../values/RecoilValue";
 // UI
@@ -28,6 +29,7 @@ import { numberColumn, textColumn } from "./shared/columns";
 
 const MultiDataGrid = () => {
   const RequestBtn = useRecoilValue(RequestBtnState);
+  const Busy = useRecoilValue(BusyState);
   const PointValue = useRecoilValue(PointState);
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
@@ -658,7 +660,7 @@ const MultiDataGrid = () => {
     <GuideBox
       height={hidden ? "800px" : "650px"}
       width={"100%"}
-      loading={RequestBtn ? false : true}
+      loading={!RequestBtn || Busy}
     >
       {filterList === undefined && RequestBtn && (
         <Grid width={"100%"}>

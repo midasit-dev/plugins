@@ -22,6 +22,7 @@ import {
   HiddenBtnState,
   LanguageState,
   RequestBtnState,
+  BusyState,
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
@@ -31,11 +32,12 @@ import useGridCursor from "./hooks/useGridCursor";
 import useGridAlert from "./hooks/useGridAlert";
 import useGridEditing from "./hooks/useGridEditing";
 import { DataGridStyle } from "./shared/gridStyle";
-import { formatSmallNumber } from "./shared/format";
+import { setDisplayAndRaw, parseGridNumber } from "./shared/format";
 import { numberColumn, textColumn } from "./shared/columns";
 
 const DispDataGrid = () => {
   const RequestBtn = useRecoilValue(RequestBtnState);
+  const Busy = useRecoilValue(BusyState);
   const TableType = useRecoilValue(TableTypeState);
   const [TableList, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
@@ -115,10 +117,13 @@ const DispDataGrid = () => {
             obj[minusField] = "";
           } else {
             const pData = value.DATA.P_DATA?.[idx];
-            obj[plusField] = isEmpty(pData) ? "" : formatSmallNumber(pData[0]);
-            obj[minusField] = isEmpty(pData)
-              ? ""
-              : formatSmallNumber(pData[1] * -1);
+            if (isEmpty(pData)) {
+              obj[plusField] = "";
+              obj[minusField] = "";
+            } else {
+              setDisplayAndRaw(obj, plusField, pData[0]);
+              setDisplayAndRaw(obj, minusField, pData[1] * -1);
+            }
           }
         });
 
@@ -137,10 +142,13 @@ const DispDataGrid = () => {
             obj[minusField] = "";
           } else {
             const dData = value.DATA.D_DATA?.[idx];
-            obj[plusField] = isEmpty(dData) ? "" : formatSmallNumber(dData[0]);
-            obj[minusField] = isEmpty(dData)
-              ? ""
-              : formatSmallNumber(dData[1] * -1);
+            if (isEmpty(dData)) {
+              obj[plusField] = "";
+              obj[minusField] = "";
+            } else {
+              setDisplayAndRaw(obj, plusField, dData[0]);
+              setDisplayAndRaw(obj, minusField, dData[1] * -1);
+            }
           }
         });
 
@@ -331,8 +339,8 @@ const DispDataGrid = () => {
           if (isEmpty(rows[row][`Plus_P${i}`]) === false) {
             if (symmetric === 0) {
               pData.push([
-                parseFloat(rows[row][`Plus_P${i}`]),
-                parseFloat(rows[row][`Plus_P${i}`]),
+                parseGridNumber(rows[row], `Plus_P${i}`),
+                parseGridNumber(rows[row], `Plus_P${i}`),
               ]);
               continue;
             } else AlertFunc(false, -1, `Minus_P${i}`, noData);
@@ -341,10 +349,10 @@ const DispDataGrid = () => {
           continue;
         } else
           pData.push([
-            parseFloat(rows[row][`Plus_P${i}`]),
+            parseGridNumber(rows[row], `Plus_P${i}`),
             symmetric === 0
-              ? parseFloat(rows[row][`Plus_P${i}`])
-              : parseFloat(rows[row][`Minus_P${i}`]) * -1,
+              ? parseGridNumber(rows[row], `Plus_P${i}`)
+              : parseGridNumber(rows[row], `Minus_P${i}`) * -1,
           ]);
       }
 
@@ -359,8 +367,8 @@ const DispDataGrid = () => {
           if (isEmpty(rows[row][`Plus_D${i}`]) === false) {
             if (symmetric === 0) {
               dData.push([
-                parseFloat(rows[row][`Plus_D${i}`]),
-                parseFloat(rows[row][`Plus_D${i}`]),
+                parseGridNumber(rows[row], `Plus_D${i}`),
+                parseGridNumber(rows[row], `Plus_D${i}`),
               ]);
               continue;
             } else AlertFunc(false, -1, `Minus_D${i}`, noData);
@@ -369,10 +377,10 @@ const DispDataGrid = () => {
           continue;
         } else
           dData.push([
-            parseFloat(rows[row][`Plus_D${i}`]),
+            parseGridNumber(rows[row], `Plus_D${i}`),
             symmetric === 0
-              ? parseFloat(rows[row][`Plus_D${i}`])
-              : parseFloat(rows[row][`Minus_D${i}`]) * -1,
+              ? parseGridNumber(rows[row], `Plus_D${i}`)
+              : parseGridNumber(rows[row], `Minus_D${i}`) * -1,
           ]);
       }
 
@@ -518,7 +526,8 @@ const DispDataGrid = () => {
               HISTORY_MODEL: HISTORY_MODEL,
               DATA: {
                 SYMMETRIC: SYMMETRIC,
-                INITSTIFFNESS: dValues.INITSTIFFNESS,
+                // 이 탭에는 초기강성 입력이 없다. 서버가 쓰는 기본값("E" = 1).
+                INITSTIFFNESS: 1,
                 BETA: dValues.B,
                 ALPA: dValues.a,
                 GAMMA: dValues.g,
@@ -536,7 +545,8 @@ const DispDataGrid = () => {
               HISTORY_MODEL: HISTORY_MODEL,
               DATA: {
                 SYMMETRIC: SYMMETRIC,
-                INITSTIFFNESS: dValues.INITSTIFFNESS,
+                // 이 탭에는 초기강성 입력이 없다. 서버가 쓰는 기본값("E" = 1).
+                INITSTIFFNESS: 1,
                 BETA: dValues.B,
                 ALPA: dValues.a,
                 GAMMA: dValues.g,
@@ -557,7 +567,7 @@ const DispDataGrid = () => {
     HISTORY_MODEL: string,
     SYMMETRIC: number,
     pData: Array<Array<number>>,
-    aData: Array<Array<number>>,
+    dData: Array<Array<number>>,
     dValues: any
   ) => {
     setTableList((preTable: any) => ({
@@ -570,8 +580,9 @@ const DispDataGrid = () => {
         DATA: {
           ...item.DATA,
           SYMMETRIC: idx === row ? SYMMETRIC : item.DATA.SYMMETRIC,
-          INITSTIFFNESS:
-            idx === row ? dValues.INITSTIFFNESS : item.DATA.INITSTIFFNESS,
+          // 이 탭(P-D)에는 초기강성 입력 컬럼이 없어 dValues 에 값이 없다.
+          // 예전엔 편집한 행만 undefined 로 덮여 서버에 null 이 저장됐다.
+          INITSTIFFNESS: item.DATA.INITSTIFFNESS,
           BETA: idx === row ? dValues.B : item.DATA.BETA,
           ALPA: idx === row ? dValues.a : item.DATA.ALPA,
           GAMMA: idx === row ? dValues.g : item.DATA.GAMMA,
@@ -580,7 +591,8 @@ const DispDataGrid = () => {
               ? [dValues.Plus_gap, dValues.Minus_gap]
               : item.DATA.INIT_GAP,
           P_DATA: idx === row ? pData : item.DATA.P_DATA,
-          A_DATA: idx === row ? aData : item.DATA.A_DATA,
+          // 이 탭의 입력은 변위(D)다. 강성비(A_DATA)는 ...item.DATA 로 원본이 넘어간다.
+          D_DATA: idx === row ? dData : item.DATA.D_DATA,
           PND: idx === row ? pData.length : item.DATA.PND,
         },
       })),
@@ -850,7 +862,7 @@ const DispDataGrid = () => {
     <GuideBox
       height={hidden ? "800px" : "650px"}
       width={"100%"}
-      loading={RequestBtn ? false : true}
+      loading={!RequestBtn || Busy}
     >
       {filterList === undefined && RequestBtn && (
         <Grid width={"100%"}>
