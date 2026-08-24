@@ -7,7 +7,7 @@
  * ┴┘└┘   ┴ ┴└─┘ ┴ ┴ └┘ └─┘
  */
 
-import React, { useCallback } from "react";
+import React from "react";
 import { RecoilRoot } from "recoil";
 import App from "./App";
 import {
@@ -23,7 +23,6 @@ import {
 import Signature from "./Signature";
 import { SnackbarProvider, closeSnackbar } from "notistack";
 import { setGlobalVariable, getGlobalVariable } from "./utils_pyscript";
-import { useTranslation } from "react-i18next";
 
 const ValidWrapper = (props: any) => {
   const { isIntalledPyscript } = props;
@@ -33,7 +32,6 @@ const ValidWrapper = (props: any) => {
   const [checkUri, setCheckUri] = React.useState(false);
   const [checkMapiKey, setCheckMapiKey] = React.useState(false);
   const [checkMapiKeyMsg, setCheckMapiKeyMsg] = React.useState("");
-  const { i18n } = useTranslation();
 
   React.useEffect(() => {
     const callback = async () => {

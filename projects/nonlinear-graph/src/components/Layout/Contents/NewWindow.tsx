@@ -9,10 +9,10 @@ interface NewWindowProps {
 }
 
 const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
-  const [newWindow, setNewWindow] = React.useState<Window | null>(null);
-  const [hidden, setHidden] = useRecoilState(HiddenBtnState);
+  const [, setNewWindow] = React.useState<Window | null>(null);
+  const [, setHidden] = useRecoilState(HiddenBtnState);
   const checkBoxArr = useRecoilValue(CheckBoxState);
 
   useEffect(() => {
@@ -56,6 +56,8 @@ const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
         setHidden(false);
       }
     };
+  // 새 창은 마운트 시 1회만 열어야 한다. 의존성을 넣으면 창이 다시 열린다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!container) {

@@ -28,7 +28,7 @@ const GraphChart = () => {
   const filterList = useRecoilValue(filteredTableListState);
   const TableType = useRecoilValue(TableTypeState);
   const CheckBox = useRecoilValue(CheckBoxState);
-  const [TableErr, setTableErr] = useRecoilState(TableErrState);
+  const [, setTableErr] = useRecoilState(TableErrState);
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<any>(null);
@@ -52,6 +52,8 @@ const GraphChart = () => {
   useEffect(() => {
     if (filterList === undefined) return;
     initDataList();
+  // initDataList 는 렌더마다 새로 만들어진다. 넣으면 무한 루프.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterList, CheckBox]);
 
   const initDataList = () => {

@@ -5,9 +5,9 @@ import { ElementState, ComponentState } from "../../../values/RecoilValue";
 
 const ElementType = () => {
   const [ElementValue, setElementValue] = useRecoilState(ElementState);
-  const [ComponentValue, setComponentValue] = useRecoilState(ComponentState);
+  const [, setComponentValue] = useRecoilState(ComponentState);
 
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
   const elementType = translate("elementType");
   const items = new Map<string, number>([
     [translate("BeamColumn"), 1],

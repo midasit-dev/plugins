@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 const Header = () => {
   const UnitData = useRecoilValue(UnitState);
   const [unit, setUnit] = useState({ FORCE: "", DIST: "" });
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
   const UnitText = translate("unit");
 
   useEffect(() => {

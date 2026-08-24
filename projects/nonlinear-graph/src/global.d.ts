@@ -1,5 +1,5 @@
 // global.d.ts
-import React from "react";
+export {};
 
 declare global {
   const pyscript: any;

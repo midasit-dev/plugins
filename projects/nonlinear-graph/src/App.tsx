@@ -12,9 +12,8 @@
  */
 
 import React from "react";
-import { GuideBox, Panel, Grid } from "@midasit-dev/moaui";
+import { GuideBox } from "@midasit-dev/moaui";
 import MainWindow from "./components/MainWindow";
-const opacity = 0.5;
 //If you want to test, try using the GuideApp component.
 //import GuideApp from './SampleComponents/GuideApp';
 

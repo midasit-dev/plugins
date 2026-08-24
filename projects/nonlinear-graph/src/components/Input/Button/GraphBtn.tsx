@@ -6,7 +6,7 @@ import { HiddenBtnState } from "../../../values/RecoilValue";
 
 const GraphBtn = () => {
   const [hidden, setHidden] = useRecoilState(HiddenBtnState);
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
   const BtnText = translate("GraphBtn");
 
   const BtnStyle: any = {

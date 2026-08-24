@@ -5,23 +5,20 @@ import {
   Stack,
   Tab,
   TabGroup,
-  Typography,
 } from "@midasit-dev/moaui";
 import { useTranslation } from "react-i18next";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import {
-  UnitState,
   TableTypeState,
   HiddenBtnState,
 } from "../../../values/RecoilValue";
-import MultiDataGrid from "../../Input/TableGrid/MultiDataGrid";
 import DispDataGrid from "../../Input/TableGrid/DispDataGrid";
 import StiffDataGrid from "../../Input/TableGrid/StiffDataGrid";
 import PointType from "../../Input/Dropdown/PointType";
 const Contents = () => {
   const [TableType, setTableType] = useRecoilState(TableTypeState);
-  const [hidden, setHidden] = useRecoilState(HiddenBtnState);
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const [, setHidden] = useRecoilState(HiddenBtnState);
+  const { t: translate } = useTranslation();
 
   const onTabChange = (event: any) => {
     setTableType(parseInt(event.target.id));

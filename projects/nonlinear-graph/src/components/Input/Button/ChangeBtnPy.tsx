@@ -15,7 +15,7 @@ import { DoRequest, getIEHP } from "../../../utils_pyscript";
 import { isEmpty } from "lodash";
 
 const ChangeBtnPy = () => {
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
   const ElementValue = useRecoilValue(ElementState);
   const ComponentValue = useRecoilValue(ComponentState);
   const TableErr = useRecoilValue(TableErrState);
@@ -43,6 +43,9 @@ const ChangeBtnPy = () => {
       }
     }
     setbBtn(false);
+  // bBtn 트리거로만 실행한다 (버튼이 올리고 여기서 내린다).
+  // TableList/request 를 넣으면 셀 편집마다 저장이 실행된다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bBtn]);
 
   /**

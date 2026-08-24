@@ -32,7 +32,7 @@ const MultiDataGrid = () => {
   const Busy = useRecoilValue(BusyState);
   const PointValue = useRecoilValue(PointState);
   const TableType = useRecoilValue(TableTypeState);
-  const [TableList, setTableList] = useRecoilState(TableListState);
+  const [, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
   const filterList = useRecoilValue(filteredTableListState);
   const CheckBox = useRecoilValue(CheckBoxState);
@@ -41,7 +41,7 @@ const MultiDataGrid = () => {
 
   // const [PnD_size, setPnD_size] = useState(1);
 
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
 
   const [columns, setColumns] = useState<GridColDef<any>[]>([]);
   const [groupColumns, setGroupColumns] = useState<GridColumnGroup[]>([]);
@@ -58,6 +58,9 @@ const MultiDataGrid = () => {
     initRows();
     initCloumns();
     initGroupColumns();
+  // init* 함수는 렌더마다 새로 만들어진다. 넣으면 무한 루프.
+  // 조회 결과·언어 변경 시에만 다시 그린다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterList, PointValue, alertMsg, lan]);
 
   const AddBlankRow = () => {
@@ -283,6 +286,9 @@ const MultiDataGrid = () => {
       setbChange(false);
       setbEnter(false);
     }
+  // bChange 트리거로만 실행한다 (편집 확정 시 검증 → TableList 반영).
+  // rows/updateTableList 를 넣으면 편집 중 매 렌더 재실행된다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bChange]);
 
   const updateTableList = (

@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { LanguageState } from "../../../values/RecoilValue";
 
 const LanguageType = () => {
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { i18n: internationalization } = useTranslation();
   const items = new Map<string, string>([
     ["en", "en"],
     ["jp", "jp"],

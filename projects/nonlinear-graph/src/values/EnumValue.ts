@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-redeclare -- 
+   이 파일은 `type X` 와 `const X: X` 를 같은 이름으로 짝지어 쓴다.
+   TS 는 타입/값 선언공간이 분리되어 충돌이 아니지만 규칙은 재선언으로 본다.
+   DTO_IEHP.h 와 이름을 일치시켜야 하므로 리네임하지 않는다. */
 // TableTypeName
 type TableTypeName = {
   "1": string;
@@ -381,7 +385,7 @@ export const MULTLIN_HistoryType: MULTLIN_HistoryType = {
   MLPP: "Multi-Linear_Plastic_Pivot",
 };
 
-const eMultiSubType = {
+export const eMultiSubType = {
   Both: 1,
   Tensile_Only: 2,
   Compression_Only: 3,
@@ -769,6 +773,8 @@ export const getBinlinearCase = (
     if (Math.abs(dD1[0]) <= 0.0 || Math.abs(dD1[1]) <= 0.0) return [];
     if (Math.abs(dD2[0]) <= 0.0 || Math.abs(dD2[1]) <= 0.0) return [];
 
+    // getAlapa 는 [dA1,dA2,dA3] 튜플을 돌려준다. 이 차수에서는 뒤 슬롯을 쓰지 않는다.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [dA1, dA2, dA3] = getAlapa(
       nSubType,
       HistoryModel,
@@ -879,6 +885,8 @@ export const getTrilinearCase = (
     if (Math.abs(dD2[0]) <= 0.0 || Math.abs(dD2[1]) <= 0.0) return [];
     if (Math.abs(dD3[0]) <= 0.0 || Math.abs(dD3[1]) <= 0.0) return [];
 
+    // getAlapa 는 [dA1,dA2,dA3] 튜플을 돌려준다. 이 차수에서는 뒤 슬롯을 쓰지 않는다.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [dA1, dA2, dA3] = getAlapa(
       nSubType,
       HistoryModel,

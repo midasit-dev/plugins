@@ -22,14 +22,16 @@ const GenericLinkItems = new Map<string, number>([
 ]);
 
 const ComponentType = () => {
-  const [ElementValue, setElementValue] = useRecoilState(ElementState);
+  const [ElementValue] = useRecoilState(ElementState);
   const [ComponentValue, setComponentValue] = useRecoilState(ComponentState);
   const [Items, setItems] = useState<Map<string, number>>(BeamCoulmItems);
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
   const componentType = translate("componentType");
 
   useEffect(() => {
     initItems();
+  // initItems 는 렌더마다 새로 만들어진다. 넣으면 무한 루프.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ElementValue]);
 
   const initItems = () => {

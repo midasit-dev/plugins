@@ -14,12 +14,12 @@ import {
 const RequestBtnPy = () => {
   const ElementValue = useRecoilValue(ElementState);
   const ComponentValue = useRecoilValue(ComponentState);
-  const [RequestBtn, setRequestBtn] = useRecoilState(RequestBtnState);
+  const [, setRequestBtn] = useRecoilState(RequestBtnState);
   const [Busy, setBusy] = useRecoilState(BusyState);
-  const [TableList, setTableList] = useRecoilState(TableListState);
-  const [UnitData, setUnitData] = useRecoilState(UnitState);
+  const [, setTableList] = useRecoilState(TableListState);
+  const [, setUnitData] = useRecoilState(UnitState);
 
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
   const requestBtn = translate("requestBtn");
   const onClick = async () => {
     if (!(pyscript && pyscript.interpreter)) return;

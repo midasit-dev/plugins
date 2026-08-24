@@ -15,10 +15,12 @@ import GraphChart from "./Input/Graph/GraphChart";
 
 function MainWindow() {
   const [UnitData, setUnitData] = useRecoilState(UnitState);
-  const [hidden, setHidden] = useRecoilState(HiddenBtnState);
+  const [hidden] = useRecoilState(HiddenBtnState);
 
   useEffect(() => {
     Get_UNIT();
+  // UNIT 은 마운트 1회만 조회한다. Get_UNIT 을 넣으면 재조회 루프.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const Get_UNIT = async () => {

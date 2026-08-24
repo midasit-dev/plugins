@@ -39,14 +39,14 @@ const StiffDataGrid = () => {
   const RequestBtn = useRecoilValue(RequestBtnState);
   const Busy = useRecoilValue(BusyState);
   const TableType = useRecoilValue(TableTypeState);
-  const [TableList, setTableList] = useRecoilState(TableListState);
+  const [, setTableList] = useRecoilState(TableListState);
   const [bChange, setbChange] = useRecoilState(TableChangeState);
   const filterList = useRecoilValue(filteredTableListState);
   const CheckBox = useRecoilValue(CheckBoxState);
   const hidden = useRecoilValue(HiddenBtnState);
   const lan = useRecoilValue(LanguageState);
 
-  const { t: translate, i18n: internationalization } = useTranslation();
+  const { t: translate } = useTranslation();
 
   const [columns, setColumns] = useState<GridColDef<any>[]>([]);
   const [groupColumns, setGroupColumns] = useState<GridColumnGroup[]>([]);
@@ -63,6 +63,9 @@ const StiffDataGrid = () => {
     initRows();
     initCloumns();
     initGroupColumns();
+  // init* 함수는 렌더마다 새로 만들어진다. 넣으면 무한 루프.
+  // 조회 결과·언어 변경 시에만 다시 그린다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterList, alertMsg, lan]);
 
   const AddBlankRow = () => {
@@ -109,7 +112,7 @@ const StiffDataGrid = () => {
           ["Plus_A2", "Minus_A2"],
           ["Plus_A3", "Minus_A3"],
         ];
-        pDataArr.some(([plusField, minusField], idx) => {
+        pDataArr.forEach(([plusField, minusField], idx) => {
           if (nPnd < idx + 1) {
             obj[plusField] = "";
             obj[minusField] = "";
@@ -124,7 +127,7 @@ const StiffDataGrid = () => {
             }
           }
         });
-        aDataArr.some(([plusField, minusField], idx) => {
+        aDataArr.forEach(([plusField, minusField], idx) => {
           if (nPnd < idx + 1) {
             obj[plusField] = "";
             obj[minusField] = "";
@@ -471,6 +474,9 @@ const StiffDataGrid = () => {
       setbChange(false);
       setbEnter(false);
     }
+  // bChange 트리거로만 실행한다 (편집 확정 시 검증 → TableList 반영).
+  // rows/updateTableList 를 넣으면 편집 중 매 렌더 재실행된다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bChange]);
 
   const updateTableList = (
@@ -781,12 +787,12 @@ const StiffDataGrid = () => {
     HISTORY_MODEL: string
   ): any[] => {
     const PnD = pData.length;
-    const dTol = 1.0e-9;
     switch (PnD) {
       case 3:
         if (pData[1][0] > pData[2][0]) return [false, "Plus_P2", "P2 > P3"];
         if (pData[1][1] > pData[2][1]) return [false, "Minus_P2", "P2 > P3"];
 
+      // falls through — 낮은 차수의 제약도 누적 검증한다 (4점 -> 3점 -> 2점). break 를 넣으면 검증이 빠진다.
       case 2:
         if (pData[0][0] > pData[1][0]) return [false, "Plus_P1", "P1 > P2"];
         if (pData[0][1] > pData[1][1]) return [false, "Minus_P1", "P1 > P2"];
