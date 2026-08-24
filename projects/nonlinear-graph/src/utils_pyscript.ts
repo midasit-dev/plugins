@@ -13,14 +13,30 @@
 
 import { VerifyUtil } from "@midasit-dev/moaui";
 
-export function checkPyScriptReady(callback: any) {
-  // if pyscript is ready, call callback function
-  if (pyscript && pyscript.interpreter) {
-    return callback();
-  } else {
-    // if not, wait 100ms and try again
-    setTimeout(() => checkPyScriptReady(callback), 100);
-  }
+/**
+ * PyScript(Pyodide) 준비를 기다린다.
+ *
+ * 예전에는 콜백을 동기로 호출하고, 준비 전이면 아무것도 반환하지 않아 호출부가
+ * undefined 를 받았다. Python 전송 계층이 async 로 바뀌면서 모든 브리지 함수가
+ * Promise 를 돌려주므로 여기도 Promise 로 통일한다.
+ */
+export function checkPyScriptReady(): Promise<void> {
+  return new Promise((resolve) => {
+    const poll = () => {
+      if (typeof pyscript !== "undefined" && pyscript && pyscript.interpreter)
+        resolve();
+      else setTimeout(poll, 100);
+    };
+    poll();
+  });
+}
+
+/** 파이썬 전역 함수를 await 로 호출하고 JSON 문자열 반환값을 파싱한다. */
+async function callPy(name: string, ...args: any[]): Promise<any> {
+  await checkPyScriptReady();
+  const func = pyscript.interpreter.globals.get(name);
+  const result = await func(...args);
+  return JSON.parse(result);
 }
 
 //before execute a python main function, insert this function
@@ -53,139 +69,59 @@ export function getGlobalVariable() {
 /**
  * @description this function is for python script to create data in database
  * @see ./public/py_main.py
- * @param item: item to create
- * @returns
- * @example
  */
 export function dbCreate(itemName: string, items: any) {
-  return checkPyScriptReady(() => {
-    const py_db_create_func = pyscript.interpreter.globals.get("py_db_create");
-    const result = py_db_create_func(itemName, JSON.stringify(items));
-    return JSON.parse(result);
-  });
+  return callPy("py_db_create", itemName, JSON.stringify(items));
 }
 
-/**
- * @description this function is for python script to create data in database
- * @see ./public/py_main.py
- * @param key: key of item
- * @param item: item to create
- * @returns
- * @example
- */
 export function dbCreateItem(itemName: string, key: string, item: any) {
-  return checkPyScriptReady(() => {
-    const py_db_create_item_func =
-      pyscript.interpreter.globals.get("py_db_create_item");
-    const result = py_db_create_item_func(itemName, key, JSON.stringify(item));
-    return JSON.parse(result);
-  });
+  return callPy("py_db_create_item", itemName, key, JSON.stringify(item));
 }
 
-/**
- * @description this function is for python script to read data from database
- * @see ./public/py_main.py
- * @param itemName: name of item
- * @param key: key of item
- * @returns
- * @example
- */
-export function dbRead(itemName: string): any {
-  return checkPyScriptReady(() => {
-    const py_db_read_func = pyscript.interpreter.globals.get("py_db_read");
-    const result = py_db_read_func(itemName);
-    return JSON.parse(result);
-  });
+export function dbRead(itemName: string): Promise<any> {
+  return callPy("py_db_read", itemName);
 }
 
-/**
- * @description this function is for python script to read data each item from database
- * @see ./public/py_main.py
- * @param itemName: name of item
- * @param key: key of item
- * @returns
- * @example
- */
-export function dbReadItem(itemName: string, key: string): any {
-  return checkPyScriptReady(() => {
-    const py_db_read_item_func =
-      pyscript.interpreter.globals.get("py_db_read_item");
-    const result = py_db_read_item_func(itemName, key);
-    return JSON.parse(result);
-  });
+export function dbReadItem(itemName: string, key: string): Promise<any> {
+  return callPy("py_db_read_item", itemName, key);
 }
 
-/**
- * @description this function is for python script to update data in database
- * @see ./public/py_main.py
- * @param itemName name of item
- * @param items items to update
- * @returns
- * @example
- */
 export function dbUpdate(itemName: string, items: any) {
-  return checkPyScriptReady(() => {
-    const py_db_update_func = pyscript.interpreter.globals.get("py_db_update");
-    const result = py_db_update_func(itemName, JSON.stringify(items));
-    return JSON.parse(result);
-  });
+  return callPy("py_db_update", itemName, JSON.stringify(items));
 }
 
-/**
- * @description this function is for python script to update data in database
- * @see ./public/py_main.py
- * @param itemName name of item
- * @param key key of item
- * @param item item to update
- * @returns
- * @example
- */
 export function dbUpdateItem(itemName: string, key: string, item: any) {
-  return checkPyScriptReady(() => {
-    const py_db_update_item_func =
-      pyscript.interpreter.globals.get("py_db_update_item");
-    const result = py_db_update_item_func(itemName, key, JSON.stringify(item));
-    return JSON.parse(result);
-  });
+  return callPy("py_db_update_item", itemName, key, JSON.stringify(item));
 }
 
-/**
- * @description this function is for python script to delete data in database
- * @see ./public/py_main.py
- * @param itemName name of item
- * @returns
- * @example
- */
 export function dbDelete(itemName: string, item_id: string | number) {
-  return checkPyScriptReady(() => {
-    const py_db_delete_func = pyscript.interpreter.globals.get("py_db_delete");
-    const result = py_db_delete_func(itemName, item_id);
-    return JSON.parse(result);
-  });
+  return callPy("py_db_delete", itemName, item_id);
 }
+
 /////////////////////////////////////////////
 //////IEHP///////////////////////////////////
 /////////////////////////////////////////////
-export function getIEHP(ElementValue: number, ComponentValue: number) {
-  return checkPyScriptReady(() => {
-    const IEHP = pyscript.interpreter.globals.get("IEHP");
-    const result = IEHP("IEHP").getDataIEHP(ElementValue, ComponentValue);
-    return JSON.parse(result);
-  });
+export async function getIEHP(
+  ElementValue: number,
+  ComponentValue: number
+): Promise<any> {
+  await checkPyScriptReady();
+  const IEHP = pyscript.interpreter.globals.get("IEHP");
+  const result = await IEHP("IEHP").loadHinges(ElementValue, ComponentValue);
+  return JSON.parse(result);
 }
 
-export function DoRequest(
+export async function DoRequest(
   ElementValue: number,
   Component: number,
   obj: object
-) {
-  return checkPyScriptReady(() => {
-    const IEHP = pyscript.interpreter.globals.get("IEHP");
-    const result = IEHP("IEHP").DoRequest(
-      ElementValue,
-      Component,
-      JSON.stringify(obj)
-    );
-    return JSON.parse(result);
-  });
+): Promise<any> {
+  await checkPyScriptReady();
+  const IEHP = pyscript.interpreter.globals.get("IEHP");
+  const result = await IEHP("IEHP").saveHinges(
+    ElementValue,
+    Component,
+    JSON.stringify(obj)
+  );
+  return JSON.parse(result);
 }

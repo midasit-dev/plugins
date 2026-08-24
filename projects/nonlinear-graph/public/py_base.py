@@ -23,7 +23,8 @@ def get_g_values():
 # from javascript import globalThis
 # fetch = globalThis.fetch
 # JSON = globalThis.JSON
-from js import fetch, JSON, XMLHttpRequest
+from js import fetch, JSON, Object
+from pyodide.ffi import to_js
 import json
 import numpy as np
 
@@ -36,57 +37,49 @@ class utils:
       text = text.strip()
       return text.startswith('{') and text.endswith('}') or text.startswith('[') and text.endswith(']')
             
-    def response_handler(xhr):
-      if (utils.is_json(xhr.responseText)):
-        return json.loads(xhr.responseText)
+    def response_handler(text, url):
+      if (utils.is_json(text)):
+        return json.loads(text)
       else: 
-        return utils.ERROR_DICT(postfix=xhr.responseURL)
+        return utils.ERROR_DICT(postfix=url)
 
 class requests_json:
+    """비동기 fetch 기반 전송 계층.
+
+    이전에는 동기 XMLHttpRequest(xhr.open(..., False)) 를 썼다. 요청 한 건이 끝날 때까지
+    브라우저 메인 스레드가 통째로 멈춰서, IEHP 전체(5MB 이상) 조회에 수십 초 동안 UI 가
+    응답하지 않았다. fetch + await 로 바꿔 그동안 화면이 살아 있게 한다.
+
+    호출부는 전부 await 해야 한다. (MidasAPI.db_* -> py_db_* -> IEHP 메서드 -> utils_pyscript)
+    """
+
     @staticmethod
-    def post(url, headers, jsonObj):
+    async def _send(method, url, headers, jsonObj = None):
       try:
-        xhr = XMLHttpRequest.new()
-        xhr.open("POST", url, False)
-        for key, value in headers.items():
-            xhr.setRequestHeader(key, value)
-        xhr.send(json.dumps(jsonObj))
-        return utils.response_handler(xhr)
-      except:
+        options = { "method": method, "headers": headers }
+        if jsonObj is not None:
+          options["body"] = json.dumps(jsonObj)
+        response = await fetch(url, to_js(options, dict_converter=Object.fromEntries))
+        text = await response.text()
+        return utils.response_handler(text, url)
+      except Exception:
         return utils.ERROR_DICT(postfix=url)
 
-    def get(url, headers):
-      try:
-        xhr = XMLHttpRequest.new()
-        xhr.open("GET", url, False)
-        for key, value in headers.items():
-            xhr.setRequestHeader(key, value)
-        xhr.send()
-        return utils.response_handler(xhr)
-      except:
-        return utils.ERROR_DICT(postfix=url)
-    
-    def put(url, headers, jsonObj):
-      try:
-        xhr = XMLHttpRequest.new()
-        xhr.open("PUT", url, False)
-        for key, value in headers.items():
-            xhr.setRequestHeader(key, value)
-        xhr.send(json.dumps(jsonObj))
-        return utils.response_handler(xhr)
-      except:
-        return utils.ERROR_DICT(postfix=url)
-    
-    def delete(url, headers):
-      try:
-        xhr = XMLHttpRequest.new()
-        xhr.open("DELETE", url, False)
-        for key, value in headers.items():
-            xhr.setRequestHeader(key, value)
-        xhr.send()
-        return utils.response_handler(xhr)
-      except:
-        return utils.ERROR_DICT(postfix=url)
+    @staticmethod
+    async def post(url, headers, jsonObj):
+      return await requests_json._send("POST", url, headers, jsonObj)
+
+    @staticmethod
+    async def get(url, headers):
+      return await requests_json._send("GET", url, headers)
+
+    @staticmethod
+    async def put(url, headers, jsonObj):
+      return await requests_json._send("PUT", url, headers, jsonObj)
+
+    @staticmethod
+    async def delete(url, headers):
+      return await requests_json._send("DELETE", url, headers)
 
 class Product:
     CIVIL = 1,
@@ -136,26 +129,26 @@ class MidasAPI:
     #     }
     
     ## doc #############################################################################################################
-    def doc_open(self, file_path):
+    async def doc_open(self, file_path):
         url = f'{self.base_url}/doc/open'
-        return requests_json.post(url, headers=self.headers, jsonObj={'Argument': file_path})
+        return await requests_json.post(url, headers=self.headers, jsonObj={'Argument': file_path})
     
-    def doc_anal(self):
+    async def doc_anal(self):
         url = f'{self.base_url}/doc/anal'
-        return requests_json.post(url, headers=self.headers, jsonObj={})
+        return await requests_json.post(url, headers=self.headers, jsonObj={})
     
     ## db #############################################################################################################
-    def db_create(self, item_name, items):
+    async def db_create(self, item_name, items):
         url = f'{self.base_url}/db/{item_name}'
-        return requests_json.post(url, headers=self.headers, jsonObj={'Assign': items})
+        return await requests_json.post(url, headers=self.headers, jsonObj={'Assign': items})
     
-    def db_create_item(self, item_name, item_id, item):
+    async def db_create_item(self, item_name, item_id, item):
         url = f'{self.base_url}/db/{item_name}/{item_id}'
-        return requests_json.post(url, headers=self.headers, jsonObj={'Assign': item})
+        return await requests_json.post(url, headers=self.headers, jsonObj={'Assign': item})
     
-    def db_read(self, item_name):
+    async def db_read(self, item_name):
         url = f'{self.base_url}/db/{item_name}'
-        responseJson = requests_json.get(url, headers=self.headers)
+        responseJson = await requests_json.get(url, headers=self.headers)
         # check response.json()[item_name] is Exist
         if item_name not in responseJson:
             error_message = {"error": f"Error: Unable to find the registry key or value for {item_name}"}
@@ -163,9 +156,9 @@ class MidasAPI:
         keyVals = responseJson[item_name]
         return { int(k): v for k, v in keyVals.items() }
 
-    def db_read_try_catch(self, item_name):
+    async def db_read_try_catch(self, item_name):
         url = f'{self.base_url}/db/{item_name}'
-        responseJson = requests_json.get(url, headers=self.headers)
+        responseJson = await requests_json.get(url, headers=self.headers)
         # check response.json()[item_name] is Exist
         if item_name not in responseJson:
             error_dict = { "error": f"Error: Unable to find the registry key or value for {item_name}" }
@@ -173,10 +166,10 @@ class MidasAPI:
         keyVals = responseJson[item_name]
         return { int(k): v for k, v in keyVals.items() }
     
-    def db_read_item(self, item_name, item_id):
+    async def db_read_item(self, item_name, item_id):
         item_id_str = str(item_id)
         url = f'{self.base_url}/db/{item_name}/{item_id_str}'
-        responseJson = requests_json.get(url, headers=self.headers)
+        responseJson = await requests_json.get(url, headers=self.headers)
         # check responseJson[item_name] is Exist
         if item_name not in responseJson:
             error_message = {"error": f"Error: Unable to find the registry key or value for {item_name}"}
@@ -186,47 +179,47 @@ class MidasAPI:
             return error_message
         return responseJson[item_name][item_id_str]
     
-    def db_update(self, item_name, items):
+    async def db_update(self, item_name, items):
         url = f'{self.base_url}/db/{item_name}'
-        return requests_json.put(url, headers=self.headers, jsonObj={'Assign': items})
+        return await requests_json.put(url, headers=self.headers, jsonObj={'Assign': items})
     
-    def db_update_item(self, item_name, item_id, item):
+    async def db_update_item(self, item_name, item_id, item):
         url = f'{self.base_url}/db/{item_name}/{item_id}'
-        return requests_json.put(url, headers=self.headers, jsonObj={'Assign': item})
+        return await requests_json.put(url, headers=self.headers, jsonObj={'Assign': item})
     
-    def db_delete(self, item_name, item_id):
+    async def db_delete(self, item_name, item_id):
         url = f'{self.base_url}/db/{item_name}/{item_id}'
-        return requests_json.delete(url, headers=self.headers)
+        return await requests_json.delete(url, headers=self.headers)
     
-    def db_get_next_id(self, item_name):
-        res_all = self.db_read(item_name)
+    async def db_get_next_id(self, item_name):
+        res_all = await self.db_read(item_name)
         if not res_all or "error" in res_all:
             return 1
         next_id = max(map(int, res_all.keys()))
         return next_id + 1
     
-    def db_get_max_id(self, item_name):
-        res_all = self.db_read(item_name)
+    async def db_get_max_id(self, item_name):
+        res_all = await self.db_read(item_name)
         if not res_all or "error" in res_all:
             return 0
         return max(map(int, res_all.keys()))
     
-    def db_get_min_id(self, item_name):
-        res_all = self.db_read(item_name)
+    async def db_get_min_id(self, item_name):
+        res_all = await self.db_read(item_name)
         if not res_all or "error" in res_all:
             return 1
         return min(map(int, res_all.keys()))
     
     ## view ############################################################################################################
-    def view_select_get(self):
+    async def view_select_get(self):
         url = f'{self.base_url}/view/select'
-        response = requests_json.get(url, headers=self.headers)
+        response = await requests_json.get(url, headers=self.headers)
         return response['SELECT']
     
     ## Steel Code Check (Gen Only) ########################################################################################################
-    def post_steelcodecheck(self):
+    async def post_steelcodecheck(self):
         url = f'{self.base_url}/post/steelcodecheck'
-        return requests_json.post(url, headers=self.headers, jsonObj={})
+        return await requests_json.post(url, headers=self.headers, jsonObj={})
 
 # function ##########################################################################################################
 

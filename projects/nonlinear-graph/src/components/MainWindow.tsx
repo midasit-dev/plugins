@@ -23,7 +23,7 @@ function MainWindow() {
 
   const Get_UNIT = async () => {
     try {
-      const getData = dbRead("UNIT"); // 데이터베이스에서 데이터 읽기
+      const getData = await dbRead("UNIT"); // 데이터베이스에서 데이터 읽기
       setUnitData(getData["1"]);
     } catch (error) {
       console.error("Failed to load UNIT data", error);
