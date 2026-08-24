@@ -1,8 +1,14 @@
 {
-  "packages": ["numpy"],
+  "packages": [
+    "numpy"
+  ],
   "fetch": [
     {
-      "files": ["./py_api_db.py", "./py_base.py"]
+      "files": [
+        "./py_template.py",
+        "./py_api_db.py",
+        "./py_base.py"
+      ]
     }
   ]
 }
