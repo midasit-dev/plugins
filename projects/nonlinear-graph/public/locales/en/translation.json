@@ -69,5 +69,9 @@
   "cancelBtn": "Close",
   "TableErrState": "Data cannot be drawn exists. Check the Graph.",
 
-  "GraphTitle": "Skeleton Graph"
+  "GraphTitle": "Skeleton Graph",
+
+  "success_save_data": "Saved to CIVIL successfully.",
+  "save_failed": "Failed to save to CIVIL.",
+  "save_mismatch": "The table was loaded for a different element/hinge component. Press the request button again before saving."
 }

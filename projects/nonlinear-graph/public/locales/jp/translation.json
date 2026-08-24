@@ -69,5 +69,9 @@
   "cancelBtn": "閉じる",
   "TableErrState": "グラフを描けないデータが存在します。グラフを確認してください。",
 
-  "GraphTitle": "骨格曲線グラフ"
+  "GraphTitle": "骨格曲線グラフ",
+
+  "success_save_data": "CIVILに書き込みました。",
+  "save_failed": "CIVILへの書き込みに失敗しました。",
+  "save_mismatch": "表のデータは別の要素タイプ・ヒンジ成分のものです。再度表示してから書き込んでください。"
 }
