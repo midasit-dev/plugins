@@ -7,7 +7,11 @@
       "files": [
         "./py_template.py",
         "./py_api_db.py",
-        "./py_base.py"
+        "./py_base.py",
+        "./py_slots.py",
+        "./py_loaded.py",
+        "./py_stiffness.py",
+        "./py_iehp.py"
       ]
     }
   ]

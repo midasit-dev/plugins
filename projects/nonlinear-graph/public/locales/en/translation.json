@@ -62,9 +62,15 @@
   "success_change_data": "Success Change Data",
 
   "Init_Stiff": "Initial Stiff.",
+  "Init_Stiff_Type": "K₀ type",
+  "InitStiffType_User": "User",
+  "InitStiffType_Elastic": "E*I",
 
   "GraphBtn": "GRAPH",
   "Graph_err": "Invalid data entered in table.",
+  "Graph_xaxis_normalized": "Displacement × K₀ (initial stiffness temporarily set to 1)",
+  "Graph_xaxis_disp": "Displacement ({{unit}})",
+  "Graph_xaxis_curvature": "Curvature (1/{{unit}})",
   "changeDBBtn": "Apply",
   "cancelBtn": "Close",
   "TableErrState": "Data cannot be drawn exists. Check the Graph.",

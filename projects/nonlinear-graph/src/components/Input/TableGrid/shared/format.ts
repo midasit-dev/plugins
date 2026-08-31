@@ -13,6 +13,15 @@ export function formatSmallNumber(value: number, plain: boolean = false) {
  */
 export const RAW_FIELD = "__raw";
 
+/**
+ * 사용자 입력이 아닌 행 부가정보. dataValid 검증에서 제외해야 한다.
+ *
+ * `useGridEditing.onRowChange` 는 행의 **모든 필드**를 dataValid 에 통과시키는데,
+ * 이런 필드는 `default:` 분기(Plus_/Minus_ 데이터 셀 취급)로 떨어져 편집이 오류
+ * 표시도 없이 initRows() 로 롤백된다. 행에 필드를 더 붙이면 여기도 손봐야 한다.
+ */
+export const META_FIELDS = new Set<string>([RAW_FIELD, "INITSTIFF_EDITABLE"]);
+
 /** 표시 문자열을 만들면서 원본 숫자를 행에 함께 보관한다. */
 export function setDisplayAndRaw(
   row: any,

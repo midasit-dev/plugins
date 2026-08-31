@@ -78,7 +78,12 @@ export function buildDatasets(xyPoint: any[], dataList: any[]) {
   };
 }
 
-export function buildOptions(title: string, scale: AxisScale) {
+/**
+ * @param xTitle x축 제목. 탭2(P-alpha)에서만 쓴다 — 그 축은 K1 으로 나누지 않은
+ *   정규화 좌표라 변위로 오독되면 안 된다. 자세한 사정은 points.ts 의 stiffAxes.
+ *   탭1·탭3 의 x 는 표에 입력한 변위 그대로라 제목이 필요 없다.
+ */
+export function buildOptions(title: string, scale: AxisScale, xTitle?: string) {
   const { scaleX, stepX, scaleY, stepY } = scale;
 
   return {
@@ -146,6 +151,11 @@ export function buildOptions(title: string, scale: AxisScale) {
         beginAtZero: false,
         min: -scaleX,
         max: scaleX,
+        title: {
+          display: xTitle !== undefined,
+          text: xTitle ?? "",
+          color: "gray",
+        },
         ticks: {
           color: "gray", // 눈금 색상 설정
           stepSize: stepX,

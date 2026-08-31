@@ -82,7 +82,15 @@ function buildHystereticPoints(
       return assemble(DATA.D_DATA, DATA.P_DATA, DATA, historyModel);
     case 2: {
       // stiff
-      const [xPoint, nextY] = stiffAxes(DATA.P_DATA, DATA.A_DATA, DATA.PND);
+      // DATA.K0 는 조회가 채운다 (py_iehp.toTableRow -> py_stiffness.resolve,
+      // 타입 4 는 fillElasticK0 가 요소의 E*I 로 뒤늦게 채운다). 못 구한 행은
+      // undefined 로 와서 stiffAxes 가 1 로 정규화한다.
+      const [xPoint, nextY] = stiffAxes(
+        DATA.P_DATA,
+        DATA.A_DATA,
+        DATA.PND,
+        DATA.K0
+      );
       const yPoint: any[] = [];
       for (let i = 0; i < DATA.PND; i++) {
         yPoint.push(DATA.P_DATA[i]);
@@ -149,40 +157,70 @@ function assemble(
   return xyPoint;
 }
 
-/** stiff 테이블은 강성(A_DATA)과 하중(P_DATA)에서 x축 변위를 역산한다. */
-function stiffAxes(P_DATA: any, A_DATA: any, pnd: number): [number[][], number[]] {
-  const xValue: number[][] = [];
-  let init_x = 0;
-  switch (pnd) {
-    case 1:
-      init_x = 0.2;
-      break;
-    case 2:
-    case 3:
-      init_x = 0.1;
-      break;
-  }
-  xValue.push([init_x, init_x]);
+/**
+ * stiff 테이블은 강성비(A_DATA)와 하중(P_DATA)에서 x축 변위를 역산한다.
+ *
+ * MIDAS 본체와 같은 식이다 (`ElemStiffScaleFactorDlg.cpp` L_Set_INIT_EI_PAlpha):
+ *
+ *     K2   = K1 * StiffRatio1st
+ *     phi1 = CrackMoment / K1
+ *     phi2 = phi1 + (YieldMoment - CrackMoment) / K2
+ *
+ * K0 는 모든 x 에 똑같이 걸리는 **공통 배율**이다. 그래서 값을 몰라도 1 로 두면
+ * 곡선의 모양은 본체와 정확히 같고 축의 배율만 미정으로 남는다.
+ *
+ * K0 를 무엇으로 잡는지는 `INITSTIFFTYPE` 이 정한다 (py_stiffness). 요소에 묶인
+ * 타입(0/1/2 = 6EI/L 계열, 4 = E*I)은 CIVIL 이 값을 갖고 있지 않아 못 구하고,
+ * 그때는 `k0` 가 undefined 로 와서 정규화 축이 된다.
+ *
+ * **K0 는 부호별로 다르다.** P-Delta 입력에서 역산된 값(INITSTIFFP/N)이나 비대칭
+ * 골격곡선에서는 (+)와 (-)의 초기강성이 갈린다.
+ *
+ * 예전에는 첫 점을 pnd 에 따라 0.1 / 0.2 로 **고정**했다. K0 처럼 곱해지는 값이
+ * 아니라 더해지는 상수라, 하중이 크든 작든 탄성 구간이 항상 그 길이가 되어
+ * 곡선 모양이 왜곡됐다.
+ *
+ * @param k0 초기강성 [K+, K-]. 없거나 한쪽이라도 0 이하면 [1, 1] 로 정규화한다.
+ */
+function stiffAxes(
+  P_DATA: any,
+  A_DATA: any,
+  pnd: number,
+  k0?: number[]
+): [number[][], number[]] {
+  // 한쪽만 유효한 상태로 그리면 (+)/(-) 축척이 달라져 곡선이 뒤틀린다.
+  // 둘 다 성립할 때만 쓰고, 아니면 양쪽 모두 1 로 되돌린다.
+  const usable =
+    Array.isArray(k0) &&
+    k0.length >= 2 &&
+    k0.every((v) => typeof v === "number" && Number.isFinite(v) && v > 0);
+  const K: number[] = usable ? [k0![0], k0![1]] : [1, 1];
 
-  let nextY: number[] = [0, 0];
+  // 첫 점은 탄성 구간의 끝이므로 x = P1 / K0.
+  const xValue: number[][] = [[P_DATA[0][0] / K[0], P_DATA[0][1] / K[1]]];
+
+  const nextY: number[] = [0, 0];
   for (let i = 0; i < pnd; i++) {
+    const last = xValue[xValue.length - 1];
+
     if (i >= pnd - 1) {
-      nextY[0] = xValue[xValue.length - 1][0] * A_DATA[i][0] + P_DATA[i][0];
-      nextY[1] = xValue[xValue.length - 1][1] * A_DATA[i][1] + P_DATA[i][1];
+      // 연장 구간의 하중 증가분 = 변위 증가분 x 그 구간의 강성(alpha * K0).
+      // x 는 이미 K0 로 나눠 둔 실변위라 여기서 K0 를 되곱해야 힘 차원이 맞는다.
+      nextY[0] = last[0] * A_DATA[i][0] * K[0] + P_DATA[i][0];
+      nextY[1] = last[1] * A_DATA[i][1] * K[1] + P_DATA[i][1];
 
-      xValue.push([
-        xValue[xValue.length - 1][0] * 2,
-        xValue[xValue.length - 1][0] * 2,
-      ]);
-
+      // 마지막 점 뒤로 한 구간 더 늘여 곡선의 끝을 보인다.
+      // (-)측도 제 값을 쓴다 - 예전에는 양쪽 모두 (+)측 x 를 써서
+      // 비대칭 힌지의 (-)측 끝점이 엉뚱한 자리에 찍혔다.
+      xValue.push([last[0] * 2, last[1] * 2]);
       break;
     }
-    const plusX: number =
-      (P_DATA[i + 1][0] - P_DATA[i][0]) / A_DATA[i][0] + xValue[i][0];
 
-    const minusX: number =
-      (P_DATA[i + 1][1] - P_DATA[i][1]) / A_DATA[i][1] + xValue[i][1];
-    xValue.push([plusX, minusX]);
+    // 이 구간의 강성은 alpha * K0 이므로 변위 증가분은 dP / (alpha * K0).
+    xValue.push([
+      (P_DATA[i + 1][0] - P_DATA[i][0]) / (A_DATA[i][0] * K[0]) + xValue[i][0],
+      (P_DATA[i + 1][1] - P_DATA[i][1]) / (A_DATA[i][1] * K[1]) + xValue[i][1],
+    ]);
   }
 
   return [xValue, nextY];

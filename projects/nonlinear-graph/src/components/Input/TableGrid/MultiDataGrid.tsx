@@ -18,7 +18,12 @@ import {
 } from "../../../values/RecoilValue";
 // UI
 import { Grid, GuideBox } from "@midasit-dev/moaui";
-import { DataGrid, GridColDef, GridColumnGroup } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridColumnGroup,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 import { Alert } from "@mui/material";
 import useGridCursor from "./hooks/useGridCursor";
 import useGridAlert from "./hooks/useGridAlert";
@@ -46,6 +51,8 @@ const MultiDataGrid = () => {
   const [columns, setColumns] = useState<GridColDef<any>[]>([]);
   const [groupColumns, setGroupColumns] = useState<GridColumnGroup[]>([]);
   const [rows, setRows] = useState<any[]>([]);
+  // 붙여넣기 전에 열려 있는 행 편집을 닫는 데 쓴다 (useGridEditing.closeRowEdit).
+  const apiRef = useGridApiRef();
 
   const { cursur, field, onClickCell } = useGridCursor();
   const { alertMsg, AlertFunc, alertToolbar } = useGridAlert({
@@ -652,6 +659,7 @@ const MultiDataGrid = () => {
   const { checkboxSet, onKeyDown, onRowChange, pasteProps, setbEnter } =
     useGridEditing({
       rows,
+      apiRef,
       setRows,
       columns,
       cursur,
@@ -685,6 +693,7 @@ const MultiDataGrid = () => {
         <div {...pasteProps}>
           {/* paste 이벤트는 pasteProps 로 처리 */}
           <DataGrid
+            apiRef={apiRef}
             rows={rows} // rows
             columns={columns} // columns
             columnGroupingModel={groupColumns} // header group text

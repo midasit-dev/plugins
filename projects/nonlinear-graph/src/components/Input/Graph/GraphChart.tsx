@@ -8,6 +8,8 @@ import {
   TableTypeState,
   CheckBoxState,
   TableErrState,
+  ComponentState,
+  UnitState,
 } from "../../../values/RecoilValue";
 import { useTranslation } from "react-i18next";
 import { TableTypeName } from "../../../values/EnumValue";
@@ -20,6 +22,7 @@ import {
   ZERO_AXIS_ANNOTATION,
 } from "./chartConfig";
 import { gridStyle } from "./chartTheme";
+import { AxisKind, stiffAxisKind, stiffAxisTitle } from "./axisTitle";
 
 const INIT_SCALE: AxisScale = { scaleX: 0, stepX: 0, scaleY: 0, stepY: 0 };
 
@@ -28,6 +31,8 @@ const GraphChart = () => {
   const filterList = useRecoilValue(filteredTableListState);
   const TableType = useRecoilValue(TableTypeState);
   const CheckBox = useRecoilValue(CheckBoxState);
+  const Component = useRecoilValue(ComponentState);
+  const UnitData = useRecoilValue(UnitState);
   const [, setTableErr] = useRecoilState(TableErrState);
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -36,6 +41,8 @@ const GraphChart = () => {
   const [xyPoint, setxyPoint] = useState<object[]>([]);
   const [dataList, setyDataList] = useState<any[]>([]);
   const [errmsg, setyErrmsg] = useState<string>("");
+  // 탭2 x축이 실단위인지 정규화인지. 곡선을 만들 때 정해 축 제목에 쓴다.
+  const [axisKind, setAxisKind] = useState<AxisKind>("NORMALIZED");
 
   // 곡선이 바뀌면 축을 다시 맞추고, 원점을 지나면 보조선을 얹는다
   useEffect(() => {
@@ -59,6 +66,11 @@ const GraphChart = () => {
   const initDataList = () => {
     const list = CheckBox.map((checkIdx) => filterList[checkIdx]);
     setyDataList(list);
+
+    // ComponentState 는 1-based 로 들고 다닌다 (조회 시 -1 해서 넘긴다).
+    setAxisKind(
+      TableType === 2 ? stiffAxisKind(list, Component - 1) : "NORMALIZED"
+    );
 
     // 유효성 검사에 걸린 곡선은 직전 곡선을 그대로 유지한다
     const backupXY = [...xyPoint];
@@ -107,7 +119,14 @@ const GraphChart = () => {
           ref={chartRef}
           type="scatter"
           data={buildDatasets(xyPoint, dataList)}
-          options={buildOptions(translate(TableTypeName[TableType]), scale)}
+          options={buildOptions(
+            translate(TableTypeName[TableType]),
+            scale,
+            // 탭1·탭3 의 x 는 표에 입력한 변위 그대로라 제목이 필요 없다.
+            TableType === 2
+              ? stiffAxisTitle(axisKind, translate, UnitData?.DIST)
+              : undefined
+          )}
         />
       </Grid>
     </Grid>

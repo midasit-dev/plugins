@@ -5,6 +5,7 @@ import RequestBtnpy from "../Input/Button/RequestBtnPy";
 import LanguageType from "../Input/Dropdown/LanguageType";
 import { useRecoilValue } from "recoil";
 import { UnitState } from "../../values/RecoilValue";
+import { forceUnit, lengthUnit } from "../../values/units";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 
@@ -16,26 +17,11 @@ const Header = () => {
 
   useEffect(() => {
     if (UnitData !== undefined) {
-      const force: { [key: string]: any } = {
-        N: "N",
-        KN: "kN",
-        KGF: "kgf",
-        TONF: "tonf",
-        LBF: "lbf",
-        KIPS: "kips",
-      };
-      const length: { [key: string]: any } = {
-        M: "m",
-        CM: "cm",
-        MM: "mm",
-        FT: "ft",
-        in: "IN",
-      };
-      const setData = {
-        FORCE: force[UnitData.FORCE],
-        DIST: length[UnitData.DIST],
-      };
-      setUnit(setData);
+      // 단위 코드 -> 표기 문자열 대응은 values/units.ts 에 모아 뒀다.
+      setUnit({
+        FORCE: forceUnit(UnitData.FORCE),
+        DIST: lengthUnit(UnitData.DIST),
+      });
     }
   }, [UnitData]);
 

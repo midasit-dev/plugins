@@ -62,9 +62,15 @@
   "success_change_data": "成功的にデータを変えました。",
 
   "Init_Stiff": "初期剛性",
+  "Init_Stiff_Type": "初期剛性タイプ",
+  "InitStiffType_User": "ユーザー入力",
+  "InitStiffType_Elastic": "E*I",
 
   "GraphBtn": "骨格曲線表示",
   "Graph_err": "テーブルに無効なデータが入力されました",
+  "Graph_xaxis_normalized": "変位 × K₀ （初期剛性は暫定的に 1 を使用）",
+  "Graph_xaxis_disp": "変位 ({{unit}})",
+  "Graph_xaxis_curvature": "曲率 (1/{{unit}})",
   "changeDBBtn": "CIVILに書き込む",
   "cancelBtn": "閉じる",
   "TableErrState": "グラフを描けないデータが存在します。グラフを確認してください。",
