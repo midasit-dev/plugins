@@ -1,0 +1,71 @@
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { HiddenBtnState, CheckBoxState } from "../../../values/RecoilValue";
+import { useTranslation } from "react-i18next";
+
+interface NewWindowProps {
+  children: React.ReactNode;
+}
+
+const NewWindow: React.FC<NewWindowProps> = ({ children }) => {
+  const { t: translate } = useTranslation();
+  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
+  const [, setNewWindow] = React.useState<Window | null>(null);
+  const [, setHidden] = useRecoilState(HiddenBtnState);
+  const checkBoxArr = useRecoilValue(CheckBoxState);
+
+  useEffect(() => {
+    // 새 창 생성
+    const minWidth = checkBoxArr.length < 8 ? 800 : checkBoxArr.length * 100;
+    const minHeight = checkBoxArr.length < 8 ? 600 : checkBoxArr.length * 75;
+    const maxWidth = 1400;
+    const maxHeight = 1000;
+
+    const win = window.open(
+      "",
+      "_blank",
+      `width=${checkBoxArr.length > 24 ? maxWidth : minWidth},height=${
+        checkBoxArr.length > 24 ? maxHeight : minHeight
+      }`
+    );
+    const div = document.createElement("div");
+    const styles = Array.from(
+      document.querySelectorAll('style, link[rel="stylesheet"]')
+    );
+    styles.forEach((style) => {
+      win?.document.head.appendChild(style.cloneNode(true));
+    });
+    if (win) {
+      win.document.title = translate("GraphTitle");
+      win.document.body.appendChild(div);
+      setContainer(div);
+      setNewWindow(win);
+    }
+    // 새 창이 닫힐 때 onClose 호출
+    const handleUnload = () => {
+      setHidden(false);
+    };
+    if (win) win.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      // 컴포넌트가 언마운트되면 새 창 닫기
+      if (win) {
+        win.removeEventListener("beforeunload", handleUnload);
+        win.close();
+        setHidden(false);
+      }
+    };
+  // 새 창은 마운트 시 1회만 열어야 한다. 의존성을 넣으면 창이 다시 열린다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!container) {
+    return null;
+  }
+
+  // React Portal을 사용하여 새 창에 렌더링
+  return ReactDOM.createPortal(children, container);
+};
+
+export default NewWindow;

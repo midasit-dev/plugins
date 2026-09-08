@@ -1,0 +1,83 @@
+{
+  "elementType": "Element Type",
+  "Truss": "Truss",
+  "BeamColumn": "Beam and Column",
+  "GenericLink": "Generic Link",
+
+  "request_noData": "- No have data.",
+  "componentType": "Component",
+  "requestBtn": "Import of Hinge",
+  "pointType": "Num. of point",
+
+  "unit": "unit",
+  "TabDisp": "Strength - Disp.",
+  "TabStiff": "Strength - stiff.",
+  "TabMulti": "Multi Linear",
+
+  "Name": "Name",
+  "Material": "Material",
+  "Hysteresis_model": "Hysteresis Model",
+  "Type": "Type",
+
+  "Axisymmetric": "Symmetric",
+  "Symmetric": "Symmetric",
+  "Asymmetric": "Asymmetric",
+  "Direction": "",
+  "Gap": "Initial Gap",
+
+  "Kinematic_Hardening": "Kinematic Hardening",
+  "Origin_oriented": "Origin oriented",
+  "Peak_oriented": "Peak oriented",
+  "Clough": "Clough",
+  "Degrading_Trilinear": "Degrading Trilinear",
+  "Takeda": "Takeda",
+  "Takeda_Slip": "Takeda Slip",
+  "Modified_Takeda": "Modified Takeda",
+  "Normal_Bilinear": "Normal Bilinear",
+  "Elastic_Bilinear": "Elastic Bilinear",
+  "SLIP": "SLIP",
+  "SLIP_Tension": "SLIP/Tension",
+  "SLIP_Compression": "SLIP/Compression",
+
+  "Force_Deformation": "Force Deformation",
+  "Hysteresis_Type_Parameter": "Hysteresis Type_Parameter",
+
+  "Both": "Both",
+  "Tensile_Only": "Tensile Only",
+  "Compression_Only": "Compression Only",
+
+  "Multi-Linear_Elastic": "Multi-Linear Elastic",
+  "Multi-Linear_Plastic_Kinematic": "Linear-Plastic Kinematic",
+  "Multi-Linear_Plastic_Takeda": "Linear-Plastic Takeda",
+  "Multi-Linear_Plastic_Pivot": "Linear-Plastic Pivot",
+
+  "existMsg": "It already exists.",
+  "positionErrMsg": "Invalid data for P and D.",
+  "sameForceErrMsg": "Duplicate data exists in area D",
+  "tooSmallErrMsg": "Data is too small",
+  "no_match_pnd": "The number of P and D does not match the model.",
+  "slopErrMsg": "The slope is not correct.",
+  "Force_Disp_Zero_err": "Data {displacement=0, force=0} must exist.",
+  "row_col_valid_error": "Row or Column is wrong",
+  "success_change_data": "Success Change Data",
+
+  "Init_Stiff": "Initial Stiff.",
+  "Init_Stiff_Type": "K₀ type",
+  "InitStiffType_User": "User",
+  "InitStiffType_Elastic": "E*I",
+
+  "GraphBtn": "GRAPH",
+  "Graph_err": "Invalid data entered in table.",
+  "Graph_xaxis_normalized": "Displacement × K₀ (initial stiffness temporarily set to 1)",
+  "Graph_xaxis_disp": "Displacement ({{unit}})",
+  "Graph_xaxis_curvature": "Curvature (1/{{unit}})",
+  "changeDBBtn": "Apply",
+  "cancelBtn": "Close",
+  "TableErrState": "Data cannot be drawn exists. Check the Graph.",
+
+  "GraphTitle": "Skeleton Graph",
+
+  "success_save_data": "Saved to CIVIL successfully.",
+  "save_failed": "Failed to save to CIVIL.",
+  "save_mismatch": "The table was loaded for a different element/hinge component. Press the request button again before saving."
+}

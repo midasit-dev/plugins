@@ -1,0 +1,83 @@
+{
+  "elementType": "要素タイプ",
+  "Truss": "トラス",
+  "BeamColumn": "梁-柱",
+  "GenericLink": "汎用リンク",
+
+  "request_noData": "ー データがありません。",
+  "componentType": " ヒンジ成分",
+  "requestBtn": "非線形特性の表示",
+  "pointType": "折れ点の数",
+
+  "unit": "単位",
+  "TabDisp": "折れ点入力",
+  "TabStiff": "勾配率入力",
+  "TabMulti": "マルチリニア入力",
+
+  "Name": "名称",
+  "Material": "材料",
+  "Hysteresis_model": "履歴タイプ",
+  "Type": "入力タイプ",
+
+  "Axisymmetric": "軸対称",
+  "Symmetric": "対称",
+  "Asymmetric": "非対称",
+  "Direction": "側",
+  "Gap": "初期ギャップ",
+
+  "Kinematic_Hardening": "ノーマルトリリニア型",
+  "Origin_oriented": "原点志向型",
+  "Peak_oriented": "最大点志向型",
+  "Clough": "Clough型",
+  "Degrading_Trilinear": "深田型",
+  "Takeda": "オリジナル武田型",
+  "Takeda_Slip": "オリジナル武田スリップ型",
+  "Modified_Takeda": "修正武田型",
+  "Normal_Bilinear": "ノーマルバイリニア型",
+  "Elastic_Bilinear": "非線形弾性型",
+  "SLIP": "スリップ型",
+  "SLIP_Tension": "スリップ型/引張のみ",
+  "SLIP_Compression": "スリップ型/圧縮のみ",
+
+  "Force_Deformation": "力-変位関係",
+  "Hysteresis_Type_Parameter": "履歴パラメータ",
+
+  "Both": "両方",
+  "Tensile_Only": "引張専用",
+  "Compression_Only": "圧縮専用",
+
+  "Multi-Linear_Elastic": "マルチリニア-弾性",
+  "Multi-Linear_Plastic_Kinematic": "マルチリニア-塑性移動硬化",
+  "Multi-Linear_Plastic_Takeda": "マルチリニア-塑性武田",
+  "Multi-Linear_Plastic_Pivot": "マルチリニア-塑性ピボット",
+
+  "existMsg": "すでに存在しています。",
+  "positionErrMsg": "PとDのデータが間違っています。",
+  "sameForceErrMsg": "重複データがエリア D に存在します。",
+  "tooSmallErrMsg": "データが小さすぎます。",
+  "no_match_pnd": "モデルとP、Dの個数がマッチしません。",
+  "slopErrMsg": "傾きが正しくありません。",
+  "Force_Disp_Zero_err": "データ{変位=0, 力=0} は必須である必要があります。",
+  "row_col_valid_error": "列または行が間違っています。",
+  "success_change_data": "成功的にデータを変えました。",
+
+  "Init_Stiff": "初期剛性",
+  "Init_Stiff_Type": "初期剛性タイプ",
+  "InitStiffType_User": "ユーザー入力",
+  "InitStiffType_Elastic": "E*I",
+
+  "GraphBtn": "骨格曲線表示",
+  "Graph_err": "テーブルに無効なデータが入力されました",
+  "Graph_xaxis_normalized": "変位 × K₀ （初期剛性は暫定的に 1 を使用）",
+  "Graph_xaxis_disp": "変位 ({{unit}})",
+  "Graph_xaxis_curvature": "曲率 (1/{{unit}})",
+  "changeDBBtn": "CIVILに書き込む",
+  "cancelBtn": "閉じる",
+  "TableErrState": "グラフを描けないデータが存在します。グラフを確認してください。",
+
+  "GraphTitle": "骨格曲線グラフ",
+
+  "success_save_data": "CIVILに書き込みました。",
+  "save_failed": "CIVILへの書き込みに失敗しました。",
+  "save_mismatch": "表のデータは別の要素タイプ・ヒンジ成分のものです。再度表示してから書き込んでください。"
+}
