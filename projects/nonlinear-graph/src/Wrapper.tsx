@@ -1,6 +1,6 @@
 /**
  * @title 2-wrapper
- * @description Wrapper for Pyscript
+ * @description Wrapper for MAPI-Key / Base URI validation
  * @next ./src/App.tsx
  * ┬┌┐┌   ┌─┐┌─┐┌┬┐┬┬  ┬┌─┐
  * ││││───├─┤│   │ │└┐┌┘├┤ 	🌑🌑🌑🌑🌑
@@ -22,11 +22,9 @@ import {
 } from "@midasit-dev/moaui";
 import Signature from "./Signature";
 import { SnackbarProvider, closeSnackbar } from "notistack";
-import { setGlobalVariable, getGlobalVariable } from "./utils_pyscript";
+import { setGlobalVariable, getGlobalVariable } from "./utils_api";
 
-const ValidWrapper = (props: any) => {
-  const { isIntalledPyscript } = props;
-
+const ValidWrapper = () => {
   const [isInitialized, setIsInitialized] = React.useState(false);
   const [isValid, setIsValid] = React.useState(false);
   const [checkUri, setCheckUri] = React.useState(false);
@@ -155,12 +153,6 @@ const ValidWrapper = (props: any) => {
               <Typography variant="h1">Validation Check</Typography>
               <GuideBox spacing={2}>
                 <ValidationComponent
-                  title="pyscript"
-                  checkIf={isIntalledPyscript}
-                  strValid="Installed"
-                  strInvalid={`Not Installed`}
-                />
-                <ValidationComponent
                   title="Base URI"
                   checkIf={checkUri}
                   strValid="Valid"
@@ -181,34 +173,23 @@ const ValidWrapper = (props: any) => {
   );
 };
 
-const PyscriptWrapper = () => {
+const ApiWrapper = () => {
   const [installed, setInstalled] = React.useState(false);
   //fill in global variables
   React.useEffect(() => {
-    function checkPyScriptReady(callback: any) {
-      // if pyscript is ready, call callback function
-      if (pyscript && pyscript.interpreter) {
-        setGlobalVariable();
-        getGlobalVariable();
-        setInstalled(true);
-      } else {
-        // if not, wait 100ms and try again
-        setTimeout(() => checkPyScriptReady(callback), 100);
-      }
-    }
-
-    checkPyScriptReady(() => {});
+    setGlobalVariable();
+    getGlobalVariable();
+    setInstalled(true);
   }, []);
 
   return (
     <>
       <VerifyDialog loading={!installed} />
       {installed && VerifyUtil.isExistQueryStrings("mapiKey") && (
-        <ValidWrapper isIntalledPyscript={installed} />
+        <ValidWrapper />
       )}
     </>
   );
 };
 
-//변경
-export default PyscriptWrapper;
+export default ApiWrapper;

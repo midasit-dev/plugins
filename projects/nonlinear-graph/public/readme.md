@@ -1,7 +1,7 @@
 <!-- markdownlint-disable-next-line -->
 <br />
 <p align="center">
-  <a href="https://midasit.com/" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
+  <a href="https://support.midasuser.com/hc/ja/articles/61995671377561" rel="noopener" target="_blank"><img width="150" src="https://raw.githubusercontent.com/midasit-dev/moaui-fixed-repo/main/svg/logo_circle_30p.svg" alt="moaui logo"></a>
 </p>
 
 # 非線形特性テーブル・グラフ表示
@@ -11,13 +11,13 @@
 - EXCEL で作成した非線形特性データを非線形特性テーブルに貼り付け、CIVIL NX 本体に一括で入力することができます。
 
 # 注意事項
-- ヒンジタイプ：”M-φ分布”
-- ヒンジ形式：”スケルトン”		
-- 変動軸力の考慮：”なし”				
+
+- ヒンジタイプ：”M-φ 分布”
+- ヒンジ形式：”スケルトン”
+- 変動軸力の考慮：”なし”
 - 入力方法：”ユーザー入力”
 
 ※マルチリニア型の履歴タイプには対応しません。
-
 
 <br />
 
@@ -26,7 +26,3 @@
 ### version 1.0.0
 
 - Default Release.
-
-### version 1.1.0
-
-- We have updated and improved the internal libraries, enhancing performance and stability.

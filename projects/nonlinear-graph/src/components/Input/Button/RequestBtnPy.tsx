@@ -1,5 +1,5 @@
 import { Button, GuideBox } from "@midasit-dev/moaui";
-import { dbRead, getIEHP } from "../../../utils_pyscript";
+import { dbRead, getIEHP } from "../../../utils_api";
 import { useTranslation } from "react-i18next";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -22,7 +22,6 @@ const RequestBtnPy = () => {
   const { t: translate } = useTranslation();
   const requestBtn = translate("requestBtn");
   const onClick = async () => {
-    if (!(pyscript && pyscript.interpreter)) return;
     if (Busy) return;
     setBusy(true);
     try {

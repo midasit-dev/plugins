@@ -11,7 +11,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { DoRequest, getIEHP } from "../../../utils_pyscript";
+import { DoRequest, getIEHP } from "../../../utils_api";
 import { isEmpty } from "lodash";
 
 const ChangeBtnPy = () => {
