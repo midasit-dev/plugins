@@ -38,6 +38,7 @@ import useGridAlert from "./hooks/useGridAlert";
 import useGridEditing from "./hooks/useGridEditing";
 import { DataGridStyle } from "./shared/gridStyle";
 import { setDisplayAndRaw, parseGridNumber } from "./shared/format";
+import { readSidePair } from "./shared/symmetricPair";
 import { numberColumn, textColumn } from "./shared/columns";
 import {
   INIT_STIFF_TYPE,
@@ -377,62 +378,30 @@ const StiffDataGrid = () => {
       )
         continue;
 
-      // p_data
-      const pData = [];
-      for (let i = 1; i < 4; i++) {
-        if (
-          isEmpty(rows[row][`Plus_P${i}`]) ||
-          isEmpty(rows[row][`Minus_P${i}`])
-        ) {
-          const noData = "No Data";
-          if (isEmpty(rows[row][`Plus_P${i}`]) === false) {
-            if (symmetric === 0) {
-              pData.push([
-                parseGridNumber(rows[row], `Plus_P${i}`),
-                parseGridNumber(rows[row], `Plus_P${i}`),
-              ]);
-              continue;
-            } else AlertFunc(false, -1, `Minus_P${i}`, noData);
-          } else if (isEmpty(rows[row][`Minus_P${i}`]) === false)
-            AlertFunc(false, -1, `Plus_P${i}`, noData);
-          continue;
-        } else {
-          pData.push([
-            parseGridNumber(rows[row], `Plus_P${i}`),
-            symmetric === 0
-              ? parseGridNumber(rows[row], `Plus_P${i}`)
-              : parseGridNumber(rows[row], `Minus_P${i}`) * -1,
-          ]);
-        }
-      }
+      // 압축 전용 슬립은 (+)쪽 칸이 비활성이라, 대칭이면 (-)쪽 값을 원본으로 쓴다.
+      const sourceMinus =
+        rows[row].HISTORY_MODEL === translate("SLIP_Compression");
 
-      // A_data
-      const aData = [];
-      for (let i = 1; i < 4; i++) {
-        if (
-          isEmpty(rows[row][`Plus_A${i}`]) ||
-          isEmpty(rows[row][`Minus_A${i}`])
-        ) {
-          const noData = "No Data";
-          if (isEmpty(rows[row][`Plus_A${i}`]) === false) {
-            if (symmetric === 0) {
-              aData.push([
-                parseGridNumber(rows[row], `Plus_A${i}`, true),
-                parseGridNumber(rows[row], `Plus_A${i}`, true),
-              ]);
-              continue;
-            } else AlertFunc(false, -1, `Minus_A${i}`, noData);
-          } else if (isEmpty(rows[row][`Minus_A${i}`]) === false)
-            AlertFunc(false, -1, `Plus_A${i}`, noData);
-          continue;
-        } else
-          aData.push([
-            parseGridNumber(rows[row], `Plus_A${i}`, true),
-            symmetric === 0
-              ? parseGridNumber(rows[row], `Plus_A${i}`, true)
-              : parseGridNumber(rows[row], `Minus_A${i}`, true) * -1,
-          ]);
-      }
+      // p_data, A_data
+      const readPairs = (prefix: string, plain: boolean) => {
+        const out: number[][] = [];
+        for (let i = 1; i < 4; i++) {
+          const pair = readSidePair(
+            rows[row],
+            `Plus_${prefix}${i}`,
+            `Minus_${prefix}${i}`,
+            symmetric === 0,
+            sourceMinus,
+            plain
+          );
+          if (pair.kind === "value") out.push(pair.value);
+          else if (pair.kind === "missing")
+            AlertFunc(false, -1, pair.field, "No Data");
+        }
+        return out;
+      };
+      const pData = readPairs("P", false);
+      const aData = readPairs("A", true);
 
       if (pData.length !== aData.length) {
         const noData = "+ or - No Data";
@@ -792,29 +761,9 @@ const StiffDataGrid = () => {
         });
         break;
       case "SYMMETRIC": // SYMMETRIC
-        let sysValue = "";
-        Object.entries(SYMMETRIC).forEach(([key, value]) => {
-          if (translate(value) === InputValue) {
-            sysValue = value;
-            dbUpdate = true;
-          }
-        });
-        const HISTORY_MODEL = row.HISTORY_MODEL;
-        Object.entries(ALL_HistoryType_LNG).forEach(([key, value]) => {
-          if (translate(value) === HISTORY_MODEL) {
-            const nPnd = ALL_Histroy_PND[key];
-            const getKey = GetKeyFromLNG(value, nPnd);
-            if (key === getKey) {
-              if (
-                sysValue === "Symmetric" &&
-                (getKey === "SLBT" ||
-                  getKey === "SLTT" ||
-                  getKey === "SLBC" ||
-                  getKey === "SLTC")
-              )
-                dbUpdate = false;
-            }
-          }
+        // 인장/압축 전용 슬립도 대칭을 허용한다. 비활성 쪽은 어차피 반대쪽 값으로 채워진다.
+        Object.values(SYMMETRIC).forEach((value) => {
+          if (translate(value) === InputValue) dbUpdate = true;
         });
         break;
       case "INITSTIFFTYPE":
