@@ -89,6 +89,10 @@ export const VALIDATION_MESSAGES_PILE: Record<string, ValidationMessage> = {
     key: "Steel_Diameter_Invalid",
     type: "warning",
   },
+  STEEL_AREA_NEGATIVE: {
+    key: "Steel_Area_Negative",
+    type: "warning",
+  },
   STEEL_THICKNESS_INVALID: {
     key: "Steel_Thickness_Invalid",
     type: "warning",

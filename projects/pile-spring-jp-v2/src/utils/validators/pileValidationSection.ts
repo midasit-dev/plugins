@@ -55,6 +55,21 @@ const SECTION_VALIDATION_RULES: Record<PileType, ValidationProperty[]> = {
   ],
 };
 
+// 0을 허용하는 속성 (음수만 오류). 場所打ち杭은 철근 없이(단면적 0) 입력할 수 있음
+const ZERO_ALLOWED_RULES: Partial<Record<PileType, ValidationProperty[]>> = {
+  [PILE_TYPES.CAST_IN_SITU]: ["steel.diameter"],
+};
+
+// 0 허용 속성이 음수일 때 표시할 메시지 매핑
+const NEGATIVE_MESSAGE_MAP: Partial<
+  Record<
+    ValidationProperty,
+    (typeof VALIDATION_MESSAGES_PILE)[keyof typeof VALIDATION_MESSAGES_PILE]
+  >
+> = {
+  "steel.diameter": VALIDATION_MESSAGES_PILE.STEEL_AREA_NEGATIVE,
+};
+
 // 검증 실패 시 표시할 메시지 매핑
 const VALIDATION_MESSAGE_MAP: Record<
   ValidationProperty,
@@ -104,10 +119,24 @@ const validatePropertyValue = (
   showNotification: ValidationParams["showNotification"]
 ): boolean => {
   const [category, field] = property.split(".") as [keyof PileSection, string];
-  const value =
-    section[category][field as keyof (typeof section)[typeof category]];
+  const value = Number(
+    section[category][field as keyof (typeof section)[typeof category]]
+  );
 
-  if (value <= 0) {
+  const allowZero =
+    ZERO_ALLOWED_RULES[section.pileType]?.includes(property) ?? false;
+
+  if (allowZero) {
+    if (Number.isNaN(value) || value < 0) {
+      const message =
+        NEGATIVE_MESSAGE_MAP[property] ?? VALIDATION_MESSAGE_MAP[property];
+      showNotification(message.key, message.type);
+      return false;
+    }
+    return true;
+  }
+
+  if (!(value > 0)) {
     const message = VALIDATION_MESSAGE_MAP[property];
     showNotification(message.key, message.type);
     return false;

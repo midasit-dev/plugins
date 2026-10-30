@@ -164,6 +164,7 @@
   "defaultPileLocation": "defaultPileLocation",
   "Pile_X_Dir": "재하방향",
   "Pile_Y_Dir": "재하직각방향",
+  "Pile_Z_Dir": "수직방향",
 
   "SOIL_RESISTANCE_METHODS": "SOIL_RESISTANCE_METHODS",
   "Calculate_by_N": "N값으로 산정",
@@ -227,6 +228,7 @@
   "Concrete_Thickness_Invalid": "콘크리트 두께는 0보다 커야합니다.",
   "Concrete_Modulus_Invalid": "콘크리트 탄성계수는 0보다 커야합니다.",
   "Steel_Diameter_Invalid": "강관 직경은 0보다 커야합니다.",
+  "Steel_Area_Negative": "철근 단면적은 0 이상이어야 합니다.",
   "Steel_Thickness_Invalid": "강관 두께는 0보다 커야합니다.",
   "Steel_Modulus_Invalid": "강관 탄성계수는 0보다 커야합니다.",
   "Steel_Cor_Thickness_Invalid": "강관 부식 깊이는 0보다 커야합니다.",

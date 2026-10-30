@@ -8,6 +8,7 @@
 
 import { PileDataItem, PileSection, PileReinforced } from "../../types/typePileDomain";
 import { SoilTable } from "../../types/typeSoilDomain";
+import { calcTotalPileLength } from "../calculators/pileLength";
 
 // Python 스크립트가 기대하는 단일 말뚝 레코드의 형태
 export interface LegacyPileCalcItem {
@@ -174,7 +175,8 @@ export const convertPileDataForCalc = (
 
     return {
       pileName: initSet.pileName,
-      pileLength: Number(initSet.pileLength),
+      // 저장된 initSet.pileLength가 아닌 단면 합계를 사용 (파생값 불일치 방지)
+      pileLength: calcTotalPileLength(item.sectionData),
       topLevel: Number(initSet.topLevel),
       constructionMethod: initSet.constructionMethod,
       headCondition: initSet.headCondition,

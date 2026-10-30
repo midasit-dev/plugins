@@ -25,6 +25,9 @@ export {
   createDimText,
 } from "./calculators/pileViewerCalculator";
 
+// Pile Length
+export { calcTotalPileLength, syncPileLength } from "./calculators/pileLength";
+
 // Pile Validation
 export { validatePileData } from "./validators/pileValidation";
 export {

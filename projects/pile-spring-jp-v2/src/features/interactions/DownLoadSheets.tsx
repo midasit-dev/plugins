@@ -3,7 +3,7 @@
  * @description
  * 버튼 클릭 시:
  *   1) 계산 결과(pileSpringCalcResultState)가 존재하는지 확인 (미계산 시 경고)
- *   2) 3D 뷰어의 평면도/정면도/측면도를 offscreen Three.js 렌더러로 캡쳐
+ *   2) 평면도/정면도/측면도를 템플릿 그림 영역 크기(250px)의 2D 도면으로 생성
  *   3) report JSON 생성 → BaseSheet_jp.xlsx 템플릿과 함께 function-executor에 전송
  *   4) 반환된 엑셀 파일 다운로드
  */
@@ -21,7 +21,8 @@ import { pileDomainState } from "../../states/statePileDomain";
 import { soilDomainState } from "../../states/stateSoilDomain";
 import { pileSpringCalcResultState } from "../../states/stateCalcResult";
 import { buildExcelReportJson } from "../../utils/calculators/excelJsonBuilder";
-import { capturePileViewerImages } from "../../utils/calculators/pileViewerCapture";
+import { drawPileReportImages } from "../../utils/calculators/pileReportDrawing";
+import { convertPileDataForCalc } from "../../utils/converters/pileCalcInputConverter";
 import { downloadExcelReport } from "../../utils/calculators/excelReportDownloader";
 
 const DownLoadSheets = () => {
@@ -44,11 +45,14 @@ const DownLoadSheets = () => {
 
     setLoading(true);
     try {
-      // 1) 3D 뷰어 이미지 캡쳐 (평면도 / 정면도 / 측면도)
-      const images = capturePileViewerImages(
-        pileDomain.pileDataList,
-        pileDomain.basicDim
-      );
+      // 1) 평면도 / 정면도 / 측면도 (v1과 같은 250×250 2D 도면)
+      //    3D 뷰어 캡처는 화면 배율에 따라 크기가 커져 엑셀에서 서로 겹쳤음
+      const images = drawPileReportImages({
+        translate: t,
+        piles: convertPileDataForCalc(pileDomain.pileDataList),
+        basicDim: pileDomain.basicDim,
+        groundLevel: Number(soilDomain.basic.groundLevel),
+      });
 
       // 2) report JSON 빌드
       const reportJson = buildExcelReportJson({

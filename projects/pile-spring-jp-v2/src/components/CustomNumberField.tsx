@@ -54,6 +54,34 @@ const CustomNumberField: React.FC<CustomNumberFieldProps> = ({
 }) => {
   const { min, max, step } = numberOptions || {};
 
+  // 입력 중인 문자열을 그대로 보관한다.
+  // 부모 상태는 숫자이므로 "-" 나 "" (Delete로 지운 상태) 같은 중간 입력을 표현할 수 없고,
+  // value prop을 그대로 바인딩하면 React가 즉시 이전 값으로 되돌려 음수 입력/삭제가 불가능했다.
+  const [draft, setDraft] = React.useState<string>(value);
+  const isFocusedRef = React.useRef(false);
+
+  // 외부에서 값이 바뀐 경우(파일 읽기, 행 선택 등)에는 표시값을 동기화. 입력 중에는 건드리지 않음
+  React.useEffect(() => {
+    if (!isFocusedRef.current) setDraft(value);
+  }, [value]);
+
+  const handleFocus = () => {
+    isFocusedRef.current = true;
+    onFocus?.();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDraft(e.target.value);
+    onChange?.(e);
+  };
+
+  // 포커스 해제 시 확정된 값으로 표시를 맞춤 (빈 칸으로 두면 마지막 유효값으로 복원)
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    isFocusedRef.current = false;
+    setDraft(value);
+    onBlur?.(e);
+  };
+
   return (
     <CustomBox
       sx={{
@@ -73,10 +101,10 @@ const CustomNumberField: React.FC<CustomNumberFieldProps> = ({
       )}
       <TextField
         type="number"
-        value={value}
-        onFocus={onFocus}
-        onChange={onChange}
-        onBlur={onBlur}
+        value={draft}
+        onFocus={handleFocus}
+        onChange={handleChange}
+        onBlur={handleBlur}
         placeholder={placeholder}
         disabled={disabled}
         inputProps={{

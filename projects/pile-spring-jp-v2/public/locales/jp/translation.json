@@ -163,6 +163,7 @@
   "defaultPileLocation": "defaultPileLocation",
   "Pile_X_Dir": "載荷方向",
   "Pile_Y_Dir": "載荷直角方向",
+  "Pile_Z_Dir": "垂直方向",
 
   "SOIL_RESISTANCE_METHODS": "SOIL_RESISTANCE_METHODS",
   "Calculate_by_N": "N値で計算",
@@ -226,6 +227,7 @@
   "Concrete_Thickness_Invalid": "コンクリートの厚さは0より大きくなければなりません。",
   "Concrete_Modulus_Invalid": "コンクリートの弾性係数は0より大きくなければなりません。",
   "Steel_Diameter_Invalid": "鋼管の直径は0より大きくなければなりません。",
+  "Steel_Area_Negative": "鉄筋の断面積は0以上でなければなりません。",
   "Steel_Thickness_Invalid": "鋼管の厚さは0より大きくなければなりません。",
   "Steel_Modulus_Invalid": "鋼管の弾性係数は0より大きくなければなりません。",
   "Steel_Cor_Thickness_Invalid": "鋼管の腐食代は0より大きくなければなりません。",

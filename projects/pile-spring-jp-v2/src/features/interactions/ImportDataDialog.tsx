@@ -23,7 +23,9 @@ import {
   validateLegacyData,
   convertSoilBasicLegacyToCurrent,
   convertSoilTableLegacyToCurrent,
+  syncPileLength,
 } from "../../utils";
+import { PileDataItem } from "../../types/typePileDomain";
 import { usePileDomain, useSoilDomain } from "../../hooks";
 
 import { useTranslation } from "react-i18next";
@@ -74,8 +76,8 @@ const ImportDataDialog = () => {
                 const { pileData, basicDimensions } =
                   convertPileLegacyToCurrent(data);
 
-                // pileDataList 업데이트
-                updatePileDataList(pileData);
+                // pileDataList 업데이트 (pileLength는 단면 합계로 보정)
+                updatePileDataList(pileData.map(syncPileLength));
                 updateBasicDim(basicDimensions);
 
                 // 새로운 soil domain으로 업데이트
@@ -109,8 +111,12 @@ const ImportDataDialog = () => {
           } else {
             // 새로운 데이터 형식 처리
             if (data.pileDataList && Array.isArray(data.pileDataList)) {
-              // pileDataList가 있는 경우 업데이트
-              updatePileDataList(data.pileDataList);
+              // pileDataList가 있는 경우 업데이트.
+              // 저장 파일의 pileLength가 0 등으로 어긋나 있을 수 있어 단면 합계로 보정
+              // (보정하지 않으면 「修正」을 누르기 전까지 계산이 0 나누기로 실패함)
+              updatePileDataList(
+                (data.pileDataList as PileDataItem[]).map(syncPileLength)
+              );
             }
             updateBasicDim(data.pileBasicDimValue);
 

@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 
 import { usePileDomain } from "./usePileDomain";
 import { PileInitSet } from "../../types/typePileDomain";
+import { calcTotalPileLength } from "../../utils/calculators/pileLength";
 
 export const usePileInitSet = () => {
   const { currentPile, updateCurrentPileInitSet } = usePileDomain();
@@ -29,16 +30,18 @@ export const usePileInitSet = () => {
     };
 
   // 말뚝 전체 길이 계산
-  const totalLength = useMemo(() => {
-    return currentPile.sections
-      .filter((section) => section.checked)
-      .reduce((acc, curr) => acc + curr.length, 0);
-  }, [currentPile.sections]);
+  const totalLength = useMemo(
+    () => calcTotalPileLength(currentPile.sections),
+    [currentPile.sections]
+  );
 
-  // 말뚝 전체 길이 업데이트
+  // 말뚝 전체 길이 업데이트 (저장된 값이 어긋나 있어도 맞춰지도록 현재 값과 비교)
   useEffect(() => {
-    updateCurrentPileInitSet({ pileLength: totalLength });
-  }, [totalLength]);
+    if (currentPile.initSet.pileLength !== totalLength) {
+      updateCurrentPileInitSet({ pileLength: totalLength });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [totalLength, currentPile.initSet.pileLength]);
 
   return {
     values: currentPile.initSet,

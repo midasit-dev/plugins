@@ -23,6 +23,16 @@ import {
   PileDomainState,
   PileDataItem,
 } from "../../types/typePileDomain";
+import { calcTotalPileLength } from "../../utils/calculators/pileLength";
+
+// pileLength는 단면 길이 합계로부터 파생되므로 저장/불러오기 시 항상 다시 계산
+const withPileLength = (
+  initSet: PileInitSet,
+  sections: PileSection[]
+): PileInitSet => ({
+  ...initSet,
+  pileLength: calcTotalPileLength(sections),
+});
 
 // 말뚝 도메인(설계/데이터 관리) 상태와 조작 함수 제공
 export const usePileDomain = () => {
@@ -69,7 +79,10 @@ export const usePileDomain = () => {
       id: newID,
       pileName: pileDomain.currentPile.initSet.pileName,
       pileNumber: pileDomain.currentPile.locations[0].space.length + 1,
-      initSetData: pileDomain.currentPile.initSet,
+      initSetData: withPileLength(
+        pileDomain.currentPile.initSet,
+        pileDomain.currentPile.sections
+      ),
       locationData: pileDomain.currentPile.locations,
       reinforcedData: pileDomain.currentPile.reinforced,
       sectionData: pileDomain.currentPile.sections,
@@ -95,7 +108,10 @@ export const usePileDomain = () => {
               ...item,
               pileName: prev.currentPile.initSet.pileName,
               pileNumber: prev.currentPile.locations[0].space.length + 1,
-              initSetData: prev.currentPile.initSet,
+              initSetData: withPileLength(
+                prev.currentPile.initSet,
+                prev.currentPile.sections
+              ),
               locationData: prev.currentPile.locations,
               reinforcedData: prev.currentPile.reinforced,
               sectionData: prev.currentPile.sections,
@@ -148,7 +164,7 @@ export const usePileDomain = () => {
       ...prev,
       selectedPileDataId: id,
       currentPile: {
-        initSet: item.initSetData,
+        initSet: withPileLength(item.initSetData, item.sectionData),
         sections: item.sectionData,
         locations: item.locationData,
         reinforced: item.reinforcedData,
