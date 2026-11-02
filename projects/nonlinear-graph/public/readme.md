@@ -23,6 +23,14 @@
 
 ## Details
 
+### version 1.2.0
+
+- Fixed an error in the Slip type.
+
+### version 1.1.0
+
+- Refactoring.
+
 ### version 1.0.0
 
 - Default Release.
