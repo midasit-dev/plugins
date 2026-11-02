@@ -441,10 +441,11 @@ const initValue = (DATA: any, HistoryModel: string) => {
       : [NaN, NaN];
 
   const dGap: number[] = [0, 0];
-  dGap[0] = HistoryModel !== "SLBC" ? DATA.INIT_GAP?.[0] : 0.0;
-  dGap[1] = HistoryModel !== "SLBT" ? DATA.INIT_GAP?.[1] : 0.0;
-  dGap[0] = HistoryModel !== "SLTC" ? DATA.INIT_GAP?.[0] : 0.0;
-  dGap[1] = HistoryModel !== "SLTT" ? DATA.INIT_GAP?.[1] : 0.0;
+  // 압축 전용(SLBC/SLTC)은 (+) 갭을, 인장 전용(SLBT/SLTT)은 (-) 갭을 0 으로 둔다.
+  const bNoPlusGap = HistoryModel === "SLBC" || HistoryModel === "SLTC";
+  const bNoMinusGap = HistoryModel === "SLBT" || HistoryModel === "SLTT";
+  dGap[0] = bNoPlusGap ? 0.0 : DATA.INIT_GAP?.[0];
+  dGap[1] = bNoMinusGap ? 0.0 : DATA.INIT_GAP?.[1];
 
   const result = {
     dP: [dP1, dP2, dP3, dP4],
@@ -475,8 +476,10 @@ const getSlipBinlinear = (
 
   dGap_p = DATA.INIT_GAP?.[0];
   dGap_m = DATA.INIT_GAP?.[1];
-  dGap_p = dGap_p > 0 ? dGap_p / Math.max(dGap_p, dGap_m) : 0;
-  dGap_m = dGap_m > 0 ? dGap_m / Math.max(dGap_p, dGap_m) : 0;
+  // 정규화 기준은 원래 두 값으로 먼저 구한다 (dGap_p 를 바꾼 뒤 구하면 dGap_m 이 틀어진다).
+  const dGapMax = Math.max(dGap_p, dGap_m);
+  dGap_p = dGap_p > 0 ? dGap_p / dGapMax : 0;
+  dGap_m = dGap_m > 0 ? dGap_m / dGapMax : 0;
   if (dGap_p < 0.0 || dGap_m < 0.0) return [];
   // Bilinear
   X1p = dA1[0];
@@ -573,8 +576,10 @@ const getSlipTrilinea = (
 
   dGap_p = DATA.INIT_GAP?.[0];
   dGap_m = DATA.INIT_GAP?.[1];
-  dGap_p = dGap_p > 0 ? dGap_p / Math.max(dGap_p, dGap_m) : 0;
-  dGap_m = dGap_m > 0 ? dGap_m / Math.max(dGap_p, dGap_m) : 0;
+  // 정규화 기준은 원래 두 값으로 먼저 구한다 (dGap_p 를 바꾼 뒤 구하면 dGap_m 이 틀어진다).
+  const dGapMax = Math.max(dGap_p, dGap_m);
+  dGap_p = dGap_p > 0 ? dGap_p / dGapMax : 0;
+  dGap_m = dGap_m > 0 ? dGap_m / dGapMax : 0;
   if (dGap_p < 0.0 || dGap_m < 0.0) return [];
 
   if (

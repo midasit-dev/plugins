@@ -5,7 +5,7 @@ import { Grid, GuideBox } from "@midasit-dev/moaui";
 import { Stack } from "@mui/material";
 
 import { useEffect } from "react";
-import { dbRead } from "../utils_pyscript";
+import { dbRead } from "../utils_api";
 // recoil
 import { useRecoilState } from "recoil";
 import { UnitState, HiddenBtnState } from "../values/RecoilValue";
